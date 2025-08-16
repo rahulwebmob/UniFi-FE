@@ -1,0 +1,5 @@
+export const SOCIAL_AUTH = {
+  GOOGLE: 'GOOGLE',
+  LINKEDIN: 'LINKEDIN',
+  FACEBOOK: 'FACEBOOK',
+}

@@ -1,0 +1,18 @@
+a {
+  text-decoration: none !important;
+}
+
+#zmmtg-root {
+  display: none;
+  z-index: 5;
+  min-width: 0 !important;
+}
+
+.MuiTablePagination-selectLabel,
+.MuiTablePagination-displayedRows {
+  margin-bottom: 0;
+}
+
+.ql-container {
+  min-height: 150px;
+}

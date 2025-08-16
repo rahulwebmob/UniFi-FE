@@ -1,0 +1,37 @@
+{
+  "mcpServers": {
+    "figma-605dcr-13": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "<https://mcp.composio.dev/partner/composio/figma/mcp?customerId=><customer_id>"
+      ],
+      "env": {
+        "npm_config_yes": "true"
+      }
+    },
+    "figma-sb1tm5-64": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.composio.dev/partner/composio/figma/mcp?customerId=7886d5f0-5c2a-4da0-9bac-88ac4dd841ca&agent=claude"
+      ],
+      "env": {
+        "npm_config_yes": "true"
+      }
+    },
+    "figma-xnjw2j-94": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.composio.dev/partner/composio/figma/mcp?customerId=7886d5f0-5c2a-4da0-9bac-88ac4dd841ca&agent=claude"
+      ],
+      "env": {
+        "npm_config_yes": "true"
+      }
+    }
+  }
+}

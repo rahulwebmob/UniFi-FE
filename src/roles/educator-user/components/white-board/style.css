@@ -1,0 +1,152 @@
+.whiteboard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.canvasField {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+canvas {
+  border: 1px solid;
+  border-radius: 10px;
+  width: 100% !important;
+  height: 100% !important;
+}
+.canvas-container {
+  width: 100% !important;
+  height: calc(100vh - 200px) !important;
+}
+
+.toolSection {
+  display: flex;
+  z-index: 2;
+  bottom: 0px;
+  position: absolute;
+  border-radius: 10px 10px 0 0;
+}
+
+.toolField {
+  width: 100%;
+  text-align: center;
+  gap: 8px;
+  display: flex;
+  justify-content: space-evenly;
+  justify-content: center;
+  align-items: center;
+}
+
+.brushWidth {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.colorsets {
+  display: flex;
+  padding: 0.5rem 1rem;
+}
+
+.colorsets > div {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: transparent;
+  margin: 5px;
+  cursor: pointer;
+  position: relative;
+}
+
+.colorsets > div:hover {
+  transform: scale(1.2);
+}
+
+.icon {
+  box-shadow: 0px 0px 12px 1px var(--light-grey-shadow);
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  transition: 1s ease;
+}
+.icon:hover {
+  transform: scale(1.1);
+  box-shadow: -0.5px 1px 4px 3px var(--black);
+}
+
+.eraser {
+  display: flex;
+  padding: 0.5rem 1rem;
+}
+
+.eraser .eraserTip {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: transparent;
+  margin: 2px;
+  cursor: pointer;
+}
+
+.deleteBtn {
+  width: 25px;
+  height: 25px;
+  margin: 5px 5px;
+}
+
+.shapesMenuField {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0rem;
+}
+
+.toolIcon {
+  width: 25px;
+  height: 25px;
+  margin: 5px 7px;
+}
+
+.fillColorIcon {
+  width: 25px;
+  height: 25px;
+  margin: 5px 0px 0px 0px;
+}
+
+.save,
+.load,
+.clearSaved {
+  padding: 0.6rem 0.5rem;
+}
+
+.activeTool {
+  background-color: '#fff';
+  border-radius: 50%;
+}
+
+.githubIcon:hover {
+  transform: scale(1.1);
+  transition: 1s ease;
+}
+
+@media (max-width: 630px) {
+  .toolField > div {
+    padding-top: 0.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .toolField {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1196px) {
+  .toolField {
+    flex-wrap: wrap;
+  }
+}
