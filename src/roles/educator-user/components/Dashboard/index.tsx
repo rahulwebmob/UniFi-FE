@@ -3,16 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { PenTool, Presentation } from 'lucide-react'
 import React, { useRef, useEffect, useCallback } from 'react'
 
-import { Typography } from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 
-import { chatSocket, initializeSocket } from '../../../../services/sockets'
-import {
-  StyledCard,
-  StyledButton,
-  CardContainer,
-  StyledDashboard,
-  StyledContainer,
-} from './style'
+import { StyledCard, StyledButton, CardContainer } from './style'
+import { chatSocket, initializeSocket } from '../../../../Services/sockets'
 
 const Dashboard = () => {
   const setTimeoutId = useRef<NodeJS.Timeout | null>(null)
@@ -45,14 +39,14 @@ const Dashboard = () => {
 
   const cardData = [
     {
-      icon: <PenTool size={32} />,
+      icon: <PenTool size={55} />,
       title: 'EDUCATOR.DASHBOARD.CREATE_A_COURSE',
       description: 'EDUCATOR.DASHBOARD.COURSE_DESCRIPTION',
       button: 'EDUCATOR.DASHBOARD.CREATE_COURSE',
       link: 'create-course',
     },
     {
-      icon: <Presentation size={32} />,
+      icon: <Presentation size={55} />,
       title: 'EDUCATOR.DASHBOARD.CREATE_A_WEBINAR',
       description: 'EDUCATOR.DASHBOARD.WEBINAR_DESCRIPTION',
       button: 'EDUCATOR.DASHBOARD.CREATE_WEBINAR',
@@ -61,18 +55,40 @@ const Dashboard = () => {
   ]
 
   return (
-    <StyledDashboard>
-      <StyledContainer maxWidth="lg">
-        <Typography variant="h1">{t('EDUCATOR.DASHBOARD.HEADING')}</Typography>
-        <Typography>
-          {t('EDUCATOR.DASHBOARD.SUB_HEADING_1') +
-            t('EDUCATOR.DASHBOARD.SUB_HEADING_2')}
-        </Typography>
+    <Box>
+      <Container
+        maxWidth="lg"
+        sx={{
+          backgroundColor: (theme) => theme.palette.background.light,
+          padding: 3,
+        }}
+      >
+        <Box
+          sx={{
+            mb: 3,
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 600,
+              mb: 0.5,
+            }}
+          >
+            Educator Dashboard
+          </Typography>
+          <Typography component="p" color="text.secondary">
+            {t('EDUCATOR.DASHBOARD.SUB_HEADING_1') +
+              t('EDUCATOR.DASHBOARD.SUB_HEADING_2')}fi
+          </Typography>
+        </Box>
         <CardContainer>
           {cardData.map((item) => (
             <StyledCard key={item.link}>
               {item.icon}
-              <Typography var>{t(item.title)}</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                {t(item.title)}
+              </Typography>
               <Typography variant="body1" color="text.secondary">
                 {t(item.description)}
               </Typography>
@@ -80,15 +96,17 @@ const Dashboard = () => {
               <StyledButton
                 variant="contained"
                 color="primary"
-                onClick={() => { void navigate(item.link) }}
+                onClick={() => {
+                  void navigate(item.link)
+                }}
               >
                 {t(item.button)}
               </StyledButton>
             </StyledCard>
           ))}
         </CardContainer>
-      </StyledContainer>
-    </StyledDashboard>
+      </Container>
+    </Box>
   )
 }
 

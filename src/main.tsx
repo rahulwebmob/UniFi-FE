@@ -10,7 +10,7 @@ import Store from './Redux/Store'
 import reportWebVitals from './reportWebVitals'
 import ErrorBoundary from './shared/components/ui-elements/error-boundary/ErrorBoundary'
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
+const root = ReactDOM.createRoot(document.getElementById('root')!)
 root.render(
   <React.StrictMode>
     <Provider store={Store}>

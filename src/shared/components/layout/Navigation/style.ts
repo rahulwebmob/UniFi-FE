@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles'
 
-export const Navigation = styled('div')(({ theme, isBiggerGap }) => ({
+export const Navigation = styled('div')<{ isBiggerGap?: boolean }>(({ theme, isBiggerGap }) => ({
   display: 'flex',
   gap: isBiggerGap ? '20px' : '10px',
   padding: '12px 8px',

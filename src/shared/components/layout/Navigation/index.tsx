@@ -27,7 +27,7 @@ const Navigation = () => {
   const [open, setOpen] = useState(false)
   const theme = useTheme()
 
-  const { _id } = useSelector((state: RootState) => state.user.user || {})
+  const { _id } = useSelector((state: RootState) => state.user.user ?? {})
 
   // menuBar always at top - no need to check
   const matches = useMediaQuery(theme.breakpoints.down('sm'))

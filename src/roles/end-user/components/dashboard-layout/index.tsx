@@ -28,8 +28,8 @@ import { Box, useTheme } from '@mui/material'
 
 import Footer from '../footer'
 import TopNavigation from '../top-navigation'
-import LANGUAGES from '../../../../constants/LANGUAGES'
-import { loggedIn } from '../../../../redux/reducers/UserSlice'
+import LANGUAGES from '../../../../Constants/LANGUAGES'
+import { loggedIn } from '../../../../Redux/Reducers/UserSlice'
 import {
   useLoggedUserQuery,
 } from '../../../../Services/admin'

@@ -6,7 +6,7 @@ import { Box, Grid } from '@mui/material'
 import CourseCard from '../course-card'
 import ContentSkeleton from '../content-skeleton'
 import NoDataFound from '../../../../shared/components/no-data-found'
-import { useGetAllCoursesQuery } from '../../../../services/education'
+import { useGetAllCoursesQuery } from '../../../../Services/education'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
 
 const iff = <T,>(condition: boolean, trueCase: T, falseCase: T): T =>

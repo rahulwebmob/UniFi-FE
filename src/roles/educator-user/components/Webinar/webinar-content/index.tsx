@@ -16,7 +16,7 @@ import {
 } from '@mui/material'
 
 import { getEducatorDetails } from '../../common/common'
-import { getLocaleByLanguageCode } from '../../../../../utils/globalUtils'
+import { getLocaleByLanguageCode } from '../../../../../Utils/globalUtils'
 
 const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
   const navigate = useNavigate()

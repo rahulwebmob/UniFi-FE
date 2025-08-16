@@ -19,9 +19,9 @@ import {
   useMediaQuery,
 } from '@mui/material'
 
-import { errorAlert } from '../../../../../redux/reducers/AppSlice'
-import { generateImageUrl } from '../../../../../utils/globalUtils'
-import { adminApi, useMyProfileMutation } from '../../../../../services/admin'
+import { errorAlert } from '../../../../../Redux/Reducers/AppSlice'
+import { generateImageUrl } from '../../../../../Utils/globalUtils'
+import { adminApi, useMyProfileMutation } from '../../../../../Services/admin'
 import ChangePassword from '../../../../../roles/admin-user/components/profile/ChangePassword'
 
 interface PersonalInfoData {

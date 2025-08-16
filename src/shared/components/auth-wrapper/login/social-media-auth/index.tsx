@@ -5,11 +5,11 @@ import { Linkedin, Facebook } from 'lucide-react'
 import { Box, Button, Divider, useTheme, useMediaQuery } from '@mui/material'
 
 import { SOCIAL_AUTH } from './constant'
-import useFbLogin from '../../../../../hooks/useFbLogin'
-import useGoogleLogin from '../../../../../hooks/useGoogleLogin'
-import { initializeSocket } from '../../../../../services/sockets'
-import useLinkedinLogin from '../../../../../hooks/useLinkedinLogin'
-import { useOAuthLoginMutation } from '../../../../../services/admin'
+import useFbLogin from '../../../../../Hooks/useFbLogin'
+import useGoogleLogin from '../../../../../Hooks/useGoogleLogin'
+import { initializeSocket } from '../../../../../Services/sockets'
+import useLinkedinLogin from '../../../../../Hooks/useLinkedinLogin'
+import { useOAuthLoginMutation } from '../../../../../Services/admin'
 // import { clearLangCookie } from "../../../../utils/globalUtils"
 
 interface SocialMediaAuthProps {
@@ -33,12 +33,12 @@ const SocialMediaAuth: React.FC<SocialMediaAuthProps> = ({ isOAuthLoading, setIs
     const response = await oAuthLogin(values)
 
     if (response && 'data' in response && response.data) {
-      const token = (response.data as { token: string }).token
+      const responseData = response.data as { token: string; data?: { subscription?: { isBasicSubscribed?: boolean } } }
+      const token = responseData.token
       localStorage.setItem('token', token)
 
       void initializeSocket(token)
       setTimeout(() => {
-        const responseData = response.data as { data?: { subscription?: { isBasicSubscribed?: boolean } } }
         if (responseData?.data?.subscription?.isBasicSubscribed) {
           void navigate('/dashboard/layout')
         } else {

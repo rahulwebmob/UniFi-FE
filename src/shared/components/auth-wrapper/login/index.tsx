@@ -109,7 +109,7 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
           void initializeSocket(token)
           setTimeout(() => {
             void navigate('/dashboard')
-          })
+          }, 100)
       }
     } else if (response && 'error' in response && (response.error as { status?: number })?.status === 406 && values.email) {
       setVerificationEmail(values.email)

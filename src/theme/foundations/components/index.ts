@@ -1688,6 +1688,188 @@ export const MuiTooltip: Components<Theme>['MuiTooltip'] = {
 }
 /* ===== END: Other Components ===== */
 
+/* ===== START: Material React Table Component ===== */
+export const MuiDataGrid: Components<Theme>['MuiDataGrid'] = {
+  styleOverrides: {
+    root: ({ theme }) => ({
+      border: 'none',
+      borderRadius: theme.spacing(1.5),
+      fontSize: '0.875rem',
+      
+      '& .MuiDataGrid-main': {
+        borderRadius: theme.spacing(1.5),
+      },
+      
+      '& .MuiDataGrid-columnHeaders': {
+        backgroundColor: theme.palette.grey[50],
+        borderBottom: `2px solid ${theme.palette.grey[200]}`,
+        minHeight: 56,
+      },
+      
+      '& .MuiDataGrid-columnHeader': {
+        '&:focus': {
+          outline: 'none',
+        },
+        '&:focus-within': {
+          outline: 'none',
+        },
+      },
+      
+      '& .MuiDataGrid-columnHeaderTitle': {
+        fontWeight: 600,
+        fontSize: '0.75rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        color: theme.palette.text.secondary,
+      },
+      
+      '& .MuiDataGrid-cell': {
+        borderBottom: `1px solid ${theme.palette.grey[100]}`,
+        '&:focus': {
+          outline: 'none',
+        },
+      },
+      
+      '& .MuiDataGrid-row': {
+        '&:hover': {
+          backgroundColor: theme.palette.grey[50],
+        },
+        '&.Mui-selected': {
+          backgroundColor: `${theme.palette.primary.main}08`,
+          '&:hover': {
+            backgroundColor: `${theme.palette.primary.main}12`,
+          },
+        },
+      },
+      
+      '& .MuiDataGrid-footerContainer': {
+        borderTop: `2px solid ${theme.palette.grey[200]}`,
+        backgroundColor: theme.palette.grey[50],
+      },
+      
+      '& .MuiTablePagination-root': {
+        '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+          fontSize: '0.875rem',
+          color: theme.palette.text.secondary,
+        },
+      },
+    }),
+  },
+}
+
+// Global Material React Table configuration
+export const MaterialReactTableDefaults = {
+  muiTablePaperProps: {
+    elevation: 0,
+    sx: {
+      borderRadius: '12px',
+      border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+      height: 'calc(100vh - 320px)',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
+    },
+  },
+  muiTableContainerProps: {
+    sx: {
+      flex: 1,
+      minHeight: 0,
+      '&::-webkit-scrollbar': {
+        width: '8px',
+        height: '8px',
+      },
+      '&::-webkit-scrollbar-track': {
+        backgroundColor: (theme) => theme.palette.grey[100],
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: (theme) => theme.palette.grey[400],
+        borderRadius: '4px',
+        '&:hover': {
+          backgroundColor: (theme) => theme.palette.grey[500],
+        },
+      },
+    },
+  },
+  muiTableProps: {
+    stickyHeader: true,
+    sx: {
+      tableLayout: 'auto',
+      '& .MuiTableHead-root': {
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
+      },
+    },
+  },
+  muiTableHeadCellProps: {
+    sx: (theme) => ({
+      backgroundColor: theme.palette.grey[900],
+      color: theme.palette.common.white,
+      fontWeight: 700,
+      fontSize: '0.875rem',
+      textTransform: 'uppercase',
+      letterSpacing: '0.08em',
+      borderBottom: 'none',
+      padding: '18px 16px',
+      whiteSpace: 'nowrap',
+      '& .MuiTableSortLabel-root': {
+        display: 'none',
+      },
+      '& .MuiIconButton-root': {
+        display: 'none',
+      },
+    }),
+  },
+  muiTableBodyCellProps: {
+    sx: {
+      fontSize: '0.875rem',
+      padding: '14px 12px',
+      borderBottom: (theme) => `1px solid ${theme.palette.grey[200]}`,
+      color: (theme) => theme.palette.text.primary,
+    },
+  },
+  muiTableBodyRowProps: {
+    sx: {
+      '&:hover': {
+        backgroundColor: (theme) => theme.palette.action.hover,
+      },
+      '&:last-child td': {
+        borderBottom: 'none',
+      },
+      '& td': {
+        borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+      },
+    },
+  },
+  muiTopToolbarProps: {
+    sx: {
+      display: 'none',
+    },
+  },
+  muiBottomToolbarProps: {
+    sx: {
+      backgroundColor: 'transparent',
+      boxShadow: 'none',
+      borderTop: 'none',
+    },
+  },
+  enableColumnActions: false,
+  enableColumnFilters: false,
+  enablePagination: false,
+  enableSorting: false,
+  enableBottomToolbar: false,
+  enableTopToolbar: false,
+  enableRowSelection: false,
+  enableRowActions: false,
+  enableGlobalFilter: false,
+  enableFilters: false,
+  enableDensityToggle: false,
+  enableFullScreenToggle: false,
+  enableHiding: false,
+  enableStickyHeader: true,
+}
+/* ===== END: Material React Table Component ===== */
+
 /* ===== START: All Components Export ===== */
 export const components: Components<Theme> = {
   // Alert Components

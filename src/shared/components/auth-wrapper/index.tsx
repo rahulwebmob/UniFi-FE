@@ -5,8 +5,8 @@ import { Box, useTheme } from '@mui/material'
 
 import Login from './login'
 import SignUp from './sign-up'
-import AdminImage from '../../../assets/admin.webp'
-import SignUpImage from '../../../assets/sign-up/Sign Up.png'
+import AdminImage from '../../../Assets/admin.webp'
+import SignUpImage from '../../../Assets/sign-up/Sign Up.png'
 // Using SignUpImage for educator temporarily - can be replaced with educator-specific image
 const EducatorImage = SignUpImage
 

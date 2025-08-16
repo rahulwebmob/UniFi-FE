@@ -88,7 +88,7 @@ const MetaData = () => {
                     {t('EDUCATOR.SETUP_COURSE.IMAGE_FORMAT_GUIDELINES')}
                   </Typography>
                   {errors.image && (
-                    <Typography component="p" component="p" color="error">
+                    <Typography component="p" color="error">
                       {errors.image.message}
                     </Typography>
                   )}

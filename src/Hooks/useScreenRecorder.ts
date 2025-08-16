@@ -140,8 +140,7 @@ const useScreenRecorder = ({
 
     if (
       !isHost &&
-      externalAudioStream &&
-      externalAudioStream.getAudioTracks().length
+      externalAudioStream?.getAudioTracks().length
     ) {
       try {
         const newRemoteSource = audioCtxRef.current.createMediaStreamSource(

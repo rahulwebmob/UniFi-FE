@@ -23,8 +23,8 @@ import {
 } from '@mui/material'
 
 import ChangePassword from '../profile/ChangePassword'
-import { signIn } from '../../../../redux/reducers/UserSlice'
-import { useEditAdminProfileMutation } from '../../../../services/onboarding'
+import { signIn } from '../../../../Redux/Reducers/UserSlice'
+import { useEditAdminProfileMutation } from '../../../../Services/onboarding'
 
 interface UserData {
   _id?: string

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 
 import { languageLocalization } from './constant'
+import { MaterialReactTableDefaults } from '../../../../theme/foundations/components'
 
 const MuiReactTable = ({
   columns,
@@ -20,7 +21,29 @@ const MuiReactTable = ({
       ...languageLocalization[i18n.language],
       ...localization,
     },
+    ...MaterialReactTableDefaults,
     ...materialReactProps,
+    // Merge sx props properly
+    muiTablePaperProps: {
+      ...MaterialReactTableDefaults.muiTablePaperProps,
+      ...materialReactProps?.muiTablePaperProps,
+    },
+    muiTableHeadCellProps: {
+      ...MaterialReactTableDefaults.muiTableHeadCellProps,
+      ...materialReactProps?.muiTableHeadCellProps,
+    },
+    muiTableBodyCellProps: {
+      ...MaterialReactTableDefaults.muiTableBodyCellProps,
+      ...materialReactProps?.muiTableBodyCellProps,
+    },
+    muiTopToolbarProps: {
+      ...MaterialReactTableDefaults.muiTopToolbarProps,
+      ...materialReactProps?.muiTopToolbarProps,
+    },
+    muiBottomToolbarProps: {
+      ...MaterialReactTableDefaults.muiBottomToolbarProps,
+      ...materialReactProps?.muiBottomToolbarProps,
+    },
   }
 
   const getTableInstance = useMaterialReactTable(tableOptions)

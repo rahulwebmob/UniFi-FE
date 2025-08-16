@@ -8,14 +8,16 @@ import PublicRoutes from './public-routes'
 import AuthWrapper from '../shared/components/auth-wrapper'
 import Educator from '../roles/educator-user/pages/Educator'
 import PageNotFound from '../shared/components/page-not-found'
+import Courses from '../roles/educator-user/components/Courses'
+import Webinar from '../roles/educator-user/components/Webinar'
 import ErrorPage from '../shared/components/error-page/ErrorPage'
 import AdminLogin from '../roles/admin-user/components/admin-login'
 import Lessons from '../shared/components/layout/Course/Lessons/Lessons'
 import MyProfile from '../roles/end-user/components/my-profile/MyProfile'
 // import EducatorLogin from '../educator-login/EducatorLogin'
-import AdminTemplate from '../roles/admin-user/components/admin-template'
+import AdminTemplate from '../roles/admin-user/components/admin-template'  
 import DashboardLayout from '../roles/end-user/components/dashboard-layout'
-import EducatorDashboard from '../roles/educator-user/components/Dashboard'  
+import EducatorDashboard from '../roles/educator-user/components/Dashboard'
 import EducatorLogin from '../roles/educator-user/components/educator-login'
 import TutorApplicants from '../roles/admin-user/components/tutor-applicants'
 import WebinarWrapper from '../roles/educator-user/components/WebinarWrapper'
@@ -123,6 +125,14 @@ const Routes = createBrowserRouter([
       {
         index: true,
         element: <EducatorDashboard />,
+      },
+      {
+        path: 'courses',
+        element: <Courses />,
+      },
+      {
+        path: 'webinars',
+        element: <Webinar />,
       },
       {
         path: 'create-course',

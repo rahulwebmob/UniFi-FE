@@ -13,7 +13,7 @@ import {
 
 import CourseList from '../course-list'
 import WebinarList from '../webinar-list'
-import { useGetCategoryListQuery } from '../../../../services/education'
+import { useGetCategoryListQuery } from '../../../../Services/education'
 
 const AllContent = () => {
   const { t } = useTranslation('education')

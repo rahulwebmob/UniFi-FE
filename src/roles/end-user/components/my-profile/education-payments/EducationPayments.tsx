@@ -30,12 +30,12 @@ interface EducationPaymentsData {
 
 type LazyGetEducationInvoiceQuery = (params: { transactionId: string }) => Promise<{ unwrap: () => Promise<{ error: boolean; data: string }> }>
 
-import { successAlert } from '../../../../../redux/reducers/AppSlice'
+import { successAlert } from '../../../../../Redux/Reducers/AppSlice'
 import { handleGeneratePdf } from '../../../../../roles/admin-user/components/common'
 import {
   useGetEducationPaymentsQuery,
   useLazyGetEducationInvoiceQuery,
-} from '../../../../../services/education'
+} from '../../../../../Services/education'
 
 const EducationPayments = () => {
   const { t } = useTranslation('application')

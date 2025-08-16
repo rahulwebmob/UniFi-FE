@@ -1,13 +1,13 @@
 import type { TFunction } from 'i18next'
 
 import * as yup from 'yup'
-import { Check, User, GraduationCap, Link2, FileText } from 'lucide-react'
 import  { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { User, Check, Link2, FileText, GraduationCap } from 'lucide-react'
 
 import {
   Box,
@@ -22,12 +22,12 @@ import {
 import About from './About/About'
 import Links from './Links/Links'
 import Document from './Document/Document'
-import MainLogo from '../../../assets/logo.svg'
+import MainLogo from '../../../Assets/logo.svg'
 import { urlRegexPatterns } from './constant/constant'
 import Qualification from './Qualification/Qualification'
-import EducatorLoginImage from '../../../assets/educator-login.avif'
-import { useLazyVerifyEducatorEmailQuery } from '../../../services/admin'
-import { useRegisterEducatorMutation } from '../../../services/uploadProgress'
+import EducatorLoginImage from '../../../Assets/educator-login.avif'
+import { useLazyVerifyEducatorEmailQuery } from '../../../Services/admin'
+import { useRegisterEducatorMutation } from '../../../Services/uploadProgress'
 import {
   transformNaNToNull,
   handleAreAllFieldsFilled,

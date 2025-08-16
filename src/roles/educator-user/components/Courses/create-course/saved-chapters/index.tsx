@@ -26,7 +26,7 @@ import {
   useSortChaptersMutation,
   useUpdateChapterMutation,
   useGetLessonsDetailsQuery,
-} from '../../../../../../services/admin'
+} from '../../../../../../Services/admin'
 
 const SavedChapters = ({ courseId }) => {
   const { t } = useTranslation('education')

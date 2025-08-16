@@ -2,12 +2,12 @@ import { FileDown } from 'lucide-react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useMemo, useState, useCallback } from 'react'
-import { MaterialReactTable, useMaterialReactTable, type MRT_ColumnDef } from 'material-react-table'
+import { MaterialReactTable, type MRT_ColumnDef, useMaterialReactTable } from 'material-react-table'
 
 import { Box, Paper, alpha, Button, useTheme, Typography } from '@mui/material'
 
 import { handleGeneratePdf } from '../common'
-import { successAlert } from '../../../../redux/reducers/AppSlice'
+import { successAlert } from '../../../../Redux/Reducers/AppSlice'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import {
   useGetEducationAdminInvoiceQuery,

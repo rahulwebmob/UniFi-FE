@@ -27,12 +27,12 @@ import PreviewWebinar from '../preview-webinar'
 import WebinarSchedule from './webinar-schedule'
 import WebinarMetaData from './webinar-meta-data'
 import CharacterCount from '../../character-count'
-import { errorAlert } from '../../../../../redux/reducers/AppSlice'
-import { updateShowPrompt } from '../../../../../redux/reducers/EducationSlice'
+import { errorAlert } from '../../../../../Redux/Reducers/AppSlice'
+import { updateShowPrompt } from '../../../../../Redux/Reducers/EducationSlice'
 import {
   useCreateWebinarMutation,
   useUpdateWebinarMutation,
-} from '../../../../../services/admin'
+} from '../../../../../Services/admin'
 import {
   iff,
   convHMtoUtc,

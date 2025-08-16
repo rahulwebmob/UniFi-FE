@@ -13,8 +13,8 @@ import {
   FormControlLabel,
 } from '@mui/material'
 
-import LANGUAGES from '../../../../../constants/LANGUAGES'
-import { updateLanguage } from '../../../../../redux/reducers/AppSlice'
+import LANGUAGES from '../../../../../Constants/LANGUAGES'
+import { updateLanguage } from '../../../../../Redux/Reducers/AppSlice'
 
 interface Language {
   code: string

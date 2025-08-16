@@ -24,7 +24,7 @@ import Chapter from './chapter'
 import MetaData from './meta-data'
 import BasicDetails from './basic-details'
 import PreviewCourse from '../preview-course'
-import { updateShowPrompt } from '../../../../../redux/reducers/EducationSlice'
+import { updateShowPrompt } from '../../../../../Redux/Reducers/EducationSlice'
 import {
   isNewFile,
   getUpdatedFields,
@@ -34,9 +34,14 @@ import {
   useCreateCourseMutation,
   useUpdateCourseMutation,
   useAddCourseMetaDataMutation,
-} from '../../../../../services/admin'
+} from '../../../../../Services/admin'
 
-const StepIcon = ({ active, completed }) => {
+interface StepIconProps {
+  active?: boolean
+  completed?: boolean
+}
+
+const StepIcon = ({ active, completed }: StepIconProps) => {
   if (completed) {
     return <Check size={32} color="green" />
   } else if (active) {
@@ -46,7 +51,13 @@ const StepIcon = ({ active, completed }) => {
   }
 }
 
-const stepsConfig = (t) => [
+interface StepConfig {
+  label: string
+  description: string
+  buttonLabel: string
+}
+
+const stepsConfig = (t: any): StepConfig[] => [
   {
     label: t('EDUCATOR.CREATE_COURSE.BASIC_DETAILS'),
     description: t('EDUCATOR.CREATE_COURSE.BASIC_DETAILS_DESCRIPTION'),
@@ -69,14 +80,23 @@ const stepsConfig = (t) => [
   },
 ]
 
+interface CreateCourseProps {
+  isEdit?: boolean
+  courseId?: string
+  isPreview?: boolean
+  isPublished?: boolean
+  currentStep?: number
+  defaultValues?: any
+}
+
 const CreateCourse = ({
-  isEdit,
+  isEdit = false,
   courseId,
-  isPreview,
-  isPublished,
-  currentStep,
-  defaultValues,
-}) => {
+  isPreview = false,
+  isPublished = false,
+  currentStep = 0,
+  defaultValues = {},
+}: CreateCourseProps) => {
   const theme = useTheme()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -530,7 +550,7 @@ const CreateCourse = ({
                       >
                         {isLoading
                           ? t('EDUCATOR.CREATE_COURSE.SUBMITTING')
-                          : stepsConfig(t)?.[activeStep].buttonLabel}
+                          : stepsConfig(t)?.[activeStep]?.buttonLabel ?? t('EDUCATOR.CREATE_COURSE.CONTINUE')}
                       </Button>
                     )}
                   </Box>

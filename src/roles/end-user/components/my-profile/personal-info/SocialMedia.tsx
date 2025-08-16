@@ -15,8 +15,8 @@ import {
   useMediaQuery,
 } from '@mui/material'
 
-import useWindowOpen from '../../../../../hooks/useWindowOpen'
-import { useMyProfileMutation } from '../../../../../services/admin'
+import useWindowOpen from '../../../../../Hooks/useWindowOpen'
+import { useMyProfileMutation } from '../../../../../Services/admin'
 import { urlRegexPatterns } from '../../../../../roles/educator-user/pages/constant/constant'
 
 interface SocialMediaItem {

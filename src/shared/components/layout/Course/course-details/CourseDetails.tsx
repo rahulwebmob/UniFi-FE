@@ -5,19 +5,56 @@ import { useParams } from 'react-router-dom'
 import ApiResponseWrapper from '../../../api-middleware'
 import PremiumModal from '../../premium/premium-modal/PremiumModal'
 import { useGetParticularCourseQuery } from '../../../../../Services/education'
-import ContentView from '../../../../../roles/educator-user/components/courses/content-view'
+import ContentView from '../../../../../roles/educator-user/components/Courses/content-view'
 
-const getPurchaseDetails = (item, purchaseType = 'COURSE') => {
-  const subscriptionDetail = {
+interface CourseData {
+  _id: string
+  title: string
+  subtitle: string
+  price: number
+  thumbNail: string
+  educatorId: string
+  webinarScheduledObj?: {
+    join_date: string
+  }
+}
+
+interface PurchaseDetails {
+  features: string[]
+  duration: string
+  key: string
+  _id: string
+  name: string
+  price: number
+  purchaseType: string
+  displayName: string
+  description: string
+  scheduledDate?: string
+}
+
+interface MediaDetails {
+  logo: string
+  coverImage: string
+  featureImage: string
+  educatorDetails: string
+}
+
+interface SubscriptionDetails {
+  mediaDetails: MediaDetails
+  subscriptionDetails: PurchaseDetails[]
+}
+
+const getPurchaseDetails = (item: CourseData | undefined, purchaseType = 'COURSE'): SubscriptionDetails => {
+  const subscriptionDetail: PurchaseDetails = {
     features: [],
     duration: '',
-    key: item?._id,
-    _id: item?._id,
-    name: item?.title,
-    price: item?.price,
+    key: item?._id ?? '',
+    _id: item?._id ?? '',
+    name: item?.title ?? '',
+    price: item?.price ?? 0,
     purchaseType,
-    displayName: item?.title,
-    description: item?.subtitle,
+    displayName: item?.title ?? '',
+    description: item?.subtitle ?? '',
   }
 
   if (purchaseType === 'WEBINAR' && item?.webinarScheduledObj?.join_date) {
@@ -26,25 +63,25 @@ const getPurchaseDetails = (item, purchaseType = 'COURSE') => {
 
   return {
     mediaDetails: {
-      logo: item?.thumbNail,
-      coverImage: item?.thumbNail,
-      featureImage: item?.thumbNail,
-      educatorDetails: item?.educatorId,
+      logo: item?.thumbNail ?? '',
+      coverImage: item?.thumbNail ?? '',
+      featureImage: item?.thumbNail ?? '',
+      educatorDetails: item?.educatorId ?? '',
     },
     subscriptionDetails: [subscriptionDetail],
   }
 }
 
-const CourseDetails = () => {
-  const { id } = useParams()
-  const subscriptionRef = useRef()
+const CourseDetails: React.FC = () => {
+  const { id } = useParams<{ id: string }>()
+  const subscriptionRef = useRef<{ openModal: () => void }>(null)
   // const { t } = useTranslation('education') // Uncomment when translations are needed
 
   const { data, isLoading, error } = useGetParticularCourseQuery(
-    { courseId: id },
+    { courseId: id ?? '' },
     { skip: !id },
   )
-  const courseData = data?.data
+  const courseData = data?.data as CourseData | undefined
 
   const premiumModelDetails = useMemo(
     () => getPurchaseDetails(courseData),
@@ -52,7 +89,7 @@ const CourseDetails = () => {
   )
 
   const handleOpenPremiumModal = () => {
-    subscriptionRef.current.openModal()
+    subscriptionRef.current?.openModal()
   }
 
   return (

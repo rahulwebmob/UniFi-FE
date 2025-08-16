@@ -170,8 +170,8 @@ const SignUp = ({ setIsLoginPage }: SignUpProps) => {
                   placeholder="Enter your first name"
                   fullWidth
                   {...field}
-                  error={!!errors?.firstName}
-                  helperText={errors?.firstName?.message}
+                  error={!!errors.firstName}
+                  helperText={errors.firstName?.message}
                 />
               )}
             />

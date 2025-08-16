@@ -39,9 +39,7 @@ function useGoogleLogin(options) {
     if (!isScriptLoaded) return
 
     if (
-      window.google &&
-      window.google.accounts &&
-      window.google.accounts.oauth2
+      window.google?.accounts?.oauth2
     ) {
       const client = window.google.accounts.oauth2.initTokenClient({
         client_id: 123,
@@ -63,7 +61,7 @@ function useGoogleLogin(options) {
   }, [isScriptLoaded])
 
   const handleLoginImplicit = (config) =>
-    clientRef.current && clientRef.current.requestAccessToken(config)
+    clientRef.current?.requestAccessToken(config)
 
   return handleLoginImplicit
 }

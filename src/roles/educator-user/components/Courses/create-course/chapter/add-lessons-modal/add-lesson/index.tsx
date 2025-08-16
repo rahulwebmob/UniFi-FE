@@ -21,7 +21,7 @@ import {
 } from '@mui/material'
 
 import UploadPrompt from '../../../upload-prompt'
-import { errorAlert } from '../../../../../../../../redux/reducers/AppSlice'
+import { errorAlert } from '../../../../../../../../Redux/Reducers/AppSlice'
 import ModalBox from '../../../../../../../../shared/components/ui-elements/modal-box'
 import {
   getFormatType,
@@ -35,7 +35,7 @@ import {
   useAddCourseChapterMutation,
   useGetAwsUrlForUploadMutation,
   useSuccessForVideoUploadMutation,
-} from '../../../../../../../../services/admin'
+} from '../../../../../../../../Services/admin'
 
 const AddLesson = ({
   isEdit,

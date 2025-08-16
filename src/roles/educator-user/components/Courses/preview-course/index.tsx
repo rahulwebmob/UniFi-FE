@@ -2,7 +2,7 @@ import React from 'react'
 import { useFormContext } from 'react-hook-form'
 
 import ContentView from '../content-view'
-import { useCoursePreviewQuery } from '../../../../../services/admin'
+import { useCoursePreviewQuery } from '../../../../../Services/admin'
 import ApiMiddleware from '../../../../../shared/components/api-middleware'
 
 const PreviewCourse = () => {

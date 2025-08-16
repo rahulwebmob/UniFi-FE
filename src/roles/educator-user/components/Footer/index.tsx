@@ -6,34 +6,34 @@ import { Box, Link } from '@mui/material'
 
 const socialLinks = [
   {
-    url: 'https://www.facebook.com/people/QuasarMarkets/100094675662530/',
+    url: '#',
     icon: <Facebook size={18} />,
   },
   {
-    url: 'https://www.linkedin.com/company/quasar-markets/',
+    url: '#',
     icon: <Linkedin size={18} />,
   },
   {
-    url: 'https://x.com/QuasarMarkets',
+    url: '#',
     icon: <X size={18} />,
   },
 ]
 
 const footerLinks = [
   {
-    url: 'https://www.quasarmarkets.com/privacy-policy',
+    url: '#',
     key: 'FOOTER.PRIVACY_POLICY',
   },
   {
-    url: 'https://www.quasarmarkets.com/terms-and-conditions',
+    url: '#',
     key: 'FOOTER.TERMS_AND_CONDITION',
   },
   {
-    url: 'https://www.quasarmarkets.com/refund-and-cancellation',
+    url: '#',
     key: 'FOOTER.REFUND_ANDCANCELLATION',
   },
   {
-    url: 'https://www.quasarmarkets.com/support',
+    url: '#',
     key: 'FOOTER.SUPPORT',
   },
 ]
@@ -53,7 +53,7 @@ const Footer = () => {
     >
       <Box display="flex" gap="20px" flexWrap="wrap">
         <Box>
-          © {new Date().getFullYear()} {t('FOOTER.QUASAR_MARKETS')}
+          © {new Date().getFullYear()} UniCitizens
         </Box>
         <Box
           display="flex"

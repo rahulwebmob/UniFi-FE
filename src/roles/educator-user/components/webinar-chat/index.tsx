@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 // import Messages from '@Components/Chat/Messages/Messages' // TODO: Messages component needs to be implemented or imported correctly
 import { Box, useTheme } from '@mui/material'
 
-import { useFetchChatsQuery } from '../../../../services/chat'
+import { useFetchChatsQuery } from '../../../../Services/chat'
 
 const WebinarRoom = () => {
   const { roomId } = useParams()

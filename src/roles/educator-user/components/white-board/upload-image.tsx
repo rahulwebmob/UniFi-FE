@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { IconButton } from '@mui/material'
 
-import { errorAlert } from '../../../../redux/reducers/AppSlice'
+import { errorAlert } from '../../../../Redux/Reducers/AppSlice'
 
 const UploadImage = () => {
   const dispatch = useDispatch()

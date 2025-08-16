@@ -1,6 +1,7 @@
-import { useTranslation } from 'react-i18next'
 import React, { useState, useEffect } from 'react'
-import { useParams, useLocation } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+
 import { Video, FileText, ChevronDown } from 'lucide-react'
 
 import {
@@ -14,40 +15,69 @@ import {
   AccordionDetails,
 } from '@mui/material'
 
-// import { handleFormatSeconds } from '../../../../../roles/educator-user/components/common/common'
 import ContentPreview from '../content-preview'
 import ApiResponseWrapper from '../../../api-middleware'
-import {
-  useGetChapterDetailsQuery,
-  useGetParticularCourseQuery,
-} from '../../../../../Services/education'
+import { useGetChapterDetailsQuery, useGetParticularCourseQuery } from '../../../../../Services/education'
 
-const handleFormatSeconds = (seconds) => {
+interface Lesson {
+  _id: string
+  title: string
+  chapterId: string
+  lessonType?: string
+  isFree?: boolean
+  durationInSeconds?: number
+}
+
+interface Chapter {
+  _id: string
+  title: string
+  lessonList: Lesson[]
+}
+
+interface CourseData {
+  _id: string
+  title: string
+  chapters: Chapter[]
+  isCourseBought?: boolean
+}
+
+interface SelectedVideo {
+  courseId: string
+  chapterId: string
+  lessonId: string
+}
+
+interface LocationState {
+  chapterId?: string
+  lessonId?: string
+}
+
+const handleFormatSeconds = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600)
   const minutes = Math.floor((seconds % 3600) / 60)
   const remainingSeconds = seconds % 60
   return `${hours}:${minutes}:${remainingSeconds}`
 }
 
-const Lessons = () => {
+const Lessons: React.FC = () => {
   const theme = useTheme()
-  const { id } = useParams()
+  const { id } = useParams<{ id: string }>()
   const location = useLocation()
   const { t } = useTranslation('education')
-  const [selectedVideo, setSelectedVideo] = useState(null)
-  const [selectedVideoIndex, setSelectedVideoIndex] = useState(0)
+  const [selectedVideo, setSelectedVideo] = useState<SelectedVideo | null>(null)
+  const [selectedVideoIndex, setSelectedVideoIndex] = useState<number>(0)
 
   const {
     data: courseData,
     isLoading,
     error,
-  } = useGetParticularCourseQuery({ courseId: id }, { skip: !id })
+  } = useGetParticularCourseQuery({ courseId: id ?? '' }, { skip: !id })
 
   const { data } = useGetChapterDetailsQuery(
     {
-      courseId: selectedVideo?.courseId,
-      chapterId: selectedVideo?.chapterId,
-      lessonId: selectedVideo?.lessonId,
+      courseId: selectedVideo?.courseId ?? '',
+      chapterId: selectedVideo?.chapterId ?? '',
+      lessonId: selectedVideo?.lessonId ?? '',
     },
     {
       skip: !(
@@ -59,22 +89,22 @@ const Lessons = () => {
   )
 
   useEffect(() => {
-    const { chapterId, lessonId } = location.state || {}
+    const { chapterId, lessonId } = (location.state as LocationState) ?? {}
 
     if (chapterId && lessonId && courseData?.data?.chapters) {
       const chapter = courseData.data.chapters.find(
-        (ch) => ch._id === chapterId,
+        (ch: Chapter) => ch._id === chapterId,
       )
       const lessonIndex = chapter?.lessonList?.findIndex(
-        (lesson) => lesson._id === lessonId,
+        (lesson: Lesson) => lesson._id === lessonId,
       )
 
       if (lessonIndex !== -1) {
-        setSelectedVideo({ courseId: id, chapterId, lessonId })
+        setSelectedVideo({ courseId: id ?? '', chapterId, lessonId })
         setSelectedVideoIndex(
           courseData.data.chapters
-            .flatMap((ch) => ch.lessonList)
-            .findIndex((lesson) => lesson._id === lessonId),
+            .flatMap((ch: Chapter) => ch.lessonList)
+            .findIndex((lesson: Lesson) => lesson._id === lessonId),
         )
       }
     } else if (courseData?.data?.chapters?.length > 0) {
@@ -82,7 +112,7 @@ const Lessons = () => {
       const firstLesson = firstChapter.lessonList[0]
 
       setSelectedVideo({
-        courseId: id,
+        courseId: id ?? '',
         chapterId: firstChapter._id,
         lessonId: firstLesson._id,
       })
@@ -90,9 +120,11 @@ const Lessons = () => {
     }
   }, [location.state, courseData, id])
 
-  const handleLessonNavigation = (direction) => {
+  const handleLessonNavigation = (direction: 'next' | 'previous') => {
+    if (!courseData?.data?.chapters) return
+
     const maxIndex =
-      courseData.data.chapters.flatMap((ch) => ch.lessonList).length - 1
+      courseData.data.chapters.flatMap((ch: Chapter) => ch.lessonList).length - 1
     let newIndex = selectedVideoIndex
 
     if (direction === 'next' && selectedVideoIndex < maxIndex) {
@@ -101,16 +133,17 @@ const Lessons = () => {
       newIndex = selectedVideoIndex - 1
     }
 
-    const newLesson = courseData.data.chapters.flatMap((ch) => ch.lessonList)[
-      newIndex
-    ]
+    const allLessons = courseData.data.chapters.flatMap((ch: Chapter) => ch.lessonList)
+    const newLesson = allLessons[newIndex]
 
-    setSelectedVideo({
-      courseId: id,
-      chapterId: newLesson.chapterId,
-      lessonId: newLesson._id,
-    })
-    setSelectedVideoIndex(newIndex)
+    if (newLesson) {
+      setSelectedVideo({
+        courseId: id ?? '',
+        chapterId: newLesson.chapterId,
+        lessonId: newLesson._id,
+      })
+      setSelectedVideoIndex(newIndex)
+    }
   }
 
   return (
@@ -122,7 +155,7 @@ const Lessons = () => {
       <Box sx={{ flexGrow: 1 }}>
         <Box display="flex" mb={2}>
           <Typography className="bookmap" variant="h2">
-            {courseData?.data?.title} {selectedVideoIndex?._id}
+            {courseData?.data?.title} {selectedVideoIndex}
           </Typography>
         </Box>
         <Grid container spacing={2}>
@@ -149,9 +182,8 @@ const Lessons = () => {
                 onClick={() => handleLessonNavigation('next')}
                 disabled={
                   selectedVideoIndex ===
-                  courseData?.data?.chapters?.flatMap((ch) => ch.lessonList)
-                    .length -
-                    1
+                  (courseData?.data?.chapters?.flatMap((ch: Chapter) => ch.lessonList)
+                    .length ?? 0) - 1
                 }
               >
                 {t('EDUCATION_DASHBOARD.COURSE_DETAILS.LESSONS.NEXT')}
@@ -183,7 +215,7 @@ const Lessons = () => {
                   },
                 }}
               >
-                {courseData?.data?.chapters?.map((chapter, chapterIndex) => (
+                {courseData?.data?.chapters?.map((chapter: Chapter, chapterIndex: number) => (
                   <Accordion key={chapter._id} defaultExpanded>
                     <AccordionSummary
                       expandIcon={<ChevronDown />}
@@ -198,7 +230,7 @@ const Lessons = () => {
                       </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      {chapter.lessonList?.map((lesson, lessonIndex) => (
+                      {chapter.lessonList?.map((lesson: Lesson, lessonIndex: number) => (
                         <Box
                           key={lesson._id}
                           display="flex"
@@ -233,14 +265,14 @@ const Lessons = () => {
                                 courseData?.data?.isCourseBought
                               ) {
                                 setSelectedVideo({
-                                  courseId: id,
-                                  chapterId: chapter?._id,
-                                  lessonId: lesson?._id,
+                                  courseId: id ?? '',
+                                  chapterId: chapter._id,
+                                  lessonId: lesson._id,
                                 })
                                 setSelectedVideoIndex(
                                   courseData?.data?.chapters
-                                    .flatMap((ch) => ch.lessonList)
-                                    .findIndex((l) => l._id === lesson._id),
+                                    ?.flatMap((ch: Chapter) => ch.lessonList)
+                                    .findIndex((l: Lesson) => l._id === lesson._id) ?? 0,
                                 )
                               }
                             }}
@@ -270,7 +302,7 @@ const Lessons = () => {
                               {lesson?.durationInSeconds && (
                                 <Typography color="secondary.main">
                                   {handleFormatSeconds(
-                                    lesson?.durationInSeconds,
+                                    lesson.durationInSeconds,
                                   )}
                                 </Typography>
                               )}

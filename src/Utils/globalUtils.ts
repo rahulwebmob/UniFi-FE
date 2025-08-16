@@ -20,9 +20,10 @@ const handleDateAndTime = (date: string | Date): string => {
   if (!date) return '-'
   return new Date(date).toLocaleString()
 }
-const getLocaleByLanguageCode = (): undefined =>
+const getLocaleByLanguageCode = (): undefined => 
   // TODO: Return proper locale object based on language code
-  undefined
+   undefined
+
 
 const getCookie = (): string | null =>
   // TODO: Implement cookie retrieval
@@ -38,12 +39,12 @@ const setLangCookie = (lang: string): void => {
   document.cookie = `language=${lang};path=/`
 }
 const readLangCookie = (): string | null => {
-  const match = document.cookie.match(/language=([^;]+)/)
-  return match ? match[1] : null
+  const match = /language=([^;]+)/.exec(document.cookie)
+  return match?.[1] ?? null
 }
 const exportToCSV = (
   data: Record<string, unknown>[],
-  filename: string = 'export.csv',
+  filename = 'export.csv',
 ): void => {
   // Simple CSV export implementation
   if (!data || data.length === 0) return

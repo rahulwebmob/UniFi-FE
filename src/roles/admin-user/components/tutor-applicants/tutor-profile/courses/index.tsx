@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 
 import { Box, Button, Divider, Tooltip, Typography } from '@mui/material'
 
-import { useGetAllCoursesDetailsQuery } from '../../../../../../services/admin'
+import { useGetAllCoursesDetailsQuery } from '../../../../../../Services/admin'
 import PaginationComponent from '../../../../../../shared/components/ui-elements/pagination-component'
 
 interface CourseDetail {

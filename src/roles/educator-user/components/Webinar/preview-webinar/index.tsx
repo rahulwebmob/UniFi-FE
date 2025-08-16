@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import React, { useState, useEffect, useCallback } from 'react'
 
 import WebinarContent from '../webinar-content'
-import { useGetDisplayScheduleTimeMutation } from '../../../../../services/admin'
+import { useGetDisplayScheduleTimeMutation } from '../../../../../Services/admin'
 import {
   iff,
   convHMtoUtc,

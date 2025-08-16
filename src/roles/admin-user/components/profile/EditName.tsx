@@ -7,9 +7,9 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Grid, Button, TextField, InputLabel } from '@mui/material'
 
 import * as Style from '../tablestyle'
-import { signIn } from '../../../../redux/reducers/UserSlice'
+import { signIn } from '../../../../Redux/Reducers/UserSlice'
 import ModalBox from '../../../../shared/components/ui-elements/modal-box'
-import { useEditAdminProfileMutation } from '../../../../services/onboarding'
+import { useEditAdminProfileMutation } from '../../../../Services/onboarding'
 
 const EditName = () => {
   const ref = useRef(null)

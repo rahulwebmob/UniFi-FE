@@ -4,9 +4,7 @@ import { jwtDecode } from 'jwt-decode'
 import { createSlice } from '@reduxjs/toolkit'
 
 // Define interfaces for the state
-interface Subscription {
-  [key: string]: boolean
-}
+type Subscription = Record<string, boolean>;
 
 interface User {
   _id?: string
@@ -63,7 +61,7 @@ export const UserSlice = createSlice({
         ...decodedToken,
       }
     },
-    updateSubscription: (state, action: PayloadAction<Array<{ key: string }>>) => {
+    updateSubscription: (state, action: PayloadAction<{ key: string }[]>) => {
       const { payload } = action
       const updatedSubscription: Subscription = { ...state.user?.subscription }
 

@@ -14,7 +14,7 @@ import {
   Autocomplete
 } from '@mui/material'
 
-import { useGetCategoryListQuery } from '../../../../../../services/admin'
+import { useGetCategoryListQuery } from '../../../../../../Services/admin'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
 
 const AddCategory = () => {

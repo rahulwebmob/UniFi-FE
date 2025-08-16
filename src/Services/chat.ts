@@ -16,7 +16,9 @@ export const chatService = {
   subscribeToMessages: (_callback: (message: ChatMessage) => void) => {
     // Stub implementation
     void _callback;
-    return () => {};
+    return () => {
+      // Stub implementation
+    }
   }
   ,
 }

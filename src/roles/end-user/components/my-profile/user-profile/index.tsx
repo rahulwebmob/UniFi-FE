@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Box, Grid, Menu, Avatar, MenuItem, ListItemIcon } from '@mui/material'
 
-import { generateImageUrl } from '../../../../../utils/globalUtils'
+import { generateImageUrl } from '../../../../../Utils/globalUtils'
 
 interface UserState {
   user: {

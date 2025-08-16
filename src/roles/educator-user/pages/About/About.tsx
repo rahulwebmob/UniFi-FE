@@ -12,7 +12,7 @@ import {
   FormHelperText,
 } from '@mui/material'
 
-import countries from '../../../../constants/countries'
+import countries from '../../../../Constants/countries'
 import RequiredFieldIndicator from '../../../../shared/components/ui-elements/required-field-indicator'
 
 const About = ({ control }) => {

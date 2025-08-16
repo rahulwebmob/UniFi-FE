@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 import { Box, Avatar, Typography } from '@mui/material'
 
-import Peers from './peers'
+import Peers from './Peers'
 import WebinarMedia from './webinar-media'
 import { styles, CarouselItem, VideoPlaceholder } from './styles'
 

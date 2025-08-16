@@ -457,7 +457,6 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
             <Box sx={{ position: 'sticky', bottom: '0' }}>
               <Typography
                 component="p"
-                component="p"
                 mb={1}
                 textAlign="start"
                 sx={{ width: '100%' }}

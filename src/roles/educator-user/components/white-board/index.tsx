@@ -19,7 +19,7 @@ import {
   updateCanvas,
   updateStrokeColor,
   updateStrokeWidth,
-} from '../../../../redux/reducers/EducationSlice'
+} from '../../../../Redux/Reducers/EducationSlice'
 
 let canvas
 

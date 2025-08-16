@@ -15,7 +15,7 @@ import {
 
 import CharacterCount from '../../../character-count'
 import { ACTIVE_BUTTON_CSS } from '../../../common/common'
-import AddCategory from '../../../webinar/create-webinar/add-category'
+import AddCategory from '../../../Webinar/create-webinar/add-category'
 
 const BasicDetails = () => {
   const { t } = useTranslation('education')
@@ -39,7 +39,7 @@ const BasicDetails = () => {
                 </Typography>{' '}
                 <CharacterCount
                   maxLength={100}
-                  currentLength={watch('title').trim().length}
+                  currentLength={watch('title')?.trim()?.length ?? 0}
                 />
               </Typography>
               <Controller
@@ -72,7 +72,7 @@ const BasicDetails = () => {
                 </Typography>{' '}
                 <CharacterCount
                   maxLength={150}
-                  currentLength={watch('subtitle').trim().length}
+                  currentLength={watch('subtitle')?.trim()?.length ?? 0}
                 />
               </Typography>
               <Controller
@@ -103,7 +103,7 @@ const BasicDetails = () => {
                 </Typography>{' '}
                 <CharacterCount
                   maxLength={1000}
-                  currentLength={watch('description').trim().length}
+                  currentLength={watch('description')?.trim()?.length ?? 0}
                 />
               </Typography>
               <Controller

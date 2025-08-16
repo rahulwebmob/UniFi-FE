@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 
 import CreateCourse from '../create-course'
 import { extractFilename } from '../../common/common'
-import { useListChapersQuery } from '../../../../../services/admin'
+import { useListChapersQuery } from '../../../../../Services/admin'
 import ApiMiddleware from '../../../../../shared/components/api-middleware'
 
 const EditCourse = ({ currentStep }) => {

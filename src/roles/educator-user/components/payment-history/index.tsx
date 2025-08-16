@@ -1,22 +1,22 @@
 import React, { useState } from 'react'
-import { FileDown } from 'lucide-react'
+import { FileDown, DollarSign } from 'lucide-react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Chip, Typography, useTheme } from '@mui/material'
 
-import Style from '../educator-content/style'
 import { handleGeneratePdf } from '../common/common'
-import { exportToCSV } from '../../../../utils/globalUtils'
-import { successAlert } from '../../../../redux/reducers/AppSlice'
+import { exportToCSV } from '../../../../Utils/globalUtils'
+import { successAlert } from '../../../../Redux/Reducers/AppSlice'
 import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import {
   useGetPaymentHistoryQuery,
   useLazyGenerateInvoiceQuery,
-} from '../../../../services/admin'
+} from '../../../../Services/admin'
 
 const PaymentHistory = () => {
+  const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation(['education', 'application'])
 
@@ -43,9 +43,19 @@ const PaymentHistory = () => {
     {
       accessorKey: 'transactionId',
       header: t('education:EDUCATOR.PAYMENT_HISTORY.ID'),
+      size: 150,
       Cell: (tableProps) => {
         const { cell } = tableProps
-        return <Typography>{cell.getValue() ? `#${cell.getValue()}` : '-'}</Typography>
+        return (
+          <Chip
+            label={cell.getValue() ? `#${cell.getValue()}` : '-'}
+            size="small"
+            sx={{
+              backgroundColor: theme.palette.grey[100],
+              fontWeight: 600,
+            }}
+          />
+        )
       },
     },
     {
@@ -63,22 +73,34 @@ const PaymentHistory = () => {
     {
       accessorKey: 'amount',
       header: t('education:EDUCATOR.PAYMENT_HISTORY.AMOUNT'),
+      size: 120,
       Cell: (tableProps) => {
         const { cell } = tableProps
         return (
-          <Typography>
-            {cell.getValue() ? `$ ${cell.getValue()}` : '-'}
-          </Typography>
+          <Box display="flex" alignItems="center" gap={1}>
+            <DollarSign size={16} color={theme.palette.success.main} />
+            <Typography
+              sx={{
+                fontWeight: 600,
+                color: theme.palette.success.main,
+              }}
+            >
+              {cell.getValue() || '-'}
+            </Typography>
+          </Box>
         )
       },
     },
     {
       accessorKey: 'view',
       header: t('education:EDUCATOR.PAYMENT_HISTORY.DOWNLOAD'),
+      size: 140,
       Cell: (tableProps) => {
         const { row } = tableProps
         return (
           <Button
+            size="small"
+            variant="contained"
             startIcon={<FileDown size={16} />}
             onClick={() => {
               void handleGeneratePdf(
@@ -87,72 +109,67 @@ const PaymentHistory = () => {
                 handleSuccessAlert,
               )
             }}
-            sx={{ textDecoration: 'underline' }}
+            sx={{
+              textTransform: 'none',
+            }}
           >
-            {t('education:EDUCATOR.PAYMENT_HISTORY.DOWNLOAD')}
+            Download
           </Button>
         )
       },
+      enableSorting: false,
     },
   ]
 
   const tableOptions = {
-    enableRowSelection: false,
     getRowId: (row) => row.userId,
     onRowSelectionChange: setRowSelection,
     state: { rowSelection },
-    enablePagination: false,
-    enableBottomToolbar: false,
-    enableFilters: false,
-    muiTopToolbarProps: {
-      sx: {
-        display: 'none',
-      },
-    },
-    muiBottomToolbarProps: {
-      sx: {
-        background: 'none',
-      },
-    },
-    muiTableHeadCellProps: {
-      sx: {
-        '& .MuiTableSortLabel-icon': {
-          display: 'none',
-        },
-        '& .MuiIconButton-root': {
-          display: 'none',
-        },
+    enableStickyHeader: true,
+    muiTableContainerProps: {
+      sx: { 
+        height: 'calc(100vh - 450px)',
+        maxHeight: 'calc(100vh - 450px)',
       },
     },
   }
 
   return (
     <Box>
-      <Box mb={2}>
-        <Typography variant="h1" textTransform="capitalize">
-          {t('education:EDUCATOR.PAYMENT_HISTORY.HEADING')}
+      <Box sx={{ mb: 3 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 600,
+            mb: 0.5,
+          }}
+        >
+          Payment History
         </Typography>
-        <Typography variant="body1">
-          {t('education:EDUCATOR.PAYMENT_HISTORY.SUB_HEADING')}
+        <Typography component="p" color="text.secondary">
+          Track your earnings and payment transactions
         </Typography>
       </Box>
       <Box
         sx={{
-          backgroundColor: 'primary.light100',
-          p: 1,
-          borderRadius: '8px',
+          backgroundColor: 'background.paper',
+          p: 2,
+          borderRadius: '12px',
+          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+          display: 'flex',
+          flexDirection: 'column',
+          height: 'calc(100vh - 280px)',
+          overflow: 'hidden',
         }}
       >
-        <Box>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={1}
-          >
-            <Typography variant="h6" textTransform="capitalize">
-              {t('education:EDUCATOR.PAYMENT_HISTORY.PURCHASE_HISTORY')}
-            </Typography>
+        <Box
+          display="flex"
+          alignItems="right"
+          justifyContent="flex-end"
+          mb={2}
+          sx={{ flexShrink: 0 }}
+        >
+
             {!!data?.data?.length && (
               <Box display="flex" gap="10px">
                 <Button
@@ -170,27 +187,23 @@ const PaymentHistory = () => {
                 </Button>
               </Box>
             )}
-          </Box>
+        </Box>
 
-          <Box>
-            <Style>
-              <MuiReactTable
-                columns={columns}
-                rows={data?.data || []}
-                materialReactProps={tableOptions}
-              />
-            </Style>
-
-            <Box mt={2} textAlign="center">
-              {!!data?.data?.length && (
-                <PaginationComponent
-                  page={page}
-                  data={data}
-                  setPage={setPage}
-                />
-              )}
-            </Box>
-          </Box>
+        <Box sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+          <MuiReactTable
+            columns={columns}
+            rows={data?.data || []}
+            materialReactProps={tableOptions}
+          />
+        </Box>
+        <Box mt={2} textAlign="center" sx={{ flexShrink: 0 }}>
+          {!!data?.data?.length && (
+            <PaginationComponent
+              page={page}
+              data={data}
+              setPage={setPage}
+            />
+          )}
         </Box>
       </Box>
     </Box>

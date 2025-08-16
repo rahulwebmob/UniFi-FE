@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import React, { useRef, useMemo, useState, useEffect, useCallback } from 'react'
 
-import Toolbar from './toolbar'
+import Toolbar from './Toolbar'
 import Learning from './Learning'
 import WaitingRoom from './waiting-room'
 import { WebinarContainer } from './styles'
-import { successAlert } from '../../../redux/reducers/AppSlice'
-import { setLoading } from '../../../redux/reducers/EducationSlice'
-import { chatSocket, chatConnection } from '../../../services/sockets'
+import { successAlert } from '../../../Redux/Reducers/AppSlice'
+import { setLoading } from '../../../Redux/Reducers/EducationSlice'
+import { chatSocket, chatConnection } from '../../../Services/sockets'
 import {
   mergeData,
   stopStream,

@@ -5,9 +5,9 @@ import React, { useRef, useMemo, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
 
-import { useDownloadResourceMutation } from '../../../../../../services/admin'
+import { useDownloadResourceMutation } from '../../../../../../Services/admin'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
-import ContentPreview from '../../../../../../shared/components/layout/course/content-preview'
+import ContentPreview from '../../../../../../shared/components/layout/Course/content-preview'
 
 const ViewResource = ({ lessonDetail, isEdit, handleOpenPremiumModal }) => {
   const videoRef = useRef(null)

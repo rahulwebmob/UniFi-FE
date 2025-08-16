@@ -62,7 +62,7 @@ const Navigation = () => {
     <Box display="flex" alignItems="center">
       {isMobile ? (
         <>
-          <IconButton onClick={handleMenuOpen} color="inherit">
+          <IconButton onClick={handleMenuOpen} sx={{ color: 'text.primary' }}>
             <MenuIcon size={20} />
           </IconButton>
           <Menu
@@ -84,16 +84,20 @@ const Navigation = () => {
       ) : (
         <Tabs
           value={currentPath || false}
-          textColor="white"
+          textColor="primary"
+          indicatorColor="primary"
           sx={{
             '& .MuiButtonBase-root': {
-              textTransform: 'capitalize',
+              textTransform: 'none',
+              fontWeight: 500,
+              color: 'text.secondary',
               '&:hover': {
                 color: theme.palette.primary.main,
               },
             },
             '& .Mui-selected': {
               color: theme.palette.primary.main,
+              fontWeight: 600,
             },
             '& .MuiTabs-indicator': {
               backgroundColor: 'transparent',

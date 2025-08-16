@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next'
 
 import { Box, Typography } from '@mui/material'
 
-import WebinarContent from '../webinar/webinar-content'
+import WebinarContent from '../Webinar/webinar-content'
 import ApiResponseWrapper from '../../../../shared/components/api-middleware'
-import { useGetParticularWebinarDetailQuery } from '../../../../services/education'
+import { useGetParticularWebinarDetailQuery } from '../../../../Services/education'
 import PremiumModal from '../../../../shared/components/layout/premium/premium-modal/PremiumModal'
 
 const WebinarDetails = () => {

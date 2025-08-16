@@ -11,7 +11,7 @@ import Achievements from './achievements'
 import {
   useDownloadCVQuery,
   useViewTutorDetailQuery,
-} from '../../../../../services/admin'
+} from '../../../../../Services/admin'
 
 const LIST_TYPE_OPTIONS = [
   { name: 'Achievements', value: 'IS', component: () => <Achievements /> },

@@ -46,9 +46,9 @@ const ErrorPage = ({ module }: ErrorPageProps) => {
             color="primary"
             size="small"
             variant="contained"
-            onClick={() =>
-              navigate(module === 'admin' ? '/admin' : '/dashboard')
-            }
+            onClick={() => {
+              void navigate(module === 'admin' ? '/admin' : '/dashboard')
+            }}
           >
             {t('application:UI.ERROR_PAGE.GO_TO_DASHBOARD')}
           </Button>

@@ -1,7 +1,7 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import React, { useRef, useState, useEffect } from 'react'
 
 import { Box, alpha, useTheme, IconButton } from '@mui/material'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const MuiCarousel = ({ children }) => {
   const scrollRef = useRef<HTMLDivElement>(null)

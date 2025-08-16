@@ -5,8 +5,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Box, Button, Typography } from '@mui/material'
 
-import Spinner from '../../../../assets/spinner.json'
-import { useGetParticularWebinarDetailQuery } from '../../../../services/education'
+import Spinner from '../../../../Assets/spinner.json'
+import { useGetParticularWebinarDetailQuery } from '../../../../Services/education'
 
 interface WaitingRoomProps {
   handleInit: () => void
@@ -56,7 +56,7 @@ const WaitingRoom = ({ handleInit }: WaitingRoomProps) => {
         }}
       >
         <Lottie className="lottie" animationData={Spinner} loop />
-        <Typography component="p" component="p" color="secondary">
+        <Typography component="p" color="secondary">
           {t('EDUCATION_DASHBOARD.MAIN_PAGE.WAITING_ROOM')}
         </Typography>
 

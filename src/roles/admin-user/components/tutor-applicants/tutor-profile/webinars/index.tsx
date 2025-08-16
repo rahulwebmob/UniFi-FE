@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import { Box, Chip, Divider, Tooltip, Typography } from '@mui/material'
 
-import { useGetWebinarDetailsQuery } from '../../../../../../services/admin'
+import { useGetWebinarDetailsQuery } from '../../../../../../Services/admin'
 
 interface Webinar {
   _id: string
