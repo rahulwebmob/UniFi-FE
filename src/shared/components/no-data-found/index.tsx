@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Box, useTheme, Typography } from '@mui/material'
@@ -11,7 +10,7 @@ interface NoDataFoundProps {
   isTable?: boolean
 }
 
-const NoDataFound: React.FC<NoDataFoundProps> = ({ title, description, isTable = false }) => {
+const NoDataFound = ({ title, description, isTable = false }: NoDataFoundProps) => {
   const theme = useTheme()
   const { t } = useTranslation('application')
 

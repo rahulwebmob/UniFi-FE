@@ -7,7 +7,6 @@ import Login from './login'
 import SignUp from './sign-up'
 import AdminImage from '../../../Assets/admin.webp'
 import SignUpImage from '../../../Assets/sign-up/Sign Up.png'
-// Using SignUpImage for educator temporarily - can be replaced with educator-specific image
 const EducatorImage = SignUpImage
 
 interface AuthWrapperProps {
@@ -19,13 +18,8 @@ const AuthWrapper = ({ type = '' }: AuthWrapperProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [isLoginPage, setIsLoginPage] = useState(type === 'admin' ? true : !searchParams.get('sign-up'))
 
-  // Responsive breakpoints
-  // const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-  // const isTablet = useMediaQuery(theme.breakpoints.down('md'))
-  // const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
 
   useEffect(() => {
-    // Skip URL updates for admin login
     if (type === 'admin') return
     
     if (isLoginPage && searchParams.has('sign-up')) {
@@ -59,7 +53,7 @@ const AuthWrapper = ({ type = '' }: AuthWrapperProps) => {
           width: '100%',
           maxWidth: 1600, 
           margin: '0 auto',
-          px: { xs: 0, sm: 2, md: 3, lg: 4 }, // Add padding on larger screens
+          px: { xs: 0, sm: 2, md: 3, lg: 4 },
           [theme.breakpoints.down('md')]: {
             maxWidth: '100%',
             px: 0,

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Typography } from '@mui/material'
 
 const RequiredFieldIndicator = () => (
@@ -10,7 +8,7 @@ const RequiredFieldIndicator = () => (
     position="relative"
   >
     <Typography
-      variant="span"
+      component="span"
       sx={{
         position: 'absolute',
         fontSize: '1.5em',

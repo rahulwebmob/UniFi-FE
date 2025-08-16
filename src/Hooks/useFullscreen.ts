@@ -12,23 +12,31 @@ const useFullscreen = () => {
     if (element.requestFullscreen) {
       void element
         .requestFullscreen()
-        .then(() => dispatch(enterFullscreen({ isFullscreen: true })))
-        .catch(() => {}) // Handle potential errors silently
+        .then(() => dispatch(enterFullscreen()))
+        .catch(() => {
+          //
+        }) // Handle potential errors silently
     } else if ((element as any).mozRequestFullScreen) {
-      void (element as unknown)
+      void (element as any)
         .mozRequestFullScreen()
-        .then(() => dispatch(enterFullscreen({ isFullscreen: true })))
-        .catch(() => {}) // Handle potential errors silently
+        .then(() => dispatch(enterFullscreen()))
+        .catch(() => {
+          //
+        }) // Handle potential errors silently
     } else if ((element as any).webkitRequestFullscreen) {
       void (element as any)
         .webkitRequestFullscreen()
-        .then(() => dispatch(enterFullscreen({ isFullscreen: true })))
-        .catch(() => {}) // Handle potential errors silently
+        .then(() => dispatch(enterFullscreen()))
+        .catch(() => {
+          //
+        }) // Handle potential errors silently
     } else if ((element as any).msRequestFullscreen) {
       void (element as any)
         .msRequestFullscreen()
-        .then(() => dispatch(enterFullscreen({ isFullscreen: true })))
-        .catch(() => {}) // Handle potential errors silently
+        .then(() => dispatch(enterFullscreen()))
+        .catch(() => {
+          //
+        }) // Handle potential errors silently
     }
   }
 
@@ -38,25 +46,33 @@ const useFullscreen = () => {
       void document
         .exitFullscreen()
         .then(() => dispatch(exitFullscreen()))
-        .catch(() => {})
+        .catch(() => {
+          //
+        })
     } else if ((document as any).mozCancelFullScreen) {
       // Firefox
       void (document as any)
         .mozCancelFullScreen()
         .then(() => dispatch(exitFullscreen()))
-        .catch(() => {})
+        .catch(() => {
+          //
+        })
     } else if ((document as any).webkitExitFullscreen) {
       // Chrome, Safari and Opera
       void (document as any)
         .webkitExitFullscreen()
         .then(() => dispatch(exitFullscreen()))
-        .catch(() => {})
+        .catch(() => {
+          //
+        })
     } else if ((document as any).msExitFullscreen) {
       // IE/Edge
       void (document as any)
         .msExitFullscreen()
         .then(() => dispatch(exitFullscreen()))
-        .catch(() => {})
+        .catch(() => {
+          //
+        })
     }
   }, [dispatch, isDocument])
 
@@ -67,7 +83,7 @@ const useFullscreen = () => {
       !(document as any).webkitFullscreenElement &&
       !(document as any).msFullscreenElement
     ) {
-      dispatch(exitFullscreen({ isFullscreen: false }))
+      dispatch(exitFullscreen())
     }
   }, [dispatch])
 

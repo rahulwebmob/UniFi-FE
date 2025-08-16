@@ -1,18 +1,21 @@
 import { useRef, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 
 import WebinarContent from '../Webinar/webinar-content'
 import ApiResponseWrapper from '../../../../shared/components/api-middleware'
 import { useGetParticularWebinarDetailQuery } from '../../../../Services/education'
-import PremiumModal from '../../../../shared/components/layout/premium/premium-modal/PremiumModal'
+import PremiumModal from '../../../../shared/components/layout/premium'
+
+interface PremiumModalRef {
+  openModal: () => void
+  closeModal: () => void
+}
 
 const WebinarDetails = () => {
   const { id } = useParams()
-  const subscriptionRef = useRef(null)
-  const { t } = useTranslation('education')
+  const subscriptionRef = useRef<PremiumModalRef>(null)
 
   const { data, isLoading, error } = useGetParticularWebinarDetailQuery(
     { webinarId: id },
@@ -46,7 +49,7 @@ const WebinarDetails = () => {
   }, [data])
 
   const handleOpenPremiumModal = () => {
-    subscriptionRef.current.openModal()
+    subscriptionRef.current?.openModal()
   }
 
   const handleCourseData = useMemo(
@@ -62,13 +65,6 @@ const WebinarDetails = () => {
       isLoading={isLoading}
       isData={!!data?.data}
     >
-      <Box sx={{ flexGrow: 1 }}>
-        <Box display="flex" mb={1}>
-          <Typography className="bookmap" variant="h1">
-            {t('education:EDUCATION_DASHBOARD.WEBINAR_DETAILS.WEBINAR_DETAILS')}
-          </Typography>
-        </Box>
-      </Box>
       <WebinarContent
         isEdit={false}
         webinarData={handleCourseData}
@@ -76,7 +72,6 @@ const WebinarDetails = () => {
       />
       <PremiumModal
         ref={subscriptionRef}
-        className="buy-subscription-button"
         subscriptionDetails={premiumModelDetails?.subscriptionDetails}
         mediaDetails={premiumModelDetails?.mediaDetails}
         isEducation

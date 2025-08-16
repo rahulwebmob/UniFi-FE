@@ -1,14 +1,16 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import type { SerializedError } from '@reduxjs/toolkit'
 
 import React from 'react'
 
-import Loading from '../loading/Loading'
+import Loading from '../loading'
 import NoDataFound from '../no-data-found'
-import LoadingIssue from '../loading-error/LoadingError'
+import LoadingIssue from '../loading-error'
 
 interface ApiMiddlewareProps {
   children: ReactNode
-  error?: { status?: number }
+  error?: FetchBaseQueryError | SerializedError | { status?: number }
   isData: boolean
   isLoading: boolean
   text?: string
@@ -23,25 +25,21 @@ const ApiMiddleware: React.FC<ApiMiddlewareProps> = ({
   text,
   description,
 }) => {
-  const iff = <T,>(condition: boolean, then: T, otherwise: T): T => (condition ? then : otherwise)
+  if (isLoading) {
+    return <Loading />
+  }
 
-  return (
-    <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        iff(
-          error?.status === 500,
-          <LoadingIssue />,
-          iff(
-            !isData,
-            <NoDataFound title={text} description={description} />,
-            children,
-          ),
-        )
-      )}
-    </>
-  )
+  const errorStatus = error && 'status' in error && typeof error.status === 'number' ? error.status : undefined
+  
+  if (errorStatus === 500) {
+    return <LoadingIssue />
+  }
+
+  if (!isData) {
+    return <NoDataFound title={text} description={description} />
+  }
+
+  return <>{children}</>
 }
 
 export default ApiMiddleware

@@ -1,11 +1,23 @@
-import React from 'react'
-import { Box } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_ColumnDef,
+  type MRT_Localization,
+  type MaterialReactTableProps,
+} from 'material-react-table'
 
 import NoDataFound from '../../no-data-found'
 import { languageLocalization } from './constant'
 import { MaterialReactTableDefaults } from '../../../../theme/foundations/components'
+
+interface MuiReactTableProps {
+  columns: MRT_ColumnDef<any>[]
+  rows: any[]
+  localization: MRT_Localization
+  materialReactProps: MaterialReactTableProps<any>
+  returnTableInstance: boolean
+}
 
 const MuiReactTable = ({
   columns,
@@ -13,19 +25,19 @@ const MuiReactTable = ({
   localization,
   materialReactProps,
   returnTableInstance,
-}) => {
+}: MuiReactTableProps) => {
   const { i18n } = useTranslation()
 
   const tableOptions = {
     columns,
     data: rows,
     localization: {
-      ...languageLocalization[i18n.language],
+      ...languageLocalization[i18n.language as keyof typeof languageLocalization],
       ...localization,
     },
     ...MaterialReactTableDefaults,
     // Custom empty state with NoDataFound component (can be overridden)
-    renderEmptyRowsFallback: () => <NoDataFound isTable={true} />,
+    renderEmptyRowsFallback: () => <NoDataFound isTable />,
     ...materialReactProps,
     // Merge sx props properly
     muiTablePaperProps: {

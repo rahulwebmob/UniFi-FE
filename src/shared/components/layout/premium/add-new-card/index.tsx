@@ -1,8 +1,7 @@
 import * as yup from 'yup'
 import { ArrowLeft } from 'lucide-react'
-import React, { forwardRef } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { PatternFormat } from 'react-number-format'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -21,14 +20,17 @@ import Creditcvv from '../../../../../Assets/images/cvv.png'
 import CreditCard from '../../../../../Assets/images/cards.png'
 import RequiredFieldIndicator from '../../../ui-elements/required-field-indicator'
 
-const PatternFormatWrapper = forwardRef((props, ref) => (
-  <PatternFormat {...props} inputRef={ref} />
-))
+interface AddNewCardProps {
+  subscriptionFormData: any
+  setSubscriptionFormData: (data: any) => void
+  setCurrentStep: (step: number) => void
+}
+
 const AddNewCard = ({
   subscriptionFormData,
   setSubscriptionFormData,
   setCurrentStep,
-}) => {
+}: AddNewCardProps) => {
   const today = new Date()
   const { t } = useTranslation('application')
   const currentYear = today.getFullYear() % 100
@@ -93,28 +95,33 @@ const AddNewCard = ({
 
   const { errors } = formState
 
-  const handleKeyPress = (event) => {
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const isNumeric = /^\d+$/
     if (!isNumeric.test(event.key)) {
       event.preventDefault()
     }
   }
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: any) => {
     const newData = { ...data, ...subscriptionFormData }
     setSubscriptionFormData(newData)
-    setCurrentStep((prev) => prev + 1)
+    setCurrentStep((prev: number) => prev + 1)
   }
 
   return (
     <Box>
-      <form onSubmit={(e) => { e.preventDefault(); void handleSubmit(onSubmit)() }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          void handleSubmit(onSubmit)()
+        }}
+      >
         <Box p={2} pb={1} display="flex" alignItems="center">
           <IconButton disableRipple>
             <ArrowLeft
               size={20}
               // sx={{ cursor: 'pointer' }}
-              onClick={() => setCurrentStep((prev) => prev - 1)}
+              onClick={() => setCurrentStep((prev: number) => prev - 1)}
             />
           </IconButton>
           <Typography variant="h6">
@@ -148,18 +155,22 @@ const AddNewCard = ({
                     variant="outlined"
                     error={!!errors.cardNumber}
                     helperText={errors.cardNumber?.message}
-                    inputProps={{
-                      pattern: '[0-9]*',
-                      maxLength: 16,
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <img
-                            src={CreditCard}
-                            alt="Credit Cards"
-                            style={{ height: '20px' }}
-                          />
-                        </InputAdornment>
-                      ),
+                    slotProps={{
+                      input: {
+                        inputProps: {
+                          pattern: '[0-9]*',
+                          maxLength: 16,
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <img
+                                src={CreditCard}
+                                alt="Credit Cards"
+                                style={{ height: '20px' }}
+                              />
+                            </InputAdornment>
+                          ),
+                        },
+                      },
                     }}
                     onKeyPress={handleKeyPress}
                   />

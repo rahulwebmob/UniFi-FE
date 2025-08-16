@@ -1,8 +1,15 @@
-import React from 'react'
-
 import { Pagination } from '@mui/material'
 
 import * as Style from '../../../../roles/admin-user/components/tablestyle'
+
+interface PaginationComponentProps {
+  data: any
+  page: number
+  setPage: (page: number) => void
+  disabled: boolean
+  customStyle: any
+  scrollToTop: () => void
+}
 
 const PaginationComponent = ({
   data,
@@ -11,11 +18,11 @@ const PaginationComponent = ({
   disabled,
   customStyle,
   scrollToTop,
-}) => {
+}: PaginationComponentProps) => {
   const pageLimit = data?.count || 0
   const pageCount = Number.isNaN(pageLimit) ? 0 : Math.ceil(pageLimit / 10)
 
-  const handlePageChange = (_, newPage) => {
+  const handlePageChange = (_: unknown, newPage: number) => {
     setPage(newPage)
     scrollToTop()
   }

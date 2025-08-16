@@ -1,9 +1,8 @@
 import { useRef, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-// import { useTranslation } from 'react-i18next' // Uncomment when translations are needed
 
 import ApiResponseWrapper from '../../../api-middleware'
-import PremiumModal from '../../premium/premium-modal/PremiumModal'
+import PremiumModal from '../../premium'
 import { useGetParticularCourseQuery } from '../../../../../Services/education'
 import ContentView from '../../../../../roles/educator-user/components/Courses/content-view'
 
@@ -44,7 +43,10 @@ interface SubscriptionDetails {
   subscriptionDetails: PurchaseDetails[]
 }
 
-const getPurchaseDetails = (item: CourseData | undefined, purchaseType = 'COURSE'): SubscriptionDetails => {
+const getPurchaseDetails = (
+  item: CourseData | undefined,
+  purchaseType = 'COURSE',
+): SubscriptionDetails => {
   const subscriptionDetail: PurchaseDetails = {
     features: [],
     duration: '',
@@ -72,10 +74,14 @@ const getPurchaseDetails = (item: CourseData | undefined, purchaseType = 'COURSE
   }
 }
 
+interface PremiumModalRef {
+  openModal: () => void
+  closeModal: () => void
+}
+
 const CourseDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>()
-  const subscriptionRef = useRef<{ openModal: () => void }>(null)
-  // const { t } = useTranslation('education') // Uncomment when translations are needed
+  const subscriptionRef = useRef<PremiumModalRef>(null)
 
   const { data, isLoading, error } = useGetParticularCourseQuery(
     { courseId: id ?? '' },

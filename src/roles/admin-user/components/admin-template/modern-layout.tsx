@@ -481,21 +481,25 @@ const ModernAdminLayout: React.FC = () => {
               <Divider sx={{ my: 0.5 }} />
 
               <LogoutWrapper
-                component={<MenuItem
-                  sx={{
-                    px: 2,
-                    py: 1.5,
-                    color: theme.palette.error.main,
-                    '&:hover': {
-                      bgcolor: alpha(theme.palette.error.main, 0.08),
-                    },
-                  }}
-                >
-                  <ListItemIcon sx={{ minWidth: 36 }}>
-                    <LogOut size={16} style={{ color: theme.palette.error.main }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Logout" />
-                </MenuItem>} type={undefined}              />
+                type="admin"
+                component={
+                  <MenuItem
+                    sx={{
+                      px: 2,
+                      py: 1.5,
+                      color: theme.palette.error.main,
+                      '&:hover': {
+                        bgcolor: alpha(theme.palette.error.main, 0.08),
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ minWidth: 36 }}>
+                      <LogOut size={16} style={{ color: theme.palette.error.main }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                  </MenuItem>
+                }
+              />
             </Menu>
           </Stack>
         </Toolbar>

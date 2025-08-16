@@ -5,6 +5,8 @@ import { ja, de, fr, pt, it, enUS, arSA } from 'date-fns/locale'
 import { ENV } from '../validation/env'
 import i18n from '../../../Localization/i18n'
 
+export const iff = <T,>(condition: boolean, then: T, otherwise: T): T => (condition ? then : otherwise)
+
 const millifyNumbers = (value: number, precision = 2): string =>
   millify(value, {
     units: ['', 'K', 'M', 'B', 'T', 'Q'],

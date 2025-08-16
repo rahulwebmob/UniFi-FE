@@ -13,7 +13,6 @@ import useGoogleLogin from '../../../../../Hooks/useGoogleLogin'
 import { initializeSocket } from '../../../../../Services/sockets'
 import useLinkedinLogin from '../../../../../Hooks/useLinkedinLogin'
 import { useOAuthLoginMutation } from '../../../../../Services/admin'
-// import { clearLangCookie } from "../../../../utils/globalUtils"
 
 interface SocialMediaAuthProps {
   isOAuthLoading: boolean
@@ -74,10 +73,14 @@ const SocialMediaAuth: React.FC<SocialMediaAuthProps> = ({ isOAuthLoading, setIs
 
   const handleFbLogin = useFbLogin({
     onSuccess: async ({ authResponse }) => {
-      await handleLogin({
-        authType: SOCIAL_AUTH.FACEBOOK,
-        accessToken: authResponse.accessToken,
-      })
+      if (authResponse) {
+        await handleLogin({
+          authType: SOCIAL_AUTH.FACEBOOK,
+          accessToken: authResponse.accessToken,
+        })
+      } else {
+        setSocialBtn(null)
+      }
     },
     onError: () => setSocialBtn(null),
   })

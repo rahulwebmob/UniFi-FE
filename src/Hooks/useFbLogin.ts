@@ -1,6 +1,56 @@
 import { useRef, useState, useEffect } from 'react'
 
-function useFbLogin({ onSuccess, onError }) {
+// Facebook SDK Types
+interface FBAuthResponse {
+  accessToken: string
+  data_access_expiration_time: number
+  expiresIn: number
+  graphDomain: string
+  signedRequest: string
+  userID: string
+}
+
+interface FBLoginResponse {
+  authResponse?: FBAuthResponse
+  status: 'connected' | 'not_authorized' | 'unknown'
+}
+
+interface FBLoginOptions {
+  scope?: string
+  auth_type?: string
+  return_scopes?: boolean
+  enable_profile_selector?: boolean
+}
+
+interface FBError {
+  error: string
+}
+
+interface FacebookSDK {
+  init: (params: {
+    appId: string
+    cookie?: boolean
+    xfbml?: boolean
+    version: string
+  }) => void
+  login: (
+    callback: (response: FBLoginResponse) => void,
+    options?: FBLoginOptions
+  ) => void
+}
+
+declare global {
+  interface Window {
+    FB?: FacebookSDK
+  }
+}
+
+interface UseFbLoginOptions {
+  onSuccess?: (response: FBLoginResponse) => void
+  onError?: (error: FBLoginResponse | FBError) => void
+}
+
+function useFbLogin({ onSuccess, onError }: UseFbLoginOptions) {
   const onErrorRef = useRef(onError)
   const onSuccessRef = useRef(onSuccess)
 
@@ -47,7 +97,7 @@ function useFbLogin({ onSuccess, onError }) {
     }
   }, [isScriptLoaded])
 
-  const handleFbLogin = (config = {}) => {
+  const handleFbLogin = (config: FBLoginOptions = {}) => {
     if (!isScriptLoaded || !window.FB) {
       if (onErrorRef.current)
         onErrorRef.current({ error: 'Facebook SDK not loaded' })
@@ -55,7 +105,7 @@ function useFbLogin({ onSuccess, onError }) {
     }
 
     window.FB.login(
-      (response) => {
+      (response: FBLoginResponse) => {
         if (response.status === 'connected') {
           if (onSuccessRef.current) onSuccessRef.current(response)
         } else if (onErrorRef.current) onErrorRef.current(response)

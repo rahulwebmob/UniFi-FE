@@ -1,4 +1,16 @@
-const LANGUAGES = {
+interface Language {
+  code: string
+  label: string
+  value: string
+  direction: 'ltr' | 'rtl'
+}
+
+interface LanguagesMap {
+  ENGLISH: Language
+  NEPALI: Language
+}
+
+const LANGUAGES: LanguagesMap = {
   ENGLISH: {
     code: 'en',
     label: 'English',
@@ -11,6 +23,7 @@ const LANGUAGES = {
     value: 'NEPALI',
     direction: 'ltr',
   },
-}
+} as const
 
+export type { Language, LanguagesMap }
 export default LANGUAGES

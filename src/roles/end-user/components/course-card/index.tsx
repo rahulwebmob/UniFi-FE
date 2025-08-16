@@ -375,13 +375,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
                   sx={{
                     fontSize: '1.25rem',
                     fontWeight: 800,
-                    color: (thm) => thm.palette.text.primary,
-                    lineHeight: 1,
+                    color: (thm) => thm.palette.success.main,
                   }}
                 >
                   ${course.price}
                 </Typography>
-                {course.totalPurchased && course.totalPurchased > 0 && (
+                {!!course.totalPurchased && course.totalPurchased > 0 && (
                   <Typography
                     sx={{
                       fontSize: '0.65rem',

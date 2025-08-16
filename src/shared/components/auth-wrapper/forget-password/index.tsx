@@ -1,4 +1,3 @@
-import React from 'react'
 import * as yup from 'yup'
 import { ArrowLeft } from 'lucide-react'
 import { useForm, Controller } from 'react-hook-form'
@@ -22,7 +21,10 @@ interface FormData {
   email: string
 }
 
-const ForgetPassword: React.FC<ForgetPasswordProps> = ({ type, setShowForgetPassword }) => {
+const ForgetPassword: React.FC<ForgetPasswordProps> = ({
+  type,
+  setShowForgetPassword,
+}) => {
   const [updateForgetPassword] = useForgetPasswordMutation()
   const [adminForgetPassword] = useAdminForgetPasswordMutation()
   const [educatorForgetPassword] = useEducatorForgetPasswordMutation()
@@ -150,7 +152,9 @@ const ForgetPassword: React.FC<ForgetPasswordProps> = ({ type, setShowForgetPass
       <Box display="flex" alignItems="center" justifyContent="center">
         <Button
           startIcon={<ArrowLeft size={20} />}
-          onClick={() => { setShowForgetPassword(false) }}
+          onClick={() => {
+            setShowForgetPassword(false)
+          }}
         >
           Back to Login
         </Button>

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useRouteError } from 'react-router-dom'
 
 import { Box, Button, styled, useTheme, Typography } from '@mui/material'
-// import { ResetPasswordBox } from '../../../../shared/components/ResetPassword/style'
 
 const ResetPasswordBox = styled(Box)({
   display: 'flex',
@@ -18,10 +17,10 @@ interface ErrorPageProps {
 }
 
 const ErrorPage: React.FC<ErrorPageProps> = ({ module }) => {
-  const { t } = useTranslation(['application'])
   const theme = useTheme()
   const error = useRouteError()
   const navigate = useNavigate()
+  const { t } = useTranslation(['application'])
   console.error(error)
 
   return (

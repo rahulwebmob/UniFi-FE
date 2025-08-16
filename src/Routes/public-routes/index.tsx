@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Outlet, Navigate, useLocation } from 'react-router-dom'
 
 import { signIn, signOut } from '../../Redux/Reducers/UserSlice'
-import ScrollToTop from '../../shared/components/scroll-to-top/ScrollToTop'
+import ScrollToTop from '../../shared/components/scroll-to-top'
 
 const PublicRoutes = () => {
   const dispatch = useDispatch()

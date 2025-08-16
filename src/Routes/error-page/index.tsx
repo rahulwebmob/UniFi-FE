@@ -1,12 +1,8 @@
-import React from 'react'
 import { AlertTriangle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useRouteError } from 'react-router-dom'
 
 import { Box, Button, styled, useTheme, Typography } from '@mui/material'
-
-// import Template from '../../Container/App/Template/Template'
-// import { ResetPasswordBox } from '../../Container/Auth/ResetPassword/style'
 
 const ResetPasswordBox = styled(Box)({
   display: 'flex',
@@ -59,4 +55,3 @@ const ErrorPage = ({ module }: ErrorPageProps) => {
 }
 
 export default ErrorPage
-

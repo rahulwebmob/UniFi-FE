@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, CSSProperties } from 'react'
 
 import { X } from 'lucide-react'
-// import { useSelector } from 'react-redux' // Uncomment if selector is needed
-import React, { forwardRef, useImperativeHandle } from 'react'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import type { TransitionProps } from '@mui/material/transitions'
 
 import {
   Slide,
@@ -12,31 +12,41 @@ import {
   DialogTitle,
   DialogContent,
   useMediaQuery,
+  type Breakpoint,
 } from '@mui/material'
 
+const Transition = React.forwardRef<
+  unknown,
+  TransitionProps & {
+    children: React.ReactElement
+  }
+>((props, ref) => <Slide direction="up" ref={ref} {...props} />)
 
-const Transition = React.forwardRef((props, ref) => (
-  <Slide direction="up" ref={ref} {...props} />
-))
+Transition.displayName = 'TransitionComponent'
+
+interface ModalBoxHandle {
+  openModal: () => void
+  closeModal: () => void
+}
 
 interface ModalBoxProps {
-  modalStyle?: object
+  modalStyle?: CSSProperties
   children: ReactNode
   title?: string
-  size?: string
+  size?: Breakpoint | false
   onCloseModal?: (() => void) | null
   noWidth?: boolean
   fullScreen?: boolean
   disablePadding?: boolean
 }
 
-const ModalBox = forwardRef<{ open: () => void; close: () => void }, ModalBoxProps>(
+const ModalBox = forwardRef<ModalBoxHandle, ModalBoxProps>(
   (
     {
       modalStyle = {},
       children,
       title = '',
-      size = '',
+      size = 'sm',
       onCloseModal = null,
       noWidth = true,
       fullScreen = false,
@@ -46,12 +56,9 @@ const ModalBox = forwardRef<{ open: () => void; close: () => void }, ModalBoxPro
   ) => {
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.down('sm'))
-    const [open, setOpen] = React.useState(false)
-    // const { direction } = useSelector((state) => state.app.language) // Uncomment if direction is needed
+    const [open, setOpen] = useState(false)
 
-    // The component instance will be extended
-    // with whatever you return from the callback passed
-    // as the second argument
+    // Expose methods to parent components
     useImperativeHandle(ref, () => ({
       openModal() {
         setOpen(true)
@@ -61,73 +68,92 @@ const ModalBox = forwardRef<{ open: () => void; close: () => void }, ModalBoxPro
       },
     }))
 
-    const iff = (condition, then, otherwise) => (condition ? then : otherwise)
+    const handleClose = () => {
+      if (onCloseModal) {
+        onCloseModal()
+      } else {
+        setOpen(false)
+      }
+    }
+
+    if (!open) return null
 
     return (
-      open && (
-        <Dialog
-          fullScreen={fullScreen}
-          TransitionComponent={fullScreen ? Transition : 'Fade'}
-          open={open}
-          maxWidth={size}
-          scroll="paper"
-          PaperProps={{
-            style: {
-              ...modalStyle,
-              overflow: 'unset',
-              border: `1px solid ${theme.palette.grey[300]}`,
-              backgroundColor:
-                theme.palette.mode === 'light'
-                  ? '#fff'
-                  : theme.palette.background.default,
-              width: size && noWidth ? '100%' : '',
-              backgroundImage: 'initial',
-              borderRadius: '16px',
-              '& .MuiDialogContent-root': {
-                padding: disablePadding ? 0 : '40px',
-              },
+      <Dialog
+        fullScreen={fullScreen}
+        TransitionComponent={fullScreen ? Transition : undefined}
+        open={open}
+        onClose={handleClose}
+        maxWidth={size || undefined}
+        scroll="paper"
+        PaperProps={{
+          sx: {
+            ...modalStyle,
+            overflow: 'visible',
+            border: `1px solid ${theme.palette.grey[300]}`,
+            backgroundColor:
+              theme.palette.mode === 'light'
+                ? '#fff'
+                : theme.palette.background.default,
+            width: size && noWidth ? '100%' : 'auto',
+            backgroundImage: 'none',
+            borderRadius: '16px',
+            '& .MuiDialogContent-root': {
+              padding: disablePadding ? 0 : '40px',
             },
-          }}
+          },
+        }}
+        sx={{
+          '& .MuiDialog-paperFullScreen': {
+            '& .MuiDialogContent-root': {
+              padding: disablePadding ? 0 : matches ? '20px' : '40px',
+            },
+          },
+        }}
+      >
+        {title && (
+          <DialogTitle 
+            sx={{ 
+              p: 3,
+              pr: 6, // Add padding for close button
+            }}
+          >
+            {title}
+          </DialogTitle>
+        )}
+        
+        <IconButton
+          disableRipple
+          size="small"
+          aria-label="close"
+          onClick={handleClose}
           sx={{
-            '& .MuiDialog-paperFullScreen': {
-              '& .MuiDialogContent-root': {
-                padding: iff(disablePadding, 0, matches ? '20px' : '40px'),
-              },
+            position: 'absolute',
+            right: matches ? 12 : 16,
+            top: matches ? 12 : 16,
+            zIndex: 1,
+            color: theme.palette.grey[500],
+            '&:hover': {
+              backgroundColor: theme.palette.action.hover,
             },
           }}
         >
-          {title && <DialogTitle sx={{ p: 3 }}>{title}</DialogTitle>}
-          <IconButton
-            disableRipple
-            size="small"
-            aria-label="close"
-            onClick={() => {
-              if (onCloseModal) onCloseModal()
-              else setOpen(false)
-            }}
-            sx={{
-              position: 'absolute',
-              right: matches ? 5 : 0,
-              top: matches ? 5 : 0,
-              zIndex: 1,
-              left: 'auto',
-            }}
-          >
-            <X />
-          </IconButton>
-          <DialogContent
-            sx={{
-              p: disablePadding ? 0 : null,
-              pl: disablePadding ? 0 : 3,
-              pr: disablePadding ? 0 : 3,
-            }}
-          >
-            {children}
-          </DialogContent>
-        </Dialog>
-      )
+          <X size={20} />
+        </IconButton>
+        
+        <DialogContent
+          sx={{
+            p: disablePadding ? 0 : 3,
+            pt: title && !disablePadding ? 0 : undefined,
+          }}
+        >
+          {children}
+        </DialogContent>
+      </Dialog>
     )
   },
 )
+
+ModalBox.displayName = 'ModalBox'
 
 export default ModalBox

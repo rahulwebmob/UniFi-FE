@@ -43,7 +43,7 @@ const ViewResource = ({ lessonDetail, isEdit, handleOpenPremiumModal }) => {
   }
 
   const handleRedirectLesson = () => {
-    void navigate(`/educator/course/${lessonDetail?.courseId}/lessons`, {
+    void navigate(`/dashboard/course/${lessonDetail?.courseId}/lessons`, {
       state: {
         chapterId: lessonDetail?.chapterId,
         lessonId: lessonDetail?._id,

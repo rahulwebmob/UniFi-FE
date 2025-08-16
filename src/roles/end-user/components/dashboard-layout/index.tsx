@@ -34,7 +34,7 @@ import {
   useLoggedUserQuery,
 } from '../../../../Services/admin'
 import { updateLanguage } from '../../../../Redux/Reducers/AppSlice'
-import ScrollToTop from '../../../../shared/components/scroll-to-top/ScrollToTop'
+import ScrollToTop from '../../../../shared/components/scroll-to-top'
 
 const DashboardLayout = () => {
   const dispatch = useDispatch()

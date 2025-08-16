@@ -30,11 +30,13 @@ import {
 } from '../../../../Services/admin'
 
 // Define view states for better maintainability
-enum ViewState {
-  LOGIN = 'LOGIN',
-  FORGOT_PASSWORD = 'FORGOT_PASSWORD',
-  RESEND_EMAIL = 'RESEND_EMAIL',
-}
+const ViewState = {
+  LOGIN: 'LOGIN',
+  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
+  RESEND_EMAIL: 'RESEND_EMAIL',
+} as const
+
+type ViewStateType = typeof ViewState[keyof typeof ViewState]
 
 interface LoginProps {
   type?: string
@@ -48,7 +50,7 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
 
   // State management
   const [visible, setVisible] = useState(false)
-  const [viewState, setViewState] = useState<ViewState>(ViewState.LOGIN)
+  const [viewState, setViewState] = useState<ViewStateType>(ViewState.LOGIN)
   const [isOAuthLoading, setIsOAuthLoading] = useState(false)
   const [verificationEmail, setVerificationEmail] = useState('')
 

@@ -1,12 +1,43 @@
 import React, { useState, forwardRef } from 'react'
 
-import AddNewCard from './AddNewCard'
-import BillingAddress from './BillingAddress'
-import ReviewEducation from './ReviewEducation'
-import EducationPremium from './EducationPremium'
-import ModalBox from '../../../../components/ui-elements/modal-box'
+import AddNewCard from './add-new-card'
+import BillingAddress from './billing-adress'
+import ReviewEducation from './review-education'
+import EducationPremium from './education-premium'
+import ModalBox from '../../ui-elements/modal-box'
 
-const PremiumModal = forwardRef(
+interface PurchaseDetails {
+  features: string[]
+  duration: string
+  key: string
+  _id: string
+  name: string
+  price: number
+  purchaseType: string
+  displayName: string
+  description: string
+  scheduledDate?: string
+}
+
+interface MediaDetails {
+  logo: string
+  coverImage: string
+  featureImage: string
+  educatorDetails: string
+}
+
+interface PremiumModalProps {
+  subscriptionDetails: PurchaseDetails[]
+  mediaDetails: MediaDetails
+  isEducation?: boolean
+}
+
+interface PremiumModalRef {
+  openModal: () => void
+  closeModal: () => void
+}
+
+const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
   ({ subscriptionDetails, mediaDetails }, ref) => {
     const [currentStep, setCurrentStep] = useState(1)
     const [subscriptionFormData, setSubscriptionFormData] = useState({})
@@ -17,7 +48,9 @@ const PremiumModal = forwardRef(
     }
 
     const closeModal = () => {
-      ref.current?.closeModal()
+      if (ref && 'current' in ref && ref.current) {
+        ref.current.closeModal()
+      }
       resetModal()
     }
 
@@ -70,7 +103,9 @@ const PremiumModal = forwardRef(
         disablePadding
         onCloseModal={() => {
           resetModal()
-          ref?.current?.closeModal()
+          if (ref && 'current' in ref && ref.current) {
+            ref.current.closeModal()
+          }
         }}
       >
         {renderStepContent()}
@@ -78,5 +113,7 @@ const PremiumModal = forwardRef(
     )
   },
 )
+
+PremiumModal.displayName = 'PremiumModal'
 
 export default PremiumModal

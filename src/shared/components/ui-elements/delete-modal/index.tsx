@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Box, Button, useTheme, Typography } from '@mui/material'
@@ -27,7 +26,7 @@ const DeleteModal = ({
         {deleteText || t('application:CORE.DELETE_MODAL.DESC')}
       </Typography>
       <Typography
-        component="body2"
+        variant="body2"
         fontStyle="italic"
         sx={{ color: theme.palette.primary.main, maxWidth: '350px' }}
       >
@@ -56,6 +55,5 @@ const DeleteModal = ({
     </Box>
   )
 }
-
 
 export default DeleteModal

@@ -1,5 +1,52 @@
 import { useRef, useState, useEffect } from 'react'
 
+// Google OAuth Response Types
+interface TokenResponse {
+  access_token: string
+  authuser?: string
+  expires_in: number
+  prompt: string
+  scope: string
+  token_type: string
+  error?: string
+  error_description?: string
+  error_uri?: string
+}
+
+interface ErrorResponse {
+  type: string
+  message?: string
+}
+
+interface TokenClient {
+  requestAccessToken: (config?: { prompt?: string }) => void
+}
+
+interface GoogleAccounts {
+  oauth2: {
+    initTokenClient: (config: {
+      client_id: string | number
+      scope: string
+      callback: (response: TokenResponse) => void
+      error_callback?: (error: ErrorResponse) => void
+    }) => TokenClient
+  }
+}
+
+declare global {
+  interface Window {
+    google?: {
+      accounts?: GoogleAccounts
+    }
+  }
+}
+
+interface UseGoogleLoginOptions {
+  onSuccess?: (response: TokenResponse) => void
+  onError?: (error: TokenResponse) => void
+  onNonOAuthError?: (error: ErrorResponse) => void
+}
+
 function useLoadGsiScript() {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false)
 
@@ -25,10 +72,10 @@ function useLoadGsiScript() {
   return isScriptLoaded
 }
 
-function useGoogleLogin(options) {
+function useGoogleLogin(options: UseGoogleLoginOptions) {
   const { onError, onSuccess, onNonOAuthError } = options
 
-  const clientRef = useRef(null)
+  const clientRef = useRef<TokenClient | null>(null)
   const onErrorRef = useRef(onError)
   const onSuccessRef = useRef(onSuccess)
   const onNonOAuthErrorRef = useRef(onNonOAuthError)
@@ -44,14 +91,14 @@ function useGoogleLogin(options) {
       const client = window.google.accounts.oauth2.initTokenClient({
         client_id: 123,
         scope: 'openid profile email',
-        callback: (response) => {
+        callback: (response: TokenResponse) => {
           if (response.error) {
             if (onErrorRef.current) onErrorRef.current(response)
             return
           }
           if (onSuccessRef.current) onSuccessRef.current(response)
         },
-        error_callback: (nonOAuthError) => {
+        error_callback: (nonOAuthError: ErrorResponse) => {
           if (onNonOAuthErrorRef.current)
             onNonOAuthErrorRef.current(nonOAuthError)
         },
@@ -60,7 +107,7 @@ function useGoogleLogin(options) {
     }
   }, [isScriptLoaded])
 
-  const handleLoginImplicit = (config) =>
+  const handleLoginImplicit = (config?: { prompt?: string }) =>
     clientRef.current?.requestAccessToken(config)
 
   return handleLoginImplicit

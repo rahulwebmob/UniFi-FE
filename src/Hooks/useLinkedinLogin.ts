@@ -3,8 +3,13 @@ import { useState, useEffect } from 'react'
 
 const LINKEDIN_URI = 'https://www.linkedin.com/oauth/v2/authorization'
 
-const useLinkedinLogin = ({ onError, onSuccess }) => {
-  const [popup, setPopup] = useState(null)
+interface UseLinkedinLoginOptions {
+  onSuccess?: (code: string) => void
+  onError?: (error: Error) => void
+}
+
+const useLinkedinLogin = ({ onError, onSuccess }: UseLinkedinLoginOptions) => {
+  const [popup, setPopup] = useState<Window | null>(null)
 
   const scope = 'openid email profile'
   const redirectUri = window.location.origin
@@ -55,7 +60,7 @@ const useLinkedinLogin = ({ onError, onSuccess }) => {
           }
         }
       } catch {
-        //
+        // Cross-origin error when checking popup location - expected and safe to ignore
       }
     }, 500)
 

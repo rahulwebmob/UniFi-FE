@@ -18,7 +18,7 @@ const PreviewCourse = () => {
 
   return (
     <ApiMiddleware error={error} isLoading={isLoading} isData={!!data?.data}>
-      <ContentView courseData={courseData} />
+      <ContentView courseData={courseData} isEdit={false}  />
     </ApiMiddleware>
   )
 }
