@@ -5,8 +5,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Box, Button, Typography } from '@mui/material'
 
-import Spinner from '../../../../Assets/spinner.json'
-import { useGetParticularWebinarDetailQuery } from '../../../../Services/education'
+import Spinner from '../../../../assets/spinner.json'
+import { useGetParticularWebinarDetailQuery } from '../../../../services/education'
 
 interface WaitingRoomProps {
   handleInit: () => void
@@ -72,6 +72,5 @@ const WaitingRoom = ({ handleInit }: WaitingRoomProps) => {
     </Box>
   )
 }
-
 
 export default WaitingRoom

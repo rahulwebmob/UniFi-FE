@@ -1,31 +1,45 @@
 import React, { memo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import type { RootState } from '../../../../redux/types'
 import { X, XCircle, CheckCircle } from 'lucide-react'
 
 import { Box, Slide, Stack, Snackbar, Typography } from '@mui/material'
 
-import { removeAlert } from '../../../../Redux/Reducers/AppSlice'
+import { removeAlert } from '../../../../redux/reducers/app-slice'
 
-const CustomTransition = React.forwardRef(function CustomTransition(props, ref) {
-  return (
-    <Slide 
-      {...props} 
-      ref={ref} 
-      direction="left"
-      style={{
-        transitionTimingFunction: props.in 
-          ? 'cubic-bezier(0.4, 0, 0.2, 1)'
-          : 'cubic-bezier(0.4, 0, 0.6, 1)'
-      }}
-    />
-  )
-})
+const CustomTransition = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithRef<typeof Slide>
+>(
+  function CustomTransition(props, ref) {
+    return (
+      <Slide
+        {...props}
+        ref={ref}
+        direction="left"
+        style={{
+          transitionTimingFunction: props.in
+            ? 'cubic-bezier(0.4, 0, 0.2, 1)'
+            : 'cubic-bezier(0.4, 0, 0.6, 1)',
+        }}
+      />
+    )
+  },
+)
 
-const GenericAlert = ({ alert }) => {
+interface GenericAlertProps {
+  alert: {
+    key: string
+    severity: 'success' | 'error'
+    message: string
+  }
+}
+
+const GenericAlert: React.FC<GenericAlertProps> = ({ alert }) => {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(true)
 
-  const handleClose = (event, reason) => {
+  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return
     }
@@ -46,8 +60,8 @@ const GenericAlert = ({ alert }) => {
         onExited: handleExited,
         timeout: {
           enter: 400,
-          exit: 400
-        }
+          exit: 400,
+        },
       }}
       autoHideDuration={3000}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -73,65 +87,65 @@ const GenericAlert = ({ alert }) => {
       }}
       message={
         <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          color="text.primary"
+          width="100%"
+        >
+          <Box
             display="flex"
             alignItems="center"
-            justifyContent="space-between"
-            color="text.primary"
-            width="100%"
-          >
-            <Box
-              display="flex"
-              alignItems="center"
-              sx={{
-                '& svg': {
-                  color: (theme) =>
-                    alert.severity === 'success'
-                      ? theme.palette.success.main
-                      : theme.palette.error.main,
-                  fontSize: 24,
-                  mr: 1,
-                  animation: 'iconPulse 0.5s ease-in-out',
-                  '@keyframes iconPulse': {
-                    '0%': {
-                      transform: 'scale(0)',
-                    },
-                    '50%': {
-                      transform: 'scale(1.2)',
-                    },
-                    '100%': {
-                      transform: 'scale(1)',
-                    },
+            sx={{
+              '& svg': {
+                color: (theme) =>
+                  alert.severity === 'success'
+                    ? theme.palette.success.main
+                    : theme.palette.error.main,
+                fontSize: 24,
+                mr: 1,
+                animation: 'iconPulse 0.5s ease-in-out',
+                '@keyframes iconPulse': {
+                  '0%': {
+                    transform: 'scale(0)',
+                  },
+                  '50%': {
+                    transform: 'scale(1.2)',
+                  },
+                  '100%': {
+                    transform: 'scale(1)',
                   },
                 },
-              }}
-            >
-              {alert.severity === 'success' ? (
-                <CheckCircle />
-              ) : (
-                <XCircle />
-              )}
-              <Typography component="p" p={0}>
-                {alert.message}
-              </Typography>
-            </Box>
-            <X
-              style={{
-                cursor: 'pointer',
-                transition: 'transform 0.2s ease-in-out',
-                fontSize: '20px'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'rotate(90deg)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'rotate(0deg)'}
-              onClick={() => setOpen(false)}
-            />
+              },
+            }}
+          >
+            {alert.severity === 'success' ? <CheckCircle /> : <XCircle />}
+            <Typography component="p" p={0}>
+              {alert.message}
+            </Typography>
           </Box>
+          <X
+            style={{
+              cursor: 'pointer',
+              transition: 'transform 0.2s ease-in-out',
+              fontSize: '20px',
+            }}
+            onMouseEnter={(e: React.MouseEvent<SVGElement>) =>
+              (e.currentTarget.style.transform = 'rotate(90deg)')
+            }
+            onMouseLeave={(e: React.MouseEvent<SVGElement>) =>
+              (e.currentTarget.style.transform = 'rotate(0deg)')
+            }
+            onClick={() => setOpen(false)}
+          />
+        </Box>
       }
     />
   )
 }
 
 const FloatingAlerts = memo(() => {
-  const alerts = useSelector((state) => state.app.alerts)
+  const alerts = useSelector((state: RootState) => state.app.alerts)
 
   return (
     <Stack

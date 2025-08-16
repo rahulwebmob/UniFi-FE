@@ -7,15 +7,14 @@ import {
   Box,
   Grid,
   Button,
+  useTheme,
   TextField,
   Typography,
-  FormControl,
   ButtonGroup,
-  useTheme,
+  FormControl,
 } from '@mui/material'
 
 import CharacterCount from '../../../character-count'
-import { ACTIVE_BUTTON_CSS } from '../../../common/common'
 import AddCategory from '../../../Webinar/create-webinar/add-category'
 
 const BasicDetails = () => {
@@ -40,7 +39,11 @@ const BasicDetails = () => {
               <Box display="flex" alignItems="center" mb={1}>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {t('EDUCATOR.BASIC_DETAILS.COURSE_TITLE')}
-                  <Typography color="error.main" component="span" sx={{ ml: 0.5 }}>
+                  <Typography
+                    color="error.main"
+                    component="span"
+                    sx={{ ml: 0.5 }}
+                  >
                     *
                   </Typography>
                 </Typography>
@@ -69,7 +72,11 @@ const BasicDetails = () => {
                 )}
               />
 
-              <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ mt: 1, display: 'block' }}
+              >
                 {t('EDUCATOR.BASIC_DETAILS.IMAGE_DESCRIPTION')}
               </Typography>
             </FormControl>
@@ -79,7 +86,11 @@ const BasicDetails = () => {
               <Box display="flex" alignItems="center" mb={1}>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {t('EDUCATOR.BASIC_DETAILS.COURSE_SUBTITLE')}
-                  <Typography color="error.main" component="span" sx={{ ml: 0.5 }}>
+                  <Typography
+                    color="error.main"
+                    component="span"
+                    sx={{ ml: 0.5 }}
+                  >
                     *
                   </Typography>
                 </Typography>
@@ -112,7 +123,11 @@ const BasicDetails = () => {
               <Box display="flex" alignItems="center" mb={1}>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {t('EDUCATOR.BASIC_DETAILS.COURSE_DESCRIPTION')}
-                  <Typography color="error.main" component="span" sx={{ ml: 0.5 }}>
+                  <Typography
+                    color="error.main"
+                    component="span"
+                    sx={{ ml: 0.5 }}
+                  >
                     *
                   </Typography>
                 </Typography>
@@ -152,7 +167,11 @@ const BasicDetails = () => {
               <Box mb={1}>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {t('EDUCATOR.BASIC_DETAILS.ADD_CATEGORY')}
-                  <Typography color="error.main" component="span" sx={{ ml: 0.5 }}>
+                  <Typography
+                    color="error.main"
+                    component="span"
+                    sx={{ ml: 0.5 }}
+                  >
                     *
                   </Typography>
                 </Typography>
@@ -176,15 +195,25 @@ const BasicDetails = () => {
                     ),
                   }}
                   render={({ field: { onChange, value } }) => (
-                    <ButtonGroup sx={{ '& .MuiButton-root:not(:last-child)': { borderRight: 'none' } }}>
+                    <ButtonGroup
+                      sx={{
+                        '& .MuiButton-root:not(:last-child)': {
+                          borderRight: 'none',
+                        },
+                      }}
+                    >
                       <Button
                         variant="outlined"
                         sx={{
-                          backgroundColor: !value ? 'primary.main' : 'transparent',
+                          backgroundColor: !value
+                            ? 'primary.main'
+                            : 'transparent',
                           color: !value ? 'white' : 'text.secondary',
                           borderColor: theme.palette.grey[300],
                           '&:hover': {
-                            backgroundColor: !value ? 'primary.dark' : 'action.hover',
+                            backgroundColor: !value
+                              ? 'primary.dark'
+                              : 'action.hover',
                           },
                         }}
                         onClick={() => onChange(false)}
@@ -194,11 +223,15 @@ const BasicDetails = () => {
                       <Button
                         variant="outlined"
                         sx={{
-                          backgroundColor: value ? 'primary.main' : 'transparent',
+                          backgroundColor: value
+                            ? 'primary.main'
+                            : 'transparent',
                           color: value ? 'white' : 'text.secondary',
                           borderColor: theme.palette.grey[300],
                           '&:hover': {
-                            backgroundColor: value ? 'primary.dark' : 'action.hover',
+                            backgroundColor: value
+                              ? 'primary.dark'
+                              : 'action.hover',
                           },
                         }}
                         onClick={() => onChange(true)}

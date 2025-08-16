@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client'
 
-import { ENV } from '../Utils/env'
+import { ENV } from '../utils/env'
 
 const socketUrl = `${ENV.BASE_URL}`
 

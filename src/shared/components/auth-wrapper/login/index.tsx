@@ -20,14 +20,14 @@ import {
 import ResendEmail from '../resend-email'
 import ForgetPassword from '../forget-password'
 import SocialMediaAuth from './social-media-auth'
-import MainLogo from '../../../../Assets/logo.svg'
-import { signIn } from '../../../../Redux/Reducers/UserSlice'
-import { initializeSocket } from '../../../../Services/sockets'
-import { useAdminLoginMutation } from '../../../../Services/onboarding'
+import MainLogo from '../../../../assets/logo.svg'
+import { signIn } from '../../../../redux/reducers/user-slice'
+import { initializeSocket } from '../../../../services/sockets'
+import { useAdminLoginMutation } from '../../../../services/onboarding'
 import {
   useLoginMutation,
   useEducatorLoginMutation,
-} from '../../../../Services/admin'
+} from '../../../../services/admin'
 
 // Define view states for better maintainability
 const ViewState = {
@@ -36,7 +36,7 @@ const ViewState = {
   RESEND_EMAIL: 'RESEND_EMAIL',
 } as const
 
-type ViewStateType = typeof ViewState[keyof typeof ViewState]
+type ViewStateType = (typeof ViewState)[keyof typeof ViewState]
 
 interface LoginProps {
   type?: string
@@ -113,7 +113,12 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
             void navigate('/dashboard')
           }, 100)
       }
-    } else if (response && 'error' in response && (response.error as { status?: number })?.status === 406 && values.email) {
+    } else if (
+      response &&
+      'error' in response &&
+      (response.error as { status?: number })?.status === 406 &&
+      values.email
+    ) {
       setVerificationEmail(values.email)
       setViewState(ViewState.RESEND_EMAIL)
     }
@@ -154,11 +159,11 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
           mb={2}
           sx={{ opacity: 0.8 }}
         >
-          {type === 'admin' 
+          {type === 'admin'
             ? 'Enter your credentials to access the admin portal'
             : type === 'educator'
-            ? 'Welcome back! Sign in to manage your courses and webinars'
-            : 'Enter details to login and access the platform'}
+              ? 'Welcome back! Sign in to manage your courses and webinars'
+              : 'Enter details to login and access the platform'}
         </Typography>
       </Box>
     </Box>
@@ -213,11 +218,7 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton onClick={() => setVisible(!visible)}>
-                      {visible ? (
-                        <Eye size={20} />
-                      ) : (
-                        <EyeOff size={20} />
-                      )}
+                      {visible ? <Eye size={20} /> : <EyeOff size={20} />}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -280,7 +281,9 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
         <Typography
           variant="body2"
           component="span"
-          onClick={() => { void navigate('/educator/onboarding') }}
+          onClick={() => {
+            void navigate('/educator/onboarding')
+          }}
           sx={{
             marginLeft: 0.75,
             fontSize: 14,

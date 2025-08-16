@@ -2,9 +2,9 @@ import Lottie from 'lottie-react'
 
 import { Box, useTheme } from '@mui/material'
 
-import LoadingLogo from '../../../Assets/loading-logo.json'
+import LoadingLogo from '../../../assets/loading-logo.json'
 
-const Loading = () => {
+const Loading: React.FC = () => {
   const theme = useTheme()
 
   return (

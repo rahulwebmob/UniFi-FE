@@ -1,25 +1,26 @@
-import type { ReactElement, MouseEvent } from 'react'
+import type { TFunction } from 'i18next'
+import type { Dispatch } from '@reduxjs/toolkit'
+import type { MouseEvent, ReactElement } from 'react'
+import type { NavigateFunction } from 'react-router-dom'
 
 import React, { useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import type { TFunction } from 'i18next'
-import type { NavigateFunction } from 'react-router-dom'
-import type { Dispatch } from '@reduxjs/toolkit'
 
 import { Box, Button, Typography } from '@mui/material'
 
 import ModalBox from '../../ui-elements/modal-box'
-import LANGUAGES from '../../../../Constants/LANGUAGES'
-import type { Language } from '../../../../Constants/LANGUAGES'
-import { signOut } from '../../../../Redux/Reducers/UserSlice'
-import { updateLanguage } from '../../../../Redux/Reducers/AppSlice'
-import { useAdminLogoutMutation } from '../../../../Services/onboarding'
+import LANGUAGES from '../../../../constants/languages'
+import { signOut } from '../../../../redux/reducers/user-slice'
+import { updateLanguage } from '../../../../redux/reducers/app-slice'
+import { useAdminLogoutMutation } from '../../../../services/onboarding'
 import {
   useLogoutMutation,
   useEducatorLogoutMutation,
-} from '../../../../Services/admin'
+} from '../../../../services/admin'
+
+import type { Language } from '../../../../constants/languages'
 
 type UserType = 'educator' | 'admin' | 'user'
 

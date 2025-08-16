@@ -1,4 +1,4 @@
-const downloadPdf = async (urls) => {
+const downloadPdf = async (urls: string) => {
   const response = await fetch(urls)
   const blob = await response.blob()
   const url = URL.createObjectURL(blob)
@@ -11,7 +11,11 @@ const downloadPdf = async (urls) => {
   URL.revokeObjectURL(url)
 }
 
-const DateFormatInTutor = ({ date }) => {
+const DateFormatInTutor = ({
+  date,
+}: {
+  date: string | Date | null | undefined
+}) => {
   const lastActiveDate = date ? new Date(date) : ''
   let formattedDate
   if (lastActiveDate) {
@@ -29,4 +33,20 @@ const DateFormatInTutor = ({ date }) => {
   return formattedDate
 }
 
-export { downloadPdf, DateFormatInTutor }
+const handleGeneratePdf = async (
+  id: string,
+  downloadFunction: (params: { invoiceId: string }) => Promise<{ error: boolean; data?: { url: string } }>,
+  successCallback: () => void,
+) => {
+  try {
+    const response = await downloadFunction({ invoiceId: id })
+    if (!response.error && response.data?.url) {
+      await downloadPdf(response.data.url)
+      successCallback()
+    }
+  } catch (error) {
+    console.error('Error generating PDF:', error)
+  }
+}
+
+export { downloadPdf, DateFormatInTutor, handleGeneratePdf }

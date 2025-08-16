@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next'
 
 import { Box, useTheme, Typography } from '@mui/material'
 
-import LodingIssueIcon from '../../../Assets/svgicons/loading-issue.svg?react'
+import LodingIssueIcon from '../../../assets/svgicons/loading-issue.svg?react'
 
-const LoadingError = () => {
+const LoadingError: React.FC = () => {
   const { t } = useTranslation('application')
   const theme = useTheme()
   return (

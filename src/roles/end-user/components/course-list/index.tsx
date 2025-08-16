@@ -6,7 +6,7 @@ import { Box, Grid } from '@mui/material'
 import CourseCard from '../course-card'
 import ContentSkeleton from '../content-skeleton'
 import NoDataFound from '../../../../shared/components/no-data-found'
-import { useGetAllCoursesQuery } from '../../../../Services/education'
+import { useGetAllCoursesQuery } from '../../../../services/education'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
 
 const iff = <T,>(condition: boolean, trueCase: T, falseCase: T): T =>
@@ -43,13 +43,20 @@ const CourseList: React.FC<CourseListProps> = ({
     isPurchased,
     pageSize: 20,
     categories: selectedCategory,
-  }) as { data?: { data?: { courses?: Course[], count?: number } }, isFetching: boolean, isSuccess: boolean, isLoading: boolean }
+  }) as {
+    data?: { data?: { courses?: Course[]; count?: number } }
+    isFetching: boolean
+    isSuccess: boolean
+    isLoading: boolean
+  }
 
   useEffect(() => {
     if (isSuccess && !isFetching) {
       if (data?.data?.courses?.length) {
         setList((prev) =>
-          page === 1 ? (data.data.courses ?? []) : [...prev, ...(data.data.courses ?? [])],
+          page === 1
+            ? (data.data.courses ?? [])
+            : [...prev, ...(data.data.courses ?? [])],
         )
         setCount(data.data.count ?? 0)
       } else {
@@ -121,13 +128,23 @@ const CourseList: React.FC<CourseListProps> = ({
           <ContentSkeleton isPurchased={false} />
         </Grid>,
         !list.length ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '300px',
+            }}
+          >
             <NoDataFound title={undefined} description={undefined} />
           </Box>
         ) : (
           <Grid container spacing={3}>
             {list.map((item) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }} key={item._id}>
+              <Grid
+                size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }}
+                key={item._id}
+              >
                 <CourseCard course={item} isPurchased={false} />
               </Grid>
             ))}

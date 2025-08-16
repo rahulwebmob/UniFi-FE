@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Box, Grid, Menu, Avatar, MenuItem, ListItemIcon } from '@mui/material'
 
-import { generateImageUrl } from '../../../../../Utils/globalUtils'
+import { generateImageUrl } from '../../../../../utils/globalUtils'
 
 interface UserState {
   user: {
@@ -43,13 +43,6 @@ const UserProfile = () => {
   const handleClose = () => {
     setAnchorEl(null)
   }
-
-  // const handleButtonName = () => {
-  //   if (!isBasicSubscribed && !isQPNewsSubscribed && !isQINNewsSubscribed) {
-  //     return 'Try Premium'
-  //   }
-  //   return 'Update Premium'
-  // }
 
   return (
     <Grid

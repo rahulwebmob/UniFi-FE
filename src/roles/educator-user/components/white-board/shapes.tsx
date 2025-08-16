@@ -1,7 +1,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Minus, Square, Circle, Triangle, RectangleHorizontal } from 'lucide-react'
+import {
+  Minus,
+  Square,
+  Circle,
+  Triangle,
+  RectangleHorizontal,
+} from 'lucide-react'
 
 import { Box, Tooltip, IconButton } from '@mui/material'
 

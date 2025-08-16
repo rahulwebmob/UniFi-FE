@@ -1,13 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { ENV } from '../shared/utils/validation/env'
-import { readLangCookie } from '../Utils/globalUtils'
+import { readLangCookie } from '../utils/globalUtils'
 import {
   onQueryStarted,
   onMutationStarted,
   onQueryStartedDefault,
   onMutationStartedDefault,
-} from './serviceUtility'
+} from '../services/serviceUtility'
 
 // Define a service using a base URL and expected endpoints
 export const adminApi = createApi({
@@ -83,82 +83,6 @@ export const adminApi = createApi({
       invalidatesTags: ['partners'],
     }),
     // custom layout
-    getLayoutTabs: builder.query({
-      query: () => ({
-        url: `/user-api/layout/get-user-layouts`,
-        method: 'GET',
-      }),
-      keepUnusedDataFor: 0,
-      providesTags: ['Layouts'],
-    }),
-    addLayout: builder.mutation({
-      query: (data) => ({
-        url: `/user-api/layout/add-layout`,
-        method: 'POST',
-        body: data,
-      }),
-      onQueryStarted: onMutationStartedDefault,
-    }),
-    getLayoutComponents: builder.query({
-      query: (payload) => ({
-        url: `/user-api/layout/get-layout-components`,
-        method: 'GET',
-        params: { ...payload },
-      }),
-      transformResponse: (response) => response.data,
-      keepUnusedDataFor: 0,
-    }),
-    createDefaultLayout: builder.mutation({
-      query: (body) => ({
-        url: `/user-api/layout/create-default-layouts`,
-        method: 'POST',
-        body,
-      }),
-    }),
-    saveLayout: builder.mutation({
-      query: (data) => ({
-        url: `/user-api/layout/edit-layout-components`,
-        method: 'POST',
-        body: data,
-      }),
-      onQueryStarted: onMutationStartedDefault,
-    }),
-    saveOrder: builder.mutation({
-      query: (data) => ({
-        url: `/user-api/layout/reorder-layout`,
-        method: 'POST',
-        body: data,
-      }),
-      invalidatesTags: ['Layouts'],
-      onQueryStarted: onMutationStartedDefault,
-    }),
-    renameLayout: builder.mutation({
-      query: (data) => ({
-        url: `/user-api/layout/rename-layout`,
-        method: 'PUT',
-        body: data,
-      }),
-      invalidatesTags: ['Layouts'],
-      onQueryStarted: onMutationStartedDefault,
-    }),
-    deleteLayout: builder.mutation({
-      query: (data) => ({
-        url: `/user-api/layout/delete-layout`,
-        method: 'DELETE',
-        body: data,
-      }),
-      invalidatesTags: ['Layouts'],
-      onQueryStarted: onMutationStartedDefault,
-    }),
-    saveChatLayout: builder.mutation({
-      query: (data) => ({
-        url: `/user-api/layout/save-chat-layout`,
-        method: 'POST',
-        body: data,
-      }),
-      invalidatesTags: ['Layouts'],
-      onQueryStarted: onMutationStartedDefault,
-    }),
     buyPremiumSubscription: builder.mutation({
       query: (data) => ({
         url: `/user-api/user-actions/buy-premium-subscription`,
@@ -851,17 +775,8 @@ export const {
   useLoggedUserQuery,
   usePartnerMutation,
   useRecentlyViewedMutation,
-  useGetLayoutTabsQuery,
-  useCreateDefaultLayoutMutation,
-  useAddLayoutMutation,
-  useGetLayoutComponentsQuery,
-  useSaveLayoutMutation, // saving custom layout
-  useSaveOrderMutation,
-  useRenameLayoutMutation,
-  useDeleteLayoutMutation,
-  useSaveChatLayoutMutation,
-  useBuyPremiumSubscriptionMutation, // buy premium subscription mutation
-  useGetUsersListQuery, // get users list
+  useBuyPremiumSubscriptionMutation,
+  useGetUsersListQuery,
   useEducatorForgetPasswordMutation,
   useForgetPasswordMutation,
   useProfileActionsMutation,

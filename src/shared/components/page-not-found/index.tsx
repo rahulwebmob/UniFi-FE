@@ -1,11 +1,11 @@
 import { t } from 'i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { Box, Button, Typography, useTheme } from '@mui/material'
+import { Box, Button, useTheme, Typography } from '@mui/material'
 
-import PageNotFoundLogo from '../../../Assets/svgicons/page-not-found.svg?react'
+import PageNotFoundLogo from '../../../assets/svgicons/page-not-found.svg?react'
 
-const PageNotFound = () => {
+const PageNotFound: React.FC = () => {
   const navigate = useNavigate()
   const theme = useTheme()
 
@@ -17,7 +17,7 @@ const PageNotFound = () => {
         justifyContent: 'center',
         flexDirection: 'column',
         textAlign: 'center',
-        background: (theme) => theme.palette.background.default,
+        background: theme.palette.background.default,
         width: '100%',
         height: '100vh',
       }}
@@ -45,14 +45,20 @@ const PageNotFound = () => {
         <PageNotFoundLogo style={{ maxWidth: '300px', height: 'auto' }} />
       </Box>
       <Box my={1}>
-        <Typography variant="h3"  mb={1}>
+        <Typography variant="h3" mb={1}>
           {t('application:UI.PAGE_NOT_FOUND.OOPS_PAGE_NOT_FOUND')}
         </Typography>
         <Typography component="p" color="text.secondary">
           {t('application:UI.PAGE_NOT_FOUND.GOING_BACK_TO_HOMEPAGE')}
         </Typography>
       </Box>
-      <Button variant="contained" size="small" onClick={() => { void navigate('/') }}>
+      <Button
+        variant="contained"
+        size="small"
+        onClick={() => {
+          void navigate('/')
+        }}
+      >
         Home
       </Button>
     </Box>

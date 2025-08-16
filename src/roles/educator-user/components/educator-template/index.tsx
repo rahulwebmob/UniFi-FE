@@ -2,26 +2,24 @@ import React, { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Box, useTheme, useMediaQuery } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 
 import Header from '../Header'
 import Footer from '../Footer'
-import LANGUAGES from '../../../../Constants/LANGUAGES'
-import { useEducatorAuthQuery } from '../../../../Services/admin'
-import useManualPolling from '../../../../Hooks/useManualPolling'
-import { updateLanguage } from '../../../../Redux/Reducers/AppSlice'
+import LANGUAGES from '../../../../constants/languages'
+import { useEducatorAuthQuery } from '../../../../services/admin'
+import useManualPolling from '../../../../hooks/useManualPolling'
+import { updateLanguage } from '../../../../redux/reducers/app-slice'
 
 const EducatorTemplate = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.user)
   const { isFullscreen } = useSelector((state) => state.app)
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
   const { refetch } = useEducatorAuthQuery()
 
   useManualPolling(refetch, 3000)
-  const iff = (condition, then, otherwise) => (condition ? then : otherwise)
 
   useEffect(() => {
     if (user?.language) dispatch(updateLanguage(LANGUAGES[user?.language]))

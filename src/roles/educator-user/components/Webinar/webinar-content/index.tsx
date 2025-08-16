@@ -2,35 +2,35 @@ import React from 'react'
 import { format } from 'date-fns'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { 
-  Calendar, 
-  Clock, 
-  User, 
-  MapPin, 
-  Users, 
+import {
+  Info,
+  User,
+  Clock,
+  Users,
   Video,
+  MapPin,
+  Calendar,
   DollarSign,
-  Info
 } from 'lucide-react'
 
 import {
   Box,
   Card,
   Grid,
+  Chip,
   alpha,
+  Paper,
   Avatar,
   Button,
+  Divider,
+  useTheme,
   Container,
   CardMedia,
   Typography,
-  Chip,
-  useTheme,
-  Paper,
-  Divider,
 } from '@mui/material'
 
 import { getEducatorDetails } from '../../common/common'
-import { getLocaleByLanguageCode } from '../../../../../Utils/globalUtils'
+import { getLocaleByLanguageCode } from '../../../../../utils/globalUtils'
 
 const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
   const navigate = useNavigate()
@@ -128,9 +128,9 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
         >
           <Grid container spacing={4}>
             <Grid size={{ xs: 12, md: 7 }}>
-              <Typography 
-                variant="h3" 
-                sx={{ 
+              <Typography
+                variant="h3"
+                sx={{
                   fontWeight: 700,
                   color: theme.palette.text.primary,
                   mb: 2,
@@ -183,7 +183,7 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                     {formatDate(webinarData?.webinarScheduledObj?.join_date)}
                   </Typography>
                 </Box>
-                
+
                 <Box display="flex" alignItems="center" gap={1.5}>
                   <Clock size={20} color={theme.palette.primary.main} />
                   <Typography variant="body1" fontWeight={500}>
@@ -217,9 +217,9 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
 
               {/* Instructor Info */}
               <Box>
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
+                <Typography
+                  variant="caption"
+                  sx={{
                     color: theme.palette.text.secondary,
                     textTransform: 'uppercase',
                     fontWeight: 600,
@@ -229,14 +229,16 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                   {t('EDUCATION_DASHBOARD.COMMON_KEYS.CREATED_BY')}
                 </Typography>
                 <Box display="flex" alignItems="center" gap={2} mt={1}>
-                  <Avatar 
-                    sx={{ 
-                      width: 48, 
+                  <Avatar
+                    sx={{
+                      width: 48,
                       height: 48,
                       background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
                     }}
                   >
-                    {getEducatorDetails(webinarData, 'avatarName') || <User size={24} />}
+                    {getEducatorDetails(webinarData, 'avatarName') || (
+                      <User size={24} />
+                    )}
                   </Avatar>
                   <Box>
                     <Typography variant="body1" fontWeight={600}>
@@ -262,9 +264,9 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                   background: 'white',
                 }}
               >
-                <Box 
-                  sx={{ 
-                    width: '100%', 
+                <Box
+                  sx={{
+                    width: '100%',
                     height: 240,
                     position: 'relative',
                     overflow: 'hidden',
@@ -291,7 +293,7 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                     image={webinarData?.thumbNail}
                     title={webinarData?.title}
                   />
-                  
+
                   {/* Hover Overlay */}
                   <Box
                     className="image-overlay"
@@ -321,7 +323,7 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                       </Typography>
                     </Box>
                   </Box>
-                  
+
                   {/* Live Badge */}
                   {webinarData?.webinarScheduledObj?.can_join && (
                     <Box
@@ -359,7 +361,7 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                       </Typography>
                     </Box>
                   )}
-                  
+
                   {/* Free Badge */}
                   {!webinarData?.isPaid && (
                     <Box
@@ -380,7 +382,11 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                       }}
                     >
                       <DollarSign size={16} style={{ marginRight: 2 }} />
-                      <Typography variant="caption" fontWeight={700} sx={{ letterSpacing: 0.5 }}>
+                      <Typography
+                        variant="caption"
+                        fontWeight={700}
+                        sx={{ letterSpacing: 0.5 }}
+                      >
                         FREE
                       </Typography>
                     </Box>
@@ -390,9 +396,9 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                 <Box sx={{ p: 3 }}>
                   {/* Attendees Info */}
                   {webinarData?.maxAttendees && (
-                    <Box 
-                      display="flex" 
-                      alignItems="center" 
+                    <Box
+                      display="flex"
+                      alignItems="center"
                       gap={1}
                       sx={{
                         mb: 3,
@@ -403,7 +409,8 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                     >
                       <Users size={18} color={theme.palette.text.secondary} />
                       <Typography variant="body2" color="text.secondary">
-                        Limited to <strong>{webinarData.maxAttendees}</strong> attendees
+                        Limited to <strong>{webinarData.maxAttendees}</strong>{' '}
+                        attendees
                       </Typography>
                     </Box>
                   )}
@@ -411,17 +418,22 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                   {/* Price Section - Only show for paid webinars */}
                   {!webinarData?.isWebinarBought && webinarData?.isPaid && (
                     <Box mb={3}>
-                      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-                        <Typography 
-                          variant="body2" 
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        mb={2}
+                      >
+                        <Typography
+                          variant="body2"
                           color="text.secondary"
                           sx={{ textTransform: 'uppercase', fontWeight: 600 }}
                         >
                           Price
                         </Typography>
-                        <Typography 
-                          variant="h4" 
-                          sx={{ 
+                        <Typography
+                          variant="h4"
+                          sx={{
                             fontWeight: 700,
                             color: theme.palette.primary.main,
                           }}
@@ -437,7 +449,13 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
 
                   {/* Additional Info */}
                   {webinarData?.isPaid && !webinarData?.isWebinarBought && (
-                    <Box display="flex" alignItems="center" gap={1} mt={2} justifyContent="center">
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      mt={2}
+                      justifyContent="center"
+                    >
                       <Info size={14} color={theme.palette.text.secondary} />
                       <Typography variant="caption" color="text.secondary">
                         Secure payment • Instant access
@@ -461,9 +479,9 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
               boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.06)}`,
             }}
           >
-            <Typography 
-              variant="h5" 
-              sx={{ 
+            <Typography
+              variant="h5"
+              sx={{
                 fontWeight: 600,
                 mb: 2,
                 color: theme.palette.text.primary,
@@ -471,9 +489,9 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
             >
               About this Webinar
             </Typography>
-            <Typography 
-              variant="body1" 
-              sx={{ 
+            <Typography
+              variant="body1"
+              sx={{
                 color: theme.palette.text.secondary,
                 lineHeight: 1.8,
                 whiteSpace: 'pre-wrap',
@@ -483,30 +501,31 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
             </Typography>
 
             {/* Key Takeaways if available */}
-            {webinarData?.keyTakeaways && webinarData.keyTakeaways.length > 0 && (
-              <>
-                <Divider sx={{ my: 3 }} />
-                <Typography 
-                  variant="h6" 
-                  sx={{ 
-                    fontWeight: 600,
-                    mb: 2,
-                    color: theme.palette.text.primary,
-                  }}
-                >
-                  What You'll Learn
-                </Typography>
-                <Box component="ul" sx={{ pl: 2 }}>
-                  {webinarData.keyTakeaways.map((item, index) => (
-                    <Box component="li" key={index} sx={{ mb: 1 }}>
-                      <Typography variant="body1" color="text.secondary">
-                        {item}
-                      </Typography>
-                    </Box>
-                  ))}
-                </Box>
-              </>
-            )}
+            {webinarData?.keyTakeaways &&
+              webinarData.keyTakeaways.length > 0 && (
+                <>
+                  <Divider sx={{ my: 3 }} />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      mb: 2,
+                      color: theme.palette.text.primary,
+                    }}
+                  >
+                    What You&apos;ll Learn
+                  </Typography>
+                  <Box component="ul" sx={{ pl: 2 }}>
+                    {webinarData.keyTakeaways.map((item, index) => (
+                      <Box component="li" key={index} sx={{ mb: 1 }}>
+                        <Typography variant="body1" color="text.secondary">
+                          {item}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </>
+              )}
           </Paper>
         )}
       </Container>

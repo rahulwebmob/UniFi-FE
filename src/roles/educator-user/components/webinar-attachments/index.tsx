@@ -1,12 +1,11 @@
-import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { X, File, Download } from 'lucide-react'
 
 import { Box, Tooltip, Typography } from '@mui/material'
 
-import { useGetWebinarAttachmentsQuery } from '../../../../Services/admin'
-import { useGetAttachmentsListQuery } from '../../../../Services/education'
+import { useGetWebinarAttachmentsQuery } from '../../../../services/admin'
+import { useGetAttachmentsListQuery } from '../../../../services/education'
 
 const WebinarAttachments = ({ handleOnClose, isHost }) => {
   const { t } = useTranslation('application')
@@ -92,7 +91,9 @@ const WebinarAttachments = ({ handleOnClose, isHost }) => {
                 }}
               >
                 <Download
-                  onClick={() => { void handleDownloadAttachment(item) }}
+                  onClick={() => {
+                    void handleDownloadAttachment(item)
+                  }}
                   size={20}
                 />
               </Box>

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
-import { ENV } from '../Utils/env'
+import { ENV } from '../utils/env'
 import { onMutationStartedDefault } from './serviceUtility'
 
 const axiosBaseQuery =

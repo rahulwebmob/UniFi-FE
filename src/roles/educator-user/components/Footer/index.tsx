@@ -2,10 +2,10 @@ import { useTranslation } from 'react-i18next'
 
 import { Box, Link } from '@mui/material'
 
+import XIcon from '../../../../assets/social-icons/x-twitter.svg'
 // Social media SVG icons
-import FacebookIcon from '../../../../Assets/social-icons/facebook.svg'
-import LinkedinIcon from '../../../../Assets/social-icons/linkedin.svg'
-import XIcon from '../../../../Assets/social-icons/x-twitter.svg'
+import FacebookIcon from '../../../../assets/social-icons/facebook.svg'
+import LinkedinIcon from '../../../../assets/social-icons/linkedin.svg'
 
 const socialLinks = [
   {
@@ -58,9 +58,7 @@ const Footer = () => {
       }}
     >
       <Box display="flex" gap="20px" flexWrap="wrap">
-        <Box>
-          © {new Date().getFullYear()} UniCitizens
-        </Box>
+        <Box>© {new Date().getFullYear()} UniCitizens</Box>
         <Box
           display="flex"
           gap="10px"
@@ -92,10 +90,10 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="sociallink"
             >
-              <img 
-                src={item.icon} 
-                alt={item.name} 
-                width="18" 
+              <img
+                src={item.icon}
+                alt={item.name}
+                width="18"
                 height="18"
                 style={{ display: 'block' }}
               />

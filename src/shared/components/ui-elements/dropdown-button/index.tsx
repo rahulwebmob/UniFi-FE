@@ -11,10 +11,13 @@ import {
   Typography,
 } from '@mui/material'
 
-
 interface DropdownMenuItem {
   name: string
-  onClick: (subItemName?: string, component?: React.ReactNode, isFullWidthRequired?: boolean) => void
+  onClick: (
+    subItemName?: string,
+    component?: React.ReactNode,
+    isFullWidthRequired?: boolean,
+  ) => void
   options?: {
     name: string
     component?: React.ReactNode
@@ -48,7 +51,7 @@ const DropdownButton = ({
   // const { direction } = useSelector((state) => state.app.language) // Uncomment if direction is needed
   const open = Boolean(anchorEl)
   const theme = useTheme()
-  const handleClick = (event) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
     event.preventDefault()
     setIsSubMenuOpen(false)
@@ -58,7 +61,7 @@ const DropdownButton = ({
     setAnchorEl(null)
   }
 
-  const handleNestedClick = (event, itemName) => {
+  const handleNestedClick = (event: React.MouseEvent<HTMLElement>, itemName: string) => {
     setNestedAnchorEl(event.currentTarget)
     setSelectedItem(itemName)
     setSelectedSubItem(null)

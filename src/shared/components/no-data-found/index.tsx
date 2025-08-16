@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Box, useTheme, Typography } from '@mui/material'
 
-import NoDataIcon from '../../../Assets/svgicons/no-data.svg?react'
+import NoDataIcon from '../../../assets/svgicons/no-data.svg?react'
 
 interface NoDataFoundProps {
   title?: string
@@ -10,7 +10,11 @@ interface NoDataFoundProps {
   isTable?: boolean
 }
 
-const NoDataFound = ({ title, description, isTable = false }: NoDataFoundProps) => {
+const NoDataFound = ({
+  title,
+  description,
+  isTable = false,
+}: NoDataFoundProps) => {
   const theme = useTheme()
   const { t } = useTranslation('application')
 

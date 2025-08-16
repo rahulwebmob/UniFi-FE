@@ -16,10 +16,10 @@ import {
   useMediaQuery,
 } from '@mui/material'
 
-import PersonalInfo from './personal-info/PersonalInfo'
+import EducationPayments from './education-payments'
+import PersonalInfo from './personal-info'
 import UserSettings from './user-settings/UserSettings'
 import Logout from '../../../../shared/components/auth-wrapper/logout'
-import EducationPayments from './education-payments/EducationPayments'
 
 interface ProfileRef {
   handleExecute: () => void

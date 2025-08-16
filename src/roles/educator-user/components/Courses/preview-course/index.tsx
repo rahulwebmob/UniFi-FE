@@ -2,7 +2,7 @@ import React from 'react'
 import { useFormContext } from 'react-hook-form'
 
 import ContentView from '../content-view'
-import { useCoursePreviewQuery } from '../../../../../Services/admin'
+import { useCoursePreviewQuery } from '../../../../../services/admin'
 import ApiMiddleware from '../../../../../shared/components/api-middleware'
 
 const PreviewCourse = () => {
@@ -18,7 +18,7 @@ const PreviewCourse = () => {
 
   return (
     <ApiMiddleware error={error} isLoading={isLoading} isData={!!data?.data}>
-      <ContentView courseData={courseData} isEdit={false}  />
+      <ContentView courseData={courseData} isEdit={false} />
     </ApiMiddleware>
   )
 }

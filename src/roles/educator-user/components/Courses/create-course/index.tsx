@@ -1,10 +1,10 @@
 import * as yup from 'yup'
 import { useDispatch } from 'react-redux'
+import { Check, Circle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, FormProvider } from 'react-hook-form'
-import { Check, Circle, CheckCircle2 } from 'lucide-react'
 import React, { useMemo, useState, useEffect } from 'react'
 
 import {
@@ -24,7 +24,7 @@ import Chapter from './chapter'
 import MetaData from './meta-data'
 import BasicDetails from './basic-details'
 import PreviewCourse from '../preview-course'
-import { updateShowPrompt } from '../../../../../Redux/Reducers/EducationSlice'
+import { updateShowPrompt } from '../../../../../redux/reducers/education-slice'
 import {
   isNewFile,
   getUpdatedFields,
@@ -34,7 +34,7 @@ import {
   useCreateCourseMutation,
   useUpdateCourseMutation,
   useAddCourseMetaDataMutation,
-} from '../../../../../Services/admin'
+} from '../../../../../services/admin'
 
 interface StepIconProps {
   active?: boolean
@@ -43,7 +43,7 @@ interface StepIconProps {
 
 const StepIcon = ({ active, completed }: StepIconProps) => {
   const theme = useTheme()
-  
+
   if (completed) {
     return (
       <Box
@@ -98,7 +98,7 @@ interface StepConfig {
   buttonLabel: string
 }
 
-const stepsConfig = (t: any): StepConfig[] => [
+const stepsConfig = (t: (key: string) => string): StepConfig[] => [
   {
     label: t('EDUCATOR.CREATE_COURSE.BASIC_DETAILS'),
     description: t('EDUCATOR.CREATE_COURSE.BASIC_DETAILS_DESCRIPTION'),
@@ -127,7 +127,7 @@ interface CreateCourseProps {
   isPreview?: boolean
   isPublished?: boolean
   currentStep?: number
-  defaultValues?: any
+  defaultValues?: Record<string, unknown>
 }
 
 const CreateCourse = ({
@@ -514,41 +514,41 @@ const CreateCourse = ({
                     },
                   }}
                 >
-                {stepsConfig(t).map((step) => (
-                  <Step key={step.label}>
-                    <StepLabel
-                      StepIconComponent={StepIcon}
-                      sx={{
-                        '& .MuiStepLabel-label': {
-                          fontWeight: 500,
-                          fontSize: { xs: '0.85rem', sm: '0.95rem' },
-                          '&.Mui-active': {
-                            fontWeight: 600,
-                            color: theme.palette.primary.main,
-                          },
-                          '&.Mui-completed': {
+                  {stepsConfig(t).map((step) => (
+                    <Step key={step.label}>
+                      <StepLabel
+                        StepIconComponent={StepIcon}
+                        sx={{
+                          '& .MuiStepLabel-label': {
                             fontWeight: 500,
-                            color: theme.palette.success.main,
+                            fontSize: { xs: '0.85rem', sm: '0.95rem' },
+                            '&.Mui-active': {
+                              fontWeight: 600,
+                              color: theme.palette.primary.main,
+                            },
+                            '&.Mui-completed': {
+                              fontWeight: 500,
+                              color: theme.palette.success.main,
+                            },
                           },
-                        },
-                      }}
-                    >
-                      {step.label}
-                    </StepLabel>
-                    <StepContent>
-                      <Typography 
-                        variant="body2" 
-                        color="text.secondary" 
-                        sx={{ 
-                          mt: 0.5,
-                          display: { xs: 'none', sm: 'block' }
                         }}
                       >
-                        {step.description}
-                      </Typography>
-                    </StepContent>
-                  </Step>
-                ))}
+                        {step.label}
+                      </StepLabel>
+                      <StepContent>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            mt: 0.5,
+                            display: { xs: 'none', sm: 'block' },
+                          }}
+                        >
+                          {step.description}
+                        </Typography>
+                      </StepContent>
+                    </Step>
+                  ))}
                 </Stepper>
               </Box>
             </Grid>
@@ -560,10 +560,19 @@ const CreateCourse = ({
                 backgroundColor: 'background.light',
                 borderRadius: activeStep !== 3 ? '12px' : 0,
                 p: activeStep !== 3 ? 3 : 0,
-                border: activeStep !== 3 ? `1px solid ${theme.palette.grey[200]}` : 'none',
+                border:
+                  activeStep !== 3
+                    ? `1px solid ${theme.palette.grey[200]}`
+                    : 'none',
               }}
             >
-              <form onSubmit={(e) => { void form.handleSubmit((data) => { void onSubmit(data) })(e) }}>
+              <form
+                onSubmit={(e) => {
+                  void form.handleSubmit((data) => {
+                    void onSubmit(data)
+                  })(e)
+                }}
+              >
                 {renderStepContent(activeStep)}
                 <Box
                   sx={{
@@ -572,7 +581,10 @@ const CreateCourse = ({
                     justifyContent: 'space-between',
                     mt: 3,
                     pt: 3,
-                    borderTop: activeStep !== 3 ? `1px solid ${theme.palette.grey[200]}` : 'none',
+                    borderTop:
+                      activeStep !== 3
+                        ? `1px solid ${theme.palette.grey[200]}`
+                        : 'none',
                     gap: 2,
                   }}
                 >
@@ -617,7 +629,14 @@ const CreateCourse = ({
                         variant="contained"
                         type="submit"
                         disabled={isLoading}
-                        startIcon={isLoading && <CircularProgress size={16} sx={{ color: 'inherit' }} />}
+                        startIcon={
+                          isLoading && (
+                            <CircularProgress
+                              size={16}
+                              sx={{ color: 'inherit' }}
+                            />
+                          )
+                        }
                         sx={{
                           textTransform: 'none',
                           minWidth: 120,
@@ -625,7 +644,8 @@ const CreateCourse = ({
                       >
                         {isLoading
                           ? t('EDUCATOR.CREATE_COURSE.SUBMITTING')
-                          : stepsConfig(t)?.[activeStep]?.buttonLabel ?? t('EDUCATOR.CREATE_COURSE.CONTINUE')}
+                          : (stepsConfig(t)?.[activeStep]?.buttonLabel ??
+                            t('EDUCATOR.CREATE_COURSE.CONTINUE'))}
                       </Button>
                     )}
                   </Box>

@@ -16,9 +16,9 @@ import {
   InputAdornment,
 } from '@mui/material'
 
-import MainLogo from '../../../../Assets/logo.svg'
+import MainLogo from '../../../../assets/logo.svg'
 import SocialMediaAuth from '../login/social-media-auth'
-import { useSignUpMutation } from '../../../../Services/admin'
+import { useSignUpMutation } from '../../../../services/admin'
 
 interface SignUpProps {
   setIsLoginPage: (isLogin: boolean) => void
@@ -374,4 +374,3 @@ const SignUp = ({ setIsLoginPage }: SignUpProps) => {
 }
 
 export default SignUp
-

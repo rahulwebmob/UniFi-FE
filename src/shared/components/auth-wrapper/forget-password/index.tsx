@@ -5,12 +5,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 import { Box, Grid, Button, TextField, Typography } from '@mui/material'
 
-import MainLogo from '../../../../Assets/logo.svg'
-import { useAdminForgetPasswordMutation } from '../../../../Services/onboarding'
+import MainLogo from '../../../../assets/logo.svg'
+import { useAdminForgetPasswordMutation } from '../../../../services/onboarding'
 import {
   useForgetPasswordMutation,
   useEducatorForgetPasswordMutation,
-} from '../../../../Services/admin'
+} from '../../../../services/admin'
 
 interface ForgetPasswordProps {
   type?: string

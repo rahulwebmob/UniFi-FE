@@ -1,10 +1,13 @@
 // Stub implementations for common utilities
 // These are placeholder functions to fix import errors
 
-export const mergeData = (..._args: unknown[]) => { void _args; return {}; }
+export const mergeData = (..._args: unknown[]) => {
+  void _args
+  return {}
+}
 
 export const stopStream = (stream: MediaStream | null) => {
-  if (stream && stream.getTracks) {
+  if (stream?.getTracks) {
     stream.getTracks().forEach((track: MediaStreamTrack) => track.stop())
   }
 }
@@ -38,10 +41,25 @@ export const ASPECT_RATIO = 16 / 9
 export const VIDEO_RESOLUTION = 720
 
 export const createWebinarSocket = () => ({
-  on: (_event: string, _callback: (...args: unknown[]) => void) => { void _event; void _callback; },
-  onAny: (_callback: (...args: unknown[]) => void) => { void _callback; },
-  disconnect: () => { /* mock disconnect */ },
-  emit: (_event: string, _data: unknown, _callback?: (...args: unknown[]) => void) => { void _event; void _data; void _callback; }
+  on: (_event: string, _callback: (...args: unknown[]) => void) => {
+    void _event
+    void _callback
+  },
+  onAny: (_callback: (...args: unknown[]) => void) => {
+    void _callback
+  },
+  disconnect: () => {
+    /* mock disconnect */
+  },
+  emit: (
+    _event: string,
+    _data: unknown,
+    _callback?: (...args: unknown[]) => void,
+  ) => {
+    void _event
+    void _data
+    void _callback
+  },
 })
 
 export const formatDate = (date: string | Date | null) => {
@@ -72,7 +90,10 @@ export const truncateText = (text: string, maxLength: number) => {
   return text.substr(0, maxLength) + '...'
 }
 
-export const debounce = <T extends (...args: unknown[]) => unknown>(func: T, wait: number) => {
+export const debounce = <T extends (...args: unknown[]) => unknown>(
+  func: T,
+  wait: number,
+) => {
   let timeout: NodeJS.Timeout
   return function executedFunction(...args: Parameters<T>) {
     const later = () => {
@@ -86,7 +107,12 @@ export const debounce = <T extends (...args: unknown[]) => unknown>(func: T, wai
 
 export const CONSTANTS = {
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
-  ALLOWED_FILE_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'],
+  ALLOWED_FILE_TYPES: [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'application/pdf',
+  ],
   DEFAULT_PAGE_SIZE: 10,
 }
 
@@ -202,7 +228,8 @@ export const ACTIVE_BUTTON_CSS = {
   color: 'background.paper',
 }
 
-export const transformNaNToNull = (value) => Number.isNaN(value) ? null : value
+export const transformNaNToNull = (value) =>
+  Number.isNaN(value) ? null : value
 
 const areValuesEqual = (value1, value2) => {
   if (Array.isArray(value1) && Array.isArray(value2)) {
@@ -254,7 +281,8 @@ export const getEducatorDetails = (detail, returnType = 'fullName') => {
   return fullName
 }
 
-export const containsNestedArray = (objectArray, nestedArrayKey) => objectArray.every(
+export const containsNestedArray = (objectArray, nestedArrayKey) =>
+  objectArray.every(
     (item) =>
       Array.isArray(item[nestedArrayKey]) && item[nestedArrayKey].length,
   )
@@ -279,7 +307,8 @@ const videoMimeTypes = {
   webm: 'video/webm',
 }
 
-export const getFormatType = (ext) => videoMimeTypes[ext] || 'application/octet-stream'
+export const getFormatType = (ext) =>
+  videoMimeTypes[ext] || 'application/octet-stream'
 
 // Generate Invoice
 
@@ -306,7 +335,7 @@ const convertImagesToBase64 = async (div) => {
     if (src && (src.startsWith('https') || src.startsWith('data:'))) {
       const base64 = await fetchImageAsBase64(src)
       if (base64) {
-        (img as HTMLImageElement).setAttribute('src', base64)
+        ;(img as HTMLImageElement).setAttribute('src', base64)
       } else (img as HTMLImageElement).remove()
     }
   })
@@ -365,12 +394,12 @@ export const convUtcToLocal = (timeStr, dateStr = new Date().toISOString()) => {
   return utc(`${datePart} ${timeStr}`, 'YYYY-MM-DD HH:mm').local().toDate()
 }
 
-export const handleAreAllFieldsFilled = (arr) => arr.every((obj) =>
+export const handleAreAllFieldsFilled = (arr) =>
+  arr.every((obj) =>
     Object.values(obj).every(
       (value) => value !== '' && value !== null && value !== undefined,
     ),
   )
-
 
 export default {
   mergeData,

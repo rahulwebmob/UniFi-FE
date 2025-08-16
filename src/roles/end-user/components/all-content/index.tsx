@@ -13,9 +13,9 @@ import {
 
 import CourseList from '../course-list'
 import WebinarList from '../webinar-list'
-import { useGetCategoryListQuery } from '../../../../Services/education'
+import { useGetCategoryListQuery } from '../../../../services/education'
 
-const AllContent = () => {
+const AllContent: React.FC = () => {
   const { t } = useTranslation('education')
   const [page, setPage] = useState(1)
   const [isLoadMore, setIsLoadMore] = useState(false)
@@ -64,13 +64,15 @@ const AllContent = () => {
           gap: 2,
         }}
       >
-        <Box sx={{ 
-          display: 'flex', 
-          gap: 2, 
-          alignItems: 'center',
-          flexWrap: { xs: 'wrap', sm: 'nowrap' },
-          width: { xs: '100%', lg: 'auto' }
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            alignItems: 'center',
+            flexWrap: { xs: 'wrap', sm: 'nowrap' },
+            width: { xs: '100%', lg: 'auto' },
+          }}
+        >
           <Typography
             variant="h6"
             sx={{
@@ -104,13 +106,15 @@ const AllContent = () => {
           </ButtonGroup>
         </Box>
         {/* Filters Section */}
-        <Box sx={{ 
-          display: 'flex', 
-          gap: 2, 
-          flexDirection: { xs: 'column', sm: 'row' },
-          width: { xs: '100%', sm: 'auto' },
-          alignItems: 'center',
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            flexDirection: { xs: 'column', sm: 'row' },
+            width: { xs: '100%', sm: 'auto' },
+            alignItems: 'center',
+          }}
+        >
           <Autocomplete
             size="small"
             disablePortal
@@ -125,14 +129,10 @@ const AllContent = () => {
               minWidth: 200,
               '& .MuiOutlinedInput-root': {
                 height: '40px',
-              }
+              },
             }}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Categories"
-                size="small"
-              />
+              <TextField {...params} placeholder="Categories" size="small" />
             )}
           />
           <TextField
@@ -141,7 +141,7 @@ const AllContent = () => {
               minWidth: 200,
               '& .MuiOutlinedInput-root': {
                 height: '40px',
-              }
+              },
             }}
             size="small"
             placeholder={`Search ${contentType}...`}

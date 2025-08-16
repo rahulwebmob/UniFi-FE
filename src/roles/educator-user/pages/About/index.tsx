@@ -1,6 +1,6 @@
 import React from 'react'
-import { Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { Controller, type Control, type FieldValues } from 'react-hook-form'
 
 import {
   Box,
@@ -12,10 +12,14 @@ import {
   FormHelperText,
 } from '@mui/material'
 
-import countries from '../../../../Constants/countries'
+import countries from '../../../../constants/countries'
 import RequiredFieldIndicator from '../../../../shared/components/ui-elements/required-field-indicator'
 
-const About = ({ control }) => {
+interface AboutProps {
+  control: Control<FieldValues>
+}
+
+const About = ({ control }: AboutProps) => {
   const { t } = useTranslation('education')
 
   return (
@@ -107,7 +111,6 @@ const About = ({ control }) => {
                 <TextField
                   select
                   size="small"
-                  displayEmpty
                   renderValue={(selected) => {
                     if (!selected) {
                       return (
@@ -124,10 +127,14 @@ const About = ({ control }) => {
                     return selected
                   }}
                   {...field}
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        height: '175px',
+                  slotProps={{
+                    select: {
+                      MenuProps: {
+                        PaperProps: {
+                          style: {
+                            height: '175px',
+                          },
+                        },
                       },
                     },
                   }}

@@ -15,12 +15,24 @@ import {
   FormControl,
   useMediaQuery,
   InputAdornment,
+  type Theme,
 } from '@mui/material'
 
 import * as Style from '../tablestyle'
-import { updateUser } from '../../../../Redux/Reducers/UserSlice'
-import { useResetPasswordMutation } from '../../../../Services/admin'
-import { useEditAdminProfileMutation } from '../../../../Services/onboarding'
+import type { RootState } from '../../../../redux/types'
+import { updateUser } from '../../../../redux/reducers/user-slice'
+import { useResetPasswordMutation } from '../../../../services/admin'
+import { useEditAdminProfileMutation } from '../../../../services/onboarding'
+
+interface ChangePasswordProps {
+  closeModal: () => void
+  userEmail?: string
+  headerName?: string | null
+  isUserAdmin?: boolean
+  resetPassword?: (values: Record<string, string>) => void
+  isResetPassword?: boolean
+}
+
 
 const ChangePassword = ({
   closeModal,
@@ -29,7 +41,7 @@ const ChangePassword = ({
   isUserAdmin,
   resetPassword,
   isResetPassword,
-}) => {
+}: ChangePasswordProps) => {
   const [showPassword, setShowPassword] = useState({
     newPassword: false,
     currentPassword: false,
@@ -38,9 +50,9 @@ const ChangePassword = ({
 
   const dispatch = useDispatch()
   const { t } = useTranslation('application')
-  const matches = useMediaQuery((theme) => theme.breakpoints.down('sm'))
+  const matches = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'))
   const isPasswordMissing = useSelector(
-    (state) => state?.user?.user?.isPasswordMissing,
+    (state: RootState) => state.user.user.isPasswordMissing,
   )
 
   const [resetUserPassword] = useResetPasswordMutation()
@@ -111,7 +123,7 @@ const ChangePassword = ({
     defaultValues,
   })
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values: Record<string, string>) => {
     let response
     if (isUserAdmin) {
       response = await updateAdminPassword({ ...values, update: 'password' })
@@ -123,10 +135,13 @@ const ChangePassword = ({
       closeModal()
       reset()
       if (!isUserAdmin && !isResetPassword) {
-        localStorage.setItem('token', response?.data?.token)
+        localStorage.setItem(
+          'token',
+          (response as { data: { token: string } }).data.token,
+        )
       }
     }
-    resetPassword(values)
+    resetPassword?.(values)
   }
 
   return (

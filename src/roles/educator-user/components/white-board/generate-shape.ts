@@ -3,10 +3,10 @@ import * as fabric from 'fabric'
 import { ShapeTypes } from './constants'
 
 const GenerateShape = (
-  canvas,
-  shape,
-  strokeColor,
-  fillColor,
+  canvas: fabric.Canvas,
+  shape: string,
+  strokeColor: string,
+  fillColor: string,
   isHollow = true,
 ) => {
   canvas.isDrawingMode = false

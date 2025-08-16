@@ -3,12 +3,17 @@ import { useLocation } from 'react-router-dom'
 
 import CreateCourse from '../create-course'
 import { extractFilename } from '../../common/common'
-import { useListChapersQuery } from '../../../../../Services/admin'
+import { useListChapersQuery } from '../../../../../services/admin'
 import ApiMiddleware from '../../../../../shared/components/api-middleware'
 
-const EditCourse = ({ currentStep }) => {
+interface EditCourseProps {
+  currentStep?: number
+}
+
+const EditCourse = ({ currentStep }: EditCourseProps) => {
   const location = useLocation()
-  const { courseId, isPreview } = location?.state || {}
+  const { courseId, isPreview } =
+    (location?.state as { courseId?: string; isPreview?: boolean }) || {}
 
   const { data, error, isLoading } = useListChapersQuery(
     { courseId },

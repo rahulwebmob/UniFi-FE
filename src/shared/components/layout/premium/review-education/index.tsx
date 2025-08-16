@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import  { useMemo } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -12,15 +12,34 @@ import {
   IconButton,
 } from '@mui/material'
 
-import { educationApi } from '../../../../../Services/education'
-import { useBuyPremiumSubscriptionMutation } from '../../../../../Services/admin'
+import { educationApi } from '../../../../../services/education'
+import { useBuyPremiumSubscriptionMutation } from '../../../../../services/admin'
+
+interface TransactionInfo {
+  cardHolderName?: string
+  cardNumber?: string
+  expiryDate?: string
+  cvv?: string
+  [key: string]: unknown
+}
+
+interface SubscriptionDetails {
+  [key: string]: unknown
+}
+
+interface ReviewEducationProps {
+  transactionInfo: TransactionInfo
+  setCurrentStep: (step: number) => void
+  closeModal: () => void
+  subscriptionDetails: SubscriptionDetails
+}
 
 const ReviewEducation = ({
   transactionInfo,
   setCurrentStep,
   closeModal,
   subscriptionDetails,
-}) => {
+}: ReviewEducationProps) => {
   console.warn({ subscriptionDetails })
 
   const theme = useTheme()
@@ -38,16 +57,16 @@ const ReviewEducation = ({
 
   const handlePayment = async () => {
     const purchaseType = subscriptionDetails?.[0]?.purchaseType
-    const payload = {
+    const payload: Record<string, unknown> = {
       ...transactionInfo,
       subscriptionType: purchaseType,
     }
 
     if (purchaseType === 'COURSE') {
-      payload.courseId = subscriptionDetails?.[0]?._id
+      payload.courseId = (subscriptionDetails as unknown as Array<{ _id: string }>)?.[0]?._id
     } else if (purchaseType === 'WEBINAR') {
-      payload.webinarId = subscriptionDetails?.[0]?._id
-      payload.scheduledDate = subscriptionDetails?.[0]?.scheduledDate
+      payload.webinarId = (subscriptionDetails as unknown as Array<{ _id: string; scheduledDate?: string }>)?.[0]?._id
+      payload.scheduledDate = (subscriptionDetails as unknown as Array<{ scheduledDate?: string }>)?.[0]?.scheduledDate
     }
 
     const response = await buyPremiumSubscription(payload)
@@ -107,7 +126,7 @@ const ReviewEducation = ({
           <ArrowLeft
             size={20}
             style={{ cursor: 'pointer', marginRight: 2 }}
-            onClick={() => setCurrentStep((prev) => prev - 1)}
+            onClick={() => setCurrentStep(2)}
           />
         </IconButton>
         <Typography variant="h6">
@@ -182,7 +201,9 @@ const ReviewEducation = ({
           </Typography>
           <Button
             disabled={isLoading}
-            onClick={() => { void handlePayment() }}
+            onClick={() => {
+              void handlePayment()
+            }}
             variant="contained"
             sx={{ borderRadius: '8px', fontWeight: 600 }}
           >

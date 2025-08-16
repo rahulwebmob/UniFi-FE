@@ -3,7 +3,7 @@ import { Image, Video } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Controller, useFormContext } from 'react-hook-form'
 
-import { Box, Grid, Typography, FormControl, useTheme } from '@mui/material'
+import { Box, Grid, useTheme, Typography, FormControl } from '@mui/material'
 
 const MetaData = () => {
   const theme = useTheme()
@@ -109,10 +109,21 @@ const MetaData = () => {
                         </Typography>
                       </Box>
                     )}
-                    <Typography variant="body1" sx={{ fontWeight: 600, color: theme.palette.primary.main, mb: 1 }}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: 600,
+                        color: theme.palette.primary.main,
+                        mb: 1,
+                      }}
+                    >
                       {t('EDUCATOR.SETUP_COURSE.CLICK_TO_UPLOAD_OR_DRAG_DROP')}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.8 }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ opacity: 0.8 }}
+                    >
                       {t('EDUCATOR.SETUP_COURSE.IMAGE_FORMAT_GUIDELINES')}
                     </Typography>
                     {errors.image && (
@@ -124,7 +135,11 @@ const MetaData = () => {
                 )}
               />
             </Box>
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: 'block', mt: 1 }}
+            >
               {t('EDUCATOR.SETUP_COURSE.COURSE_IMAGE_UPLOAD_GUIDELINES')}
             </Typography>
           </FormControl>
@@ -219,10 +234,21 @@ const MetaData = () => {
                         </Typography>
                       </Box>
                     )}
-                    <Typography variant="body1" sx={{ fontWeight: 600, color: theme.palette.primary.main, mb: 1 }}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: 600,
+                        color: theme.palette.primary.main,
+                        mb: 1,
+                      }}
+                    >
                       {t('EDUCATOR.SETUP_COURSE.CLICK_TO_UPLOAD_OR_DRAG_DROP')}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.8 }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ opacity: 0.8 }}
+                    >
                       {t('EDUCATOR.SETUP_COURSE.VIDEO_FORMAT_GUIDELINES')}
                     </Typography>
                     {errors.video && (
@@ -234,7 +260,11 @@ const MetaData = () => {
                 )}
               />
             </Box>
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: 'block', mt: 1 }}
+            >
               {t('EDUCATOR.SETUP_COURSE.VIDEO_UPLOAD_GUIDELINES')}
             </Typography>
           </FormControl>

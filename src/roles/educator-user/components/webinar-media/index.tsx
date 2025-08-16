@@ -58,7 +58,9 @@ const WebinarMedia = ({ stream, mediaType, isMirror }) => {
         </audio>
         {audioError && (
           <Box
-            onClick={() => { void handleEnableAudio() }}
+            onClick={() => {
+              void handleEnableAudio()
+            }}
             style={{
               zIndex: 1,
               top: '10px',
@@ -67,8 +69,8 @@ const WebinarMedia = ({ stream, mediaType, isMirror }) => {
               position: 'absolute',
             }}
           >
-            <Volume2 size={16} style={{ color: theme.palette.primary.main }} /> Host is
-            speaking – Tap to enable audio
+            <Volume2 size={16} style={{ color: theme.palette.primary.main }} />{' '}
+            Host is speaking – Tap to enable audio
           </Box>
         )}
       </>

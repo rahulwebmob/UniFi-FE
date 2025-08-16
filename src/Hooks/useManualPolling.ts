@@ -13,11 +13,11 @@ const useManualPolling = (refetch, interval = 3000) => {
         //
       }
       if (!cancelled) {
-        timeoutIdRef.current = setTimeout(poll, interval)
+        timeoutIdRef.current = setTimeout(() => void poll(), interval)
       }
     }
 
-    poll()
+    void poll()
 
     return () => {
       cancelled = true

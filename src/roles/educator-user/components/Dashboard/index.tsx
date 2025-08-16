@@ -1,29 +1,30 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { 
-  PenTool, 
-  Presentation, 
-  TrendingUp, 
-  Users, 
-  BookOpen, 
-  Video,
-  ArrowRight
-} from 'lucide-react'
 import React, { useRef, useEffect, useCallback } from 'react'
+import {
+  Users,
+  Video,
+  PenTool,
+  BookOpen,
+  ArrowRight,
+  TrendingUp,
+  Presentation,
+} from 'lucide-react'
 
-import { 
-  Box, 
-  Container, 
-  Typography, 
-  Card, 
-  Button, 
-  Grid, 
-  alpha, 
-  useTheme,
+import {
+  Box,
+  Card,
+  Grid,
+  Chip,
+  alpha,
   Paper,
-  Chip
+  Button,
+  useTheme,
+  Container,
+  Typography,
 } from '@mui/material'
-import { chatSocket, initializeSocket } from '../../../../Services/sockets'
+
+import { chatSocket, initializeSocket } from '../../../../services/sockets'
 
 const Dashboard = () => {
   const setTimeoutId = useRef<NodeJS.Timeout | null>(null)
@@ -125,9 +126,9 @@ const Dashboard = () => {
           >
             Welcome to Educator Dashboard
           </Typography>
-          <Typography 
-            variant="h6" 
-            sx={{ 
+          <Typography
+            variant="h6"
+            sx={{
               color: theme.palette.text.secondary,
               fontWeight: 400,
               mb: 3,
@@ -136,7 +137,7 @@ const Dashboard = () => {
             {t('EDUCATOR.DASHBOARD.SUB_HEADING_1')}
             {t('EDUCATOR.DASHBOARD.SUB_HEADING_2')}
           </Typography>
-          
+
           {/* Quick Stats */}
           <Grid container spacing={3} sx={{ mt: 2 }}>
             <Grid size={{ xs: 12, sm: 4 }}>
@@ -174,7 +175,7 @@ const Dashboard = () => {
                 </Box>
               </Box>
             </Grid>
-            
+
             <Grid size={{ xs: 12, sm: 4 }}>
               <Box
                 sx={{
@@ -210,7 +211,7 @@ const Dashboard = () => {
                 </Box>
               </Box>
             </Grid>
-            
+
             <Grid size={{ xs: 12, sm: 4 }}>
               <Box
                 sx={{
@@ -250,9 +251,9 @@ const Dashboard = () => {
         </Paper>
 
         {/* Action Cards */}
-        <Typography 
-          variant="h5" 
-          sx={{ 
+        <Typography
+          variant="h5"
+          sx={{
             fontWeight: 600,
             mb: 3,
             color: theme.palette.text.primary,
@@ -260,9 +261,9 @@ const Dashboard = () => {
         >
           Quick Actions
         </Typography>
-        
+
         <Grid container spacing={3}>
-          {cardData.map((item, index) => {
+          {cardData.map((item) => {
             const Icon = item.icon
             return (
               <Grid size={{ xs: 12, md: 6 }} key={item.link}>
@@ -283,7 +284,9 @@ const Dashboard = () => {
                       },
                     },
                   }}
-                  onClick={() => navigate(item.link)}
+                  onClick={() => {
+                    void navigate(item.link)
+                  }}
                 >
                   <Box
                     sx={{
@@ -307,10 +310,10 @@ const Dashboard = () => {
                     >
                       <Icon size={32} />
                     </Box>
-                    
-                    <Typography 
-                      variant="h5" 
-                      sx={{ 
+
+                    <Typography
+                      variant="h5"
+                      sx={{
                         fontWeight: 600,
                         mb: 1.5,
                         color: theme.palette.text.primary,
@@ -318,10 +321,10 @@ const Dashboard = () => {
                     >
                       {t(item.title)}
                     </Typography>
-                    
-                    <Typography 
-                      variant="body1" 
-                      sx={{ 
+
+                    <Typography
+                      variant="body1"
+                      sx={{
                         color: theme.palette.text.secondary,
                         mb: 3,
                         lineHeight: 1.7,
@@ -329,14 +332,14 @@ const Dashboard = () => {
                     >
                       {t(item.description)}
                     </Typography>
-                    
+
                     <Button
                       variant="contained"
                       fullWidth
                       endIcon={
-                        <ArrowRight 
-                          size={20} 
-                          className="action-arrow" 
+                        <ArrowRight
+                          size={20}
+                          className="action-arrow"
                           style={{ transition: 'transform 0.3s' }}
                         />
                       }
@@ -372,10 +375,15 @@ const Dashboard = () => {
             boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.06)}`,
           }}
         >
-          <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
-            <Typography 
-              variant="h5" 
-              sx={{ 
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={3}
+          >
+            <Typography
+              variant="h5"
+              sx={{
                 fontWeight: 600,
                 color: theme.palette.text.primary,
               }}
@@ -392,7 +400,7 @@ const Dashboard = () => {
               }}
             />
           </Box>
-          
+
           <Box
             sx={{
               py: 8,

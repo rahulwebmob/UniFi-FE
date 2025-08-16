@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 
 import CreateWebinar from '../create-webinar'
 import { convUtcToLocal } from '../../common/common'
-import { useGetWebinarDetailQuery } from '../../../../../Services/admin'
+import { useGetWebinarDetailQuery } from '../../../../../services/admin'
 import ApiMiddleware from '../../../../../shared/components/api-middleware'
 
 const EditWebinar = () => {

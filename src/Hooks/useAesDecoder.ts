@@ -1,10 +1,11 @@
 import CryptoJS from 'crypto-js'
 import { useSelector } from 'react-redux'
+import type { RootState } from '../redux/types'
 
 const secretKey = import.meta.env.VITE_AES_SECRET_KEY || ''
 
 const useAesDecoder = (encodedText: string) => {
-  const { user } = useSelector((state: any) => state.user)
+  const { user } = useSelector((state: RootState) => state.user)
   const userId = user?._id || null
 
   // decryption function
@@ -14,7 +15,7 @@ const useAesDecoder = (encodedText: string) => {
         console.warn('Missing secretKey or userId for decryption')
         return encodedText
       }
-      
+
       const ivone = userId
       const ivfirst = ivone.padEnd(32, '0').slice(0, 32)
       const iv = CryptoJS.enc.Hex.parse(ivfirst)
@@ -28,7 +29,7 @@ const useAesDecoder = (encodedText: string) => {
         },
       )
       const decrypted = bytes.toString(CryptoJS.enc.Utf8)
-      
+
       // If decryption fails or returns empty, return original text
       return decrypted || encodedText
     } catch (error) {

@@ -8,7 +8,7 @@ import { GridContainer } from '../style'
 import WebinarCard from '../webinar-card'
 import ContentSkeleton from '../content-skeleton'
 import NoDataFound from '../../../../shared/components/no-data-found'
-import { useGetAllWebinarsQuery } from '../../../../Services/education'
+import { useGetAllWebinarsQuery } from '../../../../services/education'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
 
 const iff = <T,>(condition: boolean, trueCase: T, falseCase: T): T =>
@@ -43,7 +43,6 @@ interface WebinarItem {
   [key: string]: unknown
 }
 
-
 interface WebinarListProps {
   page: number
   searchTerm?: string
@@ -74,14 +73,19 @@ const WebinarList = ({
     {
       pollingInterval: 5000,
     },
-  ) as { data?: { data?: { webinars?: WebinarItem[], count?: number } }, isLoading: boolean, isFetching: boolean, isSuccess: boolean }
+  ) as {
+    data?: { data?: { webinars?: WebinarItem[]; count?: number } }
+    isLoading: boolean
+    isFetching: boolean
+    isSuccess: boolean
+  }
 
   useEffect(() => {
     if (isSuccess && !isFetching) {
       if (data?.data?.webinars?.length) {
         setList((prev) =>
           page === 1
-            ? data.data.webinars ?? []
+            ? (data.data.webinars ?? [])
             : [...prev, ...(data.data.webinars ?? [])],
         )
         setCount(data.data.count ?? 0)
@@ -108,43 +112,43 @@ const WebinarList = ({
           <ContentSkeleton isPurchased />,
           iff(
             !!list.length,
-              list.map((item) => (
-                <WebinarCard
-                  key={item._id}
-                  webinar={item}
-                  isPurchased
-                  locale={locale}
-                />
-              )),
-              <Box
-                sx={{
-                  '&.MuiTabs-flexContainer': {
-                    display: 'inline',
-                  },
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  '& .MuiBox-root': {
-                    minHeight: 'auto',
-                    height: 'auto',
-                  },
-                  svg: {
-                    width: '107px',
-                  },
-                  '& .MuiTypography-h3': {
-                    display: 'none',
-                  },
-                }}
-              >
-                <NoDataFound
-                  description={t(
-                    'EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_WEBINAR',
-                  )}
-                />
-              </Box>,
-            ),
-          )}
-        </MuiCarousel>
+            list.map((item) => (
+              <WebinarCard
+                key={item._id}
+                webinar={item}
+                isPurchased
+                locale={locale}
+              />
+            )),
+            <Box
+              sx={{
+                '&.MuiTabs-flexContainer': {
+                  display: 'inline',
+                },
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                '& .MuiBox-root': {
+                  minHeight: 'auto',
+                  height: 'auto',
+                },
+                svg: {
+                  width: '107px',
+                },
+                '& .MuiTypography-h3': {
+                  display: 'none',
+                },
+              }}
+            >
+              <NoDataFound
+                description={t(
+                  'EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_WEBINAR',
+                )}
+              />
+            </Box>,
+          ),
+        )}
+      </MuiCarousel>
     )
 
   return (
@@ -155,7 +159,14 @@ const WebinarList = ({
           <ContentSkeleton isPurchased={false} />
         </GridContainer>,
         !list.length ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '300px',
+            }}
+          >
             <NoDataFound />
           </Box>
         ) : (

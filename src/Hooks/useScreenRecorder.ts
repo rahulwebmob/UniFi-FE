@@ -138,10 +138,7 @@ const useScreenRecorder = ({
       remoteSourceRef.current = null
     }
 
-    if (
-      !isHost &&
-      externalAudioStream?.getAudioTracks().length
-    ) {
+    if (!isHost && externalAudioStream?.getAudioTracks().length) {
       try {
         const newRemoteSource = audioCtxRef.current.createMediaStreamSource(
           new MediaStream(externalAudioStream.getAudioTracks()),
@@ -160,7 +157,10 @@ const useScreenRecorder = ({
     }
   }, [isMicAudioRequired, isRecording])
 
-  useEffect(() => () => isRecording && stopRecording(), [isRecording, stopRecording])
+  useEffect(
+    () => () => isRecording && stopRecording(),
+    [isRecording, stopRecording],
+  )
 
   const handleToggleRecording = useCallback(
     () => (isRecording ? stopRecording() : startRecording()),

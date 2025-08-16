@@ -1,6 +1,16 @@
 import { Outlet } from 'react-router-dom'
+import { useRef, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import React, { useRef, useEffect, useCallback } from 'react'
+
+import { Box, useTheme } from '@mui/material'
+
+import Footer from '../footer'
+import TopNavigation from '../top-navigation'
+import LANGUAGES from '../../../../constants/languages'
+import { useLoggedUserQuery } from '../../../../services/admin'
+import { loggedIn } from '../../../../redux/reducers/user-slice'
+import { updateLanguage } from '../../../../redux/reducers/app-slice'
+import ScrollToTop from '../../../../shared/components/scroll-to-top'
 
 interface RootState {
   app: {
@@ -22,24 +32,10 @@ interface LoggedUser {
   [key: string]: unknown
 }
 
-
-
-import { Box, useTheme } from '@mui/material'
-
-import Footer from '../footer'
-import TopNavigation from '../top-navigation'
-import LANGUAGES from '../../../../Constants/LANGUAGES'
-import { loggedIn } from '../../../../Redux/Reducers/UserSlice'
-import {
-  useLoggedUserQuery,
-} from '../../../../Services/admin'
-import { updateLanguage } from '../../../../Redux/Reducers/AppSlice'
-import ScrollToTop from '../../../../shared/components/scroll-to-top'
-
 const DashboardLayout = () => {
   const dispatch = useDispatch()
   const theme = useTheme()
-  const containerRef = useRef<HTMLElement>()
+  const containerRef = useRef<HTMLElement>(null)
   const { data: loggedUser } = useLoggedUserQuery() as { data?: LoggedUser }
 
   const { isFullscreen } = useSelector((state: RootState) => state.app)
@@ -49,9 +45,9 @@ const DashboardLayout = () => {
     // Menu position is always top now - no need to update
     // Settings the application language
     if (loggedUser?.appearance?.language) {
-      const languagesTyped = LANGUAGES as Record<string, Language>
+      const languagesTyped = LANGUAGES as unknown as Record<string, Language>
       const selectedLang = languagesTyped[loggedUser.appearance.language]
-      dispatch(updateLanguage(selectedLang))
+      dispatch(updateLanguage(selectedLang as unknown as Language))
     }
 
     // Refresh timer setting removed - no longer needed
@@ -59,7 +55,7 @@ const DashboardLayout = () => {
     // Settings the user details
     dispatch(
       loggedIn({
-        loggedUser,
+        loggedUser: loggedUser as unknown as LoggedUser,
       }),
     )
   }, [loggedUser, dispatch])

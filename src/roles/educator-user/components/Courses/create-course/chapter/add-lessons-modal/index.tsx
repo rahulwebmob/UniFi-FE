@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from 'react'
 import { Plus, Edit2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import React, { useRef, useEffect } from 'react'
 
-import { Box, Typography, IconButton, Button, useTheme } from '@mui/material'
+import { Box, Button, useTheme, IconButton } from '@mui/material'
 
 import AddLesson from './add-lesson'
 import ModalBox from '../../../../../../../shared/components/ui-elements/modal-box'
@@ -29,7 +29,7 @@ const AddLessonsModal = ({
   return (
     <>
       {isEdit ? (
-        <IconButton 
+        <IconButton
           size="small"
           onClick={() => lessionRef.current?.openModal()}
           sx={{

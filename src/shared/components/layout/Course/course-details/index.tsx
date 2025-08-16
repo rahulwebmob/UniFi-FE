@@ -1,9 +1,9 @@
 import { useRef, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 
-import ApiResponseWrapper from '../../../api-middleware'
 import PremiumModal from '../../premium'
-import { useGetParticularCourseQuery } from '../../../../../Services/education'
+import ApiResponseWrapper from '../../../api-middleware'
+import { useGetParticularCourseQuery } from '../../../../../services/education'
 import ContentView from '../../../../../roles/educator-user/components/Courses/content-view'
 
 interface CourseData {

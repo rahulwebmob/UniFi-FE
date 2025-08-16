@@ -5,7 +5,6 @@ import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 
 import { Box, Grid, Button, Typography, FormControl } from '@mui/material'
 
-
 const WebinarMetaData = () => {
   const fileInputRefs = useRef([])
   const { t } = useTranslation('education')
@@ -138,7 +137,11 @@ const WebinarMetaData = () => {
                       )}
 
                       {errors.resources?.[index]?.file && (
-                        <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                        <Typography
+                          variant="caption"
+                          color="error"
+                          sx={{ mt: 0.5, display: 'block' }}
+                        >
                           {errors.resources?.[index]?.file?.message}
                         </Typography>
                       )}
@@ -214,7 +217,11 @@ const WebinarMetaData = () => {
                   </Typography>
                 </Box>
                 {errors.image && (
-                  <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                  <Typography
+                    variant="caption"
+                    color="error"
+                    sx={{ mt: 0.5, display: 'block' }}
+                  >
                     {errors.image.message}
                   </Typography>
                 )}

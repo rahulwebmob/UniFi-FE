@@ -16,11 +16,7 @@ import {
   FormControlLabel,
 } from '@mui/material'
 
-import {
-  handleMinTime,
-  ACTIVE_BUTTON_CSS,
-  handleIsTodaySelected,
-} from '../../../common/common'
+import { handleMinTime, handleIsTodaySelected } from '../../../common/common'
 
 const WebinarSchedule = () => {
   const {
@@ -71,15 +67,30 @@ const WebinarSchedule = () => {
                 name="scheduleType"
                 control={control}
                 render={({ field: { onChange } }) => (
-                  <ButtonGroup sx={{ '& .MuiButton-root:not(:last-child)': { borderRight: 'none' } }}>
+                  <ButtonGroup
+                    sx={{
+                      '& .MuiButton-root:not(:last-child)': {
+                        borderRight: 'none',
+                      },
+                    }}
+                  >
                     <Button
                       variant="outlined"
                       sx={{
-                        backgroundColor: watch('scheduleType') === 'daily' ? 'primary.main' : 'transparent',
-                        color: watch('scheduleType') === 'daily' ? 'white' : 'text.secondary',
+                        backgroundColor:
+                          watch('scheduleType') === 'daily'
+                            ? 'primary.main'
+                            : 'transparent',
+                        color:
+                          watch('scheduleType') === 'daily'
+                            ? 'white'
+                            : 'text.secondary',
                         borderColor: (theme) => theme.palette.grey[300],
                         '&:hover': {
-                          backgroundColor: watch('scheduleType') === 'daily' ? 'primary.dark' : 'action.hover',
+                          backgroundColor:
+                            watch('scheduleType') === 'daily'
+                              ? 'primary.dark'
+                              : 'action.hover',
                         },
                       }}
                       onClick={() => {
@@ -91,11 +102,20 @@ const WebinarSchedule = () => {
                     <Button
                       variant="outlined"
                       sx={{
-                        backgroundColor: watch('scheduleType') === 'weekly' ? 'primary.main' : 'transparent',
-                        color: watch('scheduleType') === 'weekly' ? 'white' : 'text.secondary',
+                        backgroundColor:
+                          watch('scheduleType') === 'weekly'
+                            ? 'primary.main'
+                            : 'transparent',
+                        color:
+                          watch('scheduleType') === 'weekly'
+                            ? 'white'
+                            : 'text.secondary',
                         borderColor: (theme) => theme.palette.grey[300],
                         '&:hover': {
-                          backgroundColor: watch('scheduleType') === 'weekly' ? 'primary.dark' : 'action.hover',
+                          backgroundColor:
+                            watch('scheduleType') === 'weekly'
+                              ? 'primary.dark'
+                              : 'action.hover',
                         },
                       }}
                       onClick={() => {
@@ -107,11 +127,20 @@ const WebinarSchedule = () => {
                     <Button
                       variant="outlined"
                       sx={{
-                        backgroundColor: watch('scheduleType') === 'one time' ? 'primary.main' : 'transparent',
-                        color: watch('scheduleType') === 'one time' ? 'white' : 'text.secondary',
+                        backgroundColor:
+                          watch('scheduleType') === 'one time'
+                            ? 'primary.main'
+                            : 'transparent',
+                        color:
+                          watch('scheduleType') === 'one time'
+                            ? 'white'
+                            : 'text.secondary',
                         borderColor: (theme) => theme.palette.grey[300],
                         '&:hover': {
-                          backgroundColor: watch('scheduleType') === 'one time' ? 'primary.dark' : 'action.hover',
+                          backgroundColor:
+                            watch('scheduleType') === 'one time'
+                              ? 'primary.dark'
+                              : 'action.hover',
                         },
                       }}
                       onClick={() => {
@@ -158,7 +187,11 @@ const WebinarSchedule = () => {
                 )}
               />
               {errors?.startDate && (
-                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ mt: 0.5, display: 'block' }}
+                >
                   {errors?.startDate?.message}
                 </Typography>
               )}
@@ -198,7 +231,11 @@ const WebinarSchedule = () => {
                 )}
               />
               {errors?.startTime && (
-                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ mt: 0.5, display: 'block' }}
+                >
                   {errors?.startTime?.message}
                 </Typography>
               )}
@@ -238,7 +275,11 @@ const WebinarSchedule = () => {
                 )}
               />
               {errors?.endTime && (
-                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ mt: 0.5, display: 'block' }}
+                >
                   {errors?.endTime?.message}
                 </Typography>
               )}
@@ -297,7 +338,11 @@ const WebinarSchedule = () => {
                       )}
                     />
                     {errors?.days?.[index]?.startTime && (
-                      <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                      <Typography
+                        variant="caption"
+                        color="error"
+                        sx={{ mt: 0.5, display: 'block' }}
+                      >
                         {errors?.days?.[index]?.startTime?.message}
                       </Typography>
                     )}
@@ -321,7 +366,11 @@ const WebinarSchedule = () => {
                       )}
                     />
                     {errors?.days?.[index]?.endTime && (
-                      <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                      <Typography
+                        variant="caption"
+                        color="error"
+                        sx={{ mt: 0.5, display: 'block' }}
+                      >
                         {errors?.days?.[index]?.endTime?.message}
                       </Typography>
                     )}
@@ -333,7 +382,11 @@ const WebinarSchedule = () => {
         </Grid>
       )}
       {errors?.days?.root?.message && (
-        <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+        <Typography
+          variant="caption"
+          color="error"
+          sx={{ mt: 0.5, display: 'block' }}
+        >
           {errors?.days?.root?.message}
         </Typography>
       )}

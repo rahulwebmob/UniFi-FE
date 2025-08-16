@@ -11,18 +11,17 @@ import {
   Radio,
   Button,
   Tooltip,
+  useTheme,
   TextField,
-  IconButton,
   RadioGroup,
   Typography,
   FormControl,
   CircularProgress,
   FormControlLabel,
-  useTheme,
 } from '@mui/material'
 
 import UploadPrompt from '../../../upload-prompt'
-import { errorAlert } from '../../../../../../../../Redux/Reducers/AppSlice'
+import { errorAlert } from '../../../../../../../../redux/reducers/app-slice'
 import ModalBox from '../../../../../../../../shared/components/ui-elements/modal-box'
 import {
   getFormatType,
@@ -36,7 +35,7 @@ import {
   useAddCourseChapterMutation,
   useGetAwsUrlForUploadMutation,
   useSuccessForVideoUploadMutation,
-} from '../../../../../../../../Services/admin'
+} from '../../../../../../../../services/admin'
 
 const AddLesson = ({
   isEdit,
@@ -57,8 +56,8 @@ const AddLesson = ({
   const { isCourseFree } = useFormContext()
 
   const [formData, setFormData] = useState({
-    isFree: defaultValues?.isFree || false,
-    lessonTitle: defaultValues?.lessonTitle || '',
+    isFree: defaultValues?.isFree ?? false,
+    lessonTitle: defaultValues?.lessonTitle ?? '',
   })
   const [errors, setErrors] = useState({})
   const [resource, setResource] = useState(null)
@@ -246,10 +245,7 @@ const AddLesson = ({
     <Grid container spacing={2.5}>
       {!isChapter && (
         <Grid size={{ xs: 12 }}>
-          <Typography 
-            variant="h6" 
-            sx={{ fontWeight: 600, mb: 1 }}
-          >
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
             {t('EDUCATOR.ADD_CHAPTERS.LESSON_DETAILS')}
           </Typography>
         </Grid>
@@ -300,11 +296,11 @@ const AddLesson = ({
             <Typography
               variant="body1"
               mb={0.5}
-              sx={{ 
+              sx={{
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: { xs: 'normal', sm: 'nowrap' },
-                maxWidth: { xs: '100%', sm: '300px' }
+                maxWidth: { xs: '100%', sm: '300px' },
               }}
             >
               {t('EDUCATOR.ADD_CHAPTERS.UPLOAD_RESOURCE')}{' '}
@@ -347,17 +343,17 @@ const AddLesson = ({
               size="small"
               onClick={() => fileInputRef.current.click()}
               startIcon={<CloudUpload size={16} />}
-              sx={{ 
+              sx={{
                 textTransform: 'none',
-                flexShrink: 0
+                flexShrink: 0,
               }}
             >
               {t('EDUCATOR.ADD_CHAPTERS.BROWSE')}
             </Button>
             {(defaultValues.resource || resource?.name) && (
-              <Typography 
-                variant="body2" 
-                sx={{ 
+              <Typography
+                variant="body2"
+                sx={{
                   flex: 1,
                   minWidth: 0,
                   color: theme.palette.text.secondary,
@@ -411,7 +407,9 @@ const AddLesson = ({
         <Grid size={{ xs: 12 }}>
           <Box display="flex" flexWrap="wrap" mt={2} gap={1}>
             <Button
-              onClick={() => { void handleOnSubmit() }}
+              onClick={() => {
+                void handleOnSubmit()
+              }}
               variant="contained"
               color="primary"
               startIcon={<Save size={16} />}
@@ -424,9 +422,9 @@ const AddLesson = ({
                 t('EDUCATOR.ADD_CHAPTERS.SAVE_LESSON')
               )}
             </Button>
-            <Button 
-              onClick={handleClose} 
-              variant="outlined" 
+            <Button
+              onClick={handleClose}
+              variant="outlined"
               color="inherit"
               sx={{ textTransform: 'none' }}
             >
@@ -450,7 +448,10 @@ const AddLesson = ({
     return (
       <Box>
         <Box mb={2}>
-          <Typography variant="h6" sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' }, fontWeight: 600 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' }, fontWeight: 600 }}
+          >
             {t('EDUCATOR.ADD_CHAPTERS.CHAPTER_DETAILS')}
           </Typography>
         </Box>
@@ -465,16 +466,23 @@ const AddLesson = ({
         >
           {renderForm()}
           <Grid size={{ xs: 12 }}>
-            <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} mt={3} gap={1}>
+            <Box
+              display="flex"
+              flexDirection={{ xs: 'column', sm: 'row' }}
+              mt={3}
+              gap={1}
+            >
               <Button
-                onClick={() => { void handleOnSubmit() }}
+                onClick={() => {
+                  void handleOnSubmit()
+                }}
                 variant="contained"
                 color="primary"
                 startIcon={<Save size={16} />}
                 disabled={isLoading}
-                sx={{ 
+                sx={{
                   textTransform: 'none',
-                  flex: { xs: '1', sm: 'none' }
+                  flex: { xs: '1', sm: 'none' },
                 }}
               >
                 {isLoading ? (
@@ -488,14 +496,14 @@ const AddLesson = ({
                 color="inherit"
                 onClick={handleReset}
                 startIcon={<RotateCcw size={16} />}
-                sx={{ 
+                sx={{
                   textTransform: 'none',
                   flex: { xs: '1', sm: 'none' },
                   borderColor: theme.palette.grey[300],
                   '&:hover': {
                     borderColor: theme.palette.grey[400],
                     backgroundColor: theme.palette.grey[50],
-                  }
+                  },
                 }}
               >
                 Reset

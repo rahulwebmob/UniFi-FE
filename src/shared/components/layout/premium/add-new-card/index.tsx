@@ -1,6 +1,6 @@
+import React from 'react'
 import * as yup from 'yup'
 import { ArrowLeft } from 'lucide-react'
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -16,13 +16,21 @@ import {
   InputAdornment,
 } from '@mui/material'
 
-import Creditcvv from '../../../../../Assets/images/cvv.png'
-import CreditCard from '../../../../../Assets/images/cards.png'
+import Creditcvv from '../../../../../assets/images/cvv.png'
+import CreditCard from '../../../../../assets/images/cards.png'
 import RequiredFieldIndicator from '../../../ui-elements/required-field-indicator'
 
+interface SubscriptionFormData {
+  cardHolderName?: string
+  cardNumber?: string
+  expiryDate?: string
+  cvv?: string
+  [key: string]: unknown
+}
+
 interface AddNewCardProps {
-  subscriptionFormData: any
-  setSubscriptionFormData: (data: any) => void
+  subscriptionFormData: SubscriptionFormData
+  setSubscriptionFormData: (data: SubscriptionFormData) => void
   setCurrentStep: (step: number) => void
 }
 
@@ -102,7 +110,7 @@ const AddNewCard = ({
     }
   }
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: SubscriptionFormData) => {
     const newData = { ...data, ...subscriptionFormData }
     setSubscriptionFormData(newData)
     setCurrentStep((prev: number) => prev + 1)
@@ -188,12 +196,10 @@ const AddNewCard = ({
                 control={control}
                 defaultValue=""
                 render={({ field }) => (
-                  <PatternFormatWrapper
-                    customInput={TextField}
+                  <TextField
                     {...field}
                     fullWidth
                     size="small"
-                    format="##/##"
                     placeholder={t(
                       'application:PREMIUM_MODAL.EXPIRY_DATE_FORMAT',
                     )}

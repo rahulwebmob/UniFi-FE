@@ -1,31 +1,30 @@
 import React, { useState, useEffect } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
-
+import { useParams, useLocation } from 'react-router-dom'
 import {
+  Lock,
   Video,
-  FileText,
-  ChevronDown,
-  ChevronRight,
-  ChevronLeft,
   Clock,
+  FileText,
   BookOpen,
   PlayCircle,
-  Lock,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 
 import {
   Box,
   Grid,
   Chip,
+  alpha,
+  Paper,
   Button,
   useTheme,
   Accordion,
+  Container,
   Typography,
   AccordionSummary,
   AccordionDetails,
-  alpha,
-  Container,
-  Paper,
 } from '@mui/material'
 
 import ContentPreview from '../content-preview'
@@ -33,7 +32,7 @@ import ApiResponseWrapper from '../../../api-middleware'
 import {
   useGetChapterDetailsQuery,
   useGetParticularCourseQuery,
-} from '../../../../../Services/education'
+} from '../../../../../services/education'
 
 interface Lesson {
   _id: string

@@ -4,18 +4,18 @@ import React, { useRef, useState, useEffect } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
 // import AutocompleteComponent from '@Components/Modules/TradingView/Common/AutocompleteComponent'
-import { 
+import {
   Box,
   Chip,
   Button,
+  useTheme,
   TextField,
   Typography,
   FormControl,
   Autocomplete,
-  useTheme
 } from '@mui/material'
 
-import { useGetCategoryListQuery } from '../../../../../../Services/admin'
+import { useGetCategoryListQuery } from '../../../../../../services/admin'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
 
 const AddCategory = () => {
@@ -72,12 +72,18 @@ const AddCategory = () => {
                     }
                   }}
                   sx={{
-                    backgroundColor: value?.includes(name) ? theme.palette.primary.main : 'transparent',
-                    color: value?.includes(name) ? 'white' : theme.palette.text.primary,
-                    borderColor: value?.includes(name) ? theme.palette.primary.main : theme.palette.grey[300],
+                    backgroundColor: value?.includes(name)
+                      ? theme.palette.primary.main
+                      : 'transparent',
+                    color: value?.includes(name)
+                      ? 'white'
+                      : theme.palette.text.primary,
+                    borderColor: value?.includes(name)
+                      ? theme.palette.primary.main
+                      : theme.palette.grey[300],
                     '&:hover': {
-                      backgroundColor: value?.includes(name) 
-                        ? theme.palette.primary.dark 
+                      backgroundColor: value?.includes(name)
+                        ? theme.palette.primary.dark
                         : theme.palette.grey[100],
                     },
                   }}
@@ -104,7 +110,13 @@ const AddCategory = () => {
               </Button>
             </Box>
             {errors?.category && (
-              <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>{errors?.category?.message}</Typography>
+              <Typography
+                variant="caption"
+                color="error"
+                sx={{ mt: 0.5, display: 'block' }}
+              >
+                {errors?.category?.message}
+              </Typography>
             )}
           </FormControl>
         )}

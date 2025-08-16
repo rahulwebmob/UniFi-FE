@@ -9,7 +9,7 @@ const getImageWebsiteCdnUrl = (path: string): string =>
 const getLogoCdn = (path: string): string => `${ENV.CDN}/website/logos/${path}`
 
 // Stub functions for missing exports - these need proper implementation
-const generateImageUrl = (url: string, fileName: string): string => url || ''
+const generateImageUrl = (url: string): string => url || ''
 const clearLangCookie = (): void => {
   // TODO: Implement clearing language cookie
 }
@@ -20,10 +20,9 @@ const handleDateAndTime = (date: string | Date): string => {
   if (!date) return '-'
   return new Date(date).toLocaleString()
 }
-const getLocaleByLanguageCode = (): undefined => 
+const getLocaleByLanguageCode = (): undefined =>
   // TODO: Return proper locale object based on language code
-   undefined
-
+  undefined
 
 const getCookie = (): string | null =>
   // TODO: Implement cookie retrieval

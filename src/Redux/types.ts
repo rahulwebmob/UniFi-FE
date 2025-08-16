@@ -1,4 +1,4 @@
-import type Store from './Store'
+import type Store from './store'
 
 export type RootState = ReturnType<typeof Store.getState>
 export type AppDispatch = typeof Store.dispatch
@@ -19,7 +19,6 @@ export interface UserState {
   user: {
     _id: string
     isChatEnabled: boolean
-    subscription: Record<string, unknown>
     [key: string]: unknown
   }
   menuBar: string

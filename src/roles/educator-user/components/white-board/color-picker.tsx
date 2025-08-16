@@ -8,7 +8,7 @@ import { ColorTypes } from './constants'
 import {
   updateFillColor,
   updateStrokeColor,
-} from '../../../../Redux/Reducers/EducationSlice'
+} from '../../../../redux/reducers/education-slice'
 
 const ColorPicker = ({ type }) => {
   const colorInputRef = useRef(null)

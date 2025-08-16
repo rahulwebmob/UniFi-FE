@@ -10,17 +10,16 @@ export interface ChatMessage {
 
 export const chatService = {
   sendMessage: async (message: string) => ({ success: true, message }),
-  
+
   getMessages: async () => [],
-  
+
   subscribeToMessages: (_callback: (message: ChatMessage) => void) => {
     // Stub implementation
-    void _callback;
+    void _callback
     return () => {
       // Stub implementation
     }
-  }
-  ,
+  },
 }
 
 export default chatService

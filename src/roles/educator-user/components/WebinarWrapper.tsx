@@ -9,9 +9,9 @@ import Toolbar from './Toolbar'
 import Learning from './Learning'
 import WaitingRoom from './waiting-room'
 import { WebinarContainer } from './styles'
-import { successAlert } from '../../../Redux/Reducers/AppSlice'
-import { setLoading } from '../../../Redux/Reducers/EducationSlice'
-import { chatSocket, chatConnection } from '../../../Services/sockets'
+import { successAlert } from '../../../redux/reducers/app-slice'
+import { setLoading } from '../../../redux/reducers/education-slice'
+import { chatSocket, chatConnection } from '../../../services/sockets'
 import {
   mergeData,
   stopStream,
@@ -22,7 +22,6 @@ import {
 } from './common/common'
 
 import type { RootState } from '../../../redux/types'
-
 
 interface WebinarWrapperProps {
   isHost?: boolean
@@ -87,10 +86,17 @@ const WebinarWrapper = ({ isHost = false }: WebinarWrapperProps) => {
   const [producers, setProducers] = useState<ProducerInfo[]>([])
   const [isJoined, setIsJoined] = useState(false)
   const [usersInRoom, setUsersInRoom] = useState<UserInRoom[]>([])
-  const [remoteStreamsMap, setRemoteStreamsMap] = useState<Record<string, ConsumerData>>({})
-  const [localVideoStream, setLocalVideoStream] = useState<MediaStream | null>(null)
-  const [localAudioStream, setLocalAudioStream] = useState<MediaStream | null>(null)
-  const [localScreenStream, setLocalScreenStream] = useState<MediaStream | null>(null)
+  const [remoteStreamsMap, setRemoteStreamsMap] = useState<
+    Record<string, ConsumerData>
+  >({})
+  const [localVideoStream, setLocalVideoStream] = useState<MediaStream | null>(
+    null,
+  )
+  const [localAudioStream, setLocalAudioStream] = useState<MediaStream | null>(
+    null,
+  )
+  const [localScreenStream, setLocalScreenStream] =
+    useState<MediaStream | null>(null)
 
   const [mediaStatus, setMediaStatus] = useState({
     isVideo: false,
@@ -98,13 +104,19 @@ const WebinarWrapper = ({ isHost = false }: WebinarWrapperProps) => {
     isScreen: false,
   })
 
-  const sendRequest = useCallback((type: string, data: object) =>
-    new Promise((resolve, reject) => {
-      if (!socketRef.current) return
-      socketRef.current.emit(type, data, (response: SocketResponse, err: Error) =>
-        err ? reject(err) : resolve(response),
-      )
-    }), [])
+  const sendRequest = useCallback(
+    (type: string, data: object) =>
+      new Promise((resolve, reject) => {
+        if (!socketRef.current) return
+        socketRef.current.emit(
+          type,
+          data,
+          (response: SocketResponse, err: Error) =>
+            err ? reject(err) : resolve(response),
+        )
+      }),
+    [],
+  )
 
   const joinRoom = useCallback(async () => {
     const response = await sendRequest(WebSocketEventType.JOIN_ROOM, {
@@ -249,7 +261,14 @@ const WebinarWrapper = ({ isHost = false }: WebinarWrapperProps) => {
     await getProducers()
     await createProducerTransport()
     setIsJoined(true)
-  }, [joinRoom, getCurrentUsers, getRouterRTPCapabilties, createConsumerTransport, getProducers, createProducerTransport])
+  }, [
+    joinRoom,
+    getCurrentUsers,
+    getRouterRTPCapabilties,
+    createConsumerTransport,
+    getProducers,
+    createProducerTransport,
+  ])
 
   const userJoined = useCallback(({ user: newUser }: { user: UserInRoom }) => {
     setUsersInRoom((prev) =>
@@ -257,8 +276,11 @@ const WebinarWrapper = ({ isHost = false }: WebinarWrapperProps) => {
     )
   }, [])
 
-  const closeProducer = useCallback((producerId: string) =>
-    sendRequest(WebSocketEventType.CLOSE_PRODUCER, { producerId, roomId }), [roomId, sendRequest])
+  const closeProducer = useCallback(
+    (producerId: string) =>
+      sendRequest(WebSocketEventType.CLOSE_PRODUCER, { producerId, roomId }),
+    [roomId, sendRequest],
+  )
 
   const cleanup = useCallback(() => {
     const streams = [localVideoStream, localAudioStream, localScreenStream]
@@ -290,39 +312,42 @@ const WebinarWrapper = ({ isHost = false }: WebinarWrapperProps) => {
     socketRef.current?.disconnect()
   }, [roomId, sendRequest])
 
-  const getConsumerStream = useCallback(async (producerId: string) => {
-    if (!deviceRef.current || !consumerRef.current) return null
-    const { rtpCapabilities } = deviceRef.current
-    const data = await sendRequest(WebSocketEventType.CONSUME, {
-      roomId,
-      producerId,
-      rtpCapabilities,
-      consumerTransportId: consumerRef.current.id,
-    })
-
-    const { id, kind, rtpParameters, variant } = data
-    const consumer = await consumerRef.current.consume({
-      id,
-      kind,
-      producerId,
-      rtpParameters,
-    })
-    await consumer.resume()
-
-    const stream = new MediaStream()
-    stream.addTrack(consumer.track)
-
-    consumer.track.onended = () => {
-      console.error(`Remote ${kind} track ended for producer: ${producerId}`)
-      setRemoteStreamsMap((prev) => {
-        const updated = { ...prev }
-        delete updated[producerId]
-        return updated
+  const getConsumerStream = useCallback(
+    async (producerId: string) => {
+      if (!deviceRef.current || !consumerRef.current) return null
+      const { rtpCapabilities } = deviceRef.current
+      const data = await sendRequest(WebSocketEventType.CONSUME, {
+        roomId,
+        producerId,
+        rtpCapabilities,
+        consumerTransportId: consumerRef.current.id,
       })
-    }
 
-    return { consumer, stream, kind, producerId, variant }
-  }, [roomId, sendRequest])
+      const { id, kind, rtpParameters, variant } = data
+      const consumer = await consumerRef.current.consume({
+        id,
+        kind,
+        producerId,
+        rtpParameters,
+      })
+      await consumer.resume()
+
+      const stream = new MediaStream()
+      stream.addTrack(consumer.track)
+
+      consumer.track.onended = () => {
+        console.error(`Remote ${kind} track ended for producer: ${producerId}`)
+        setRemoteStreamsMap((prev) => {
+          const updated = { ...prev }
+          delete updated[producerId]
+          return updated
+        })
+      }
+
+      return { consumer, stream, kind, producerId, variant }
+    },
+    [roomId, sendRequest],
+  )
 
   const consume = useCallback(
     async (producerId: string) => {
@@ -338,68 +363,87 @@ const WebinarWrapper = ({ isHost = false }: WebinarWrapperProps) => {
     [producers, remoteStreamsMap, getConsumerStream],
   )
 
-  const userLeft = useCallback(({ user: leavingUser }: { user: UserInRoom }) => {
-    setUsersInRoom((prev) =>
-      prev.filter((peer) => peer._id !== leavingUser._id),
-    )
-    if (leavingUser.role === 'educator') {
-      setProducers([])
-      setRemoteStreamsMap({})
-    }
-  }, [])
+  const userLeft = useCallback(
+    ({ user: leavingUser }: { user: UserInRoom }) => {
+      setUsersInRoom((prev) =>
+        prev.filter((peer) => peer._id !== leavingUser._id),
+      )
+      if (leavingUser.role === 'educator') {
+        setProducers([])
+        setRemoteStreamsMap({})
+      }
+    },
+    [],
+  )
 
   const newProducers = useCallback((args: ProducerInfo[]) => {
     setProducers((prev) => [...prev, ...args])
   }, [])
 
-  const closedProducers = useCallback(({ producerId }: { producerId: string }) => {
-    setProducers((prev) =>
-      prev.filter((prod) => prod.producerId !== producerId),
-    )
-    setRemoteStreamsMap((prev) => {
-      const updated = { ...prev }
-      delete updated[producerId]
-      return updated
-    })
-  }, [])
+  const closedProducers = useCallback(
+    ({ producerId }: { producerId: string }) => {
+      setProducers((prev) =>
+        prev.filter((prod) => prod.producerId !== producerId),
+      )
+      setRemoteStreamsMap((prev) => {
+        const updated = { ...prev }
+        delete updated[producerId]
+        return updated
+      })
+    },
+    [],
+  )
 
   const handleIncEndWebByHost = useCallback(() => {
     dispatch(successAlert({ message: 'Meeting has been ended by host' }))
     void navigate('/dashboard')
   }, [dispatch, navigate])
 
-  const handleIncRaisedHand = useCallback((args: { data: UserInRoom }) => {
-    dispatch(
-      successAlert({
-        message: `${args.data.firstName} ${args.data.lastName} raised hand`,
-      }),
-    )
-  }, [dispatch])
+  const handleIncRaisedHand = useCallback(
+    (args: { data: UserInRoom }) => {
+      dispatch(
+        successAlert({
+          message: `${args.data.firstName} ${args.data.lastName} raised hand`,
+        }),
+      )
+    },
+    [dispatch],
+  )
 
-  const routeIncommingEvents = useCallback(({ event, args }: EventData) => {
-    switch (event) {
-      case WebSocketEventType.USER_JOINED as string:
-        userJoined(args)
-        break
-      case WebSocketEventType.USER_LEFT as string:
-        userLeft(args)
-        break
-      case WebSocketEventType.NEW_PRODUCERS as string:
-        newProducers(args)
-        break
-      case WebSocketEventType.PRODUCER_CLOSED as string:
-        closedProducers(args)
-        break
-      case WebSocketEventType.CALL_ENDED as string:
-        handleIncEndWebByHost()
-        break
-      case WebSocketEventType.HANDS_UP as string:
-        handleIncRaisedHand(args)
-        break
-      default:
-        break
-    }
-  }, [userJoined, userLeft, newProducers, closedProducers, handleIncEndWebByHost, handleIncRaisedHand])
+  const routeIncommingEvents = useCallback(
+    ({ event, args }: EventData) => {
+      switch (event) {
+        case WebSocketEventType.USER_JOINED as string:
+          userJoined(args)
+          break
+        case WebSocketEventType.USER_LEFT as string:
+          userLeft(args)
+          break
+        case WebSocketEventType.NEW_PRODUCERS as string:
+          newProducers(args)
+          break
+        case WebSocketEventType.PRODUCER_CLOSED as string:
+          closedProducers(args)
+          break
+        case WebSocketEventType.CALL_ENDED as string:
+          handleIncEndWebByHost()
+          break
+        case WebSocketEventType.HANDS_UP as string:
+          handleIncRaisedHand(args)
+          break
+        default:
+          break
+      }
+    },
+    [
+      userJoined,
+      userLeft,
+      newProducers,
+      closedProducers,
+      handleIncEndWebByHost,
+      handleIncRaisedHand,
+    ],
+  )
 
   useEffect(() => {
     const socket = createWebinarSocket()
@@ -578,7 +622,11 @@ const WebinarWrapper = ({ isHost = false }: WebinarWrapperProps) => {
   return isJoined || isHost ? (
     handleRenderWebinar()
   ) : (
-    <WaitingRoom handleInit={() => { void handleInit() }} />
+    <WaitingRoom
+      handleInit={() => {
+        void handleInit()
+      }}
+    />
   )
 }
 

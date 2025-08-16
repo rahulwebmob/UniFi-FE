@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Outlet, Navigate, useLocation } from 'react-router-dom'
 
-import { signIn, signOut } from '../../Redux/Reducers/UserSlice'
 import ScrollToTop from '../../shared/components/scroll-to-top'
+import { signIn, signOut } from '../../redux/reducers/user-slice'
+import type { RootState } from '../../redux/types'
 
-const PublicRoutes = () => {
+const PublicRoutes: React.FC = () => {
   const dispatch = useDispatch()
   const location = useLocation()
-  const { user } = useSelector((state) => state.user)
+  const { user } = useSelector((state: RootState) => state.user)
 
   const [checkedAuth, setCheckedAuth] = useState(false)
 
@@ -17,7 +18,7 @@ const PublicRoutes = () => {
   const queryParams = new URLSearchParams(window.location.search)
   const tokenInQueryParams = queryParams.get('token')
 
-  const iff = (condition, then, otherwise) => (condition ? then : otherwise)
+  const iff = <T, U>(condition: boolean, then: T, otherwise: U): T | U => (condition ? then : otherwise)
 
   const isEducatorPath = /\/educator\/(login|onboarding)/.test(
     location.pathname,
@@ -44,7 +45,14 @@ const PublicRoutes = () => {
     }
 
     setCheckedAuth(true)
-  }, [location.pathname, user, dispatch, isAdminPath, isEducatorPath, tokenInQueryParams])
+  }, [
+    location.pathname,
+    user,
+    dispatch,
+    isAdminPath,
+    isEducatorPath,
+    tokenInQueryParams,
+  ])
 
   if (checkedAuth && user) {
     return (

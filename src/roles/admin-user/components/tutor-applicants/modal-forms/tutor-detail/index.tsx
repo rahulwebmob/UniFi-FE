@@ -25,34 +25,78 @@ import {
   useApproveEducatorStatusMutation,
 } from '../../../../../../services/admin'
 
-const TutorDetail = ({ tutor, onClose, filter }) => {
+interface TutorProps {
+  _id: string
+  [key: string]: unknown
+}
+
+interface TutorDetailsResponse {
+  data?: {
+    tutorDetails?: {
+      [key: string]: unknown
+    }
+  }
+}
+
+interface DownloadCVResponse {
+  data?: {
+    url?: string
+  }
+}
+
+interface WatchVideoResponse {
+  data?: {
+    url?: string
+  }
+}
+
+interface TutorDetailProps {
+  tutor: TutorProps
+  onClose: () => void
+  filter: string
+}
+
+interface ModalRef {
+  openModal: () => void
+  closeModal: () => void
+}
+
+interface VideoPlayerProps {
+  videoUrl: string
+}
+
+const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
   const navigate = useNavigate()
-  const [videoUrl, setVideoUrl] = useState(null)
-  const [deleteUser, setDeleteUser] = useState()
-  const openVideoModalRef = useRef()
-  const confirmationRef = useRef()
+  const [videoUrl, setVideoUrl] = useState<string | null>(null)
+  const [deleteUser, setDeleteUser] = useState<string | undefined>()
+  const openVideoModalRef = useRef<ModalRef | null>(null)
+  const confirmationRef = useRef<ModalRef | null>(null)
 
   const { data: tutorDetails } = useViewTutorDetailQuery({
     educatorId: tutor._id,
-  })
-  const { data: downloadCv } = useDownloadCVQuery({ educatorId: tutor._id })
-  const { data: watchVedio } = useWatchVideoQuery({ educatorId: tutor._id })
+  }) as TutorDetailsResponse
+  const { data: downloadCv } = useDownloadCVQuery({
+    educatorId: tutor._id,
+  }) as DownloadCVResponse
+  const { data: watchVideo } = useWatchVideoQuery({
+    educatorId: tutor._id,
+  }) as WatchVideoResponse
 
   const [tutorStatus] = useApproveEducatorStatusMutation()
   const [tutorDelete] = useDeleteEducatorMutation()
   const [reconsiderStatus] = useReconsiderStatusMutation()
 
   const handleWatchVideo = () => {
-    openVideoModalRef.current.openModal()
-    setVideoUrl(watchVedio?.url)
+    openVideoModalRef.current?.openModal()
+    setVideoUrl(watchVideo?.url ?? null)
   }
 
-  const openDeclineModal = async (_id) => {
-    confirmationRef.current.openModal()
+  const openDeclineModal = (_id: string) => {
+    confirmationRef.current?.openModal()
     setDeleteUser(_id)
   }
 
-  const handleDecline = async (reason) => {
+  const handleDecline = async (reason: string) => {
     const payload = {
       educatorIds: [deleteUser],
       approval: false,
@@ -60,12 +104,12 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
     }
     const response = await tutorStatus(payload)
     if (!response.error) {
-      confirmationRef.current.closeModal()
+      confirmationRef.current?.closeModal()
       onClose()
     }
   }
 
-  const handleAccept = async (id) => {
+  const handleAccept = async (id: string) => {
     const payload = {
       educatorIds: [id],
       approval: true,
@@ -76,7 +120,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
     }
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     const payload = {
       educatorIds: [id],
     }
@@ -86,7 +130,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
     }
   }
 
-  const handleBulkReconsider = async (id) => {
+  const handleBulkReconsider = async (id: string) => {
     const payload = {
       educatorIds: [id],
     }
@@ -130,7 +174,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
           flexWrap="wrap"
           gap={2}
         >
-          <Typography 
+          <Typography
             variant="h5"
             sx={{
               fontWeight: 600,
@@ -146,12 +190,12 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
                 color="primary"
                 size="small"
                 startIcon={<Download size={16} />}
-                onClick={() => void downloadPdf(downloadCv?.url)}
+                onClick={() => void downloadPdf(downloadCv.url!)}
               >
                 Download CV
               </Button>
             )}
-            {watchVedio?.url && (
+            {watchVideo?.url && (
               <Button
                 variant="contained"
                 color="secondary"
@@ -192,219 +236,251 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
         }}
       >
         <Grid container spacing={3}>
-        <Grid
-          size={{ xs: 12, md: 6 }}
-          sx={{
-            borderRight: { md: '1px solid' },
-            pr: { md: 3 },
-            borderColor: (theme) => theme.palette.divider,
-          }}
-        >
-          <Box display="flex" flexDirection="column" gap={3}>
-            <Box display="flex" justifyContent="space-between" gap={2}>
-              <Box display="flex" gap={2}>
-                <Avatar
-                  alt="Olivia Rhye"
-                  sx={{ 
-                    background: (theme) => theme.palette.primary[100],
-                    width: 56,
-                    height: 56,
-                  }}
-                />
-                <Box>
-                  <Typography 
-                    variant="h6"
-                    sx={{ fontWeight: 600, mb: 0.5 }}
-                  >
-                    {tutorDetails?.data?.firstName ?? '-'}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    {tutorDetails?.data?.email ?? '-'}
-                  </Typography>
+          <Grid
+            size={{ xs: 12, md: 6 }}
+            sx={{
+              borderRight: { md: '1px solid' },
+              pr: { md: 3 },
+              borderColor: (theme) => theme.palette.divider,
+            }}
+          >
+            <Box display="flex" flexDirection="column" gap={3}>
+              <Box display="flex" justifyContent="space-between" gap={2}>
+                <Box display="flex" gap={2}>
+                  <Avatar
+                    alt="Olivia Rhye"
+                    sx={{
+                      background: (theme) => theme.palette.primary[100],
+                      width: 56,
+                      height: 56,
+                    }}
+                  />
+                  <Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+                      {tutorDetails?.data?.firstName ?? '-'}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {tutorDetails?.data?.email ?? '-'}
+                    </Typography>
+                  </Box>
                 </Box>
+                <Typography variant="body2" color="text.secondary">
+                  {tutorDetails?.data?.country ?? '-'},{' '}
+                  {tutorDetails?.data?.state ?? '-'}
+                </Typography>
               </Box>
-              <Typography variant="body2" color="text.secondary">
-                {tutorDetails?.data?.country ?? '-'},{' '}
-                {tutorDetails?.data?.state ?? '-'}
-              </Typography>
-            </Box>
 
-            <Box>
-              <Typography 
-                variant="body2" 
-                color="text.secondary"
-                sx={{ fontWeight: 500, mb: 1 }}
-              >
-                Executive Summary
-              </Typography>
-              <Typography variant="body1">
-                {tutorDetails?.data?.summary ?? '-'}
-              </Typography>
-            </Box>
-
-            {!!tutorDetails?.data?.expertise?.length && (
               <Box>
-                <Typography 
-                  variant="body2" 
+                <Typography
+                  variant="body2"
                   color="text.secondary"
                   sx={{ fontWeight: 500, mb: 1 }}
                 >
-                  Expertise
-                </Typography>
-                <Box display="flex" gap={1} flexWrap="wrap">
-                  {tutorDetails?.data?.expertise.map((expertise) => (
-                    <Chip
-                      label={expertise.category}
-                      color="primary"
-                      variant="outlined"
-                      size="small"
-                      key={expertise._id}
-                      sx={{
-                        borderRadius: '8px',
-                        fontWeight: 500,
-                      }}
-                    />
-                  ))}
-                </Box>
-              </Box>
-            )}
-
-            <Box mt={2} display="flex" gap={4} flexWrap="wrap">
-              <Box>
-                <Typography variant="body1" color="text.secondary">
-                  Company:
+                  Executive Summary
                 </Typography>
                 <Typography variant="body1">
-                  {tutorDetails?.data?.company ?? '-'}
+                  {tutorDetails?.data?.summary ?? '-'}
                 </Typography>
               </Box>
-              {!!tutorDetails?.data?.experience && (
+
+              {!!tutorDetails?.data?.expertise?.length && (
+                <Box>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ fontWeight: 500, mb: 1 }}
+                  >
+                    Expertise
+                  </Typography>
+                  <Box display="flex" gap={1} flexWrap="wrap">
+                    {tutorDetails?.data?.expertise.map((expertise: { _id: string; name: string }) => (
+                      <Chip
+                        label={expertise.category as string}
+                        color="primary"
+                        variant="outlined"
+                        size="small"
+                        key={expertise._id as string}
+                        sx={{
+                          borderRadius: '8px',
+                          fontWeight: 500,
+                        }}
+                      />
+                    ))}
+                  </Box>
+                </Box>
+              )}
+
+              <Box mt={2} display="flex" gap={4} flexWrap="wrap">
                 <Box>
                   <Typography variant="body1" color="text.secondary">
-                    Experience
+                    Company:
                   </Typography>
                   <Typography variant="body1">
-                    {tutorDetails?.data?.experience} Years
+                    {tutorDetails?.data?.company ?? '-'}
                   </Typography>
                 </Box>
-              )}
-            </Box>
-
-            <Box>
-              <Typography variant="body1" color="text.secondary">
-                Where did you hear about us?
-              </Typography>
-              <Typography variant="body1">
-                {tutorDetails?.data?.hau ?? '-'}
-              </Typography>
-            </Box>
-          </Box>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Box display="flex" flexDirection="column" gap={3}>
-            {!!tutorDetails?.data?.education?.length && (
-              <Box>
-                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
-                  Education
-                </Typography>
-                <Box display="flex" flexWrap="wrap" gap={1}>
-                  {tutorDetails?.data?.education.map((education) => (
-                    <Chip
-                      label={`${education.degree ?? '-'}, ${
-                        education.field ?? '-'
-                      }`}
-                      color="primary"
-                      variant="outlined"
-                      size="small"
-                      key={education._id}
-                      sx={{
-                        borderRadius: '6px',
-                        fontWeight: 500,
-                      }}
-                    />
-                  ))}
-                </Box>
-              </Box>
-            )}
-
-            {!!tutorDetails?.data?.certifications?.length && (
-              <Box>
-                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
-                  Certificates
-                </Typography>
-                <Box display="flex" flexWrap="wrap" gap={1}>
-                  {tutorDetails?.data?.certifications.map((certificate) => (
-                    <Chip
-                      label={`${certificate?.name ?? '-'},${
-                        certificate?.organization ?? '-'
-                      }`}
-                      color="primary"
-                      variant="contained"
-                      size="small"
-                      key={certificate._id}
-                    />
-                  ))}
-                </Box>
-              </Box>
-            )}
-
-            <Box>
-              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
-                Links
-              </Typography>
-              <Box display="flex" flexDirection="column" gap={1}>
-                {LINK_FIELDS.map(({ field, label }) => (
-                  <Box key={field} display="flex" flexDirection="column" gap={0.5}>
-                    <Typography variant="body2" color="textSecondary">
-                      {label}
+                {!!tutorDetails?.data?.experience && (
+                  <Box>
+                    <Typography variant="body1" color="text.secondary">
+                      Experience
                     </Typography>
-                {tutorDetails?.data?.[field] ? (
-                  <Link
-                    href={tutorDetails?.data?.[field]}
-                    target="_blank"
-                    rel="noopener"
-                    color="inherit"
-                  >
-                    {tutorDetails?.data?.[field]}
-                  </Link>
-                  ) : (
-                    <Typography variant="body2"> -</Typography>
-                  )}
+                    <Typography variant="body1">
+                      {tutorDetails?.data?.experience} Years
+                    </Typography>
                   </Box>
-                ))}
+                )}
+              </Box>
+
+              <Box>
+                <Typography variant="body1" color="text.secondary">
+                  Where did you hear about us?
+                </Typography>
+                <Typography variant="body1">
+                  {tutorDetails?.data?.hau ?? '-'}
+                </Typography>
               </Box>
             </Box>
+          </Grid>
 
-            <Box>
-              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
-                Profiles on other sites
-              </Typography>
-              {tutorDetails?.data?.otherProfileUrls?.length ? (
-                tutorDetails?.data?.otherProfileUrls.map((url, idx) => (
-                  <Link
-                    key={url.link}
-                    href={url.link}
-                    target="_blank"
-                    rel="noopener"
-                    color="inherit"
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Box display="flex" flexDirection="column" gap={3}>
+              {!!tutorDetails?.data?.education?.length && (
+                <Box>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ fontWeight: 500, mb: 1 }}
                   >
-                    view {idx + 1}
-                  </Link>
-                ))
-              ) : (
-                <Typography variant="body2">-</Typography>
+                    Education
+                  </Typography>
+                  <Box display="flex" flexWrap="wrap" gap={1}>
+                    {tutorDetails?.data?.education.map((education: { _id: string; name: string }) => (
+                      <Chip
+                        label={`${(education.degree as string) ?? '-'}, ${
+                          (education.field as string) ?? '-'
+                        }`}
+                        color="primary"
+                        variant="outlined"
+                        size="small"
+                        key={education._id as string}
+                        sx={{
+                          borderRadius: '6px',
+                          fontWeight: 500,
+                        }}
+                      />
+                    ))}
+                  </Box>
+                </Box>
               )}
+
+              {!!tutorDetails?.data?.certifications?.length && (
+                <Box>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ fontWeight: 500, mb: 1 }}
+                  >
+                    Certificates
+                  </Typography>
+                  <Box display="flex" flexWrap="wrap" gap={1}>
+                    {tutorDetails?.data?.certifications.map(
+                      (certificate: { _id: string; name: string }) => (
+                        <Chip
+                          label={`${(certificate?.name as string) ?? '-'},${
+                            (certificate?.organization as string) ?? '-'
+                          }`}
+                          color="primary"
+                          variant="contained"
+                          size="small"
+                          key={certificate._id as string}
+                        />
+                      ),
+                    )}
+                  </Box>
+                </Box>
+              )}
+
+              <Box>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontWeight: 500, mb: 1 }}
+                >
+                  Links
+                </Typography>
+                <Box display="flex" flexDirection="column" gap={1}>
+                  {LINK_FIELDS.map(({ field, label }) => (
+                    <Box
+                      key={field}
+                      display="flex"
+                      flexDirection="column"
+                      gap={0.5}
+                    >
+                      <Typography variant="body2" color="textSecondary">
+                        {label}
+                      </Typography>
+                      {tutorDetails?.data?.[
+                        field as keyof typeof tutorDetails.data
+                      ] ? (
+                        <Link
+                          href={
+                            tutorDetails?.data?.[
+                              field as keyof typeof tutorDetails.data
+                            ] as string
+                          }
+                          target="_blank"
+                          rel="noopener"
+                          color="inherit"
+                        >
+                          {
+                            tutorDetails?.data?.[
+                              field as keyof typeof tutorDetails.data
+                            ] as string
+                          }
+                        </Link>
+                      ) : (
+                        <Typography variant="body2"> -</Typography>
+                      )}
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+
+              <Box>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontWeight: 500, mb: 1 }}
+                >
+                  Profiles on other sites
+                </Typography>
+                {tutorDetails?.data?.otherProfileUrls?.length ? (
+                  tutorDetails?.data?.otherProfileUrls.map(
+                    (url: string, idx: number) => (
+                      <Link
+                        key={url.link as string}
+                        href={url.link as string}
+                        target="_blank"
+                        rel="noopener"
+                        color="inherit"
+                      >
+                        view {idx + 1}
+                      </Link>
+                    ),
+                  )
+                ) : (
+                  <Typography variant="body2">-</Typography>
+                )}
+              </Box>
             </Box>
-          </Box>
+          </Grid>
         </Grid>
-      </Grid>
       </Box>
 
-      <Box 
-        display="flex" 
-        justifyContent="space-between" 
-        gap={2} 
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        gap={2}
         px={3}
         py={2}
         sx={{
@@ -417,7 +493,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
           variant="outlined"
           color="error"
           size="medium"
-          sx={{ 
+          sx={{
             flex: 1,
             textTransform: 'none',
             fontWeight: 500,
@@ -436,7 +512,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
           variant="contained"
           color="primary"
           size="medium"
-          sx={{ 
+          sx={{
             flex: 1,
             textTransform: 'none',
             fontWeight: 500,
@@ -467,7 +543,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
             void handleDecline(data)
           }}
           onClose={() => {
-            confirmationRef.current.closeModal()
+            confirmationRef.current?.closeModal()
             void navigate('education/tutor-applicants')
           }}
         />
@@ -478,7 +554,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
 
 export default TutorDetail
 
-const VideoPlayer = ({ videoUrl }) => (
+const VideoPlayer = ({ videoUrl }: VideoPlayerProps) => (
   <Box sx={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>
     <Box
       component="video"
@@ -492,7 +568,7 @@ const VideoPlayer = ({ videoUrl }) => (
       }}
     >
       <source src={videoUrl} type="video/mp4" />
-      <track kind="captions" src={videoUrl} srcLang="en" label="English" />
+      <track kind="captions" srcLang="en" label="English" />
       Your browser does not support the video tag.
     </Box>
   </Box>

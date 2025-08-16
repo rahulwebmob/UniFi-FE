@@ -1,7 +1,6 @@
 import { styled } from '@mui/material/styles'
 import { Box, Button, Container } from '@mui/material'
 
-
 export const StyledContainer = styled(Container)(({ theme }) => ({
   width: '100%',
   maxWidth: 1400,
@@ -39,7 +38,7 @@ export const StyledCard = styled(Box)(({ theme }) => ({
   },
 }))
 
-export const StyledButton = styled(Button)(({ theme }) => ({
+export const StyledButton = styled(Button)(() => ({
   width: '100%',
   textTransform: 'none',
   fontWeight: 600,

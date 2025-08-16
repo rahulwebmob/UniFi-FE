@@ -1,9 +1,8 @@
-import React from 'react'
 import * as Yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-import { Box, Button, TextField, FormLabel, Typography } from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 
 import { useInviteEducatorMutation } from '../../../../../../services/admin'
 
@@ -16,7 +15,18 @@ const validationSchema = Yup.object().shape({
   url: Yup.string().required('URL is required'),
 })
 
-const InviteTutorForm = ({ onClose }) => {
+interface InviteTutorFormProps {
+  onClose: () => void
+}
+
+interface FormData {
+  firstName: string
+  lastName: string
+  email: string
+  url: string
+}
+
+const InviteTutorForm = ({ onClose }: InviteTutorFormProps) => {
   const {
     control,
     formState: { errors },
@@ -27,7 +37,7 @@ const InviteTutorForm = ({ onClose }) => {
 
   const [inviteTutor] = useInviteEducatorMutation()
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormData) => {
     const payload = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -71,7 +81,7 @@ const InviteTutorForm = ({ onClose }) => {
               variant="outlined"
               fullWidth
               error={!!errors.firstName}
-              helperText={errors.firstName ? <Typography variant="caption" color="error">{errors.firstName.message}</Typography> : ''}
+              helperText={errors.firstName?.message}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '8px',
@@ -104,7 +114,7 @@ const InviteTutorForm = ({ onClose }) => {
               variant="outlined"
               fullWidth
               error={!!errors.lastName}
-              helperText={errors.lastName ? <Typography variant="caption" color="error">{errors.lastName.message}</Typography> : ''}
+              helperText={errors.lastName?.message}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '8px',
@@ -137,7 +147,7 @@ const InviteTutorForm = ({ onClose }) => {
               variant="outlined"
               fullWidth
               error={!!errors.email}
-              helperText={errors.email ? <Typography variant="caption" color="error">{errors.email.message}</Typography> : ''}
+              helperText={errors.email?.message}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '8px',
@@ -170,7 +180,7 @@ const InviteTutorForm = ({ onClose }) => {
               variant="outlined"
               fullWidth
               error={!!errors.url}
-              helperText={errors.url ? <Typography variant="caption" color="error">{errors.url.message}</Typography> : ''}
+              helperText={errors.url?.message}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '8px',
@@ -194,8 +204,8 @@ const InviteTutorForm = ({ onClose }) => {
         >
           Cancel
         </Button>
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           variant="contained"
           sx={{
             textTransform: 'none',

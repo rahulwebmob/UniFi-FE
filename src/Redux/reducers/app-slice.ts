@@ -2,7 +2,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 
 import { createSlice } from '@reduxjs/toolkit'
 
-import i18n from '../../Localization/i18n'
+import i18n from '../../localization/i18n'
 
 // Define interfaces for the state
 interface Alert {
@@ -82,7 +82,7 @@ export const AppSlice = createSlice({
     updateLanguage: (state, action: PayloadAction<Language>) => {
       const { payload } = action
       state.language = { ...payload }
-      i18n.changeLanguage(payload?.code)
+      void i18n.changeLanguage(payload?.code)
     },
   },
 })

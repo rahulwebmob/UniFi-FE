@@ -1,8 +1,7 @@
-import React from 'react'
 import { Plus, Minus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { NumericFormat } from 'react-number-format'
-import { Controller, useFieldArray } from 'react-hook-form'
+import { Controller, type Control, type FieldValues, useFieldArray } from 'react-hook-form'
 
 import {
   Box,
@@ -13,9 +12,12 @@ import {
   Typography,
   FormControl,
 } from '@mui/material'
-// import RequiredFieldIndicator from '../../../shared/components/layout/RequiredFieldIndicator/RequiredFieldIndicator'
 
-const Qualification = ({ control }) => {
+interface QualificationProps {
+  control: Control<FieldValues>
+}
+
+const Qualification = ({ control }: QualificationProps) => {
   const {
     fields: expertiseFields,
     append: addExpertise,
@@ -107,11 +109,12 @@ const Qualification = ({ control }) => {
             <Controller
               name="experience"
               control={control}
-              render={({ field, fieldState }) => (
+
+              render={({ fieldState }) => (
                 <NumericFormat
+                
                   customInput={TextField}
-                  {...field}
-                  type="number"
+                  type="text"
                   placeholder={t(
                     'REGISTER_EDUCATOR.QUALIFICATION_PAGE.YOE_PLACEHOLDER',
                   )}
@@ -133,12 +136,8 @@ const Qualification = ({ control }) => {
           width: '100%',
         }}
       />
-      <Grid sx={12}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          width="100%"
-        >
+      <Grid size={{ xs: 12 }}>
+        <Box display="flex" justifyContent="space-between" width="100%">
           <Typography component="p" color="black.main700">
             {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.EXPERTISE')}
           </Typography>
@@ -215,12 +214,8 @@ const Qualification = ({ control }) => {
           width: '100%',
         }}
       />
-      <Grid sx={12}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          width="100%"
-        >
+      <Grid size={{ xs: 12 }}>
+        <Box display="flex" justifyContent="space-between" width="100%">
           <Typography component="p" color="black.main700">
             {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.EDUCATION')}
           </Typography>
@@ -321,12 +316,8 @@ const Qualification = ({ control }) => {
           width: '100%',
         }}
       />
-      <Grid sx={12}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          width="100%"
-        >
+      <Grid size={{ xs: 12 }}>
+        <Box display="flex" justifyContent="space-between" width="100%">
           <Typography component="p" color="black.main700">
             {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.CERTIFICATES')}
           </Typography>

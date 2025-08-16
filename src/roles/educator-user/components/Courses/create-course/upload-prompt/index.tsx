@@ -4,7 +4,11 @@ import { useTranslation } from 'react-i18next'
 
 import { Box, Typography, LinearProgress } from '@mui/material'
 
-const UploadPrompt = ({ progress }) => {
+interface UploadPromptProps {
+  progress: number
+}
+
+const UploadPrompt = ({ progress }: UploadPromptProps) => {
   const { t } = useTranslation('education')
 
   return (
@@ -18,9 +22,7 @@ const UploadPrompt = ({ progress }) => {
         borderRadius: '10px',
       }}
     >
-      <Video
-        size={50}
-      />
+      <Video size={50} />
 
       <Box sx={{ flex: 1 }}>
         <Typography

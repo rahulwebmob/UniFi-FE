@@ -3,11 +3,11 @@ import { Pagination } from '@mui/material'
 import * as Style from '../../../../roles/admin-user/components/tablestyle'
 
 interface PaginationComponentProps {
-  data: any
+  data: { totalPages?: number; [key: string]: unknown }
   page: number
   setPage: (page: number) => void
   disabled: boolean
-  customStyle: any
+  customStyle: React.CSSProperties
   scrollToTop: () => void
 }
 

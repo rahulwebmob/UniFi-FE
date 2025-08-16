@@ -3,8 +3,8 @@ import { Mail, ArrowLeft } from 'lucide-react'
 
 import { Box, Button, useTheme, Typography } from '@mui/material'
 
-import MainLogo from '../../../../Assets/logo.svg'
-import { useResendEmailMutation } from '../../../../Services/admin'
+import MainLogo from '../../../../assets/logo.svg'
+import { useResendEmailMutation } from '../../../../services/admin'
 
 interface ResendEmailProps {
   setResendEmail: (resend: boolean) => void
@@ -74,10 +74,7 @@ const ResendEmail: React.FC<ResendEmailProps> = ({ setResendEmail, email }) => {
                 justifyContent: 'center',
               }}
             >
-              <Mail
-                size={32}
-                color={theme.palette.primary.main}
-              />
+              <Mail size={32} color={theme.palette.primary.main} />
             </Box>
           </Box>
 
@@ -121,7 +118,9 @@ const ResendEmail: React.FC<ResendEmailProps> = ({ setResendEmail, email }) => {
           variant="contained"
           color="primary"
           fullWidth
-          onClick={() => { void onSubmit() }}
+          onClick={() => {
+            void onSubmit()
+          }}
           sx={{ mb: 1 }}
         >
           Resend Verification Email
@@ -139,7 +138,9 @@ const ResendEmail: React.FC<ResendEmailProps> = ({ setResendEmail, email }) => {
       <Box display="flex" alignItems="center" justifyContent="center">
         <Button
           startIcon={<ArrowLeft size={20} />}
-          onClick={() => { setResendEmail(false) }}
+          onClick={() => {
+            setResendEmail(false)
+          }}
           sx={{
             textTransform: 'none',
             color: theme.palette.primary.main,

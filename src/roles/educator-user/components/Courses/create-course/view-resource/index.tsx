@@ -5,11 +5,27 @@ import React, { useRef, useMemo, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
 
-import { useDownloadResourceMutation } from '../../../../../../Services/admin'
+import { useDownloadResourceMutation } from '../../../../../../services/admin'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
 import ContentPreview from '../../../../../../shared/components/layout/Course/content-preview'
 
-const ViewResource = ({ lessonDetail, isEdit, handleOpenPremiumModal }) => {
+interface ViewResourceProps {
+  lessonDetail?: {
+    lessonType?: string
+    isFree?: boolean
+    isCourseBought?: boolean
+    resourceUrl?: string
+    _id?: string
+  }
+  isEdit?: boolean
+  handleOpenPremiumModal?: () => void
+}
+
+const ViewResource = ({
+  lessonDetail,
+  isEdit,
+  handleOpenPremiumModal,
+}: ViewResourceProps) => {
   const videoRef = useRef(null)
   const navigate = useNavigate()
   const { t } = useTranslation('education')
@@ -81,8 +97,10 @@ const ViewResource = ({ lessonDetail, isEdit, handleOpenPremiumModal }) => {
             '&:hover': {
               borderColor: (theme) =>
                 isPdf ? theme.palette.text.primary : theme.palette.primary.dark,
-              backgroundColor: (theme) => 
-                isPdf ? 'rgba(0, 0, 0, 0.04)' : theme.palette.primary.light + '15',
+              backgroundColor: (theme) =>
+                isPdf
+                  ? 'rgba(0, 0, 0, 0.04)'
+                  : theme.palette.primary.light + '15',
             },
           }}
         >
@@ -100,7 +118,7 @@ const ViewResource = ({ lessonDetail, isEdit, handleOpenPremiumModal }) => {
           variant="outlined"
           startIcon={<Lock size={16} />}
           onClick={handleOpenPremiumModal}
-          sx={{ 
+          sx={{
             minWidth: '130px',
             textTransform: 'none',
             fontWeight: 500,

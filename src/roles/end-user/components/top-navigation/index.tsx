@@ -21,10 +21,10 @@ import {
   ListItemButton,
 } from '@mui/material'
 
-import MainLogo from '../../../../Assets/logo.svg'
+import MainLogo from '../../../../assets/logo.svg'
 import CustomSvgIcon from '../../../../shared/components/custom-svg-icon'
 
-const TopNavigation = () => {
+const TopNavigation: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const theme = useTheme()
@@ -42,12 +42,12 @@ const TopNavigation = () => {
     }
     [key: string]: unknown
   }
-  
+
   interface RootState {
     user: UserState
     [key: string]: unknown
   }
-  
+
   const { user } = useSelector((state: RootState) => state.user)
 
   const handleDrawerToggle = () => {
@@ -106,7 +106,11 @@ const TopNavigation = () => {
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => handleNavigation('/dashboard')}
-            selected={location.pathname === '/dashboard' || location.pathname.startsWith('/dashboard/course') || location.pathname.startsWith('/dashboard/webinar')}
+            selected={
+              location.pathname === '/dashboard' ||
+              location.pathname.startsWith('/dashboard/course') ||
+              location.pathname.startsWith('/dashboard/webinar')
+            }
             sx={{
               mx: 1,
               borderRadius: 1,
@@ -123,7 +127,10 @@ const TopNavigation = () => {
             }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
-              <LayoutDashboard size={20} style={{ color: 'var(--mui-palette-text-secondary)' }} />
+              <LayoutDashboard
+                size={20}
+                style={{ color: 'var(--mui-palette-text-secondary)' }}
+              />
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItemButton>
@@ -131,8 +138,13 @@ const TopNavigation = () => {
 
         <ListItem disablePadding>
           <ListItemButton
-            onClick={() => { void navigate(`/settings/profile/${user._id}?tab=payments`) }}
-            selected={location.pathname.includes('profile') && location.search.includes('payments')}
+            onClick={() => {
+              void navigate(`/settings/profile/${user._id}?tab=payments`)
+            }}
+            selected={
+              location.pathname.includes('profile') &&
+              location.search.includes('payments')
+            }
             sx={{
               mx: 1,
               borderRadius: 1,
@@ -149,7 +161,10 @@ const TopNavigation = () => {
             }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
-              <CreditCard size={20} style={{ color: 'var(--mui-palette-text-secondary)' }} />
+              <CreditCard
+                size={20}
+                style={{ color: 'var(--mui-palette-text-secondary)' }}
+              />
             </ListItemIcon>
             <ListItemText primary="Payments" />
           </ListItemButton>
@@ -157,8 +172,13 @@ const TopNavigation = () => {
 
         <ListItem disablePadding>
           <ListItemButton
-            onClick={() => { void navigate(`/settings/profile/${user._id}`) }}
-            selected={location.pathname.includes('profile') && !location.search.includes('payments')}
+            onClick={() => {
+              void navigate(`/settings/profile/${user._id}`)
+            }}
+            selected={
+              location.pathname.includes('profile') &&
+              !location.search.includes('payments')
+            }
             sx={{
               mx: 1,
               borderRadius: 1,
@@ -175,7 +195,10 @@ const TopNavigation = () => {
             }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
-              <Settings size={20} style={{ color: 'var(--mui-palette-text-secondary)' }} />
+              <Settings
+                size={20}
+                style={{ color: 'var(--mui-palette-text-secondary)' }}
+              />
             </ListItemIcon>
             <ListItemText primary="Settings" />
           </ListItemButton>
@@ -259,14 +282,22 @@ const TopNavigation = () => {
               <Typography
                 component="a"
                 variant="body1"
-                onClick={() => { void navigate('/dashboard') }}
+                onClick={() => {
+                  void navigate('/dashboard')
+                }}
                 sx={{
-                  color: (location.pathname === '/dashboard' || location.pathname.startsWith('/dashboard/course') || location.pathname.startsWith('/dashboard/webinar'))
-                    ? 'primary.main'
-                    : 'text.secondary',
-                  fontWeight: (location.pathname === '/dashboard' || location.pathname.startsWith('/dashboard/course') || location.pathname.startsWith('/dashboard/webinar'))
-                    ? 600
-                    : 500,
+                  color:
+                    location.pathname === '/dashboard' ||
+                    location.pathname.startsWith('/dashboard/course') ||
+                    location.pathname.startsWith('/dashboard/webinar')
+                      ? 'primary.main'
+                      : 'text.secondary',
+                  fontWeight:
+                    location.pathname === '/dashboard' ||
+                    location.pathname.startsWith('/dashboard/course') ||
+                    location.pathname.startsWith('/dashboard/webinar')
+                      ? 600
+                      : 500,
                   textDecoration: 'none',
                   cursor: 'pointer',
                   '&:hover': {
@@ -279,14 +310,20 @@ const TopNavigation = () => {
               <Typography
                 component="a"
                 variant="body1"
-                onClick={() => { void navigate(`/settings/profile/${user._id}?tab=payments`) }}
+                onClick={() => {
+                  void navigate(`/settings/profile/${user._id}?tab=payments`)
+                }}
                 sx={{
-                  color: location.pathname.includes('profile') && location.search.includes('payments')
-                    ? 'primary.main'
-                    : 'text.secondary',
-                  fontWeight: location.pathname.includes('profile') && location.search.includes('payments')
-                    ? 600
-                    : 500,
+                  color:
+                    location.pathname.includes('profile') &&
+                    location.search.includes('payments')
+                      ? 'primary.main'
+                      : 'text.secondary',
+                  fontWeight:
+                    location.pathname.includes('profile') &&
+                    location.search.includes('payments')
+                      ? 600
+                      : 500,
                   textDecoration: 'none',
                   cursor: 'pointer',
                   '&:hover': {
@@ -299,14 +336,20 @@ const TopNavigation = () => {
               <Typography
                 component="a"
                 variant="body1"
-                onClick={() => { void navigate(`/settings/profile/${user._id}`) }}
+                onClick={() => {
+                  void navigate(`/settings/profile/${user._id}`)
+                }}
                 sx={{
-                  color: location.pathname.includes('profile') && !location.search.includes('payments')
-                    ? 'primary.main'
-                    : 'text.secondary',
-                  fontWeight: location.pathname.includes('profile') && !location.search.includes('payments')
-                    ? 600
-                    : 500,
+                  color:
+                    location.pathname.includes('profile') &&
+                    !location.search.includes('payments')
+                      ? 'primary.main'
+                      : 'text.secondary',
+                  fontWeight:
+                    location.pathname.includes('profile') &&
+                    !location.search.includes('payments')
+                      ? 600
+                      : 500,
                   textDecoration: 'none',
                   cursor: 'pointer',
                   '&:hover': {

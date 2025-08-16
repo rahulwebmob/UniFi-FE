@@ -3,22 +3,20 @@ import type { AnyAction } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 
-import { adminApi } from '../Services/admin'
-import AlertReducer from './Reducers/AppSlice'
-import { adsApi } from '../Services/advertisement'
-import { educationApi } from '../Services/education'
-import { onboardingApi } from '../Services/onboarding'
-import { uploadApi } from '../Services/uploadProgress'
-import EducationReducer from './Reducers/EducationSlice'
-import { disconnectAllSockets } from '../Services/sockets'
-import UserSliceReducer, { signOut } from './Reducers/UserSlice'
+import { adminApi } from '../services/admin'
+import { educationApi } from '../services/education'
+import AlertReducer from '../redux/reducers/app-slice'
+import { onboardingApi } from '../services/onboarding'
+import { uploadApi } from '../services/uploadProgress'
+import { disconnectAllSockets } from '../services/sockets'
+import EducationReducer from '../redux/reducers/education-slice'
+import UserSliceReducer, { signOut } from '../redux/reducers/user-slice'
 
 const combinedReducers = combineReducers({
   user: UserSliceReducer,
   app: AlertReducer,
   education: EducationReducer,
   [adminApi.reducerPath]: adminApi.reducer,
-  [adsApi.reducerPath]: adsApi.reducer,
   [onboardingApi.reducerPath]: onboardingApi.reducer,
   [educationApi.reducerPath]: educationApi.reducer,
   [uploadApi.reducerPath]: uploadApi.reducer,

@@ -2,15 +2,23 @@ import { debounce } from 'lodash'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Edit, Search, BookOpen, ArrowRight, MoreVertical, Trash2 } from 'lucide-react'
+import {
+  Edit,
+  Plus,
+  Search,
+  Trash2,
+  BookOpen,
+  ArrowRight,
+  MoreVertical,
+} from 'lucide-react'
 
 import {
   Box,
-  Button,
   Chip,
   Menu,
-  MenuItem,
+  Button,
   Tooltip,
+  MenuItem,
   useTheme,
   TextField,
   Typography,
@@ -26,7 +34,7 @@ import {
   useGetAllCoursesQuery,
   useUpdateCourseMutation,
   useGetCoursesCountQuery,
-} from '../../../../Services/admin'
+} from '../../../../services/admin'
 
 const Courses = () => {
   const theme = useTheme()
@@ -195,11 +203,11 @@ const Courses = () => {
       size: 120,
       Cell: (tableProps) => {
         const { cell } = tableProps
-        const status = cell.getValue()
+        const courseStatus = cell.getValue()
         return (
           <Chip
-            label={status || '-'}
-            color={handleStatusColor(status)}
+            label={courseStatus || '-'}
+            color={handleStatusColor(courseStatus)}
             size="small"
             sx={{
               fontWeight: 600,
@@ -265,7 +273,7 @@ const Courses = () => {
     state: { rowSelection },
     enableStickyHeader: true,
     muiTableContainerProps: {
-      sx: { 
+      sx: {
         height: '100%',
         maxHeight: '100%',
       },
@@ -278,9 +286,15 @@ const Courses = () => {
   }
 
   return (
-    <Box >
+    <Box>
       <Box sx={{ mb: 3 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap" mb={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          flexWrap="wrap"
+          mb={2}
+        >
           <Box>
             <Typography
               variant="h4"
@@ -297,7 +311,9 @@ const Courses = () => {
           </Box>
           <Button
             startIcon={<Plus size={16} />}
-            onClick={() => { void navigate('/educator/create-course') }}
+            onClick={() => {
+              void navigate('/educator/create-course')
+            }}
             variant="contained"
             sx={{ mt: { xs: 2, sm: 0 } }}
           >
@@ -309,7 +325,7 @@ const Courses = () => {
         sx={{
           p: 2,
           borderRadius: '12px',
-          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+          border: (thm) => `1px solid ${thm.palette.grey[200]}`,
           display: 'flex',
           flexDirection: 'column',
           height: 'calc(100vh - 280px)',
@@ -326,58 +342,80 @@ const Courses = () => {
           mb={2}
           sx={{ flexShrink: 0 }}
         >
-            <ButtonGroup sx={{ '& .MuiButton-root:not(:last-child)': { borderRight: 'none' } }}>
-              <Button
-                sx={{
-                  backgroundColor: status === '' ? 'primary.main' : 'transparent',
-                  color: status === '' ? 'white' : 'text.secondary',
-                  '&:hover': {
-                    backgroundColor: status === '' ? 'primary.dark' : 'action.hover',
-                  },
-                }}
-                onClick={() => handleChangeStatus('')}
-              >
-                {t('EDUCATOR.COURSES.ALL')} ({courseCount?.data?.courseCount})
-              </Button>
-              <Button
-                sx={{
-                  backgroundColor: status === 'published' ? 'primary.main' : 'transparent',
-                  color: status === 'published' ? 'white' : 'text.secondary',
-                  '&:hover': {
-                    backgroundColor: status === 'published' ? 'primary.dark' : 'action.hover',
-                  },
-                }}
-                onClick={() => handleChangeStatus('published')}
-              >
-                {t('EDUCATOR.COURSES.PUBLISHED')} (
-                {courseCount?.data?.publishedCourseCount})
-              </Button>
-              <Button
-                sx={{
-                  backgroundColor: status === 'draft' ? 'primary.main' : 'transparent',
-                  color: status === 'draft' ? 'white' : 'text.secondary',
-                  '&:hover': {
-                    backgroundColor: status === 'draft' ? 'primary.dark' : 'action.hover',
-                  },
-                }}
-                onClick={() => setStatus('draft')}
-              >
-                {t('EDUCATOR.COURSES.DRAFT')} (
-                {courseCount?.data?.draftCourseCount})
-              </Button>
-            </ButtonGroup>
-            <TextField
-              size="small"
-              onChange={(e) => {
-                debouncedSearch(e.target.value)
+          <ButtonGroup
+            sx={{
+              '& .MuiButton-root:not(:last-child)': { borderRight: 'none' },
+            }}
+          >
+            <Button
+              sx={{
+                backgroundColor: status === '' ? 'primary.main' : 'transparent',
+                color: status === '' ? 'white' : 'text.secondary',
+                '&:hover': {
+                  backgroundColor:
+                    status === '' ? 'primary.dark' : 'action.hover',
+                },
               }}
-              placeholder={t('EDUCATOR.COURSES.SEARCH')}
-              InputProps={{
-                startAdornment: <Search size={16} style={{ color: 'var(--mui-palette-action-disabled)' }} />,
+              onClick={() => handleChangeStatus('')}
+            >
+              {t('EDUCATOR.COURSES.ALL')} ({courseCount?.data?.courseCount})
+            </Button>
+            <Button
+              sx={{
+                backgroundColor:
+                  status === 'published' ? 'primary.main' : 'transparent',
+                color: status === 'published' ? 'white' : 'text.secondary',
+                '&:hover': {
+                  backgroundColor:
+                    status === 'published' ? 'primary.dark' : 'action.hover',
+                },
               }}
-            />
+              onClick={() => handleChangeStatus('published')}
+            >
+              {t('EDUCATOR.COURSES.PUBLISHED')} (
+              {courseCount?.data?.publishedCourseCount})
+            </Button>
+            <Button
+              sx={{
+                backgroundColor:
+                  status === 'draft' ? 'primary.main' : 'transparent',
+                color: status === 'draft' ? 'white' : 'text.secondary',
+                '&:hover': {
+                  backgroundColor:
+                    status === 'draft' ? 'primary.dark' : 'action.hover',
+                },
+              }}
+              onClick={() => setStatus('draft')}
+            >
+              {t('EDUCATOR.COURSES.DRAFT')} (
+              {courseCount?.data?.draftCourseCount})
+            </Button>
+          </ButtonGroup>
+          <TextField
+            size="small"
+            onChange={(e) => {
+              debouncedSearch(e.target.value)
+            }}
+            placeholder={t('EDUCATOR.COURSES.SEARCH')}
+            InputProps={{
+              startAdornment: (
+                <Search
+                  size={16}
+                  style={{ color: 'var(--mui-palette-action-disabled)' }}
+                />
+              ),
+            }}
+          />
         </Box>
-        <Box sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+        <Box
+          sx={{
+            flex: 1,
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+          }}
+        >
           <MuiReactTable
             columns={columns}
             rows={coursesData?.data?.courses || []}
@@ -394,7 +432,7 @@ const Courses = () => {
           )}
         </Box>
       </Box>
-      
+
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -422,7 +460,7 @@ const Courses = () => {
         <MenuItem
           onClick={() => {
             if (selectedRow?._id) {
-              handleDeleteCourse(selectedRow._id)
+              void handleDeleteCourse(selectedRow._id)
             }
           }}
           sx={{ color: 'error.main' }}

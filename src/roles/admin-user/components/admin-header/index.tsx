@@ -1,3 +1,6 @@
+import type { MouseEvent } from 'react'
+import type { AppBarProps } from '@mui/material/AppBar'
+
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Menu, LogOut } from 'lucide-react'
@@ -6,22 +9,26 @@ import MuiAppBar from '@mui/material/AppBar'
 import { styled } from '@mui/material/styles'
 import {
   Box,
-  Menu,
   Avatar,
   Toolbar,
   MenuItem,
   IconButton,
   Typography,
   ListItemIcon,
+  Menu as MuiMenu,
 } from '@mui/material'
 
 import LogoutWrapper from '../../../../shared/components/auth-wrapper/logout'
 
 const drawerWidth = 240
 
+interface StyledAppBarProps extends AppBarProps {
+  open?: boolean
+}
+
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
+  shouldForwardProp: (prop: string) => prop !== 'open',
+})<StyledAppBarProps>(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
@@ -37,13 +44,35 @@ const AppBar = styled(MuiAppBar, {
   }),
 }))
 
-const AdminHeader = ({ open, position, handleDrawerOpen }) => {
-  const { user } = useSelector((state) => state.user)
+interface AdminHeaderProps {
+  open?: boolean
+  position?: 'fixed' | 'absolute' | 'relative' | 'static' | 'sticky'
+  handleDrawerOpen?: () => void
+}
+
+interface User {
+  firstName: string
+  lastName: string
+  email: string
+}
+
+interface RootState {
+  user: {
+    user: User
+  }
+}
+
+const AdminHeader = ({
+  open,
+  position,
+  handleDrawerOpen,
+}: AdminHeaderProps) => {
+  const { user } = useSelector((state: RootState) => state.user)
   const { firstName, lastName, email } = user
 
-  const [anchorEl, setAnchorEl] = useState(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
-  const handleClick = (event) => {
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => {
@@ -52,9 +81,7 @@ const AdminHeader = ({ open, position, handleDrawerOpen }) => {
 
   return (
     <AppBar position={position} open={open}>
-      <Toolbar
-        sx={{ backgroundColor: (theme) => theme.palette.primary.dark }}
-      >
+      <Toolbar sx={{ backgroundColor: (theme) => theme.palette.primary.dark }}>
         <IconButton
           color="inherit"
           aria-label="open drawer"
@@ -75,8 +102,11 @@ const AdminHeader = ({ open, position, handleDrawerOpen }) => {
         />
 
         <Box display="flex" alignItems="center">
-          <Avatar alt="Profile Picture" sx={{ backgroundColor: 'background.light' }}>
-            {firstName[0]?.toUpperCase() + lastName[0]?.toUpperCase()}
+          <Avatar
+            alt="Profile Picture"
+            sx={{ backgroundColor: 'background.light' }}
+          >
+            {firstName[0].toUpperCase() + lastName[0].toUpperCase()}
           </Avatar>
           <Box
             ml={1}
@@ -88,7 +118,7 @@ const AdminHeader = ({ open, position, handleDrawerOpen }) => {
             </Typography>
             <Typography>{email}</Typography>
           </Box>
-          <Menu
+          <MuiMenu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleClose}
@@ -106,7 +136,7 @@ const AdminHeader = ({ open, position, handleDrawerOpen }) => {
                 </MenuItem>
               }
             />
-          </Menu>
+          </MuiMenu>
         </Box>
       </Toolbar>
     </AppBar>

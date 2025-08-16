@@ -1,7 +1,22 @@
 import { useDispatch } from 'react-redux'
 import { useEffect, useCallback } from 'react'
 
-import { exitFullscreen, enterFullscreen } from '../Redux/Reducers/AppSlice'
+import { exitFullscreen, enterFullscreen } from '../redux/reducers/app-slice'
+
+interface DocumentWithVendorFullscreen extends Document {
+  mozCancelFullScreen?: () => Promise<void>
+  webkitExitFullscreen?: () => Promise<void>
+  msExitFullscreen?: () => Promise<void>
+  mozFullScreenElement?: Element | null
+  webkitFullscreenElement?: Element | null
+  msFullscreenElement?: Element | null
+}
+
+interface ElementWithVendorFullscreen extends HTMLElement {
+  mozRequestFullScreen?: () => Promise<void>
+  webkitRequestFullscreen?: () => Promise<void>
+  msRequestFullscreen?: () => Promise<void>
+}
 
 const useFullscreen = () => {
   const dispatch = useDispatch()
@@ -16,22 +31,22 @@ const useFullscreen = () => {
         .catch(() => {
           //
         }) // Handle potential errors silently
-    } else if ((element as any).mozRequestFullScreen) {
-      void (element as any)
+    } else if ((element as ElementWithVendorFullscreen).mozRequestFullScreen) {
+      void (element as ElementWithVendorFullscreen)
         .mozRequestFullScreen()
         .then(() => dispatch(enterFullscreen()))
         .catch(() => {
           //
         }) // Handle potential errors silently
-    } else if ((element as any).webkitRequestFullscreen) {
-      void (element as any)
+    } else if ((element as ElementWithVendorFullscreen).webkitRequestFullscreen) {
+      void (element as ElementWithVendorFullscreen)
         .webkitRequestFullscreen()
         .then(() => dispatch(enterFullscreen()))
         .catch(() => {
           //
         }) // Handle potential errors silently
-    } else if ((element as any).msRequestFullscreen) {
-      void (element as any)
+    } else if ((element as ElementWithVendorFullscreen).msRequestFullscreen) {
+      void (element as ElementWithVendorFullscreen)
         .msRequestFullscreen()
         .then(() => dispatch(enterFullscreen()))
         .catch(() => {
@@ -49,25 +64,25 @@ const useFullscreen = () => {
         .catch(() => {
           //
         })
-    } else if ((document as any).mozCancelFullScreen) {
+    } else if ((document as DocumentWithVendorFullscreen).mozCancelFullScreen) {
       // Firefox
-      void (document as any)
+      void (document as DocumentWithVendorFullscreen)
         .mozCancelFullScreen()
         .then(() => dispatch(exitFullscreen()))
         .catch(() => {
           //
         })
-    } else if ((document as any).webkitExitFullscreen) {
+    } else if ((document as DocumentWithVendorFullscreen).webkitExitFullscreen) {
       // Chrome, Safari and Opera
-      void (document as any)
+      void (document as DocumentWithVendorFullscreen)
         .webkitExitFullscreen()
         .then(() => dispatch(exitFullscreen()))
         .catch(() => {
           //
         })
-    } else if ((document as any).msExitFullscreen) {
+    } else if ((document as DocumentWithVendorFullscreen).msExitFullscreen) {
       // IE/Edge
-      void (document as any)
+      void (document as DocumentWithVendorFullscreen)
         .msExitFullscreen()
         .then(() => dispatch(exitFullscreen()))
         .catch(() => {
@@ -79,9 +94,9 @@ const useFullscreen = () => {
   const handleFullScreenChange = useCallback(() => {
     if (
       !document.fullscreenElement &&
-      !(document as any).mozFullScreenElement &&
-      !(document as any).webkitFullscreenElement &&
-      !(document as any).msFullscreenElement
+      !(document as DocumentWithVendorFullscreen).mozFullScreenElement &&
+      !(document as DocumentWithVendorFullscreen).webkitFullscreenElement &&
+      !(document as DocumentWithVendorFullscreen).msFullscreenElement
     ) {
       dispatch(exitFullscreen())
     }

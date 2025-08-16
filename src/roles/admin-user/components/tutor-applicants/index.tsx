@@ -1,14 +1,24 @@
 import { debounce } from 'lodash'
-import React, { useRef, useMemo, useState, useCallback } from 'react'
-import { Eye, Search, XCircle, PlusCircle, CheckCircle, MoreVertical } from 'lucide-react'
-import { MaterialReactTable, type MRT_ColumnDef, useMaterialReactTable } from 'material-react-table'
+import { useRef, useMemo, useState, useCallback } from 'react'
+import {
+  Eye,
+  Search,
+  XCircle,
+  PlusCircle,
+  CheckCircle,
+  MoreVertical,
+} from 'lucide-react'
+import {
+  MaterialReactTable,
+  type MRT_ColumnDef,
+  useMaterialReactTable,
+} from 'material-react-table'
 
 import {
   Box,
   Tab,
   Menu,
   Tabs,
-  Paper,
   alpha,
   Button,
   MenuItem,
@@ -31,7 +41,7 @@ import {
   useReconsiderStatusMutation,
   useApproveEducatorStatusMutation,
   useGetEducationTutorApplicationQuery,
-} from '../../../../Services/admin'
+} from '../../../../services/admin'
 
 // Interface definitions
 interface Expertise {
@@ -118,7 +128,9 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
   }, [])
 
   const handleCheckboxAccept = async () => {
-    const filterData = tutorData?.data.filter((_, index) => rowSelection[index.toString()])
+    const filterData = tutorData?.data.filter(
+      (_, index) => rowSelection[index.toString()],
+    )
     const AcceptedIds = filterData?.map((item) => item._id) ?? []
     const payload: StatusPayload = {
       educatorIds: AcceptedIds,
@@ -144,13 +156,13 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
       payload.educatorIds = DeclinedIds
     }
     setRowSelection({})
-    const response = await tutorStatus(payload) as { error?: unknown }
+    const response = (await tutorStatus(payload)) as { error?: unknown }
     if (!response.error) {
       confirmationRef.current?.closeModal()
     }
   }
 
-  const openDeclineConfirmation = useCallback(async (tutor?: TutorData) => {
+  const openDeclineConfirmation = useCallback((tutor?: TutorData) => {
     confirmationRef.current?.openModal()
     if (tutor) {
       setDeleteUser(tutor._id)
@@ -159,23 +171,31 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
     }
   }, [])
 
-  const handleAccept = useCallback(async (tutor: TutorData) => {
-    const payload: StatusPayload = {
-      educatorIds: [tutor._id],
-      approval: true,
-    }
-    await tutorStatus(payload)
-  }, [tutorStatus])
+  const handleAccept = useCallback(
+    async (tutor: TutorData) => {
+      const payload: StatusPayload = {
+        educatorIds: [tutor._id],
+        approval: true,
+      }
+      await tutorStatus(payload)
+    },
+    [tutorStatus],
+  )
 
-  const handleCheckboxReconsider = useCallback(async (tutor: TutorData) => {
-    const payload = {
-      educatorIds: [tutor._id],
-    }
-    await reconsiderStatus(payload)
-  }, [reconsiderStatus])
+  const handleCheckboxReconsider = useCallback(
+    async (tutor: TutorData) => {
+      const payload = {
+        educatorIds: [tutor._id],
+      }
+      await reconsiderStatus(payload)
+    },
+    [reconsiderStatus],
+  )
 
   const handleBulkReconsider = async () => {
-    const filterData = tutorData?.data.filter((_, index) => rowSelection[index.toString()])
+    const filterData = tutorData?.data.filter(
+      (_, index) => rowSelection[index.toString()],
+    )
     const selectedIds = filterData?.map((item) => item._id) ?? []
     const payload = {
       educatorIds: selectedIds,
@@ -193,8 +213,8 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
             header: 'Name',
             Cell: (props) => {
               const { original } = props.row
-              const firstName = original?.firstName ?? ''
-              const lastName = original?.lastName ?? ''
+              const firstName = original.firstName ?? ''
+              const lastName = original.lastName ?? ''
               return (
                 <Typography>
                   {firstName || lastName
@@ -208,7 +228,7 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
             accessorKey: 'email',
             header: 'Email Address',
             Cell: ({ cell }) => (
-              <Typography>{cell.getValue<string>() ?? '-'}</Typography>
+              <Typography>{cell.getValue<string>() || '-'}</Typography>
             ),
           },
           {
@@ -218,7 +238,7 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
               const { original } = props.row
               return (
                 <Typography>
-                  {original?.expertise?.length
+                  {original.expertise?.length
                     ? original.expertise.map((item) => item.category).join(', ')
                     : '-'}
                 </Typography>
@@ -255,7 +275,8 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
             header: 'Action',
             Cell: (props) => {
               const { original } = props.row
-              const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+              const [anchorEl, setAnchorEl] =
+                React.useState<null | HTMLElement>(null)
               const open = Boolean(anchorEl)
 
               const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -330,14 +351,14 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
             accessorKey: 'firstName',
             header: 'Name',
             Cell: ({ cell }) => (
-              <Typography>{cell.getValue<string>() ?? '-'}</Typography>
+              <Typography>{cell.getValue<string>() || '-'}</Typography>
             ),
           },
           {
             accessorKey: 'email',
             header: 'Email Address',
             Cell: ({ cell }) => (
-              <Typography>{cell.getValue<string>() ?? '-'}</Typography>
+              <Typography>{cell.getValue<string>() || '-'}</Typography>
             ),
           },
           {
@@ -347,7 +368,7 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
               const { original } = props.row
               return (
                 <Typography>
-                  {original?.expertise?.length
+                  {original.expertise?.length
                     ? original.expertise.map((item) => item.category).join(', ')
                     : '-'}
                 </Typography>
@@ -380,7 +401,7 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
             accessorKey: 'declinedReason',
             header: 'Declined Reason',
             Cell: ({ cell }) => (
-              <Typography>{cell.getValue<string>() ?? '-'}</Typography>
+              <Typography>{cell.getValue<string>() || '-'}</Typography>
             ),
           },
           {
@@ -408,7 +429,14 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
       default:
         return []
     }
-  }, [filter, isLoading, handleAccept, handleCheckboxReconsider, handleViewButton, openDeclineConfirmation])
+  }, [
+    filter,
+    isLoading,
+    handleAccept,
+    handleCheckboxReconsider,
+    handleViewButton,
+    openDeclineConfirmation,
+  ])
 
   const table = useMaterialReactTable({
     columns,
@@ -526,33 +554,37 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
                   alignItems: 'center',
                   backgroundColor: 'background.paper',
                   borderRadius: '8px',
-                  border: (theme) => `1px solid ${theme.palette.grey[300]}`,
+                  border: (thm) => `1px solid ${thm.palette.grey[300]}`,
                   px: 2,
                   py: 1,
                   minWidth: 250,
                   transition: 'all 0.2s',
                   '&:hover': {
-                    borderColor: (theme) => theme.palette.primary[300],
+                    borderColor: (thm) => thm.palette.primary[300],
                   },
                   '&:focus-within': {
-                    borderColor: (theme) => theme.palette.primary.main,
-                    boxShadow: (theme) => `0 0 0 3px ${theme.palette.primary.main}15`,
+                    borderColor: (thm) => thm.palette.primary.main,
+                    boxShadow: (thm) =>
+                      `0 0 0 3px ${thm.palette.primary.main}15`,
                   },
                 }}
               >
                 <Search
                   size={20}
-                  style={{ color: 'var(--mui-palette-text-secondary)', marginRight: 12 }}
+                  style={{
+                    color: 'var(--mui-palette-text-secondary)',
+                    marginRight: 12,
+                  }}
                 />
                 <InputBase
                   placeholder="Search tutors..."
                   onChange={(e) => debouncedSearch(e.target.value)}
                   sx={{
                     flex: 1,
-                    '& input': { 
+                    '& input': {
                       fontSize: '0.875rem',
                       '&::placeholder': {
-                        color: (theme) => theme.palette.text.secondary,
+                        color: (thm) => thm.palette.text.secondary,
                         opacity: 0.5,
                       },
                     },
@@ -588,7 +620,7 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
           {!type ? (
             <Tabs
               value={filter}
-              onChange={(e, newValue) => setFilter(newValue)}
+              onChange={(e, newValue: string) => setFilter(newValue)}
               sx={{
                 minHeight: 40,
                 '& .MuiTabs-indicator': {
@@ -629,7 +661,7 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
           )}
 
           <Box>
-            {!!Object.keys(rowSelection)?.length && renderActionButtons()}
+            {!!Object.keys(rowSelection).length && renderActionButtons()}
           </Box>
         </Box>
       </Box>

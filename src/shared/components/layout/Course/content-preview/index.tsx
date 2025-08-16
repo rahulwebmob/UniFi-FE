@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { ZoomIn, ZoomOut, Maximize2, RotateCw } from 'lucide-react'
+import { ZoomIn, ZoomOut, RotateCw, Maximize2 } from 'lucide-react'
 
-import { Box, IconButton, Paper, Tooltip, alpha, useTheme } from '@mui/material'
+import { Box, Paper, alpha, Tooltip, useTheme, IconButton } from '@mui/material'
 
-import useAesDecoder from '../../../../../Hooks/useAesDecoder'
+import useAesDecoder from '../../../../../hooks/useAesDecoder'
 
 interface ContentPreviewProps {
   type: string
@@ -14,16 +14,16 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
   const theme = useTheme()
   const [zoomLevel, setZoomLevel] = useState(100)
   const [rotation, setRotation] = useState(0)
-  
+
   // Decrypt the URL if it's encrypted
   const decryptedUrl = useAesDecoder(url)
 
   const handleZoomIn = () => {
-    setZoomLevel(prev => Math.min(prev + 25, 200))
+    setZoomLevel((prev) => Math.min(prev + 25, 200))
   }
 
   const handleZoomOut = () => {
-    setZoomLevel(prev => Math.max(prev - 25, 50))
+    setZoomLevel((prev) => Math.max(prev - 25, 50))
   }
 
   const handleResetZoom = () => {
@@ -32,7 +32,7 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
   }
 
   const handleRotate = () => {
-    setRotation(prev => (prev + 90) % 360)
+    setRotation((prev) => (prev + 90) % 360)
   }
 
   const renderNormalVideo = () => (
@@ -46,11 +46,11 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
         background: theme.palette.grey[900],
       }}
     >
-      <video 
-        width="100%" 
-        height="100%" 
-        src={decryptedUrl} 
-        controls 
+      <video
+        width="100%"
+        height="100%"
+        src={decryptedUrl}
+        controls
         autoPlay
         style={{
           maxWidth: '100%',
@@ -93,8 +93,8 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
         }}
       >
         <Tooltip title="Zoom Out">
-          <IconButton 
-            size="small" 
+          <IconButton
+            size="small"
             onClick={handleZoomOut}
             disabled={zoomLevel <= 50}
             sx={{
@@ -125,8 +125,8 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
         </Box>
 
         <Tooltip title="Zoom In">
-          <IconButton 
-            size="small" 
+          <IconButton
+            size="small"
             onClick={handleZoomIn}
             disabled={zoomLevel >= 200}
             sx={{
@@ -140,11 +140,18 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
           </IconButton>
         </Tooltip>
 
-        <Box sx={{ width: 1, height: 24, background: theme.palette.divider, mx: 0.5 }} />
+        <Box
+          sx={{
+            width: 1,
+            height: 24,
+            background: theme.palette.divider,
+            mx: 0.5,
+          }}
+        />
 
         <Tooltip title="Rotate">
-          <IconButton 
-            size="small" 
+          <IconButton
+            size="small"
             onClick={handleRotate}
             sx={{
               color: theme.palette.primary.main,
@@ -158,8 +165,8 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
         </Tooltip>
 
         <Tooltip title="Reset">
-          <IconButton 
-            size="small" 
+          <IconButton
+            size="small"
             onClick={handleResetZoom}
             sx={{
               color: theme.palette.primary.main,
@@ -220,7 +227,8 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
             allowFullScreen
             style={{
               background: 'white',
-              boxShadow: zoomLevel > 100 ? '0 4px 20px rgba(0,0,0,0.1)' : 'none',
+              boxShadow:
+                zoomLevel > 100 ? '0 4px 20px rgba(0,0,0,0.1)' : 'none',
             }}
           />
         </Box>
@@ -239,7 +247,11 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
     }
   }
 
-  return !!decryptedUrl && <Box sx={{ width: '100%', height: '100%' }}>{renderContent()}</Box>
+  return (
+    !!decryptedUrl && (
+      <Box sx={{ width: '100%', height: '100%' }}>{renderContent()}</Box>
+    )
+  )
 }
 
 export default ContentPreview

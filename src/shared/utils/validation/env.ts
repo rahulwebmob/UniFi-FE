@@ -4,14 +4,15 @@
 
 const getEnvVar = (viteKey: string, legacyKey: string): string => {
   // Try Vite env first
-  if (
-    import.meta?.env &&
-    viteKey in import.meta.env
-  ) {
+  if (import.meta?.env && viteKey in import.meta.env) {
     return import.meta.env[viteKey] as string
   }
   // Fallback to process.env for compatibility
-  if (typeof process !== 'undefined' && process.env && legacyKey in process.env) {
+  if (
+    typeof process !== 'undefined' &&
+    process.env &&
+    legacyKey in process.env
+  ) {
     return process.env[legacyKey]!
   }
   return ''

@@ -23,8 +23,8 @@ import {
 } from '@mui/material'
 
 import ChangePassword from '../profile/ChangePassword'
-import { signIn } from '../../../../Redux/Reducers/UserSlice'
-import { useEditAdminProfileMutation } from '../../../../Services/onboarding'
+import { signIn } from '../../../../redux/reducers/user-slice'
+import { useEditAdminProfileMutation } from '../../../../services/onboarding'
 
 interface UserData {
   _id?: string
@@ -40,7 +40,11 @@ interface AdminProfileSettingsProps {
   userData: UserData | null
 }
 
-const AdminProfileSettings: React.FC<AdminProfileSettingsProps> = ({ open, onClose, userData }) => {
+const AdminProfileSettings: React.FC<AdminProfileSettingsProps> = ({
+  open,
+  onClose,
+  userData,
+}) => {
   const theme = useTheme()
   const { t } = useTranslation('application')
   const dispatch = useDispatch()
@@ -77,15 +81,15 @@ const AdminProfileSettings: React.FC<AdminProfileSettingsProps> = ({ open, onClo
 
   useEffect(() => {
     if (userData) {
-      setValue('firstName', userData?.firstName ?? '')
-      setValue('lastName', userData?.lastName ?? '')
+      setValue('firstName', userData.firstName ?? '')
+      setValue('lastName', userData.lastName ?? '')
     }
   }, [userData, setValue])
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values: { firstName: string; lastName: string }) => {
     const response = await updateName({ ...values, update: 'name' })
     if (!response.error) {
-      const newToken = response?.data?.token
+      const newToken = (response as { data: { token: string } }).data.token
       localStorage.removeItem('token')
       localStorage.setItem('token', newToken)
       dispatch(signIn({ token: newToken }))
@@ -179,10 +183,12 @@ const AdminProfileSettings: React.FC<AdminProfileSettingsProps> = ({ open, onClo
                       size="small"
                       variant="outlined"
                       fullWidth
-                      placeholder={t('application:PROFILE.PLACEHOLDER_FIRST_NAME')}
+                      placeholder={t(
+                        'application:PROFILE.PLACEHOLDER_FIRST_NAME',
+                      )}
                       {...field}
-                      error={!!errors?.firstName}
-                      helperText={errors?.firstName?.message}
+                      error={!!errors.firstName}
+                      helperText={errors.firstName?.message}
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           borderRadius: '8px',
@@ -213,10 +219,12 @@ const AdminProfileSettings: React.FC<AdminProfileSettingsProps> = ({ open, onClo
                       size="small"
                       variant="outlined"
                       fullWidth
-                      placeholder={t('application:PROFILE.PLACEHOLDER_LAST_NAME')}
+                      placeholder={t(
+                        'application:PROFILE.PLACEHOLDER_LAST_NAME',
+                      )}
                       {...field}
-                      error={!!errors?.lastName}
-                      helperText={errors?.lastName?.message}
+                      error={!!errors.lastName}
+                      helperText={errors.lastName?.message}
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           borderRadius: '8px',
@@ -269,7 +277,7 @@ const AdminProfileSettings: React.FC<AdminProfileSettingsProps> = ({ open, onClo
             userEmail={userData?.email}
             headerName={null}
             isUserAdmin
-            resetPassword={false}
+            resetPassword={() => {}}
             isResetPassword={false}
           />
         </Box>

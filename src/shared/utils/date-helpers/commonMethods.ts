@@ -3,9 +3,10 @@ import Cookies from 'js-cookie'
 import { ja, de, fr, pt, it, enUS, arSA } from 'date-fns/locale'
 
 import { ENV } from '../validation/env'
-import i18n from '../../../Localization/i18n'
+import i18n from '../../../localization/i18n'
 
-export const iff = <T,>(condition: boolean, then: T, otherwise: T): T => (condition ? then : otherwise)
+export const iff = <T>(condition: boolean, then: T, otherwise: T): T =>
+  condition ? then : otherwise
 
 const millifyNumbers = (value: number, precision = 2): string =>
   millify(value, {
@@ -27,9 +28,7 @@ export const handleGetInitials = (data: UserData): string => {
   const firstInitial = data.firstName
     ? data.firstName.charAt(0).toUpperCase()
     : ''
-  const lastInitial = data.lastName
-    ? data.lastName.charAt(0).toUpperCase()
-    : ''
+  const lastInitial = data.lastName ? data.lastName.charAt(0).toUpperCase() : ''
   return `${firstInitial}${lastInitial}`
 }
 
@@ -96,7 +95,11 @@ const getCookie = (key: string): string | null => {
   return null
 }
 
-const scriptForFreeSignUp = (orderId: string, email: string, userId: string): void => {
+const scriptForFreeSignUp = (
+  orderId: string,
+  email: string,
+  userId: string,
+): void => {
   // Add the script after successful signup
   const script = document.createElement('script')
   script.type = 'text/javascript'
@@ -146,7 +149,10 @@ const generateImageUrl = (folderName: string, fileName: string): string => {
   return ''
 }
 
-const convertCoordinatesToDirection = (latitude: number | null | undefined, longitude: number | null | undefined): { latitude: string; longitude: string } => {
+const convertCoordinatesToDirection = (
+  latitude: number | null | undefined,
+  longitude: number | null | undefined,
+): { latitude: string; longitude: string } => {
   if (!latitude && !longitude) {
     return { latitude: '', longitude: '' }
   }
@@ -156,7 +162,6 @@ const convertCoordinatesToDirection = (latitude: number | null | undefined, long
   const longitudeStr = `${Math.abs(longitude).toFixed(4)}°${directionEastWest}`
   return { latitude: latitudeStr, longitude: longitudeStr }
 }
-
 
 const escapeCSVValue = (value: unknown): string => {
   if (value === null || value === undefined) return ''
@@ -173,9 +178,13 @@ interface Column {
   accessorKey: string
 }
 
-type Row = Record<string, unknown>;
+type Row = Record<string, unknown>
 
-const exportToCSV = (fileName: string, columns: Column[], rows: Row[]): void => {
+const exportToCSV = (
+  fileName: string,
+  columns: Column[],
+  rows: Row[],
+): void => {
   const csvHeader = `${columns
     .map((col) => escapeCSVValue(col.header))
     .join(',')}\n`
@@ -222,7 +231,15 @@ const getCurrentAndNextThreeQuarters = () => {
 import type { Locale } from 'date-fns'
 
 const getLocaleByLanguageCode = (languageCode: string): Locale | undefined => {
-  const localeMap: Record<string, Locale> = { ar: arSA, jp: ja, en: enUS, de, fr, pt, it }
+  const localeMap: Record<string, Locale> = {
+    ar: arSA,
+    jp: ja,
+    en: enUS,
+    de,
+    fr,
+    pt,
+    it,
+  }
   return localeMap[languageCode]
 }
 

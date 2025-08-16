@@ -2,23 +2,31 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
+import type { SelectChangeEvent } from '@mui/material'
 import { Box, Select, Tooltip, MenuItem, FormControl } from '@mui/material'
 
+import type { RootState } from '../../../../redux/types'
 import { SizeType } from './constants'
 
-const StrokePicker = ({ setFunc, options, type }) => {
+interface StrokePickerProps {
+  setFunc: (value: number) => void
+  options: number[]
+  type: SizeType
+}
+
+const StrokePicker: React.FC<StrokePickerProps> = ({ setFunc, options, type }) => {
   const dispatch = useDispatch()
   const { t } = useTranslation('application')
   const { fontSize, strokeWidth, eraserWidth } = useSelector(
-    (state) => state.education,
+    (state: RootState) => state.education,
   )
 
-  const handleChange = (event) => {
+  const handleChange = (event: SelectChangeEvent<number>) => {
     const selectedSize = parseInt(event.target.value, 10)
     dispatch(setFunc(selectedSize))
   }
 
-  const getTooltipTitle = () => {
+  const getTooltipTitle = (): string => {
     switch (type) {
       case SizeType.STROKE_WIDTH:
         return t('CONFERENCE.WHITE_BOARD.SELECT_STROKE_WIDTH')
@@ -31,7 +39,7 @@ const StrokePicker = ({ setFunc, options, type }) => {
     }
   }
 
-  const getValue = () => {
+  const getValue = (): number => {
     if (type === SizeType.STROKE_WIDTH) {
       return strokeWidth
     }
@@ -61,7 +69,7 @@ const StrokePicker = ({ setFunc, options, type }) => {
             value={getValue()}
             onChange={handleChange}
           >
-            {options.map((size) => (
+            {options.map((size: number) => (
               <MenuItem key={size} value={size}>
                 {size}px
               </MenuItem>

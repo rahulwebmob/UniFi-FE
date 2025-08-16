@@ -1,8 +1,16 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Download } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 
-import { Box, Chip, Avatar, Button, Tooltip, Typography, ButtonGroup } from '@mui/material'
+import {
+  Box,
+  Chip,
+  Avatar,
+  Button,
+  Tooltip,
+  Typography,
+  ButtonGroup,
+} from '@mui/material'
 
 import Courses from './courses'
 import Webinars from './webinars'
@@ -11,7 +19,7 @@ import Achievements from './achievements'
 import {
   useDownloadCVQuery,
   useViewTutorDetailQuery,
-} from '../../../../../Services/admin'
+} from '../../../../../services/admin'
 
 const LIST_TYPE_OPTIONS = [
   { name: 'Achievements', value: 'IS', component: () => <Achievements /> },
@@ -62,22 +70,19 @@ const TutorProfile = () => {
       >
         <Box flex={1} minWidth={300}>
           <Box display="flex" alignItems="center" gap={3} mb={3}>
-            <Avatar 
-              alt="OL" 
-              sx={{ 
-                width: 80, 
+            <Avatar
+              alt="OL"
+              sx={{
+                width: 80,
                 height: 80,
                 background: (theme) => theme.palette.primary[100],
                 color: (theme) => theme.palette.primary.main,
                 fontSize: '1.5rem',
                 fontWeight: 600,
-              }} 
+              }}
             />
             <Box>
-              <Typography 
-                variant="h5"
-                sx={{ fontWeight: 600, mb: 0.5 }}
-              >
+              <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>
                 {tutorDetails?.data?.firstName || '-'}
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -91,9 +96,9 @@ const TutorProfile = () => {
           </Box>
 
           <Box mb={3}>
-            <Typography 
-              variant="body2" 
-              color="text.secondary" 
+            <Typography
+              variant="body2"
+              color="text.secondary"
               sx={{ fontWeight: 500, mb: 1 }}
             >
               Executive Summary
@@ -158,14 +163,11 @@ const TutorProfile = () => {
               alignItems: 'center',
             }}
           >
-            <Typography 
-              variant="body1"
-              sx={{ fontWeight: 500 }}
-            >
+            <Typography variant="body1" sx={{ fontWeight: 500 }}>
               Total Earning
             </Typography>
-            <Typography 
-              variant="h6" 
+            <Typography
+              variant="h6"
               color="primary.main"
               sx={{ fontWeight: 600 }}
             >
@@ -299,8 +301,8 @@ const TutorProfile = () => {
           borderRadius: '12px',
         }}
       >
-        <ButtonGroup 
-          variant="outlined" 
+        <ButtonGroup
+          variant="outlined"
           size="large"
           sx={{
             '& .MuiButton-root': {

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Beaker } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 
@@ -34,7 +33,8 @@ const Achievements = () => {
   }) as { data: TutorDetailsResponse | undefined }
 
   const educationData: Education[] = tutorDetails?.data?.education ?? []
-  const certificationData: Certification[] = tutorDetails?.data?.certifications ?? []
+  const certificationData: Certification[] =
+    tutorDetails?.data?.certifications ?? []
 
   return (
     <Box>

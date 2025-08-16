@@ -27,19 +27,18 @@ import PreviewWebinar from '../preview-webinar'
 import WebinarSchedule from './webinar-schedule'
 import WebinarMetaData from './webinar-meta-data'
 import CharacterCount from '../../character-count'
-import { errorAlert } from '../../../../../Redux/Reducers/AppSlice'
-import { updateShowPrompt } from '../../../../../Redux/Reducers/EducationSlice'
+import { errorAlert } from '../../../../../redux/reducers/app-slice'
+import { updateShowPrompt } from '../../../../../redux/reducers/education-slice'
 import {
   useCreateWebinarMutation,
   useUpdateWebinarMutation,
-} from '../../../../../Services/admin'
+} from '../../../../../services/admin'
 import {
   iff,
   convHMtoUtc,
   convDateToUtc,
   handleMinTime,
   getLocalTimezone,
-  ACTIVE_BUTTON_CSS,
   transformNaNToNull,
 } from '../../common/common'
 

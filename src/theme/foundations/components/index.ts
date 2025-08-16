@@ -1,6 +1,5 @@
 import type { Theme, Components } from '@mui/material/styles'
 
-
 /* ===== START: Alert Components ===== */
 export const MuiAlert: Components<Theme>['MuiAlert'] = {
   styleOverrides: {
@@ -1180,9 +1179,10 @@ export const MuiSkeleton: Components<Theme>['MuiSkeleton'] = {
   },
   styleOverrides: {
     root: ({ theme }) => ({
-      backgroundColor: theme.palette.mode === 'light' 
-        ? 'rgba(0, 0, 0, 0.11)'
-        : 'rgba(255, 255, 255, 0.13)',
+      backgroundColor:
+        theme.palette.mode === 'light'
+          ? 'rgba(0, 0, 0, 0.11)'
+          : 'rgba(255, 255, 255, 0.13)',
       borderRadius: theme.shape.borderRadius,
     }),
 
@@ -1845,17 +1845,17 @@ export const MuiDataGrid: Components<Theme>['MuiDataGrid'] = {
       border: 'none',
       borderRadius: theme.spacing(1.5),
       fontSize: '0.875rem',
-      
+
       '& .MuiDataGrid-main': {
         borderRadius: theme.spacing(1.5),
       },
-      
+
       '& .MuiDataGrid-columnHeaders': {
         backgroundColor: theme.palette.grey[50],
         borderBottom: `2px solid ${theme.palette.grey[200]}`,
         minHeight: 56,
       },
-      
+
       '& .MuiDataGrid-columnHeader': {
         '&:focus': {
           outline: 'none',
@@ -1864,7 +1864,7 @@ export const MuiDataGrid: Components<Theme>['MuiDataGrid'] = {
           outline: 'none',
         },
       },
-      
+
       '& .MuiDataGrid-columnHeaderTitle': {
         fontWeight: 600,
         fontSize: '0.75rem',
@@ -1872,14 +1872,14 @@ export const MuiDataGrid: Components<Theme>['MuiDataGrid'] = {
         letterSpacing: '0.05em',
         color: theme.palette.text.secondary,
       },
-      
+
       '& .MuiDataGrid-cell': {
         borderBottom: `1px solid ${theme.palette.grey[100]}`,
         '&:focus': {
           outline: 'none',
         },
       },
-      
+
       '& .MuiDataGrid-row': {
         '&:hover': {
           backgroundColor: theme.palette.grey[50],
@@ -1891,17 +1891,18 @@ export const MuiDataGrid: Components<Theme>['MuiDataGrid'] = {
           },
         },
       },
-      
+
       '& .MuiDataGrid-footerContainer': {
         borderTop: `2px solid ${theme.palette.grey[200]}`,
         backgroundColor: theme.palette.grey[50],
       },
-      
+
       '& .MuiTablePagination-root': {
-        '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-          fontSize: '0.875rem',
-          color: theme.palette.text.secondary,
-        },
+        '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows':
+          {
+            fontSize: '0.875rem',
+            color: theme.palette.text.secondary,
+          },
       },
     }),
   },

@@ -1,11 +1,11 @@
-import  { useState } from 'react'
+import { useState } from 'react'
 
 import { Box, Button, Typography, ButtonGroup } from '@mui/material'
 
 import CourseList from '../course-list'
 import WebinarList from '../webinar-list'
 
-const PurchasedContent = () => {
+const PurchasedContent: React.FC = () => {
   const [contentType, setContentType] = useState('course')
 
   return (
@@ -28,16 +28,16 @@ const PurchasedContent = () => {
           mb: 2,
         }}
       >
-        <Typography 
+        <Typography
           variant="h6"
-          sx={{ 
+          sx={{
             fontWeight: 600,
-            color: (theme) => theme.palette.text.primary
+            color: (theme) => theme.palette.text.primary,
           }}
         >
           Purchased content
         </Typography>
-          
+
         {/* Tab Buttons */}
         <ButtonGroup size="small" variant="contained">
           <Button
@@ -89,7 +89,7 @@ const PurchasedContent = () => {
             backgroundColor: (theme) => theme.palette.primary.main,
             borderRadius: '50%',
             width: 32,
-            height: 32, 
+            height: 32,
             minWidth: 32,
             padding: 0,
             display: 'flex',

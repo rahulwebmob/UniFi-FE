@@ -1,7 +1,7 @@
 import React from 'react'
 import { CloudUpload } from 'lucide-react'
-import { Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { Controller, type Control, type FieldValues, type FieldErrors } from 'react-hook-form'
 
 import {
   Box,
@@ -15,15 +15,31 @@ import {
 
 import RequiredFieldIndicator from '../../../../shared/components/ui-elements/required-field-indicator'
 
-const Document = ({ control, errors, setCvFile, setMp4File }) => {
-  const handleFileChange = (event, onChange, type) => {
-    const selectedFile = event?.target?.files[0]
+interface DocumentProps {
+  control: Control<FieldValues>
+  errors: FieldErrors<FieldValues>
+  setCvFile: (file: File) => void
+  setMp4File: (file: File) => void
+}
+
+const Document = ({
+  control,
+  errors,
+  setCvFile,
+  setMp4File,
+}: DocumentProps) => {
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    onChange: (file: File) => void,
+    type: string,
+  ) => {
+    const selectedFile = event?.target?.files?.[0]
     if (type === 'cv') {
-      setCvFile(selectedFile)
+      setCvFile(selectedFile!)
     } else {
-      setMp4File(selectedFile)
+      setMp4File(selectedFile!)
     }
-    onChange(selectedFile)
+    onChange(selectedFile!)
   }
   const { t } = useTranslation('education')
 
@@ -41,7 +57,9 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
           render={({ field: { onChange, value } }) => (
             <TextField
               value={value?.name || ''}
-              placeholder={t('REGISTER_EDUCATOR.DOCUMENT_PAGE.ACCEPTED_FILE_TYPE')}
+              placeholder={t(
+                'REGISTER_EDUCATOR.DOCUMENT_PAGE.ACCEPTED_FILE_TYPE',
+              )}
               size="small"
               fullWidth
               InputProps={{
@@ -60,7 +78,9 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
                         type="file"
                         accept=".pdf,.doc,.docx"
                         hidden
-                        onChange={(event) => handleFileChange(event, onChange, 'cv')}
+                        onChange={(event) =>
+                          handleFileChange(event, onChange, 'cv')
+                        }
                       />
                     </Button>
                   </InputAdornment>
@@ -84,7 +104,9 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
           render={({ field: { onChange, value } }) => (
             <TextField
               value={value?.name || ''}
-              placeholder={t('REGISTER_EDUCATOR.DOCUMENT_PAGE.VIDEO_FILE_FORMAT')}
+              placeholder={t(
+                'REGISTER_EDUCATOR.DOCUMENT_PAGE.VIDEO_FILE_FORMAT',
+              )}
               size="small"
               fullWidth
               InputProps={{
@@ -103,7 +125,9 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
                         type="file"
                         accept=".mp4,.mov,.webm"
                         hidden
-                        onChange={(event) => handleFileChange(event, onChange, 'mp4')}
+                        onChange={(event) =>
+                          handleFileChange(event, onChange, 'mp4')
+                        }
                       />
                     </Button>
                   </InputAdornment>

@@ -1,10 +1,9 @@
-import React from 'react'
 import moment from 'moment-timezone'
 import { useParams } from 'react-router-dom'
 
 import { Box, Chip, Divider, Tooltip, Typography } from '@mui/material'
 
-import { useGetWebinarDetailsQuery } from '../../../../../../Services/admin'
+import { useGetWebinarDetailsQuery } from '../../../../../../services/admin'
 
 interface Webinar {
   _id: string

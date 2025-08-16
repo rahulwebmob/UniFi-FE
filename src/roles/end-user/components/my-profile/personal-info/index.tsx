@@ -19,10 +19,12 @@ import {
   useMediaQuery,
 } from '@mui/material'
 
-import { errorAlert } from '../../../../../Redux/Reducers/AppSlice'
-import { generateImageUrl } from '../../../../../Utils/globalUtils'
-import { adminApi, useMyProfileMutation } from '../../../../../Services/admin'
-import ChangePassword from '../../../../../roles/admin-user/components/profile/ChangePassword'
+import { generateImageUrl } from '../../../../../utils/globalUtils'
+import { errorAlert } from '../../../../../redux/reducers/app-slice'
+import { adminApi, useMyProfileMutation } from '../../../../../services/admin'
+import ChangePassword from '../../../../admin-user/components/profile/ChangePassword'
+
+import type { RootState } from '../../../../../redux/types'
 
 interface PersonalInfoData {
   profileImage?: {
@@ -48,9 +50,9 @@ const PersonalInfo = () => {
   const theme = useTheme()
   const { t } = useTranslation('application')
   const dispatch = useDispatch()
-  const { profileImage, firstName, lastName } = useSelector(
-    (state: RootState) => state.user.user,
-  ) as PersonalInfoData
+  const userState = useSelector((state: RootState) => state.user)
+  const userData = userState.user as PersonalInfoData | undefined
+  const { profileImage, firstName, lastName } = userData ?? {}
 
   console.log(profileImage, firstName, lastName)
 
@@ -118,8 +120,9 @@ const PersonalInfo = () => {
   const onSubmit = async (values: FormValues) => {
     const formData = new FormData()
     Object.keys(values).forEach((key) => {
-      if (values[key as keyof FormValues] !== data?.[key]) {
-        formData.append(key, values[key as keyof FormValues])
+      const typedKey = key as keyof FormValues
+      if (values[typedKey] !== userData?.[key]) {
+        formData.append(key, values[typedKey])
       }
     })
     if (avatar.file) {

@@ -1,7 +1,14 @@
 import { useSelector } from 'react-redux'
 import React, { useState, useEffect } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { User, LogOut, Receipt, CheckCircle, ChevronRight, GraduationCap } from 'lucide-react'
+import {
+  User,
+  LogOut,
+  Receipt,
+  CheckCircle,
+  ChevronRight,
+  GraduationCap,
+} from 'lucide-react'
 
 import {
   Box,
@@ -29,7 +36,7 @@ import {
   ListItemButton,
 } from '@mui/material'
 
-import MainLogo from '../../../../Assets/logo.svg'
+import MainLogo from '../../../../assets/logo.svg'
 import AdminProfileSettings from '../profile-settings'
 import CustomSvgIcon from '../../../../shared/components/custom-svg-icon'
 import LogoutWrapper from '../../../../shared/components/auth-wrapper/logout'
@@ -43,7 +50,13 @@ interface NavigationItem {
   icon: React.ReactElement
   path: string
   badge?: number
-  badgeColor?: 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
+  badgeColor?:
+    | 'primary'
+    | 'secondary'
+    | 'error'
+    | 'warning'
+    | 'info'
+    | 'success'
 }
 
 interface UserState {
@@ -78,7 +91,7 @@ const ModernAdminLayout: React.FC = () => {
   useEffect(() => {
     const savedState = localStorage.getItem('adminDrawerCollapsed')
     if (savedState && !isMobile) {
-      setDrawerCollapsed(JSON.parse(savedState))
+      setDrawerCollapsed(JSON.parse(savedState) as boolean)
     }
     // Navigate to tutor applicants by default if on root admin path
     if (location.pathname === '/admin' || location.pathname === '/admin/') {
@@ -137,7 +150,6 @@ const ModernAdminLayout: React.FC = () => {
     handleMenuClose()
   }
 
-
   const renderNavItem = (item: NavigationItem) => {
     const isActive =
       location.pathname === item.path ||
@@ -165,7 +177,7 @@ const ModernAdminLayout: React.FC = () => {
                 ? theme.palette.primary.main
                 : theme.palette.text.secondary,
               transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-              boxShadow: isActive 
+              boxShadow: isActive
                 ? `0 2px 8px ${alpha(theme.palette.primary.main, 0.2)}`
                 : 'none',
               '&:hover': {
@@ -175,13 +187,16 @@ const ModernAdminLayout: React.FC = () => {
                 transform: 'translateX(2px)',
                 boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.15)}`,
               },
-              justifyContent: drawerCollapsed && !isMobile ? 'center' : 'flex-start',
+              justifyContent:
+                drawerCollapsed && !isMobile ? 'center' : 'flex-start',
             }}
           >
             <ListItemIcon
               sx={{
                 minWidth: drawerCollapsed && !isMobile ? 'auto' : 40,
-                color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
+                color: isActive
+                  ? theme.palette.primary.main
+                  : theme.palette.text.secondary,
                 transition: 'color 0.2s',
               }}
             >
@@ -192,7 +207,9 @@ const ModernAdminLayout: React.FC = () => {
                   justifyContent: 'center',
                   width: 32,
                   height: 32,
-                  color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
+                  color: isActive
+                    ? theme.palette.primary.main
+                    : theme.palette.text.secondary,
                 }}
               >
                 {item.icon}
@@ -285,7 +302,8 @@ const ModernAdminLayout: React.FC = () => {
           p: 2,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: drawerCollapsed && !isMobile ? 'center' : 'flex-start',
+          justifyContent:
+            drawerCollapsed && !isMobile ? 'center' : 'flex-start',
           minHeight: 70,
         }}
       >
@@ -305,19 +323,21 @@ const ModernAdminLayout: React.FC = () => {
               justifyContent: 'center',
             }}
           >
-            <img 
-              src={MainLogo} 
-              alt="Logo" 
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                objectFit: 'contain' 
-              }} 
+            <img
+              src={MainLogo}
+              alt="Logo"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+              }}
             />
           </Box>
 
           <Fade in={!drawerCollapsed || isMobile}>
-            <Box sx={{ display: drawerCollapsed && !isMobile ? 'none' : 'block' }}>
+            <Box
+              sx={{ display: drawerCollapsed && !isMobile ? 'none' : 'block' }}
+            >
               <Typography
                 variant="h6"
                 sx={{
@@ -344,7 +364,6 @@ const ModernAdminLayout: React.FC = () => {
     </Box>
   )
 
-
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       {/* AppBar */}
@@ -370,7 +389,9 @@ const ModernAdminLayout: React.FC = () => {
           boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
         }}
       >
-        <Toolbar sx={{ px: { xs: 1.5, sm: 2, md: 3 }, minHeight: { xs: 60, sm: 70 } }}>
+        <Toolbar
+          sx={{ px: { xs: 1.5, sm: 2, md: 3 }, minHeight: { xs: 60, sm: 70 } }}
+        >
           <IconButton
             edge="start"
             onClick={handleDrawerToggle}
@@ -413,20 +434,26 @@ const ModernAdminLayout: React.FC = () => {
                   background: theme.palette.background.light,
                 }}
               >
-                {!user?.profileImage && user && `${user.firstName?.[0]?.toUpperCase() ?? ''}${user.lastName?.[0]?.toUpperCase() ?? ''}`}
+                {!user.profileImage &&
+                  user &&
+                  `${user.firstName?.[0]?.toUpperCase() ?? ''}${user.lastName?.[0]?.toUpperCase() ?? ''}`}
               </Avatar>
               <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                <Typography color="text.primary" variant="body2" fontWeight={600}>
-                  {user?.firstName} {user?.lastName}
+                <Typography
+                  color="text.primary"
+                  variant="body2"
+                  fontWeight={600}
+                >
+                  {user.firstName} {user.lastName}
                 </Typography>
               </Box>
-              <ChevronRight 
+              <ChevronRight
                 size={20}
-                style={{ 
+                style={{
                   color: 'text.secondary',
                   transform: anchorEl ? 'rotate(90deg)' : 'rotate(270deg)',
-                  transition: 'transform 0.2s'
-                }} 
+                  transition: 'transform 0.2s',
+                }}
               />
             </Box>
 
@@ -453,16 +480,22 @@ const ModernAdminLayout: React.FC = () => {
                 },
               }}
             >
-              <Box sx={{ px: 2, py: 1.5, borderBottom: `1px solid ${theme.palette.divider}` }}>
+              <Box
+                sx={{
+                  px: 2,
+                  py: 1.5,
+                  borderBottom: `1px solid ${theme.palette.divider}`,
+                }}
+              >
                 <Typography variant="body2" fontWeight={600}>
-                  {user?.firstName} {user?.lastName}
+                  {user.firstName} {user.lastName}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  {user?.email}
+                  {user.email}
                 </Typography>
               </Box>
-              
-              <MenuItem 
+
+              <MenuItem
                 onClick={handleProfileSettings}
                 sx={{
                   px: 2,
@@ -494,7 +527,10 @@ const ModernAdminLayout: React.FC = () => {
                     }}
                   >
                     <ListItemIcon sx={{ minWidth: 36 }}>
-                      <LogOut size={16} style={{ color: theme.palette.error.main }} />
+                      <LogOut
+                        size={16}
+                        style={{ color: theme.palette.error.main }}
+                      />
                     </ListItemIcon>
                     <ListItemText primary="Logout" />
                   </MenuItem>
@@ -504,8 +540,6 @@ const ModernAdminLayout: React.FC = () => {
           </Stack>
         </Toolbar>
       </AppBar>
-
-
 
       {/* Drawer */}
       <Box
@@ -584,7 +618,7 @@ const ModernAdminLayout: React.FC = () => {
       </Box>
 
       {/* Profile Settings Dialog */}
-      <AdminProfileSettings 
+      <AdminProfileSettings
         open={profileDialogOpen}
         onClose={() => setProfileDialogOpen(false)}
         userData={user}

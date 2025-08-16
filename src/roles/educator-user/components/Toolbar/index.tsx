@@ -2,7 +2,19 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import React, { useRef, useState } from 'react'
-import { Mic, Hand, Video, MicOff, Circle, ArrowUp, PenTool, VideoOff, Maximize, Paperclip, MessageCircle } from 'lucide-react'
+import {
+  Mic,
+  Hand,
+  Video,
+  MicOff,
+  Circle,
+  ArrowUp,
+  PenTool,
+  VideoOff,
+  Maximize,
+  Paperclip,
+  MessageCircle,
+} from 'lucide-react'
 
 import { Box, Button, Drawer } from '@mui/material'
 
@@ -13,8 +25,8 @@ import { ControlsContainer } from '../styles'
 import RecordingPopup from '../recording-popup'
 import { isAndroidOrIphone } from '../common/common'
 import WebinarAttachments from '../webinar-attachments'
-import useFullscreen from '../../../../Hooks/useFullscreen'
-import useScreenRecorder from '../../../../Hooks/useScreenRecorder'
+import useFullscreen from '../../../../hooks/useFullscreen'
+import useScreenRecorder from '../../../../hooks/useScreenRecorder'
 import ModalBox from '../../../../shared/components/ui-elements/modal-box'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
 
@@ -95,7 +107,9 @@ const Toolbar = ({
                   ? t('application:CONFERENCE.CONTROL_SECTION.MUTE')
                   : t('application:CONFERENCE.CONTROL_SECTION.UNMUTE')
               }
-              icon={mediaStatus.isAudio ? <Mic size={18} /> : <MicOff size={18} />}
+              icon={
+                mediaStatus.isAudio ? <Mic size={18} /> : <MicOff size={18} />
+              }
             />
             <ControlIcon
               disabled={isLoading}
@@ -106,7 +120,13 @@ const Toolbar = ({
                   ? t('application:CONFERENCE.CONTROL_SECTION.STOP_VIDEO')
                   : t('application:CONFERENCE.CONTROL_SECTION.START_VIDEO')
               }
-              icon={mediaStatus.isVideo ? <Video size={18} /> : <VideoOff size={18} />}
+              icon={
+                mediaStatus.isVideo ? (
+                  <Video size={18} />
+                ) : (
+                  <VideoOff size={18} />
+                )
+              }
             />
           </>
         )}

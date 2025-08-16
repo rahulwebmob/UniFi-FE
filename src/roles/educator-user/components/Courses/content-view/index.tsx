@@ -2,14 +2,14 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import React, { useRef, useEffect } from 'react'
 import {
-  Video,
-  FileText,
-  ChevronDown,
-  Clock,
-  BookOpen,
   User,
-  PlayCircle,
+  Clock,
+  Video,
+  BookOpen,
+  FileText,
   DollarSign,
+  PlayCircle,
+  ChevronDown,
 } from 'lucide-react'
 
 import {
@@ -17,9 +17,10 @@ import {
   Card,
   Grid,
   Chip,
+  alpha,
   Avatar,
   Button,
-  Tooltip,
+  useTheme,
   Accordion,
   CardMedia,
   Container,
@@ -27,9 +28,6 @@ import {
   CardContent,
   AccordionSummary,
   AccordionDetails,
-  Divider,
-  alpha,
-  useTheme,
 } from '@mui/material'
 
 import ViewResource from '../create-course/view-resource'

@@ -1,26 +1,33 @@
 import Draggable from 'react-draggable'
 import { useTranslation } from 'react-i18next'
 import { useFormContext } from 'react-hook-form'
-import React, { useState, useEffect, useRef } from 'react'
-import { Edit2, ChevronUp, ChevronDown, GripVertical, MoreVertical, Trash2, Eye, FileText } from 'lucide-react'
+import React, { useRef, useState, useEffect } from 'react'
+import {
+  Eye,
+  Edit2,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  GripVertical,
+  MoreVertical,
+} from 'lucide-react'
 
 import {
   Box,
   Grid,
-  Chip,
+  Menu,
   Button,
+  useTheme,
+  MenuItem,
   TextField,
   Accordion,
   Typography,
   IconButton,
-  AccordionDetails,
-  AccordionSummary,
-  useTheme,
-  Menu,
-  MenuItem,
   ListItemIcon,
   ListItemText,
   useMediaQuery,
+  AccordionDetails,
+  AccordionSummary,
 } from '@mui/material'
 
 import ViewResource from '../view-resource'
@@ -33,7 +40,7 @@ import {
   useSortChaptersMutation,
   useUpdateChapterMutation,
   useGetLessonsDetailsQuery,
-} from '../../../../../../Services/admin'
+} from '../../../../../../services/admin'
 
 const SavedChapters = ({ courseId }) => {
   const theme = useTheme()
@@ -140,7 +147,7 @@ const SavedChapters = ({ courseId }) => {
     <Box>
       {!!chapters.length && (
         <>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 ,mt:3 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, mt: 3 }}>
             {t('EDUCATOR.SAVED_CHAPTERS.SAVED_CHAPTERS_TITLE')}
           </Typography>
           <Box
@@ -166,191 +173,218 @@ const SavedChapters = ({ courseId }) => {
                   handle=".drag-chapter"
                 >
                   <Box ref={chapterRefs.current[chap._id]} sx={{ mb: 2 }}>
-                  <Accordion
-                    expanded={!!expandedChapters[chap._id]}
-                    key={chap._id}
-                    sx={{
-                      backgroundColor: 'background.paper',
-                      borderRadius: '8px !important',
-                      border: `1px solid ${theme.palette.grey[200]}`,
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
-                      '&:before': {
-                        display: 'none',
-                      },
-                      '& .MuiAccordionSummary-content': {
-                        margin: '12px 0',
-                        alignItems: 'center',
-                      },
-                    }}
-                  >
-                    <AccordionSummary
-                      aria-controls={`panel-${chap._id}-content`}
-                      id={`panel-${chap._id}-header`}
+                    <Accordion
+                      expanded={!!expandedChapters[chap._id]}
+                      key={chap._id}
                       sx={{
-                        backgroundColor: theme.palette.grey[50],
-                        borderRadius: '8px 8px 0 0',
-                        '&:hover': {
-                          backgroundColor: theme.palette.grey[100],
+                        backgroundColor: 'background.paper',
+                        borderRadius: '8px !important',
+                        border: `1px solid ${theme.palette.grey[200]}`,
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
+                        '&:before': {
+                          display: 'none',
+                        },
+                        '& .MuiAccordionSummary-content': {
+                          margin: '12px 0',
+                          alignItems: 'center',
                         },
                       }}
                     >
-                      <Box
-                        display="flex"
-                        flexDirection={{ xs: 'row', sm: 'row' }}
-                        justifyContent="space-between"
-                        alignItems="center"
-                        width="100%"
-                        gap={{ xs: 1, sm: 2 }}
+                      <AccordionSummary
+                        aria-controls={`panel-${chap._id}-content`}
+                        id={`panel-${chap._id}-header`}
+                        sx={{
+                          backgroundColor: theme.palette.grey[50],
+                          borderRadius: '8px 8px 0 0',
+                          '&:hover': {
+                            backgroundColor: theme.palette.grey[100],
+                          },
+                        }}
                       >
-                        <Box display="flex" alignItems="center" gap={{ xs: 0.5, sm: 1.5 }} flex={1} minWidth={0}>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleToggleAccordion(chap._id)}
-                            sx={{
-                              backgroundColor: theme.palette.primary.main,
-                              color: 'white',
-                              border: `1px solid ${theme.palette.primary.main}`,
-                              '&:hover': {
-                                backgroundColor: theme.palette.primary.dark,
-                              },
-                              width: 28,
-                              height: 28,
-                            }}
-                          >
-                            {expandedChapters[chap._id] ? (
-                              <ChevronUp size={16} />
-                            ) : (
-                              <ChevronDown size={16} />
-                            )}
-                          </IconButton>
+                        <Box
+                          display="flex"
+                          flexDirection={{ xs: 'row', sm: 'row' }}
+                          justifyContent="space-between"
+                          alignItems="center"
+                          width="100%"
+                          gap={{ xs: 1, sm: 2 }}
+                        >
                           <Box
-                            className="drag-chapter"
-                            sx={{
-                              cursor: 'grab',
-                              color: theme.palette.grey[400],
-                              padding: '4px',
-                              borderRadius: '4px',
-                              transition: 'all 0.2s',
-                              '&:hover': {
-                                color: theme.palette.primary.main,
-                                backgroundColor: theme.palette.primary.main + '10',
-                              },
-                              '&:active': {
-                                cursor: 'grabbing',
-                                transform: 'scale(1.1)',
-                              },
-                            }}
-                          >
-                            <GripVertical size={20} />
-                          </Box>
-
-                          {isEditingChapter === chap._id ? (
-                            <Grid container>
-                              <Grid size={{ xs: 12 }}>
-                                <TextField
-                                  size="small"
-                                  fullWidth
-                                  value={newChapterTitle}
-                                  onChange={(e) =>
-                                    setNewChapterTitle(e.target.value)
-                                  }
-                                />
-                              </Grid>
-                            </Grid>
-                          ) : (
-                            <Box sx={{ flex: 1, minWidth: 0, maxWidth: { xs: '150px', sm: '100%' } }}>
-                              <Typography 
-                                sx={{ 
-                                  fontWeight: 500,
-                                  fontSize: { xs: '0.875rem', sm: '1rem' },
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  whiteSpace: 'nowrap',
-                                  width: '100%',
-                                }}
-                              >
-                                {t('EDUCATOR.SAVED_CHAPTERS.CHAPTER_NAME', {
-                                  number: index + 1,
-                                  title: chap.title,
-                                })}
-                              </Typography>
-                              {chap.lessons?.length > 0 && (
-                                <Typography variant="caption" color="text.secondary">
-                                  {chap.lessons.length} {chap.lessons.length === 1 ? 'lesson' : 'lessons'}
-                                </Typography>
-                              )}
-                            </Box>
-                          )}
-                        </Box>
-                        {isMobile ? (
-                          <IconButton
-                            size="small"
-                            onClick={(e) => handleChapterMenuOpen(e, chap)}
-                            sx={{ 
-                              flexShrink: 0,
-                              ml: 'auto',
-                              order: 2
-                            }}
-                          >
-                            <MoreVertical size={18} />
-                          </IconButton>
-                        ) : (
-                          <Box 
-                            display="flex" 
-                            gap={1} 
+                            display="flex"
                             alignItems="center"
-                            sx={{ 
-                              flexShrink: 0,
-                              ml: 'auto'
-                            }}
+                            gap={{ xs: 0.5, sm: 1.5 }}
+                            flex={1}
+                            minWidth={0}
                           >
-                            {isEditingChapter === chap._id && (
-                              <Button
-                                variant="contained"
-                                onClick={() => {
-                                  void handleUpdateChapter(chap._id, newChapterTitle)
-                                }}
-                                size="small"
-                                sx={{ textTransform: 'none' }}
-                              >
-                                {t('EDUCATOR.SAVED_CHAPTERS.UPDATE')}
-                              </Button>
-                            )}
                             <IconButton
                               size="small"
-                              onClick={() => {
-                                setIsEditingChapter((prev) =>
-                                  prev === chap._id ? null : chap._id,
-                                )
-                                setNewChapterTitle(chap.title)
-                              }}
+                              onClick={() => handleToggleAccordion(chap._id)}
                               sx={{
-                                color: theme.palette.primary.main,
+                                backgroundColor: theme.palette.primary.main,
+                                color: 'white',
+                                border: `1px solid ${theme.palette.primary.main}`,
                                 '&:hover': {
-                                  backgroundColor: theme.palette.primary.main + '10',
+                                  backgroundColor: theme.palette.primary.dark,
+                                },
+                                width: 28,
+                                height: 28,
+                              }}
+                            >
+                              {expandedChapters[chap._id] ? (
+                                <ChevronUp size={16} />
+                              ) : (
+                                <ChevronDown size={16} />
+                              )}
+                            </IconButton>
+                            <Box
+                              className="drag-chapter"
+                              sx={{
+                                cursor: 'grab',
+                                color: theme.palette.grey[400],
+                                padding: '4px',
+                                borderRadius: '4px',
+                                transition: 'all 0.2s',
+                                '&:hover': {
+                                  color: theme.palette.primary.main,
+                                  backgroundColor:
+                                    theme.palette.primary.main + '10',
+                                },
+                                '&:active': {
+                                  cursor: 'grabbing',
+                                  transform: 'scale(1.1)',
                                 },
                               }}
                             >
-                              <Edit2 size={16} />
-                            </IconButton>
-                            <DeleteModal
-                              handleDelete={() =>
-                                handleUpdateChapter(chap._id, chap?.title, true)
-                              }
-                              message="chapter"
-                            />
+                              <GripVertical size={20} />
+                            </Box>
+
+                            {isEditingChapter === chap._id ? (
+                              <Grid container>
+                                <Grid size={{ xs: 12 }}>
+                                  <TextField
+                                    size="small"
+                                    fullWidth
+                                    value={newChapterTitle}
+                                    onChange={(e) =>
+                                      setNewChapterTitle(e.target.value)
+                                    }
+                                  />
+                                </Grid>
+                              </Grid>
+                            ) : (
+                              <Box
+                                sx={{
+                                  flex: 1,
+                                  minWidth: 0,
+                                  maxWidth: { xs: '150px', sm: '100%' },
+                                }}
+                              >
+                                <Typography
+                                  sx={{
+                                    fontWeight: 500,
+                                    fontSize: { xs: '0.875rem', sm: '1rem' },
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    width: '100%',
+                                  }}
+                                >
+                                  {t('EDUCATOR.SAVED_CHAPTERS.CHAPTER_NAME', {
+                                    number: index + 1,
+                                    title: chap.title,
+                                  })}
+                                </Typography>
+                                {chap.lessons?.length > 0 && (
+                                  <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                  >
+                                    {chap.lessons.length}{' '}
+                                    {chap.lessons.length === 1
+                                      ? 'lesson'
+                                      : 'lessons'}
+                                  </Typography>
+                                )}
+                              </Box>
+                            )}
                           </Box>
-                        )}
-                      </Box>
-                    </AccordionSummary>
-                    <LessonsList chapterId={chap._id} courseId={courseId} />
-                  </Accordion>
+                          {isMobile ? (
+                            <IconButton
+                              size="small"
+                              onClick={(e) => handleChapterMenuOpen(e, chap)}
+                              sx={{
+                                flexShrink: 0,
+                                ml: 'auto',
+                                order: 2,
+                              }}
+                            >
+                              <MoreVertical size={18} />
+                            </IconButton>
+                          ) : (
+                            <Box
+                              display="flex"
+                              gap={1}
+                              alignItems="center"
+                              sx={{
+                                flexShrink: 0,
+                                ml: 'auto',
+                              }}
+                            >
+                              {isEditingChapter === chap._id && (
+                                <Button
+                                  variant="contained"
+                                  onClick={() => {
+                                    void handleUpdateChapter(
+                                      chap._id,
+                                      newChapterTitle,
+                                    )
+                                  }}
+                                  size="small"
+                                  sx={{ textTransform: 'none' }}
+                                >
+                                  {t('EDUCATOR.SAVED_CHAPTERS.UPDATE')}
+                                </Button>
+                              )}
+                              <IconButton
+                                size="small"
+                                onClick={() => {
+                                  setIsEditingChapter((prev) =>
+                                    prev === chap._id ? null : chap._id,
+                                  )
+                                  setNewChapterTitle(chap.title)
+                                }}
+                                sx={{
+                                  color: theme.palette.primary.main,
+                                  '&:hover': {
+                                    backgroundColor:
+                                      theme.palette.primary.main + '10',
+                                  },
+                                }}
+                              >
+                                <Edit2 size={16} />
+                              </IconButton>
+                              <DeleteModal
+                                handleDelete={() =>
+                                  handleUpdateChapter(
+                                    chap._id,
+                                    chap?.title,
+                                    true,
+                                  )
+                                }
+                                message="chapter"
+                              />
+                            </Box>
+                          )}
+                        </Box>
+                      </AccordionSummary>
+                      <LessonsList chapterId={chap._id} courseId={courseId} />
+                    </Accordion>
                   </Box>
                 </Draggable>
               )
             })}
           </Box>
-          
+
           {/* Mobile Menu for Chapters */}
           <Menu
             anchorEl={anchorElChapter}
@@ -362,22 +396,30 @@ const SavedChapters = ({ courseId }) => {
               },
             }}
           >
-            <MenuItem onClick={() => {
-              setIsEditingChapter(selectedChapter?._id)
-              setNewChapterTitle(selectedChapter?.title || '')
-              handleChapterMenuClose()
-            }}>
+            <MenuItem
+              onClick={() => {
+                setIsEditingChapter(selectedChapter?._id)
+                setNewChapterTitle(selectedChapter?.title || '')
+                handleChapterMenuClose()
+              }}
+            >
               <ListItemIcon>
                 <Edit2 size={18} />
               </ListItemIcon>
               <ListItemText>Edit Chapter</ListItemText>
             </MenuItem>
-            <MenuItem onClick={() => {
-              if (selectedChapter) {
-                handleUpdateChapter(selectedChapter._id, selectedChapter.title, true)
-                handleChapterMenuClose()
-              }
-            }}>
+            <MenuItem
+              onClick={() => {
+                if (selectedChapter) {
+                  void handleUpdateChapter(
+                    selectedChapter._id,
+                    selectedChapter.title,
+                    true,
+                  )
+                  handleChapterMenuClose()
+                }
+              }}
+            >
               <ListItemIcon>
                 <Trash2 size={18} color={theme.palette.error.main} />
               </ListItemIcon>
@@ -397,7 +439,6 @@ const LessonsList = ({ courseId, chapterId }) => {
   const { t } = useTranslation('education')
   const [lessons, setLessons] = useState([])
   const lessonRefs = useRef({})
-  const viewResourceRefs = useRef({})
   const [anchorEl, setAnchorEl] = useState(null)
   const [selectedLesson, setSelectedLesson] = useState(null)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -504,99 +545,111 @@ const LessonsList = ({ courseId, chapterId }) => {
                 width="100%"
                 gap={{ xs: 0.5, sm: 0 }}
                 sx={{
-                backgroundColor: theme.palette.grey[50],
-                borderRadius: '8px',
-                border: `1px solid ${theme.palette.grey[200]}`,
-                p: { xs: 1.5, sm: 2 },
-                mb: 1,
-                transition: 'all 0.2s',
-                '&:hover': {
-                  backgroundColor: theme.palette.grey[100],
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
-                },
-              }}
-            >
-              <Box display="flex" alignItems="center" gap={{ xs: 1, sm: 1.5 }}>
+                  backgroundColor: theme.palette.grey[50],
+                  borderRadius: '8px',
+                  border: `1px solid ${theme.palette.grey[200]}`,
+                  p: { xs: 1.5, sm: 2 },
+                  mb: 1,
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    backgroundColor: theme.palette.grey[100],
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
+                  },
+                }}
+              >
                 <Box
-                  className="drag-handle"
-                  sx={{
-                    cursor: 'grab',
-                    color: theme.palette.grey[400],
-                    padding: '4px',
-                    borderRadius: '4px',
-                    transition: 'all 0.2s',
-                    '&:hover': {
-                      color: theme.palette.primary.main,
-                      backgroundColor: theme.palette.primary.main + '10',
-                    },
-                    '&:active': {
-                      cursor: 'grabbing',
-                      transform: 'scale(1.1)',
-                    },
-                  }}
+                  display="flex"
+                  alignItems="center"
+                  gap={{ xs: 1, sm: 1.5 }}
                 >
-                  <GripVertical size={18} />
-                </Box>
-                <Box sx={{ flex: 1, minWidth: 0, maxWidth: { xs: '120px', sm: '100%' } }}>
-                  <Typography 
-                    variant="body2" 
-                    sx={{ 
-                      fontWeight: 500,
-                      fontSize: { xs: '0.875rem', sm: '0.875rem' },
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                      width: '100%',
+                  <Box
+                    className="drag-handle"
+                    sx={{
+                      cursor: 'grab',
+                      color: theme.palette.grey[400],
+                      padding: '4px',
+                      borderRadius: '4px',
+                      transition: 'all 0.2s',
+                      '&:hover': {
+                        color: theme.palette.primary.main,
+                        backgroundColor: theme.palette.primary.main + '10',
+                      },
+                      '&:active': {
+                        cursor: 'grabbing',
+                        transform: 'scale(1.1)',
+                      },
                     }}
                   >
-                    {t('EDUCATOR.SAVED_CHAPTERS.LESSON_NAME', {
-                      number: index + 1,
-                      title: lessonDetail?.title,
-                    })}
-                  </Typography>
-
-                </Box>
-              </Box>
-              {isMobile ? (
-                <IconButton
-                  size="small"
-                  onClick={(e) => handleMenuOpen(e, lessonDetail)}
-                  sx={{ 
-                    flexShrink: 0,
-                    ml: 'auto'
-                  }}
-                >
-                  <MoreVertical size={18} />
-                </IconButton>
-              ) : (
-                <Box 
-                  display="flex" 
-                  gap={1} 
-                  alignItems="center"
-                  sx={{ flexShrink: 0 }}
-                >
-                  <Box id={`view-resource-wrapper-${lessonDetail._id}`}>
-                    <ViewResource  lessonDetail={{ ...lessonDetail, courseId }} isEdit={true} />
+                    <GripVertical size={18} />
                   </Box>
-                  <DeleteModal
-                    handleDelete={() => handleDeleteLesson(lessonDetail._id)}
-                    message="lesson"
-                  />
-                  <AddLessonsModal
-                    isEdit
-                    chapterId={chapterId}
-                    courseId={courseId}
-                    defaultValues={{
-                      lessonTitle: lessonDetail.title || '',
-                      resource: lessonDetail.file || '',
-                      isFree: lessonDetail.isFree || false,
+                  <Box
+                    sx={{
+                      flex: 1,
+                      minWidth: 0,
+                      maxWidth: { xs: '120px', sm: '100%' },
                     }}
-                    lessonId={lessonDetail._id}
-                  />
+                  >
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: { xs: '0.875rem', sm: '0.875rem' },
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        width: '100%',
+                      }}
+                    >
+                      {t('EDUCATOR.SAVED_CHAPTERS.LESSON_NAME', {
+                        number: index + 1,
+                        title: lessonDetail?.title,
+                      })}
+                    </Typography>
+                  </Box>
                 </Box>
-              )}
-            </Box>
-          </Draggable>
+                {isMobile ? (
+                  <IconButton
+                    size="small"
+                    onClick={(e) => handleMenuOpen(e, lessonDetail)}
+                    sx={{
+                      flexShrink: 0,
+                      ml: 'auto',
+                    }}
+                  >
+                    <MoreVertical size={18} />
+                  </IconButton>
+                ) : (
+                  <Box
+                    display="flex"
+                    gap={1}
+                    alignItems="center"
+                    sx={{ flexShrink: 0 }}
+                  >
+                    <Box id={`view-resource-wrapper-${lessonDetail._id}`}>
+                      <ViewResource
+                        lessonDetail={{ ...lessonDetail, courseId }}
+                        isEdit
+                      />
+                    </Box>
+                    <DeleteModal
+                      handleDelete={() => handleDeleteLesson(lessonDetail._id)}
+                      message="lesson"
+                    />
+                    <AddLessonsModal
+                      isEdit
+                      chapterId={chapterId}
+                      courseId={courseId}
+                      defaultValues={{
+                        lessonTitle: lessonDetail.title || '',
+                        resource: lessonDetail.file || '',
+                        isFree: lessonDetail.isFree || false,
+                      }}
+                      lessonId={lessonDetail._id}
+                    />
+                  </Box>
+                )}
+              </Box>
+            </Draggable>
           )
         })}
       <Box sx={{ mt: 2 }}>
@@ -607,7 +660,7 @@ const LessonsList = ({ courseId, chapterId }) => {
           defaultValues={{ isFree: false, lessonTitle: '', resource: '' }}
         />
       </Box>
-      
+
       {/* Mobile Menu */}
       <Menu
         anchorEl={anchorEl}
@@ -621,12 +674,14 @@ const LessonsList = ({ courseId, chapterId }) => {
       >
         {selectedLesson && (
           <>
-            <MenuItem 
+            <MenuItem
               onClick={() => {
                 handleMenuClose()
                 // Trigger the ViewResource button click after menu closes
                 setTimeout(() => {
-                  const viewButton = document.querySelector(`#view-resource-wrapper-${selectedLesson._id} button`)
+                  const viewButton = document.querySelector(
+                    `#view-resource-wrapper-${selectedLesson._id} button`,
+                  )
                   if (viewButton) {
                     viewButton.click()
                   }
@@ -639,19 +694,23 @@ const LessonsList = ({ courseId, chapterId }) => {
               </ListItemIcon>
               <ListItemText>View Resource</ListItemText>
             </MenuItem>
-            <MenuItem onClick={() => {
-              setShowEditModal(true)
-              handleMenuClose()
-            }}>
+            <MenuItem
+              onClick={() => {
+                setShowEditModal(true)
+                handleMenuClose()
+              }}
+            >
               <ListItemIcon>
                 <Edit2 size={18} />
               </ListItemIcon>
               <ListItemText>Edit Lesson</ListItemText>
             </MenuItem>
-            <MenuItem onClick={() => {
-              setShowDeleteModal(true)
-              handleMenuClose()
-            }}>
+            <MenuItem
+              onClick={() => {
+                setShowDeleteModal(true)
+                handleMenuClose()
+              }}
+            >
               <ListItemIcon>
                 <Trash2 size={18} color={theme.palette.error.main} />
               </ListItemIcon>
@@ -662,12 +721,12 @@ const LessonsList = ({ courseId, chapterId }) => {
           </>
         )}
       </Menu>
-      
+
       {/* Delete Confirmation Modal - Render outside menu */}
       {showDeleteModal && selectedLesson && (
         <DeleteModal
           handleDelete={() => {
-            handleDeleteLesson(selectedLesson._id)
+            void handleDeleteLesson(selectedLesson._id)
             setShowDeleteModal(false)
             setSelectedLesson(null)
           }}
@@ -679,7 +738,7 @@ const LessonsList = ({ courseId, chapterId }) => {
           }}
         />
       )}
-      
+
       {/* Edit Modal - Render outside menu */}
       {showEditModal && selectedLesson && (
         <AddLessonsModal

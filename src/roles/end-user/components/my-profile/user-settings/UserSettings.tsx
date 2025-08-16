@@ -13,8 +13,8 @@ import {
   FormControlLabel,
 } from '@mui/material'
 
-import LANGUAGES from '../../../../../Constants/LANGUAGES'
-import { updateLanguage } from '../../../../../Redux/Reducers/AppSlice'
+import LANGUAGES from '../../../../../constants/languages'
+import { updateLanguage } from '../../../../../redux/reducers/app-slice'
 
 interface Language {
   code: string
@@ -40,7 +40,8 @@ const UserSettings = forwardRef<UserSettingsRef>((_, userSettingsRef) => {
   const dispatch = useDispatch()
   const { language } = useSelector((state: RootState) => state.app)
 
-  const handleLanguageChange = (lang: Language) => dispatch(updateLanguage(lang))
+  const handleLanguageChange = (lang: Language) =>
+    dispatch(updateLanguage(lang))
 
   useImperativeHandle(userSettingsRef, () => ({
     handleExecute: () => {
@@ -92,60 +93,62 @@ const UserSettings = forwardRef<UserSettingsRef>((_, userSettingsRef) => {
               },
             }}
           >
-            {Object.values(LANGUAGES as Record<string, Language>).map((item) => (
-              <FormControlLabel
-                key={item.code}
-                value={item.code}
-                control={
-                  <Radio
-                    size="small"
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      '&.Mui-checked': {
-                        color: theme.palette.primary.main,
-                      },
-                    }}
-                  />
-                }
-                label={
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography
-                      variant="body1"
+            {Object.values(LANGUAGES as Record<string, Language>).map(
+              (item) => (
+                <FormControlLabel
+                  key={item.code}
+                  value={item.code}
+                  control={
+                    <Radio
+                      size="small"
                       sx={{
-                        fontWeight: language?.code === item.code ? 600 : 400,
-                        color:
-                          language?.code === item.code
-                            ? theme.palette.text.primary
-                            : theme.palette.text.secondary,
-                      }}
-                    >
-                      {item.label}
-                    </Typography>
-                    {language?.code === item.code && (
-                      <Typography
-                        variant="caption"
-                        sx={{
+                        color: theme.palette.text.secondary,
+                        '&.Mui-checked': {
                           color: theme.palette.primary.main,
-                          fontWeight: 600,
+                        },
+                      }}
+                    />
+                  }
+                  label={
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontWeight: language?.code === item.code ? 600 : 400,
+                          color:
+                            language?.code === item.code
+                              ? theme.palette.text.primary
+                              : theme.palette.text.secondary,
                         }}
                       >
-                        ({t('application:COMMON.CURRENT')})
+                        {item.label}
                       </Typography>
-                    )}
-                  </Box>
-                }
-                onChange={() => handleLanguageChange(item)}
-                sx={{
-                  width: '100%',
-                  m: 0,
-                  backgroundColor:
-                    language?.code === item.code
-                      ? alpha(theme.palette.primary.main, 0.08)
-                      : 'transparent',
-                  borderRadius: '8px',
-                }}
-              />
-            ))}
+                      {language?.code === item.code && (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: theme.palette.primary.main,
+                            fontWeight: 600,
+                          }}
+                        >
+                          ({t('application:COMMON.CURRENT')})
+                        </Typography>
+                      )}
+                    </Box>
+                  }
+                  onChange={() => handleLanguageChange(item)}
+                  sx={{
+                    width: '100%',
+                    m: 0,
+                    backgroundColor:
+                      language?.code === item.code
+                        ? alpha(theme.palette.primary.main, 0.08)
+                        : 'transparent',
+                    borderRadius: '8px',
+                  }}
+                />
+              ),
+            )}
           </RadioGroup>
         </FormControl>
 

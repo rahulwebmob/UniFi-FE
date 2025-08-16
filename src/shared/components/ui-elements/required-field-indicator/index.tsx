@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material'
 
-const RequiredFieldIndicator = () => (
+const RequiredFieldIndicator: React.FC = () => (
   <Typography
     variant="body1"
     className="star"

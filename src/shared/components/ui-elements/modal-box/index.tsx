@@ -1,8 +1,8 @@
 import type { ReactNode, CSSProperties } from 'react'
+import type { TransitionProps } from '@mui/material/transitions'
 
 import { X } from 'lucide-react'
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
-import type { TransitionProps } from '@mui/material/transitions'
+import React, { useState, forwardRef, useImperativeHandle } from 'react'
 
 import {
   Slide,
@@ -112,8 +112,8 @@ const ModalBox = forwardRef<ModalBoxHandle, ModalBoxProps>(
         }}
       >
         {title && (
-          <DialogTitle 
-            sx={{ 
+          <DialogTitle
+            sx={{
               p: 3,
               pr: 6, // Add padding for close button
             }}
@@ -121,7 +121,7 @@ const ModalBox = forwardRef<ModalBoxHandle, ModalBoxProps>(
             {title}
           </DialogTitle>
         )}
-        
+
         <IconButton
           disableRipple
           size="small"
@@ -140,7 +140,7 @@ const ModalBox = forwardRef<ModalBoxHandle, ModalBoxProps>(
         >
           <X size={20} />
         </IconButton>
-        
+
         <DialogContent
           sx={{
             p: disablePadding ? 0 : 3,

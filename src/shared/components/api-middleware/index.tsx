@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import type { SerializedError } from '@reduxjs/toolkit'
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import React from 'react'
 
@@ -29,8 +29,11 @@ const ApiMiddleware: React.FC<ApiMiddlewareProps> = ({
     return <Loading />
   }
 
-  const errorStatus = error && 'status' in error && typeof error.status === 'number' ? error.status : undefined
-  
+  const errorStatus =
+    error && 'status' in error && typeof error.status === 'number'
+      ? error.status
+      : undefined
+
   if (errorStatus === 500) {
     return <LoadingIssue />
   }

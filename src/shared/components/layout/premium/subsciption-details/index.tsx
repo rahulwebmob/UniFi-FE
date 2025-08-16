@@ -14,9 +14,27 @@ import {
   FormControlLabel,
 } from '@mui/material'
 
-import { ENV } from '../../../../../Utils/env'
+import { ENV } from '../../../../../utils/env'
 
-const SubscriptionDetails = ({
+interface MediaDetails {
+  title?: string
+  thumbnail?: string
+  [key: string]: unknown
+}
+
+interface SubscriptionDetail {
+  price?: number
+  [key: string]: unknown
+}
+
+interface SubscriptionDetailsProps {
+  mediaDetails: MediaDetails
+  subscriptionDetails: SubscriptionDetail[]
+  setCurrentStep: (step: number) => void
+  setSubscriptionFormData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>
+}
+
+const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
   mediaDetails,
   subscriptionDetails,
   setCurrentStep,
@@ -50,7 +68,7 @@ const SubscriptionDetails = ({
     return isUnique
   }
 
-  const getKeyValue = (item) =>
+  const getKeyValue = (item: SubscriptionDetail) =>
     isKeyUnique('duration') ? item?.duration : item?.displayName
 
   return (
@@ -105,7 +123,7 @@ const SubscriptionDetails = ({
                   aria-labelledby="plans-radio-buttons-group-label"
                   name="plans-radio-buttons-group"
                   value={getKeyValue(selectedPlan)}
-                  onChange={(e) => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const key = isKeyUnique('duration')
                       ? 'duration'
                       : 'displayName'
@@ -178,7 +196,7 @@ const SubscriptionDetails = ({
             type="submit"
             variant="contained"
             color="primary"
-            onClick={() => setCurrentStep((prev) => prev + 1)}
+            onClick={() => setCurrentStep(2)}
           >
             {t('application:PREMIUM_MODAL.SUBSCRIBE')}
           </Button>

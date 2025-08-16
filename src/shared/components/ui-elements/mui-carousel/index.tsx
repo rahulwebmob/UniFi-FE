@@ -3,7 +3,11 @@ import React, { useRef, useState, useEffect } from 'react'
 
 import { Box, alpha, useTheme, IconButton } from '@mui/material'
 
-const MuiCarousel = ({ children }) => {
+interface MuiCarouselProps {
+  children: React.ReactNode
+}
+
+const MuiCarousel: React.FC<MuiCarouselProps> = ({ children }) => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(false)
@@ -28,15 +32,16 @@ const MuiCarousel = ({ children }) => {
     if (scrollRef.current) {
       const scrollAmount = 400
       const currentScroll = scrollRef.current.scrollLeft
-      const targetScroll = direction === 'left' 
-        ? currentScroll - scrollAmount 
-        : currentScroll + scrollAmount
-      
+      const targetScroll =
+        direction === 'left'
+          ? currentScroll - scrollAmount
+          : currentScroll + scrollAmount
+
       scrollRef.current.scrollTo({
         left: targetScroll,
-        behavior: 'smooth'
+        behavior: 'smooth',
       })
-      
+
       setTimeout(checkScroll, 300)
     }
   }
@@ -86,7 +91,7 @@ const MuiCarousel = ({ children }) => {
       >
         {children}
       </Box>
-      
+
       {canScrollLeft && (
         <IconButton
           onClick={() => scroll('left')}
@@ -106,7 +111,7 @@ const MuiCarousel = ({ children }) => {
           <ChevronLeft size={20} />
         </IconButton>
       )}
-      
+
       {canScrollRight && (
         <IconButton
           onClick={() => scroll('right')}

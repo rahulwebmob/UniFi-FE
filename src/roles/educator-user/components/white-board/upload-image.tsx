@@ -5,13 +5,14 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { IconButton } from '@mui/material'
 
-import { errorAlert } from '../../../../Redux/Reducers/AppSlice'
+import type { RootState } from '../../../../redux/types'
+import { errorAlert } from '../../../../redux/reducers/app-slice'
 
-const UploadImage = () => {
+const UploadImage: React.FC = () => {
   const dispatch = useDispatch()
-  const canvas = useSelector((state) => state.education.canvas)
+  const canvas = useSelector((state: RootState) => state.education.canvas as fabric.Canvas | null)
 
-  const checkFile = (file) => {
+  const checkFile = (file: File): string => {
     if (file) {
       const maxSize = 5 * 1024 * 1024
       if (file.size > maxSize) {
@@ -26,7 +27,7 @@ const UploadImage = () => {
     return ''
   }
 
-  const onImageChange = (e) => {
+  const onImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (!canvas) {
       return
     }
@@ -41,9 +42,9 @@ const UploadImage = () => {
     }
 
     const reader = new FileReader()
-    reader.onload = (event) => {
+    reader.onload = (event: ProgressEvent<FileReader>) => {
       const image = new Image()
-      image.src = event.target.result
+      image.src = event.target?.result as string
       image.onload = () => {
         const fabricImage = new fabric.Image(image)
 

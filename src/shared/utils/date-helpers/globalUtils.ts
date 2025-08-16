@@ -1,4 +1,4 @@
-import { ENV } from '../../../Utils/env'
+import { ENV } from '../../../utils/env'
 
 const getImageCdnUrl = (path: string): string =>
   `${ENV.CDN}/application/static-assets/${path}`

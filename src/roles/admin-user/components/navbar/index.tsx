@@ -1,10 +1,16 @@
 import { NavLink } from 'react-router-dom'
 import { FileText, DollarSign, CheckSquare } from 'lucide-react'
 
-import { Box, ListItem, ListItemIcon, ListItemText, ListItemButton } from '@mui/material'
+import {
+  Box,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemButton,
+} from '@mui/material'
 
 import { NavbarContainer } from './style'
-import useWindowOpen from '../../../../Hooks/useWindowOpen'
+import useWindowOpen from '../../../../hooks/useWindowOpen'
 
 interface NavbarProps {
   open: boolean
@@ -49,7 +55,7 @@ const Navbar = ({ open }: NavbarProps) => {
     <ListItem
       key={eachItem.label}
       component={eachItem.to ? NavLink : undefined}
-      to={eachItem.to || undefined}
+      to={eachItem.to ?? undefined}
       style={{ cursor: `${eachItem.link && 'pointer'}`, padding: '0' }}
       onClick={() => {
         if (eachItem.link) {

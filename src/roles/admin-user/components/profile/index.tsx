@@ -2,20 +2,25 @@ import React, { useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Lock, User } from 'lucide-react'
 
-import { 
+import {
   Box,
-  Card, 
-  alpha, 
+  Card,
+  alpha,
   Avatar,
   Button,
-  Divider, 
+  Divider,
   useTheme,
-  Typography 
+  Typography,
 } from '@mui/material'
 
 import EditName from './EditName'
 import ChangePassword from './ChangePassword'
 import ModalBox from '../../../../shared/components/ui-elements/modal-box'
+
+interface ModalRef {
+  openModal: () => void
+  closeModal: () => void
+}
 
 interface UserState {
   user: {
@@ -32,10 +37,12 @@ interface RootState {
   [key: string]: unknown
 }
 
-const Profile = () => {
+const Profile: React.FC = () => {
   const theme = useTheme()
-  const { firstName, lastName, email } = useSelector((state: RootState) => state.user.user)
-  const passwordRef = useRef(null)
+  const { firstName, lastName, email } = useSelector(
+    (state: RootState) => state.user.user,
+  )
+  const passwordRef = useRef<ModalRef | null>(null)
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -63,7 +70,13 @@ const Profile = () => {
           p: 3,
         }}
       >
-        <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', md: 'row' } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 3,
+            flexDirection: { xs: 'column', md: 'row' },
+          }}
+        >
           {/* Profile Info Card */}
           <Card
             elevation={0}
@@ -82,7 +95,12 @@ const Profile = () => {
               </Typography>
             </Box>
 
-            <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              mb={3}
+            >
               <Avatar
                 sx={{
                   width: 100,
@@ -95,7 +113,8 @@ const Profile = () => {
                   fontWeight: 700,
                 }}
               >
-                {firstName[0]?.toUpperCase()}{lastName[0]?.toUpperCase()}
+                {firstName?.[0]?.toUpperCase()}
+                {lastName?.[0]?.toUpperCase()}
               </Avatar>
               <Typography variant="h5" fontWeight={600} color="text.primary">
                 {firstName} {lastName}
@@ -130,14 +149,21 @@ const Profile = () => {
               </Typography>
             </Box>
 
-            <Box sx={{ p: 2, bgcolor: alpha(theme.palette.grey[500], 0.04), borderRadius: 1, mb: 2 }}>
+            <Box
+              sx={{
+                p: 2,
+                bgcolor: alpha(theme.palette.grey[500], 0.04),
+                borderRadius: 1,
+                mb: 2,
+              }}
+            >
               <Typography variant="body2" color="text.secondary" mb={2}>
                 Keep your account secure by using a strong password
               </Typography>
               <Button
                 variant="contained"
                 startIcon={<Lock size={16} />}
-                onClick={() => passwordRef?.current?.openModal()}
+                onClick={() => passwordRef.current?.openModal()}
                 sx={{
                   background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
                   color: 'white',
@@ -155,7 +181,13 @@ const Profile = () => {
               </Button>
             </Box>
 
-            <Box sx={{ p: 2, bgcolor: alpha(theme.palette.info.main, 0.04), borderRadius: 1 }}>
+            <Box
+              sx={{
+                p: 2,
+                bgcolor: alpha(theme.palette.info.main, 0.04),
+                borderRadius: 1,
+              }}
+            >
               <Typography variant="caption" color="text.secondary">
                 Last password change: Never
               </Typography>
@@ -166,7 +198,7 @@ const Profile = () => {
 
       <ModalBox ref={passwordRef} title="Change Password" size="sm">
         <ChangePassword
-          closeModal={() => passwordRef?.current?.closeModal()}
+          closeModal={() => passwordRef.current?.closeModal()}
           isUserAdmin
         />
       </ModalBox>

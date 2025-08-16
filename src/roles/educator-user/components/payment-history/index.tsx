@@ -1,19 +1,19 @@
-import  { useState } from 'react'
-import { FileDown, DollarSign } from 'lucide-react'
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { FileDown, DollarSign } from 'lucide-react'
 
-import { Box, Button, Chip, Typography, useTheme } from '@mui/material'
+import { Box, Chip, Button, useTheme, Typography } from '@mui/material'
 
 import { handleGeneratePdf } from '../common/common'
-import { exportToCSV } from '../../../../Utils/globalUtils'
-import { successAlert } from '../../../../Redux/Reducers/AppSlice'
+import { exportToCSV } from '../../../../utils/globalUtils'
+import { successAlert } from '../../../../redux/reducers/app-slice'
 import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import {
   useGetPaymentHistoryQuery,
   useLazyGenerateInvoiceQuery,
-} from '../../../../Services/admin'
+} from '../../../../services/admin'
 
 const PaymentHistory = () => {
   const theme = useTheme()

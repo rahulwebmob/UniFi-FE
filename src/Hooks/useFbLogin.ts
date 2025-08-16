@@ -35,7 +35,7 @@ interface FacebookSDK {
   }) => void
   login: (
     callback: (response: FBLoginResponse) => void,
-    options?: FBLoginOptions
+    options?: FBLoginOptions,
   ) => void
 }
 

@@ -5,8 +5,9 @@ import { Box, useTheme } from '@mui/material'
 
 import Login from './login'
 import SignUp from './sign-up'
-import AdminImage from '../../../Assets/admin.webp'
-import SignUpImage from '../../../Assets/sign-up/Sign Up.png'
+import AdminImage from '../../../assets/admin.webp'
+import SignUpImage from '../../../assets/sign-up/Sign Up.png'
+
 const EducatorImage = SignUpImage
 
 interface AuthWrapperProps {
@@ -16,12 +17,13 @@ interface AuthWrapperProps {
 const AuthWrapper = ({ type = '' }: AuthWrapperProps) => {
   const theme = useTheme()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [isLoginPage, setIsLoginPage] = useState(type === 'admin' ? true : !searchParams.get('sign-up'))
-
+  const [isLoginPage, setIsLoginPage] = useState(
+    type === 'admin' ? true : !searchParams.get('sign-up'),
+  )
 
   useEffect(() => {
     if (type === 'admin') return
-    
+
     if (isLoginPage && searchParams.has('sign-up')) {
       searchParams.delete('sign-up')
       setSearchParams(searchParams)
@@ -51,7 +53,7 @@ const AuthWrapper = ({ type = '' }: AuthWrapperProps) => {
       <Box
         sx={{
           width: '100%',
-          maxWidth: 1600, 
+          maxWidth: 1600,
           margin: '0 auto',
           px: { xs: 0, sm: 2, md: 3, lg: 4 },
           [theme.breakpoints.down('md')]: {
@@ -95,15 +97,15 @@ const AuthWrapper = ({ type = '' }: AuthWrapperProps) => {
           >
             <img
               src={
-                type === 'admin' 
-                  ? AdminImage 
-                  : type === 'educator' 
-                    ? EducatorImage 
+                type === 'admin'
+                  ? AdminImage
+                  : type === 'educator'
+                    ? EducatorImage
                     : SignUpImage
               }
               alt={
-                type === 'admin' 
-                  ? 'Admin Portal' 
+                type === 'admin'
+                  ? 'Admin Portal'
                   : type === 'educator'
                     ? 'Educator Portal'
                     : 'Authentication'

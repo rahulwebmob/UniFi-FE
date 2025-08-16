@@ -1,8 +1,9 @@
 import React from 'react'
-import { Box, Button, Typography, Paper } from '@mui/material'
+import { CheckCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { CheckCircle } from 'lucide-react'
+
+import { Box, Paper, Button, Typography } from '@mui/material'
 
 interface ThankYouProps {
   text?: string
@@ -19,7 +20,8 @@ const ThankYou: React.FC<ThankYouProps> = ({ text }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: (theme) => `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
+        background: (theme) =>
+          `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
         p: 3,
       }}
     >
@@ -59,7 +61,8 @@ const ThankYou: React.FC<ThankYouProps> = ({ text }) => {
           sx={{
             fontWeight: 700,
             mb: 2,
-            background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+            background: (theme) =>
+              `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -76,13 +79,14 @@ const ThankYou: React.FC<ThankYouProps> = ({ text }) => {
             lineHeight: 1.8,
           }}
         >
-          {text || 'Your application has been successfully submitted. We will review your application and get back to you soon.'}
+          {text ||
+            'Your application has been successfully submitted. We will review your application and get back to you soon.'}
         </Typography>
 
         <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
           <Button
             variant="outlined"
-            onClick={() => navigate('/educator/login')}
+            onClick={() => void navigate('/educator/login')}
             sx={{
               textTransform: 'none',
               borderRadius: '8px',
@@ -93,7 +97,7 @@ const ThankYou: React.FC<ThankYouProps> = ({ text }) => {
           >
             Back to Login
           </Button>
-          
+
           <Button
             variant="contained"
             color="primary"

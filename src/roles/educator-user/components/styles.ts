@@ -84,7 +84,8 @@ export const styles = {
     display: 'block',
     borderRadius: '10px',
     backgroundColor: 'transparent',
-    border: (t) => `1px solid ${t.palette.primary.main}`,
+    border: (t: { palette: { primary: { main: string } } }) =>
+      `1px solid ${t.palette.primary.main}`,
   },
   videoContainer: {
     width: '100%',

@@ -14,12 +14,12 @@ import ColorPicker from './color-picker'
 import StrokePicker from './stroke-picker'
 import { ToolBarSection } from '../styles'
 import { SizeType, ColorTypes } from './constants'
-import useWindowOpen from '../../../../Hooks/useWindowOpen'
+import useWindowOpen from '../../../../hooks/useWindowOpen'
 import {
   updateCanvas,
   updateStrokeColor,
   updateStrokeWidth,
-} from '../../../../Redux/Reducers/EducationSlice'
+} from '../../../../redux/reducers/education-slice'
 
 let canvas
 

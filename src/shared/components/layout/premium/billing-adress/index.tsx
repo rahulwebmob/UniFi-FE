@@ -24,10 +24,24 @@ import {
   FormControlLabel,
 } from '@mui/material'
 
-import countries from '../../../../../Constants/countries'
+import countries from '../../../../../constants/countries'
 import RequiredFieldIndicator from '../../../ui-elements/required-field-indicator'
 
-const BillingAddress = ({
+interface SubscriptionFormData {
+  country?: string
+  state?: string
+  city?: string
+  address?: string
+  [key: string]: unknown
+}
+
+interface BillingAddressProps {
+  subscriptionFormData: SubscriptionFormData
+  setSubscriptionFormData: React.Dispatch<React.SetStateAction<SubscriptionFormData>>
+  setCurrentStep: (step: number | ((prev: number) => number)) => void
+}
+
+const BillingAddress: React.FC<BillingAddressProps> = ({
   subscriptionFormData,
   setSubscriptionFormData,
   setCurrentStep,
@@ -89,7 +103,7 @@ const BillingAddress = ({
     },
   })
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: SubscriptionFormData) => {
     // Handle form submission here
     const newData = { ...data, ...subscriptionFormData }
     setSubscriptionFormData(newData)
@@ -99,7 +113,12 @@ const BillingAddress = ({
   const { errors } = formState
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); void handleSubmit(onSubmit)() }}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        void handleSubmit(onSubmit)()
+      }}
+    >
       <Grid size={{ xs: 12 }}>
         <Box p={2} pb={1} display="flex" alignItems="center">
           <IconButton disableRipple>

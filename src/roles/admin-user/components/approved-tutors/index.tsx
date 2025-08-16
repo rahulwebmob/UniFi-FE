@@ -1,15 +1,53 @@
+import type { ChangeEvent } from 'react'
+
 import { debounce } from 'lodash'
+import { useMemo, useState } from 'react'
 import { User, Search } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import React, { useMemo, useState } from 'react'
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
+import {
+  MaterialReactTable,
+  type MRT_ColumnDef,
+  useMaterialReactTable,
+} from 'material-react-table'
 
-import { Box, Paper, alpha, Button, useTheme, InputBase, Typography } from '@mui/material'
+import {
+  Box,
+  alpha,
+  Button,
+  useTheme,
+  InputBase,
+  Typography,
+} from '@mui/material'
 
-import { useGetApprovedTutorQuery } from '../../../../Services/admin'
+import { useGetApprovedTutorQuery } from '../../../../services/admin'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 
-const ApprovedTtutors = () => {
+interface Expertise {
+  category: string
+}
+
+interface ApprovedBy {
+  firstName: string
+  lastName: string
+}
+
+interface TutorData {
+  _id: string
+  userId: string
+  firstName: string
+  lastName: string
+  email: string
+  expertise?: Expertise[]
+  lastLoginAt?: string
+  approvedDate?: string
+  approvedBy?: ApprovedBy
+}
+
+interface ApprovedTutorResponse {
+  data: TutorData[]
+}
+
+const ApprovedTtutors: React.FC = () => {
   const theme = useTheme()
   const navigate = useNavigate()
   const [page, setPage] = useState(1)
@@ -20,21 +58,21 @@ const ApprovedTtutors = () => {
     page,
     pageSize: 10,
     search,
-  })
+  }) as { data: ApprovedTutorResponse | undefined }
 
-  const debouncedSearch = debounce((value) => {
+  const debouncedSearch = debounce((value: string) => {
     setPage(1)
     setSearch(value)
   }, 700)
 
-  const columns = useMemo(
+  const columns = useMemo<MRT_ColumnDef<TutorData>[]>(
     () => [
       {
         accessorKey: 'firstName',
         header: 'Name',
-        Cell: ({ cell }) => (
+        Cell: ({ row }) => (
           <Typography component="span">
-            {`${cell?.row?.original?.firstName} ${cell?.row?.original?.lastName}`}
+            {`${row.original.firstName} ${row.original.lastName}`}
           </Typography>
         ),
       },
@@ -42,11 +80,11 @@ const ApprovedTtutors = () => {
       {
         accessorKey: 'expertise',
         header: 'Expertise',
-        Cell: (props) => {
-          const { original } = props?.row ?? {}
+        Cell: ({ row }) => {
+          const { original } = row
           return (
             <Typography>
-              {original?.expertise?.length
+              {original.expertise?.length
                 ? original.expertise.map((item) => item.category).join(', ')
                 : '-'}
             </Typography>
@@ -56,28 +94,34 @@ const ApprovedTtutors = () => {
       {
         accessorKey: 'lastLoginAt',
         header: 'Last Active',
-        Cell: ({ cell }) => (
-          <Typography component="span">
-            {cell.getValue() ? new Date(cell.getValue()).toLocaleString() : '-'}
-          </Typography>
-        ),
+        Cell: ({ cell }) => {
+          const value = cell.getValue() as string | undefined
+          return (
+            <Typography component="span">
+              {value ? new Date(value).toLocaleString() : '-'}
+            </Typography>
+          )
+        },
       },
       {
         accessorKey: 'approvedDate',
         header: 'Approved On',
-        Cell: ({ cell }) => (
-          <Typography component="span">
-            {cell.getValue() ? new Date(cell.getValue()).toLocaleString() : '-'}
-          </Typography>
-        ),
+        Cell: ({ cell }) => {
+          const value = cell.getValue() as string | undefined
+          return (
+            <Typography component="span">
+              {value ? new Date(value).toLocaleString() : '-'}
+            </Typography>
+          )
+        },
       },
       {
         accessorKey: 'approvedBy',
         header: 'Approved By',
-        Cell: (props) => {
-          const { original } = props?.row ?? {}
-          const firstName = original?.approvedBy?.firstName ?? ''
-          const lastName = original?.approvedBy?.lastName ?? ''
+        Cell: ({ row }) => {
+          const { original } = row
+          const firstName = original.approvedBy?.firstName ?? ''
+          const lastName = original.approvedBy?.lastName ?? ''
           return (
             <Typography>
               {firstName && lastName ? `${firstName} ${lastName}` : '-'}
@@ -89,15 +133,17 @@ const ApprovedTtutors = () => {
       {
         accessorKey: 'action',
         header: 'Action',
-        Cell: ({ cell }) => {
-          const tutorId = cell.row.original._id
+        Cell: ({ row }) => {
+          const tutorId = row.original._id
           return (
             <Box>
               <Button
                 variant="contained"
                 size="small"
                 startIcon={<User size={16} />}
-                onClick={() => void navigate(`/admin/approved-tutors/${tutorId}`)}
+                onClick={() =>
+                  void navigate(`/admin/approved-tutors/${tutorId}`)
+                }
                 sx={{
                   textTransform: 'none',
                   borderRadius: '8px',
@@ -112,13 +158,13 @@ const ApprovedTtutors = () => {
         enableSorting: false,
       },
     ],
-    [navigate, theme.palette.primary.main],
+    [navigate],
   )
 
   const table = useMaterialReactTable({
     columns,
     data: ApprovedTutor?.data ?? [],
-    getRowId: (row) => row.userId,
+    getRowId: (row: TutorData) => row.userId,
     onRowSelectionChange: setRowSelection,
     state: { rowSelection },
     enablePagination: false,
@@ -160,10 +206,15 @@ const ApprovedTtutors = () => {
             },
           }}
         >
-          <Search size={20} style={{ color: 'text.secondary', marginRight: 12 }} />
+          <Search
+            size={20}
+            style={{ color: 'text.secondary', marginRight: 12 }}
+          />
           <InputBase
             placeholder="Search tutors..."
-            onChange={(e) => debouncedSearch(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              debouncedSearch(e.target.value)
+            }
             sx={{
               flex: 1,
               '& input': { fontSize: 14 },
@@ -176,7 +227,7 @@ const ApprovedTtutors = () => {
 
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
         <PaginationComponent
-          data={ApprovedTutor}
+          data={ApprovedTutor!}
           page={page}
           setPage={setPage}
         />

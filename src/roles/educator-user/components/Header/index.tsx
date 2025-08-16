@@ -2,7 +2,6 @@ import { LogOut } from 'lucide-react'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { useLocation } from 'react-router-dom'
 
 import {
   Box,
@@ -15,11 +14,10 @@ import {
 } from '@mui/material'
 
 import Navigation from '../Navigation'
-import MainLogo from '../../../../Assets/logo.svg'
+import MainLogo from '../../../../assets/logo.svg'
 import LogoutWrapper from '../../../../shared/components/auth-wrapper/logout'
 
 const Header = () => {
-  const location = useLocation()
   const { t } = useTranslation('education')
   const isMobile = useMediaQuery('(max-width:1024px)')
   const user = useSelector((state) => state.user.user)

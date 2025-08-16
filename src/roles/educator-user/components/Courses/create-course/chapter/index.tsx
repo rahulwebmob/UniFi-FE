@@ -10,9 +10,9 @@ const Chapter = () => {
   const { courseId } = useFormContext()
   return (
     <Box>
-      <AddLesson 
-        courseId={courseId} 
-        isChapter 
+      <AddLesson
+        courseId={courseId}
+        isChapter
         defaultValues={{ isFree: false, lessonTitle: '', resource: '' }}
       />
       <SavedChapters courseId={courseId} />

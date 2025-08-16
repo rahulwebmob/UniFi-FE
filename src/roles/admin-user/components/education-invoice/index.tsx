@@ -2,17 +2,21 @@ import { FileDown } from 'lucide-react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useMemo, useState, useCallback } from 'react'
-import { MaterialReactTable, type MRT_ColumnDef, useMaterialReactTable } from 'material-react-table'
+import {
+  MaterialReactTable,
+  type MRT_ColumnDef,
+  useMaterialReactTable,
+} from 'material-react-table'
 
-import { Box, Paper, alpha, Button, useTheme, Typography, Chip } from '@mui/material'
+import { Box, Chip, alpha, Button, useTheme, Typography } from '@mui/material'
 
 import { handleGeneratePdf } from '../common'
-import { successAlert } from '../../../../Redux/Reducers/AppSlice'
+import { successAlert } from '../../../../redux/reducers/app-slice'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import {
   useGetEducationAdminInvoiceQuery,
   useLazyDownloadAdminInvoiceQuery,
-} from '../../../../Services/admin'
+} from '../../../../services/admin'
 
 interface InvoiceUser {
   email?: string
@@ -46,29 +50,29 @@ interface ProcessedInvoice {
   userId?: string
 }
 
-const EducationInvoice = () => {
+const EducationInvoice: React.FC = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
   const [page, setPage] = useState(1)
   const { t } = useTranslation('application')
 
   const [downloadAdminInvoice] = useLazyDownloadAdminInvoiceQuery()
-  const { data } = useGetEducationAdminInvoiceQuery({ page, pageSize: 10 }) as { 
-    data: InvoiceData | undefined 
+  const { data } = useGetEducationAdminInvoiceQuery({ page, pageSize: 10 }) as {
+    data: InvoiceData | undefined
   }
 
   const columnsList = useMemo<ProcessedInvoice[] | undefined>(
     () =>
       data?.data.map((item) => ({
-        _id: item?._id,
-        amount: item?.amount,
-        createdAt: item?.createdAt,
-        moduleType: item?.moduleType,
-        userEmail: item?.userId?.email,
-        lastName: item?.userId?.lastName,
-        firstName: item?.userId?.firstName,
-        educatorEmail: item?.educatorId?.email,
-        userId: item?._id
+        _id: item._id,
+        amount: item.amount,
+        createdAt: item.createdAt,
+        moduleType: item.moduleType,
+        userEmail: item.userId?.email,
+        lastName: item.userId?.lastName,
+        firstName: item.userId?.firstName,
+        educatorEmail: item.educatorId?.email,
+        userId: item._id,
       })),
     [data?.data],
   )
@@ -162,11 +166,10 @@ const EducationInvoice = () => {
         header: 'Purchased Time',
         Cell: (tableProps) => {
           const { cell } = tableProps
+          const value = cell.getValue<string>()
           return (
             <Typography>
-              {cell?.getValue()
-                ? new Date(cell?.getValue()).toLocaleString()
-                : '-'}
+              {value ? new Date(value).toLocaleString() : '-'}
             </Typography>
           )
         },
@@ -201,7 +204,12 @@ const EducationInvoice = () => {
         enableSorting: false,
       },
     ],
-    [downloadAdminInvoice, handleSuccessAlert, theme.palette.primary.main, theme.palette.success.main],
+    [
+      downloadAdminInvoice,
+      handleSuccessAlert,
+      theme.palette.primary.main,
+      theme.palette.success.main,
+    ],
   )
 
   const table = useMaterialReactTable({
@@ -241,7 +249,14 @@ const EducationInvoice = () => {
       <MaterialReactTable table={table} />
 
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-        <PaginationComponent data={data} page={page} setPage={setPage} disabled={undefined} customStyle={undefined} scrollToTop={undefined} />
+        <PaginationComponent
+          data={data}
+          page={page}
+          setPage={setPage}
+          disabled={undefined}
+          customStyle={undefined}
+          scrollToTop={undefined}
+        />
       </Box>
     </Box>
   )

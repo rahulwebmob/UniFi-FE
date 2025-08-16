@@ -9,8 +9,18 @@ import {
   FormHelperText,
 } from '@mui/material'
 
-const DeclineConfirmation = ({ onDelete, onClose }) => {
-  const [declinationReason, setDeclinationReason] = useState(null)
+interface DeclineConfirmationProps {
+  onDelete: (reason: string) => void
+  onClose: () => void
+}
+
+const DeclineConfirmation = ({
+  onDelete,
+  onClose,
+}: DeclineConfirmationProps) => {
+  const [declinationReason, setDeclinationReason] = useState<string | null>(
+    null,
+  )
   const [showError, setShowError] = useState(false)
 
   return (
@@ -54,7 +64,7 @@ const DeclineConfirmation = ({ onDelete, onClose }) => {
           style={{ background: 'red' }}
           fullWidth
           onClick={() => {
-            if (declinationReason && declinationReason.trim() !== '') {
+            if (declinationReason?.trim()) {
               onDelete(declinationReason)
             } else {
               setShowError(true)

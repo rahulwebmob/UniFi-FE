@@ -1,8 +1,4 @@
-import {
-  alpha,
-  createTheme,
-  type ThemeOptions,
-} from '@mui/material/styles'
+import { alpha, createTheme, type ThemeOptions } from '@mui/material/styles'
 
 import { colors } from './foundations/colors'
 import { typography } from './foundations/typography'

@@ -4,7 +4,6 @@ import { jwtDecode } from 'jwt-decode'
 import { createSlice } from '@reduxjs/toolkit'
 
 // Define interfaces for the state
-type Subscription = Record<string, boolean>;
 
 interface User {
   _id?: string
@@ -14,12 +13,15 @@ interface User {
   role?: string
   language?: string
   layout?: string[]
-  subscription?: Subscription
   appearance?: {
     language?: string
     menuPosition?: string
   }
-  [key: string]: string | string[] | Subscription | { language?: string; menuPosition?: string } | undefined // For decoded token properties
+  [key: string]:
+    | string
+    | string[]
+    | { language?: string; menuPosition?: string }
+    | undefined // For decoded token properties
 }
 
 interface UserState {
@@ -61,23 +63,6 @@ export const UserSlice = createSlice({
         ...decodedToken,
       }
     },
-    updateSubscription: (state, action: PayloadAction<{ key: string }[]>) => {
-      const { payload } = action
-      const updatedSubscription: Subscription = { ...state.user?.subscription }
-
-      payload.map((item) => {
-        if (item.key) {
-          updatedSubscription[item.key] = true
-        }
-        return null
-      })
-
-      state.user = {
-        ...state.user,
-        subscription: updatedSubscription,
-      }
-    },
-
     loggedIn: (state, action: PayloadAction<{ loggedUser: User }>) => {
       const { payload } = action
       state.user = { ...state.user, ...payload.loggedUser }
@@ -86,16 +71,10 @@ export const UserSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {
-  signOut,
-  signIn,
-  updateUser,
-  updateToken,
-  updateSubscription,
-  loggedIn,
-} = UserSlice.actions
+export const { signOut, signIn, updateUser, updateToken, loggedIn } =
+  UserSlice.actions
 
 export default UserSlice.reducer
 
 // Export types
-export type { User, UserState, Subscription }
+export type { User, UserState }

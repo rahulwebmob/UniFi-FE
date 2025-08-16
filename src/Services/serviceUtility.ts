@@ -1,10 +1,6 @@
-import i18n from '../Localization/i18n'
-import { signOut } from '../Redux/Reducers/UserSlice'
-import {
-  errorAlert,
-  successAlert,
-
-} from '../Redux/Reducers/AppSlice'
+import i18n from '../localization/i18n'
+import { signOut } from '../redux/reducers/user-slice'
+import { errorAlert, successAlert } from '../redux/reducers/app-slice'
 
 // Constants for status codes and error handling
 const NUMBER = { ZERO: 0, ONE: 1, FOUR_HUNDRED: 400, FOUR_HUNDRED_THREE: 403 }

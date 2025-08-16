@@ -1,12 +1,10 @@
 import { useRef, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { Box } from '@mui/material'
-
 import WebinarContent from '../Webinar/webinar-content'
-import ApiResponseWrapper from '../../../../shared/components/api-middleware'
-import { useGetParticularWebinarDetailQuery } from '../../../../Services/education'
 import PremiumModal from '../../../../shared/components/layout/premium'
+import ApiResponseWrapper from '../../../../shared/components/api-middleware'
+import { useGetParticularWebinarDetailQuery } from '../../../../services/education'
 
 interface PremiumModalRef {
   openModal: () => void

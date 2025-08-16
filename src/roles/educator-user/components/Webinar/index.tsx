@@ -2,15 +2,25 @@ import { debounce } from 'lodash'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Plus, Edit, Search, FileText, ArrowLeft, ArrowRight, MoreVertical, Trash2, Video } from 'lucide-react'
+import {
+  Edit,
+  Plus,
+  Video,
+  Search,
+  Trash2,
+  FileText,
+  ArrowLeft,
+  ArrowRight,
+  MoreVertical,
+} from 'lucide-react'
 
 import {
   Box,
-  Button,
   Chip,
   Menu,
-  MenuItem,
+  Button,
   Tooltip,
+  MenuItem,
   useTheme,
   TextField,
   Typography,
@@ -27,14 +37,14 @@ import {
   useGetPastWebinarsQuery,
   useUpdateWebinarMutation,
   useGetWebinarsCountQuery,
-} from '../../../../Services/admin'
+} from '../../../../services/admin'
 
 const WebinarTable = ({ columns, data, page, setPage }) => {
   const tableOptions = {
     getRowId: (row) => row.userId,
     enableStickyHeader: true,
     muiTableContainerProps: {
-      sx: { 
+      sx: {
         height: '100%',
         maxHeight: '100%',
       },
@@ -244,11 +254,10 @@ const AllWebinars = ({ page, setPage }) => {
       size: 120,
       Cell: (tableProps) => {
         const { cell } = tableProps
-        const status = cell.getValue()
         return (
           <Chip
-            label={status || '-'}
-            color={handleStatusColor(status)}
+            label={cell.getValue() || '-'}
+            color={handleStatusColor(cell.getValue())}
             size="small"
             sx={{
               fontWeight: 600,
@@ -317,116 +326,129 @@ const AllWebinars = ({ page, setPage }) => {
 
   return (
     <>
-    <Box
-      sx={{ 
-        backgroundColor: 'background.light',
-        p: 2,
-        borderRadius: '12px',
-        border: (theme) => `1px solid ${theme.palette.grey[200]}`,
-        display: 'flex',
-        flexDirection: 'column',
-        height: 'calc(100vh - 280px)',
-        overflow: 'hidden',
-      }}
-    >
       <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        flexWrap="wrap"
-        gap="10px"
-        mb={2}
-        sx={{ flexShrink: 0 }}
-      >
-        <ButtonGroup sx={{ '& .MuiButton-root:not(:last-child)': { borderRight: 'none' } }}>
-          {['', 'published'].map((statusKey, index) => (
-            <Button
-              key={statusKey || 'all'}
-              sx={{
-                backgroundColor: status === statusKey ? 'primary.main' : 'transparent',
-                color: status === statusKey ? 'white' : 'text.secondary',
-                '&:hover': {
-                  backgroundColor: status === statusKey ? 'primary.dark' : 'action.hover',
-                },
-              }}
-              onClick={() => handleChangeStatus(statusKey)}
-            >
-              {
-                [t('EDUCATOR.WEBINAR.ALL'), t('EDUCATOR.WEBINAR.PUBLISHED')][
-                  index
-                ]
-              }{' '}
-              (
-              {
-                webinarCount?.data?.[
-                  ['allWebinarsCount', 'publishedWebinarsCount'][index]
-                ]
-              }
-              )
-            </Button>
-          ))}
-        </ButtonGroup>
-        <TextField
-          size="small"
-          onChange={(e) => debouncedSearch(e.target.value)}
-          placeholder={t('EDUCATOR.WEBINAR.SEARCH')}
-          InputProps={{ startAdornment: <Search size={16} style={{ color: 'var(--mui-palette-action-disabled)' }} /> }}
-        />
-      </Box>
-      <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
-        <WebinarTable
-          columns={columns}
-          data={webinarData?.data}
-          page={page}
-          setPage={setPage}
-        />
-      </Box>
-    </Box>
-    
-    <Menu
-      anchorEl={anchorEl}
-      open={Boolean(anchorEl)}
-      onClose={handleCloseMenu}
-      PaperProps={{
-        sx: {
-          minWidth: 180,
-          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-        },
-      }}
-    >
-      <MenuItem
-        onClick={() => {
-          void navigate('/educator/edit-webinar', {
-            state: {
-              isPreview: false,
-              webinarId: selectedRow?._id,
-            },
-          })
-          handleCloseMenu()
+        sx={{
+          backgroundColor: 'background.light',
+          p: 2,
+          borderRadius: '12px',
+          border: `1px solid ${theme.palette.grey[200]}`,
+          display: 'flex',
+          flexDirection: 'column',
+          height: 'calc(100vh - 280px)',
+          overflow: 'hidden',
         }}
-        disabled={selectedRow?.webinarScheduledObj?.can_join}
       >
-        <ListItemIcon>
-          <Edit size={16} />
-        </ListItemIcon>
-        <ListItemText>Edit Webinar</ListItemText>
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          if (selectedRow?._id) {
-            handleDeleteWebinar(selectedRow._id)
-          }
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          flexWrap="wrap"
+          gap="10px"
+          mb={2}
+          sx={{ flexShrink: 0 }}
+        >
+          <ButtonGroup
+            sx={{
+              '& .MuiButton-root:not(:last-child)': { borderRight: 'none' },
+            }}
+          >
+            {['', 'published'].map((statusKey, index) => (
+              <Button
+                key={statusKey || 'all'}
+                sx={{
+                  backgroundColor:
+                    status === statusKey ? 'primary.main' : 'transparent',
+                  color: status === statusKey ? 'white' : 'text.secondary',
+                  '&:hover': {
+                    backgroundColor:
+                      status === statusKey ? 'primary.dark' : 'action.hover',
+                  },
+                }}
+                onClick={() => handleChangeStatus(statusKey)}
+              >
+                {
+                  [t('EDUCATOR.WEBINAR.ALL'), t('EDUCATOR.WEBINAR.PUBLISHED')][
+                    index
+                  ]
+                }{' '}
+                (
+                {
+                  webinarCount?.data?.[
+                    ['allWebinarsCount', 'publishedWebinarsCount'][index]
+                  ]
+                }
+                )
+              </Button>
+            ))}
+          </ButtonGroup>
+          <TextField
+            size="small"
+            onChange={(e) => debouncedSearch(e.target.value)}
+            placeholder={t('EDUCATOR.WEBINAR.SEARCH')}
+            InputProps={{
+              startAdornment: (
+                <Search
+                  size={16}
+                  style={{ color: 'var(--mui-palette-action-disabled)' }}
+                />
+              ),
+            }}
+          />
+        </Box>
+        <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+          <WebinarTable
+            columns={columns}
+            data={webinarData?.data}
+            page={page}
+            setPage={setPage}
+          />
+        </Box>
+      </Box>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleCloseMenu}
+        PaperProps={{
+          sx: {
+            minWidth: 180,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+          },
         }}
-        sx={{ color: 'error.main' }}
-        disabled={selectedRow?.webinarScheduledObj?.can_join}
       >
-        <ListItemIcon>
-          <Trash2 size={16} color="currentColor" />
-        </ListItemIcon>
-        <ListItemText>Delete Webinar</ListItemText>
-      </MenuItem>
-    </Menu>
-  </>
+        <MenuItem
+          onClick={() => {
+            void navigate('/educator/edit-webinar', {
+              state: {
+                isPreview: false,
+                webinarId: selectedRow?._id,
+              },
+            })
+            handleCloseMenu()
+          }}
+          disabled={selectedRow?.webinarScheduledObj?.can_join}
+        >
+          <ListItemIcon>
+            <Edit size={16} />
+          </ListItemIcon>
+          <ListItemText>Edit Webinar</ListItemText>
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            if (selectedRow?._id) {
+              void handleDeleteWebinar(selectedRow._id)
+            }
+          }}
+          sx={{ color: 'error.main' }}
+          disabled={selectedRow?.webinarScheduledObj?.can_join}
+        >
+          <ListItemIcon>
+            <Trash2 size={16} color="currentColor" />
+          </ListItemIcon>
+          <ListItemText>Delete Webinar</ListItemText>
+        </MenuItem>
+      </Menu>
+    </>
   )
 }
 
@@ -574,11 +596,11 @@ const PastWebinars = ({ page, setPage }) => {
 
   return (
     <Box
-      sx={{ 
+      sx={{
         backgroundColor: 'background.light',
         p: 2,
         borderRadius: '12px',
-        border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+        border: `1px solid ${theme.palette.grey[200]}`,
         height: 'calc(100vh - 280px)',
         overflow: 'hidden',
       }}
@@ -602,7 +624,13 @@ const Webinar = () => {
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap" mb={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          flexWrap="wrap"
+          mb={2}
+        >
           <Box>
             <Typography
               variant="h4"
@@ -614,12 +642,23 @@ const Webinar = () => {
               {isLogs ? 'Past' : 'All'} Webinars
             </Typography>
             <Typography component="p" color="text.secondary">
-              {isLogs ? 'View your completed webinar history' : 'Manage and schedule your webinars'}
+              {isLogs
+                ? 'View your completed webinar history'
+                : 'Manage and schedule your webinars'}
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', gap: '10px', flexWrap: 'wrap', mt: { xs: 2, sm: 0 } }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: '10px',
+              flexWrap: 'wrap',
+              mt: { xs: 2, sm: 0 },
+            }}
+          >
             <Button
-              startIcon={isLogs ? <ArrowLeft size={16} /> : <FileText size={16} />}
+              startIcon={
+                isLogs ? <ArrowLeft size={16} /> : <FileText size={16} />
+              }
               onClick={() => setIsLogs(!isLogs)}
               variant="outlined"
             >
@@ -628,7 +667,9 @@ const Webinar = () => {
                 : t('EDUCATOR.WEBINAR.VIEW_LOGS')}
             </Button>
             <Button
-              onClick={() => { void navigate('/educator/create-webinar') }}
+              onClick={() => {
+                void navigate('/educator/create-webinar')
+              }}
               startIcon={<Plus size={16} />}
               variant="contained"
             >

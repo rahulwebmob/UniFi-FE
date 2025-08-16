@@ -1,7 +1,7 @@
+import { useMemo } from 'react'
+import { ArrowLeft } from 'lucide-react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import React, { useMemo } from 'react'
-import { ArrowLeft } from 'lucide-react'
 
 import {
   Box,
@@ -13,16 +13,30 @@ import {
 } from '@mui/material'
 
 import * as Style from './style'
-import {
-  updateToken,
-  updateSubscription,
-} from '../../../../../Redux/Reducers/UserSlice'
-import {
-  adminApi,
-  useBuyPremiumSubscriptionMutation,
-} from '../../../../../Services/admin'
+import { updateToken } from '../../../../../redux/reducers/user-slice'
+import { useBuyPremiumSubscriptionMutation } from '../../../../../services/admin'
 
-const ReviewOrder = ({ transactionInfo, setCurrentStep, closeModal }) => {
+interface TransactionInfo {
+  firstName: string
+  lastName: string
+  country: string
+  state: string
+  city: string
+  address: string
+  selectedPlans: Array<{ name?: string; price?: number; [key: string]: unknown }>
+}
+
+interface ReviewOrderProps {
+  transactionInfo: TransactionInfo
+  setCurrentStep: (step: number) => void
+  closeModal: () => void
+}
+
+const ReviewOrder = ({
+  transactionInfo,
+  setCurrentStep,
+  closeModal,
+}: ReviewOrderProps) => {
   const { t } = useTranslation('application')
   const theme = useTheme()
   const [buyPremiumSubscription, { isLoading }] =
@@ -52,8 +66,6 @@ const ReviewOrder = ({ transactionInfo, setCurrentStep, closeModal }) => {
       const newToken = res?.data?.token
       localStorage.removeItem('token')
       dispatch(updateToken({ token: newToken }))
-      dispatch(updateSubscription([...selectedPlans]))
-      dispatch(adminApi.util.invalidateTags(['Me']))
     }
     closeModal()
   }
@@ -65,7 +77,7 @@ const ReviewOrder = ({ transactionInfo, setCurrentStep, closeModal }) => {
           <ArrowLeft
             size={20}
             style={{ cursor: 'pointer', marginRight: 2 }}
-            onClick={() => setCurrentStep((prev) => prev - 1)}
+            onClick={() => setCurrentStep(1)}
           />
         </IconButton>
         <Typography variant="h6">
@@ -145,7 +157,9 @@ const ReviewOrder = ({ transactionInfo, setCurrentStep, closeModal }) => {
           </Typography>
           <Button
             disabled={isLoading}
-            onClick={() => { void handlePayment() }}
+            onClick={() => {
+              void handlePayment()
+            }}
             variant="contained"
             sx={{ borderRadius: '8px', fontWeight: 600 }}
           >

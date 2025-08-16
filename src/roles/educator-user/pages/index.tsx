@@ -1,9 +1,9 @@
 import type { TFunction } from 'i18next'
 
 import * as yup from 'yup'
-import  { useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useForm } from 'react-hook-form'
+import { useForm, type FieldValues } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -19,16 +19,16 @@ import {
   Typography,
 } from '@mui/material'
 
-import About from './About/About'
-import Links from './Links/Links'
-import Document from './Document/Document'
+import About from './About'
+import Links from './Links'
+import Document from './Document'
+import Qualification from './Qualification'
 import ThankYou from '../components/ThankYou'
-import MainLogo from '../../../Assets/logo.svg'
+import MainLogo from '../../../assets/logo.svg'
 import { urlRegexPatterns } from './constant/constant'
-import Qualification from './Qualification/Qualification'
-import EducatorLoginImage from '../../../Assets/educator-login.avif'
-import { useLazyVerifyEducatorEmailQuery } from '../../../Services/admin'
-import { useRegisterEducatorMutation } from '../../../Services/uploadProgress'
+import EducatorLoginImage from '../../../assets/educator-login.avif'
+import { useLazyVerifyEducatorEmailQuery } from '../../../services/admin'
+import { useRegisterEducatorMutation } from '../../../services/uploadProgress'
 import {
   transformNaNToNull,
   handleAreAllFieldsFilled,
@@ -44,10 +44,14 @@ interface StepIconProps {
 
 const stepIcons = [User, GraduationCap, Link2, FileText]
 
-const StepIcon = ({ active = false, completed = false, stepIndex = 0 }: StepIconProps) => {
+const StepIcon = ({
+  active = false,
+  completed = false,
+  stepIndex = 0,
+}: StepIconProps) => {
   const theme = useTheme()
   const IconComponent = stepIcons[stepIndex] || User
-  
+
   return (
     <Box
       sx={{
@@ -55,17 +59,17 @@ const StepIcon = ({ active = false, completed = false, stepIndex = 0 }: StepIcon
         height: 48,
         borderRadius: '50%',
         border: `2px solid ${
-          completed 
+          completed
             ? theme.palette.success.main
-            : active 
-            ? theme.palette.primary.main
-            : theme.palette.grey[400]
+            : active
+              ? theme.palette.primary.main
+              : theme.palette.grey[400]
         }`,
-        backgroundColor: completed 
+        backgroundColor: completed
           ? theme.palette.success.main
-          : active 
-          ? theme.palette.primary.main
-          : 'transparent',
+          : active
+            ? theme.palette.primary.main
+            : 'transparent',
         color: completed || active ? 'white' : theme.palette.grey[400],
         display: 'flex',
         alignItems: 'center',
@@ -267,10 +271,11 @@ const validationSchema = (t: TFunction) => [
       .test(
         'fileType',
         t('REGISTER_EDUCATOR.VALIDATION.VIDEO_FORMAT'),
-        (value: any) => {
+        (value: unknown) => {
           if (!value) return true
           const allowedExtensions = ['mp4', 'mov', 'webm']
-          const fileExtension = (value as File).name.split('.').pop()?.toLowerCase() ?? ''
+          const fileExtension =
+            (value as File).name.split('.').pop()?.toLowerCase() ?? ''
           return allowedExtensions.includes(fileExtension)
         },
       ),
@@ -303,7 +308,7 @@ const defaultValues = {
   hau: 'Social Media',
 }
 
-const Educator = () => {
+const Educator: React.FC = () => {
   const theme = useTheme()
   const navigate = useNavigate()
   const { t } = useTranslation('education')
@@ -355,7 +360,7 @@ const Educator = () => {
     },
   }
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FieldValues) => {
     if (activeStep === 0) {
       const emailResponse = await verifyEducatorEmail({ email: data.email })
 
@@ -380,7 +385,7 @@ const Educator = () => {
           } else if (name === 'video') {
             formData.append(name, mp4)
           } else if (name === 'otherProfileUrls') {
-            const nonEmptyLinks = (data[name] as {link?: string}[]).filter(
+            const nonEmptyLinks = (data[name] as { link?: string }[]).filter(
               (urlObject) => urlObject.link,
             )
             if (nonEmptyLinks.length) {
@@ -583,11 +588,7 @@ const Educator = () => {
 
               {/* Fixed Stepper */}
               <Box sx={{ mb: 3 }}>
-                <Stepper 
-                  activeStep={activeStep} 
-                  alternativeLabel
-
-                >
+                <Stepper activeStep={activeStep} alternativeLabel>
                   {Object.values(steps).map((step, index) => (
                     <Step key={step.name}>
                       <StepLabel
@@ -598,7 +599,7 @@ const Educator = () => {
                               completed={activeStep > index}
                               stepIndex={index}
                             />
-                          )
+                          ),
                         }}
                       >
                         {step.name}
@@ -611,7 +612,11 @@ const Educator = () => {
               {/* Scrollable Form Content */}
               <Box
                 component="form"
-                onSubmit={(e) => { void handleSubmit((data) => { void onSubmit(data) })(e) }}
+                onSubmit={(e) => {
+                  void handleSubmit((data) => {
+                    void onSubmit(data)
+                  })(e)
+                }}
                 sx={{
                   flex: 1,
                   display: 'flex',
@@ -674,8 +679,8 @@ const Educator = () => {
                           isLoading ? ` ${progress}%` : ''
                         }`
                       : activeStep === 3
-                      ? t('REGISTER_EDUCATOR.COMMON_KEYS.SUBMIT')
-                      : t('REGISTER_EDUCATOR.COMMON_KEYS.CONTINUE')}
+                        ? t('REGISTER_EDUCATOR.COMMON_KEYS.SUBMIT')
+                        : t('REGISTER_EDUCATOR.COMMON_KEYS.CONTINUE')}
                   </Button>
                 </Box>
 
@@ -689,7 +694,9 @@ const Educator = () => {
                     <Typography
                       component="span"
                       variant="body2"
-                      onClick={() => { void navigate('/educator/login') }}
+                      onClick={() => {
+                        void navigate('/educator/login')
+                      }}
                       sx={{
                         color: theme.palette.primary.main,
                         fontWeight: 600,
