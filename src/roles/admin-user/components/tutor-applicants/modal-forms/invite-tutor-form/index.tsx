@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-import { Box, Button, TextField, FormLabel } from '@mui/material'
+import { Box, Button, TextField, FormLabel, Typography } from '@mui/material'
 
 import { useInviteEducatorMutation } from '../../../../../../services/admin'
 
@@ -44,100 +44,166 @@ const InviteTutorForm = ({ onClose }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '10px',
+        gap: 2.5,
+        p: 1,
       }}
       onSubmit={(e) => void handleSubmit(onSubmit)(e)}
     >
       <Box>
-        <FormLabel>First Name</FormLabel>
+        <Typography
+          variant="body2"
+          sx={{
+            mb: 0.5,
+            fontWeight: 500,
+            color: 'text.secondary',
+          }}
+        >
+          First Name
+        </Typography>
         <Controller
           name="firstName"
           control={control}
           render={({ field }) => (
             <TextField
-              label="First Name"
+              placeholder="Enter first name"
               size="small"
               {...field}
               variant="outlined"
-              color="secondary"
               fullWidth
               error={!!errors.firstName}
-              helperText={errors.firstName ? errors.firstName.message : ''}
+              helperText={errors.firstName ? <Typography variant="caption" color="error">{errors.firstName.message}</Typography> : ''}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                },
+              }}
             />
           )}
         />
       </Box>
 
       <Box>
-        <FormLabel>Last Name</FormLabel>
+        <Typography
+          variant="body2"
+          sx={{
+            mb: 0.5,
+            fontWeight: 500,
+            color: 'text.secondary',
+          }}
+        >
+          Last Name
+        </Typography>
         <Controller
           name="lastName"
           control={control}
           render={({ field }) => (
             <TextField
-              label="Last Name"
+              placeholder="Enter last name"
               size="small"
               {...field}
               variant="outlined"
-              color="secondary"
               fullWidth
               error={!!errors.lastName}
-              helperText={errors.lastName ? errors.lastName.message : ''}
+              helperText={errors.lastName ? <Typography variant="caption" color="error">{errors.lastName.message}</Typography> : ''}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                },
+              }}
             />
           )}
         />
       </Box>
 
       <Box>
-        <FormLabel>Email</FormLabel>
+        <Typography
+          variant="body2"
+          sx={{
+            mb: 0.5,
+            fontWeight: 500,
+            color: 'text.secondary',
+          }}
+        >
+          Email
+        </Typography>
         <Controller
           name="email"
           control={control}
           render={({ field }) => (
             <TextField
-              label="Email"
+              placeholder="Enter email address"
               size="small"
               {...field}
               variant="outlined"
-              color="secondary"
               fullWidth
               error={!!errors.email}
-              helperText={errors.email ? errors.email.message : ''}
+              helperText={errors.email ? <Typography variant="caption" color="error">{errors.email.message}</Typography> : ''}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                },
+              }}
             />
           )}
         />
       </Box>
 
       <Box>
-        <FormLabel>Enter onboarding form link</FormLabel>
+        <Typography
+          variant="body2"
+          sx={{
+            mb: 0.5,
+            fontWeight: 500,
+            color: 'text.secondary',
+          }}
+        >
+          Onboarding Form Link
+        </Typography>
         <Controller
           name="url"
           control={control}
           render={({ field }) => (
             <TextField
-              label="URL"
+              placeholder="Enter onboarding URL"
               size="small"
               {...field}
               variant="outlined"
-              color="secondary"
               fullWidth
               error={!!errors.url}
-              helperText={errors.url ? errors.url.message : ''}
+              helperText={errors.url ? <Typography variant="caption" color="error">{errors.url.message}</Typography> : ''}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                },
+              }}
             />
           )}
         />
       </Box>
 
-      <Box display="flex" mt={2} gap={2}>
+      <Box display="flex" mt={3} gap={2} justifyContent="flex-end">
         <Button
-          variant="contained"
-          color="secondary"
-          fullWidth
+          variant="outlined"
           onClick={onClose}
+          sx={{
+            textTransform: 'none',
+            borderRadius: '8px',
+            fontWeight: 600,
+            px: 3,
+          }}
         >
           Cancel
         </Button>
-        <Button type="submit" variant="contained" fullWidth>
+        <Button 
+          type="submit" 
+          variant="contained"
+          sx={{
+            textTransform: 'none',
+            borderRadius: '8px',
+            fontWeight: 600,
+            px: 3,
+          }}
+        >
           Invite Tutor
         </Button>
       </Box>

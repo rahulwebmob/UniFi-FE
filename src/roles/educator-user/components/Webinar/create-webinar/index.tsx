@@ -336,7 +336,15 @@ const CreateWebinar = ({
 
   const form = useForm({
     resolver: yupResolver(validationSchema),
-    defaultValues,
+    defaultValues: {
+      title: '',
+      description: '',
+      category: [],
+      scheduleType: 'daily',
+      isPaid: false,
+      price: '',
+      ...defaultValues,
+    },
   })
 
   const { watch, control, handleSubmit } = form
@@ -448,14 +456,14 @@ const CreateWebinar = ({
       <Grid container spacing={1}>
         <Grid size={{ xs: 12 }}>
           <FormControl fullWidth>
-            <Typography variant="body1" mb={0.5}>
+            <Typography variant="body1" mb={0.5} fontWeight={600}>
               {t('EDUCATOR.CREATE_WEBINAR.ADD_TITLE')}{' '}
               <Typography variant="body1" color="error.main" component="span">
                 *
               </Typography>{' '}
               <CharacterCount
                 maxLength={200}
-                currentLength={watch('title').trim().length}
+                currentLength={(watch('title') || '').trim().length}
               />
             </Typography>
             <Controller
@@ -483,7 +491,7 @@ const CreateWebinar = ({
               </Typography>{' '}
               <CharacterCount
                 maxLength={1000}
-                currentLength={watch('description').trim().length}
+                currentLength={(watch('description') || '').trim().length}
               />
             </Typography>
             <Controller
@@ -531,15 +539,25 @@ const CreateWebinar = ({
                 defaultValue="free"
                 rules={{ required: 'Pricing Type" is required' }}
                 render={({ field: { onChange, value } }) => (
-                  <ButtonGroup color="secondary" variant="contained">
+                  <ButtonGroup
+                    sx={{
+                      '& .MuiButton-root:not(:last-child)': {
+                        borderRight: 'none',
+                      },
+                    }}
+                  >
                     <Button
+                      variant="outlined"
                       sx={{
-                        ...(!value && ACTIVE_BUTTON_CSS),
-                        '&:first-of-type': {
-                          borderTopRightRadius: '0',
-                          borderBottomRightRadius: '0',
-                          borderTopLeftRadius: '4px',
-                          borderBottomLeftRadius: '4px',
+                        backgroundColor: !value
+                          ? 'primary.main'
+                          : 'transparent',
+                        color: !value ? 'white' : 'text.secondary',
+                        borderColor: (theme) => theme.palette.grey[300],
+                        '&:hover': {
+                          backgroundColor: !value
+                            ? 'primary.dark'
+                            : 'action.hover',
                         },
                       }}
                       onClick={() => onChange(false)}
@@ -547,13 +565,15 @@ const CreateWebinar = ({
                       {t('EDUCATOR.COMMON_KEYS.FREE')}
                     </Button>
                     <Button
+                      variant="outlined"
                       sx={{
-                        ...(value && ACTIVE_BUTTON_CSS),
-                        '&:last-of-type': {
-                          borderTopRightRadius: '4px',
-                          borderBottomRightRadius: '4px',
-                          borderTopLeftRadius: '0',
-                          borderBottomLeftRadius: '0',
+                        backgroundColor: value ? 'primary.main' : 'transparent',
+                        color: value ? 'white' : 'text.secondary',
+                        borderColor: (theme) => theme.palette.grey[300],
+                        '&:hover': {
+                          backgroundColor: value
+                            ? 'primary.dark'
+                            : 'action.hover',
                         },
                       }}
                       onClick={() => onChange(true)}
@@ -625,26 +645,54 @@ const CreateWebinar = ({
       setScheduleType={setScheduleType}
     >
       {!isPreview && (
-        <Box>
-          <Typography variant="h1">
+        <Box sx={{ mb: 3 }}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 600,
+              mb: 0.5,
+            }}
+          >
             {isEdit
               ? t('EDUCATOR.CREATE_WEBINAR.EDIT')
               : t('EDUCATOR.CREATE_WEBINAR.CREATE')}{' '}
             {t('EDUCATOR.CREATE_WEBINAR.WEBINAR')}
           </Typography>
-          <Typography component="p">
+          <Typography component="p" color="text.secondary">
             {t('EDUCATOR.CREATE_WEBINAR.WEBINAR_DATA')}
           </Typography>
         </Box>
       )}
-      <Box mt={2} component="form" onSubmit={(e) => { void handleSubmit((data) => { void onSubmit(data) }, onError)(e) }}>
+      <Box
+        component="form"
+        onSubmit={(e) => {
+          void handleSubmit((data) => {
+            void onSubmit(data)
+          }, onError)(e)
+        }}
+        sx={{
+          backgroundColor: 'background.light',
+          borderRadius: '12px',
+          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+          p: 3,
+        }}
+      >
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           {renderStepContent()}
           {!isPreview && (
-            <Box mt={5} display="flex" justifyContent="space-between">
+            <Box
+              sx={{
+                mt: 4,
+                pt: 3,
+                borderTop: (theme) => `1px solid ${theme.palette.grey[200]}`,
+                display: 'flex',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: 2,
+              }}
+            >
               <Button
-                variant="contained"
-                color="secondary"
+                variant="outlined"
                 disabled={isLoading}
                 onClick={() => {
                   if (previewMode) {
@@ -653,18 +701,20 @@ const CreateWebinar = ({
                     void navigate('/educator')
                   }
                 }}
+                sx={{ textTransform: 'none' }}
               >
                 {previewMode
                   ? t('EDUCATOR.COMMON_KEYS.BACK')
                   : t('EDUCATOR.CREATE_WEBINAR.BACK_TO_DASHBOARD')}
               </Button>
-              <Box display="flex" gap="10px">
+              <Box display="flex" gap={1}>
                 {(!isPublished || !previewMode) && (
                   <Button
                     type="submit"
                     variant="contained"
                     disabled={isLoading}
-                    startIcon={isLoading && <CircularProgress size="1em" />}
+                    startIcon={isLoading && <CircularProgress size={20} />}
+                    sx={{ textTransform: 'none' }}
                   >
                     {isLoading
                       ? iff(isEdit, 'Submitting...', 'Publishing...')

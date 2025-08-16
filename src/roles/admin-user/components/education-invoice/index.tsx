@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useMemo, useState, useCallback } from 'react'
 import { MaterialReactTable, type MRT_ColumnDef, useMaterialReactTable } from 'material-react-table'
 
-import { Box, Paper, alpha, Button, useTheme, Typography } from '@mui/material'
+import { Box, Paper, alpha, Button, useTheme, Typography, Chip } from '@mui/material'
 
 import { handleGeneratePdf } from '../common'
 import { successAlert } from '../../../../Redux/Reducers/AppSlice'
@@ -120,15 +120,21 @@ const EducationInvoice = () => {
         header: 'Purchase Type',
         Cell: (tableProps) => {
           const { cell } = tableProps
-          return (
-            <Typography
+          const moduleType = cell.getValue<string>()
+          return moduleType ? (
+            <Chip
+              label={moduleType}
+              size="small"
               sx={{
                 textTransform: 'capitalize',
+                fontWeight: 500,
+                borderRadius: '6px',
+                backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                color: theme.palette.primary.main,
               }}
-              component="span"
-            >
-              {cell.getValue() ?? '-'}
-            </Typography>
+            />
+          ) : (
+            <Typography component="span">-</Typography>
           )
         },
       },
@@ -137,9 +143,16 @@ const EducationInvoice = () => {
         header: 'Purchase Amount',
         Cell: (tableProps) => {
           const { cell } = tableProps
+          const amount = cell.getValue<number>()
           return (
-            <Typography component="span">
-              {cell.getValue() ? `$${cell.getValue()}` : '-'}
+            <Typography
+              component="span"
+              sx={{
+                fontWeight: 600,
+                color: theme.palette.success.main,
+              }}
+            >
+              {amount ? `$${amount}` : '-'}
             </Typography>
           )
         },
@@ -165,7 +178,7 @@ const EducationInvoice = () => {
           const { row } = tableProps
           return (
             <Button
-              variant="outlined"
+              variant="contained"
               size="small"
               startIcon={<FileDown size={16} />}
               onClick={() =>
@@ -177,11 +190,8 @@ const EducationInvoice = () => {
               }
               sx={{
                 textTransform: 'none',
-                borderRadius: 1,
-                fontWeight: 500,
-                '&:hover': {
-                  bgcolor: alpha(theme.palette.primary.main, 0.04),
-                },
+                borderRadius: '8px',
+                fontWeight: 600,
               }}
             >
               Download
@@ -191,7 +201,7 @@ const EducationInvoice = () => {
         enableSorting: false,
       },
     ],
-    [downloadAdminInvoice, handleSuccessAlert, theme.palette.primary.main],
+    [downloadAdminInvoice, handleSuccessAlert, theme.palette.primary.main, theme.palette.success.main],
   )
 
   const table = useMaterialReactTable({
@@ -199,6 +209,8 @@ const EducationInvoice = () => {
     data: columnsList ?? [],
     getRowId: (row) => row.userId,
     enablePagination: false,
+    enableTopToolbar: false,
+    enableBottomToolbar: false,
     enableColumnActions: false,
     enableColumnFilters: false,
     enableSorting: false,
@@ -206,77 +218,27 @@ const EducationInvoice = () => {
     enableFullScreenToggle: false,
     enableGlobalFilter: false,
     enableHiding: false,
-    muiTopToolbarProps: {
-      sx: {
-        display: 'none',
-      },
-    },
-    muiTablePaperProps: {
-      sx: {
-        boxShadow: 'none',
-        background: 'transparent',
-      },
-    },
-    muiBottomToolbarProps: {
-      sx: {
-        display: 'none',
-      },
-    },
-    muiTableProps: {
-      sx: {
-        tableLayout: 'fixed',
-      },
-    },
-    muiTableHeadCellProps: {
-      sx: {
-        fontWeight: 600,
-        fontSize: 14,
-        textTransform: 'uppercase',
-        letterSpacing: 0.5,
-      },
-    },
-    muiTableBodyCellProps: {
-      sx: {
-        fontSize: 14,
-      },
-    },
   })
 
   return (
     <Box>
-      <Paper
-        elevation={0}
-        sx={{
-          p: 3,
-          mb: 3,
-          borderRadius: 2,
-          border: `1px solid ${alpha(theme.palette.grey[500], 0.08)}`,
-          background: theme.palette.background.paper,
-        }}
-      >
-        <Box>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 600,
-              mb: 0.5,
-              background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            Invoices
-          </Typography>
-          <Typography component="p" color="text.secondary">
-            Manage and download transaction invoices
-          </Typography>
-        </Box>
-      </Paper>
+      <Box sx={{ mb: 3 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 600,
+            mb: 0.5,
+            color: theme.palette.primary.main,
+          }}
+        >
+          Invoices
+        </Typography>
+        <Typography component="p" color="text.secondary">
+          Manage and download transaction invoices
+        </Typography>
+      </Box>
 
-      <Paper>
-        <MaterialReactTable table={table} />
-      </Paper>
+      <MaterialReactTable table={table} />
 
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
         <PaginationComponent data={data} page={page} setPage={setPage} disabled={undefined} customStyle={undefined} scrollToTop={undefined} />

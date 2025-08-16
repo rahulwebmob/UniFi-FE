@@ -1,5 +1,4 @@
 import React from 'react'
-import { X, Facebook, Linkedin } from 'lucide-react'
 
 import {
   Box,
@@ -7,6 +6,11 @@ import {
   IconButton,
   Typography,
 } from '@mui/material'
+
+// Social media SVG icons
+import FacebookIcon from '../../../../Assets/social-icons/facebook.svg'
+import LinkedinIcon from '../../../../Assets/social-icons/linkedin.svg'
+import XIcon from '../../../../Assets/social-icons/x-twitter.svg'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -66,7 +70,13 @@ const Footer = () => {
                 }}
                 aria-label="Facebook"
               >
-                <Facebook size={18} />
+                <img 
+                  src={FacebookIcon} 
+                  alt="Facebook" 
+                  width="18" 
+                  height="18"
+                  style={{ display: 'block' }}
+                />
               </IconButton>
               <IconButton
                 size="small"
@@ -83,7 +93,13 @@ const Footer = () => {
                 }}
                 aria-label="LinkedIn"
               >
-                <Linkedin size={18} />
+                <img 
+                  src={LinkedinIcon} 
+                  alt="LinkedIn" 
+                  width="18" 
+                  height="18"
+                  style={{ display: 'block' }}
+                />
               </IconButton>
               <IconButton
                 size="small"
@@ -100,7 +116,13 @@ const Footer = () => {
                 }}
                 aria-label="X"
               >
-                <X size={18} />
+                <img 
+                  src={XIcon} 
+                  alt="X" 
+                  width="18" 
+                  height="18"
+                  style={{ display: 'block' }}
+                />
               </IconButton>
             </Box>
           </Box>

@@ -1653,6 +1653,156 @@ export const MuiOutlinedInput: Components<Theme>['MuiOutlinedInput'] = {
 }
 /* ===== END: TextField Components ===== */
 
+/* ===== START: DatePicker Components ===== */
+export const MuiDatePicker: Components<Theme>['MuiDatePicker'] = {
+  styleOverrides: {
+    root: ({ theme }) => ({
+      '& .MuiOutlinedInput-root': {
+        borderRadius: theme.spacing(1),
+        backgroundColor: theme.palette.background.paper,
+        transition: 'all 0.2s ease-in-out',
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+
+        '& fieldset': {
+          borderColor: theme.palette.grey[300],
+          borderWidth: 1,
+          transition: 'all 0.2s ease-in-out',
+        },
+
+        '&:hover': {
+          boxShadow: '0 2px 4px rgba(17, 66, 98, 0.06)',
+
+          '& fieldset': {
+            borderColor: theme.palette.primary[300],
+          },
+        },
+
+        '&.Mui-focused': {
+          boxShadow: `0 0 0 3px ${theme.palette.primary.main}15`,
+
+          '& fieldset': {
+            borderColor: theme.palette.primary.main,
+            borderWidth: 1.5,
+          },
+        },
+
+        '&.Mui-error fieldset': {
+          borderColor: theme.palette.error.main,
+        },
+      },
+    }),
+  },
+}
+
+export const MuiTimePicker: Components<Theme>['MuiTimePicker'] = {
+  styleOverrides: {
+    root: ({ theme }) => ({
+      '& .MuiOutlinedInput-root': {
+        borderRadius: theme.spacing(1),
+        backgroundColor: theme.palette.background.paper,
+        transition: 'all 0.2s ease-in-out',
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+
+        '& fieldset': {
+          borderColor: theme.palette.grey[300],
+          borderWidth: 1,
+          transition: 'all 0.2s ease-in-out',
+        },
+
+        '&:hover': {
+          boxShadow: '0 2px 4px rgba(17, 66, 98, 0.06)',
+
+          '& fieldset': {
+            borderColor: theme.palette.primary[300],
+          },
+        },
+
+        '&.Mui-focused': {
+          boxShadow: `0 0 0 3px ${theme.palette.primary.main}15`,
+
+          '& fieldset': {
+            borderColor: theme.palette.primary.main,
+            borderWidth: 1.5,
+          },
+        },
+
+        '&.Mui-error fieldset': {
+          borderColor: theme.palette.error.main,
+        },
+      },
+    }),
+  },
+}
+
+export const MuiPickersTextField: Components<Theme>['MuiPickersTextField'] = {
+  defaultProps: {
+    variant: 'outlined',
+  },
+  styleOverrides: {
+    root: ({ theme }) => ({
+      '& .MuiOutlinedInput-root': {
+        borderRadius: theme.spacing(1),
+        backgroundColor: theme.palette.background.paper,
+        transition: 'all 0.2s ease-in-out',
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+
+        '& fieldset': {
+          borderColor: theme.palette.grey[300],
+          borderWidth: 1,
+          transition: 'all 0.2s ease-in-out',
+        },
+
+        '&:hover': {
+          boxShadow: '0 2px 4px rgba(17, 66, 98, 0.06)',
+
+          '& fieldset': {
+            borderColor: theme.palette.primary[300],
+          },
+        },
+
+        '&.Mui-focused': {
+          boxShadow: `0 0 0 3px ${theme.palette.primary.main}15`,
+
+          '& fieldset': {
+            borderColor: theme.palette.primary.main,
+            borderWidth: 1.5,
+          },
+        },
+
+        '&.Mui-error fieldset': {
+          borderColor: theme.palette.error.main,
+        },
+
+        '&.Mui-disabled': {
+          backgroundColor: theme.palette.action.disabledBackground,
+          opacity: 0.8,
+
+          '& fieldset': {
+            border: 'none',
+          },
+
+          '& .MuiInputBase-input': {
+            color: theme.palette.text.disabled,
+            WebkitTextFillColor: theme.palette.text.disabled,
+            cursor: 'not-allowed',
+          },
+        },
+      },
+
+      '& .MuiInputBase-input': {
+        padding: `${theme.spacing(2)} ${theme.spacing(2)}`,
+        fontSize: '1rem',
+
+        '&::placeholder': {
+          color: theme.palette.text.secondary,
+          opacity: 0.5,
+        },
+      },
+    }),
+  },
+}
+/* ===== END: DatePicker Components ===== */
+
 /* ===== START: Other Components ===== */
 export const MuiTypography: Components<Theme>['MuiTypography'] = {
   styleOverrides: {
@@ -1941,6 +2091,11 @@ export const components: Components<Theme> = {
   MuiTextField,
   MuiInputBase,
   MuiOutlinedInput,
+
+  // DatePicker Components
+  MuiDatePicker,
+  MuiTimePicker,
+  MuiPickersTextField,
 
   // Other Components
   MuiTypography,

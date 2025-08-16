@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Linkedin, Facebook } from 'lucide-react'
 
 import { Box, Button, Divider, useTheme, useMediaQuery } from '@mui/material'
+
+// Social media SVG icons
+import FacebookIcon from '../../../../../Assets/social-icons/facebook.svg'
+import LinkedinIcon from '../../../../../Assets/social-icons/linkedin.svg'
 
 import { SOCIAL_AUTH } from './constant'
 import useFbLogin from '../../../../../Hooks/useFbLogin'
@@ -99,7 +102,15 @@ const SocialMediaAuth: React.FC<SocialMediaAuthProps> = ({ isOAuthLoading, setIs
     {
       id: 'linkedin',
       label: 'LinkedIn',
-      icon: <Linkedin size={20} color={theme.palette.primary.main} />,
+      icon: (
+        <img 
+          src={LinkedinIcon} 
+          alt="LinkedIn" 
+          width="20" 
+          height="20"
+          style={{ display: 'block' }}
+        />
+      ),
       onClick: () => {
         setSocialBtn('linkedin')
         handleLinkedInLogin()
@@ -108,7 +119,15 @@ const SocialMediaAuth: React.FC<SocialMediaAuthProps> = ({ isOAuthLoading, setIs
     {
       id: 'facebook',
       label: 'Facebook',
-      icon: <Facebook size={20} color={theme.palette.primary.main} />,
+      icon: (
+        <img 
+          src={FacebookIcon} 
+          alt="Facebook" 
+          width="20" 
+          height="20"
+          style={{ display: 'block' }}
+        />
+      ),
       onClick: () => {
         setSocialBtn('facebook')
         handleFbLogin()

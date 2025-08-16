@@ -94,19 +94,14 @@ const ApprovedTtutors = () => {
           return (
             <Box>
               <Button
-                variant="outlined"
-                color="primary"
+                variant="contained"
                 size="small"
                 startIcon={<User size={16} />}
                 onClick={() => void navigate(`/admin/approved-tutors/${tutorId}`)}
                 sx={{
                   textTransform: 'none',
-                  borderRadius: 1,
-                  fontWeight: 500,
-                  '&:hover': {
-                    bgcolor: alpha(theme.palette.primary.main, 0.04),
-                    borderColor: theme.palette.primary.main,
-                  },
+                  borderRadius: '8px',
+                  fontWeight: 600,
                 }}
               >
                 View Profile
@@ -127,6 +122,8 @@ const ApprovedTtutors = () => {
     onRowSelectionChange: setRowSelection,
     state: { rowSelection },
     enablePagination: false,
+    enableTopToolbar: false,
+    enableBottomToolbar: false,
     enableColumnActions: false,
     enableColumnFilters: false,
     enableSorting: false,
@@ -134,40 +131,6 @@ const ApprovedTtutors = () => {
     enableFullScreenToggle: false,
     enableGlobalFilter: false,
     enableHiding: false,
-    muiTopToolbarProps: {
-      sx: {
-        display: 'none',
-      },
-    },
-    muiTablePaperProps: {
-      sx: {
-        boxShadow: 'none',
-        background: 'transparent',
-      },
-    },
-    muiBottomToolbarProps: {
-      sx: {
-        display: 'none',
-      },
-    },
-    muiTableProps: {
-      sx: {
-        tableLayout: 'fixed',
-      },
-    },
-    muiTableHeadCellProps: {
-      sx: {
-        fontWeight: 600,
-        fontSize: 14,
-        textTransform: 'uppercase',
-        letterSpacing: 0.5,
-      },
-    },
-    muiTableBodyCellProps: {
-      sx: {
-        fontSize: 14,
-      },
-    },
   })
 
   return (
@@ -209,61 +172,7 @@ const ApprovedTtutors = () => {
         </Box>
       </Box>
 
-      <Paper
-        elevation={0}
-        sx={{
-          borderRadius: 2,
-          border: `1px solid ${alpha(theme.palette.grey[500], 0.08)}`,
-          overflow: 'hidden',
-          background: theme.palette.background.light || theme.palette.grey[50],
-          '& .MuiPaper-root': {
-            boxShadow: 'none',
-            background: 'transparent',
-          },
-          '& .MuiTableContainer-root': {
-            background: 'transparent',
-          },
-          '& .MuiTableHead-root': {
-            background: 'transparent',
-            '& .MuiTableCell-head': {
-              fontWeight: 600,
-              fontSize: 14,
-              color: theme.palette.text.primary,
-              borderBottom: `2px solid ${theme.palette.primary.main}`,
-              background: 'transparent',
-              py: 2,
-            },
-          },
-          '& .MuiTableBody-root': {
-            background: 'transparent',
-            '& .MuiTableRow-root': {
-              background: 'transparent',
-              transition: 'all 0.2s',
-              '&:hover': {
-                backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                transform: 'scale(1.002)',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-              },
-              '& .MuiTableCell-root': {
-                fontSize: 14,
-                py: 1.5,
-                borderBottom: `1px solid ${alpha(theme.palette.grey[500], 0.08)}`,
-              },
-              '&:last-child .MuiTableCell-root': {
-                borderBottom: 'none',
-              },
-            },
-          },
-          '& .MuiCheckbox-root': {
-            color: theme.palette.primary.main,
-          },
-          '& .MuiTablePagination-root': {
-            borderTop: `1px solid ${alpha(theme.palette.grey[500], 0.08)}`,
-          },
-        }}
-      >
-        <MaterialReactTable table={table} />
-      </Paper>
+      <MaterialReactTable table={table} />
 
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
         <PaginationComponent

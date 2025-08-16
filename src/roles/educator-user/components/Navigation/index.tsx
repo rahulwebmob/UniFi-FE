@@ -87,6 +87,7 @@ const Navigation = () => {
           textColor="primary"
           indicatorColor="primary"
           sx={{
+            border :'none', 
             '& .MuiButtonBase-root': {
               textTransform: 'none',
               fontWeight: 500,

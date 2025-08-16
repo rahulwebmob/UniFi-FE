@@ -231,18 +231,21 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
             Cell: (props) => {
               const { original } = props.row
               return (
-                <Button
-                  variant="contained"
-                  size="small"
-                  startIcon={<Eye size={16} />}
-                  onClick={() => handleViewButton(original)}
-                  sx={{
-                    textTransform: 'none',
-                    borderRadius: 1,
-                  }}
-                >
-                  View
-                </Button>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    startIcon={<Eye size={16} />}
+                    onClick={() => handleViewButton(original)}
+                    sx={{
+                      textTransform: 'none',
+                      borderRadius: '8px',
+                      fontWeight: 600,
+                    }}
+                  >
+                    View Details
+                  </Button>
+                </Box>
               )
             },
             enableSorting: false,
@@ -415,6 +418,8 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
     onRowSelectionChange: setRowSelection,
     state: { rowSelection },
     enablePagination: false,
+    enableTopToolbar: false,
+    enableBottomToolbar: false,
     enableColumnActions: false,
     enableColumnFilters: false,
     enableSorting: false,
@@ -422,40 +427,6 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
     enableFullScreenToggle: false,
     enableGlobalFilter: false,
     enableHiding: false,
-    muiTopToolbarProps: {
-      sx: {
-        display: 'none',
-      },
-    },
-    muiTablePaperProps: {
-      sx: {
-        boxShadow: 'none',
-        background: 'transparent',
-      },
-    },
-    muiBottomToolbarProps: {
-      sx: {
-        display: 'none',
-      },
-    },
-    muiTableProps: {
-      sx: {
-        tableLayout: 'fixed',
-      },
-    },
-    muiTableHeadCellProps: {
-      sx: {
-        fontWeight: 600,
-        fontSize: 14,
-        textTransform: 'uppercase',
-        letterSpacing: 0.5,
-      },
-    },
-    muiTableBodyCellProps: {
-      sx: {
-        fontSize: 14,
-      },
-    },
   })
 
   const renderActionButtons = () => {
@@ -467,28 +438,24 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
               variant="contained"
               color="success"
               onClick={() => void handleCheckboxAccept()}
+              startIcon={<CheckCircle size={16} />}
               sx={{
+                textTransform: 'none',
                 fontWeight: 600,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 6px 20px rgba(0,0,0,0.2)',
-                },
+                borderRadius: '8px',
               }}
             >
               Approve Selected
             </Button>
             <Button
-              variant="contained"
+              variant="outlined"
               color="error"
               onClick={() => void openDeclineConfirmation()}
+              startIcon={<XCircle size={16} />}
               sx={{
+                textTransform: 'none',
                 fontWeight: 600,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 6px 20px rgba(0,0,0,0.2)',
-                },
+                borderRadius: '8px',
               }}
             >
               Decline Selected
@@ -526,16 +493,7 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
 
   return (
     <Box>
-      <Paper
-        elevation={0}
-        sx={{
-          p: 3,
-          mb: 3,
-          borderRadius: 2,
-          border: `1px solid ${alpha(theme.palette.grey[500], 0.08)}`,
-          background: theme.palette.background.paper,
-        }}
-      >
+      <Box sx={{ mb: 3 }}>
         <Box
           sx={{
             display: { xs: 'column', sm: 'flex' },
@@ -566,29 +524,38 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  bgcolor: alpha(theme.palette.grey[500], 0.08),
-                  borderRadius: 1.5,
+                  backgroundColor: 'background.paper',
+                  borderRadius: '8px',
+                  border: (theme) => `1px solid ${theme.palette.grey[300]}`,
                   px: 2,
                   py: 1,
                   minWidth: 250,
                   transition: 'all 0.2s',
-                  border: `1px solid transparent`,
                   '&:hover': {
-                    bgcolor: alpha(theme.palette.grey[500], 0.12),
-                    borderColor: alpha(theme.palette.primary.main, 0.2),
+                    borderColor: (theme) => theme.palette.primary[300],
+                  },
+                  '&:focus-within': {
+                    borderColor: (theme) => theme.palette.primary.main,
+                    boxShadow: (theme) => `0 0 0 3px ${theme.palette.primary.main}15`,
                   },
                 }}
               >
                 <Search
                   size={20}
-                  style={{ color: 'text.secondary', marginRight: 12 }}
+                  style={{ color: 'var(--mui-palette-text-secondary)', marginRight: 12 }}
                 />
                 <InputBase
                   placeholder="Search tutors..."
                   onChange={(e) => debouncedSearch(e.target.value)}
                   sx={{
                     flex: 1,
-                    '& input': { fontSize: 14 },
+                    '& input': { 
+                      fontSize: '0.875rem',
+                      '&::placeholder': {
+                        color: (theme) => theme.palette.text.secondary,
+                        opacity: 0.5,
+                      },
+                    },
                   }}
                 />
               </Box>
@@ -599,15 +566,9 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
                 variant="contained"
                 onClick={() => inviteModalRef.current?.openModal()}
                 sx={{
-                  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                   textTransform: 'none',
                   fontWeight: 600,
-                  px: 3,
-                  '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 6px 20px rgba(0,0,0,0.2)',
-                  },
+                  borderRadius: '8px',
                 }}
               >
                 Invite Tutor
@@ -671,64 +632,10 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
             {!!Object.keys(rowSelection)?.length && renderActionButtons()}
           </Box>
         </Box>
-      </Paper>
+      </Box>
 
       {type !== 'Approved' ? (
-        <Paper
-          elevation={0}
-          sx={{
-            borderRadius: 2,
-            border: `1px solid ${alpha(theme.palette.grey[500], 0.08)}`,
-            overflow: 'hidden',
-            background: theme.palette.background.light || theme.palette.grey[50],
-            '& .MuiPaper-root': {
-              boxShadow: 'none',
-              background: 'transparent',
-            },
-            '& .MuiTableContainer-root': {
-              background: 'transparent',
-            },
-            '& .MuiTableHead-root': {
-              background: 'transparent',
-              '& .MuiTableCell-head': {
-                fontWeight: 600,
-                fontSize: 14,
-                color: theme.palette.text.primary,
-                borderBottom: `2px solid ${theme.palette.primary.main}`,
-                background: 'transparent',
-                py: 2,
-              },
-            },
-            '& .MuiTableBody-root': {
-              background: 'transparent',
-              '& .MuiTableRow-root': {
-                background: 'transparent',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                  transform: 'scale(1.002)',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                },
-                '& .MuiTableCell-root': {
-                  fontSize: 14,
-                  py: 1.5,
-                  borderBottom: `1px solid ${alpha(theme.palette.grey[500], 0.08)}`,
-                },
-                '&:last-child .MuiTableCell-root': {
-                  borderBottom: 'none',
-                },
-              },
-            },
-            '& .MuiCheckbox-root': {
-              color: theme.palette.primary.main,
-            },
-            '& .MuiTablePagination-root': {
-              borderTop: `1px solid ${alpha(theme.palette.grey[500], 0.08)}`,
-            },
-          }}
-        >
-          <MaterialReactTable table={table} />
-        </Paper>
+        <MaterialReactTable table={table} />
       ) : (
         <ApprovedTtutors />
       )}
@@ -747,7 +654,7 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
         />
       </ModalBox>
 
-      <ModalBox size="md" ref={viewModalRef} title="Tutor Details">
+      <ModalBox size="lg" ref={viewModalRef} title="Tutor Details">
         <TutorDetailModal
           tutor={viewTutorData}
           onClick={handleViewButton}

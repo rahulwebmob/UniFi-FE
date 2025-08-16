@@ -71,16 +71,15 @@ const WebinarSchedule = () => {
                 name="scheduleType"
                 control={control}
                 render={({ field: { onChange } }) => (
-                  <ButtonGroup color="secondary">
+                  <ButtonGroup sx={{ '& .MuiButton-root:not(:last-child)': { borderRight: 'none' } }}>
                     <Button
+                      variant="outlined"
                       sx={{
-                        ...(watch('scheduleType') === 'daily' &&
-                          ACTIVE_BUTTON_CSS),
-                        '&:first-of-type': {
-                          borderTopRightRadius: '0',
-                          borderBottomRightRadius: '0',
-                          borderTopLeftRadius: '4px',
-                          borderBottomLeftRadius: '4px',
+                        backgroundColor: watch('scheduleType') === 'daily' ? 'primary.main' : 'transparent',
+                        color: watch('scheduleType') === 'daily' ? 'white' : 'text.secondary',
+                        borderColor: (theme) => theme.palette.grey[300],
+                        '&:hover': {
+                          backgroundColor: watch('scheduleType') === 'daily' ? 'primary.dark' : 'action.hover',
                         },
                       }}
                       onClick={() => {
@@ -90,9 +89,15 @@ const WebinarSchedule = () => {
                       {t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.DAILY')}
                     </Button>
                     <Button
-                      sx={
-                        watch('scheduleType') === 'weekly' && ACTIVE_BUTTON_CSS
-                      }
+                      variant="outlined"
+                      sx={{
+                        backgroundColor: watch('scheduleType') === 'weekly' ? 'primary.main' : 'transparent',
+                        color: watch('scheduleType') === 'weekly' ? 'white' : 'text.secondary',
+                        borderColor: (theme) => theme.palette.grey[300],
+                        '&:hover': {
+                          backgroundColor: watch('scheduleType') === 'weekly' ? 'primary.dark' : 'action.hover',
+                        },
+                      }}
                       onClick={() => {
                         void handleScheduleTypeChange('weekly', onChange)
                       }}
@@ -100,14 +105,13 @@ const WebinarSchedule = () => {
                       {t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.WEEKLY')}
                     </Button>
                     <Button
+                      variant="outlined"
                       sx={{
-                        ...(watch('scheduleType') === 'one time' &&
-                          ACTIVE_BUTTON_CSS),
-                        '&:last-of-type': {
-                          borderTopRightRadius: '4px',
-                          borderBottomRightRadius: '4px',
-                          borderTopLeftRadius: '0',
-                          borderBottomLeftRadius: '0',
+                        backgroundColor: watch('scheduleType') === 'one time' ? 'primary.main' : 'transparent',
+                        color: watch('scheduleType') === 'one time' ? 'white' : 'text.secondary',
+                        borderColor: (theme) => theme.palette.grey[300],
+                        '&:hover': {
+                          backgroundColor: watch('scheduleType') === 'one time' ? 'primary.dark' : 'action.hover',
                         },
                       }}
                       onClick={() => {
@@ -154,7 +158,7 @@ const WebinarSchedule = () => {
                 )}
               />
               {errors?.startDate && (
-                <Typography color="error">
+                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
                   {errors?.startDate?.message}
                 </Typography>
               )}
@@ -194,7 +198,7 @@ const WebinarSchedule = () => {
                 )}
               />
               {errors?.startTime && (
-                <Typography color="error">
+                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
                   {errors?.startTime?.message}
                 </Typography>
               )}
@@ -234,7 +238,7 @@ const WebinarSchedule = () => {
                 )}
               />
               {errors?.endTime && (
-                <Typography color="error">
+                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
                   {errors?.endTime?.message}
                 </Typography>
               )}
@@ -293,7 +297,7 @@ const WebinarSchedule = () => {
                       )}
                     />
                     {errors?.days?.[index]?.startTime && (
-                      <Typography variant="caption" color="error">
+                      <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
                         {errors?.days?.[index]?.startTime?.message}
                       </Typography>
                     )}
@@ -317,7 +321,7 @@ const WebinarSchedule = () => {
                       )}
                     />
                     {errors?.days?.[index]?.endTime && (
-                      <Typography variant="caption" color="error">
+                      <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
                         {errors?.days?.[index]?.endTime?.message}
                       </Typography>
                     )}
@@ -329,7 +333,7 @@ const WebinarSchedule = () => {
         </Grid>
       )}
       {errors?.days?.root?.message && (
-        <Typography variant="caption" color="error">
+        <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
           {errors?.days?.root?.message}
         </Typography>
       )}

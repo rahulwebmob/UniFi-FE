@@ -2,12 +2,13 @@ import React from 'react'
 import { t } from 'i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Typography, useTheme } from '@mui/material'
 
 import PageNotFoundLogo from '../../../Assets/svgicons/page-not-found.svg?react'
 
 const PageNotFound = () => {
   const navigate = useNavigate()
+  const theme = useTheme()
 
   return (
     <Box
@@ -22,9 +23,30 @@ const PageNotFound = () => {
         height: '100vh',
       }}
     >
-      <PageNotFoundLogo style={{ maxWidth: '300px', height: 'auto' }} />
+      <Box
+        sx={{
+          '& .device-bg': {
+            fill: theme.palette.primary.main + '40',
+          },
+          '& .dot-dark, & .bar-dark, & .circle-dark': {
+            fill: theme.palette.primary.light,
+            opacity: 0.6,
+          },
+          '& .dot-accent, & .outline-accent, & .text-404': {
+            fill: theme.palette.primary.light,
+            stroke: theme.palette.primary.light,
+          },
+          '& .hand-accent': {
+            fill: theme.palette.primary.light,
+            stroke: theme.palette.primary.main,
+            opacity: 0.9,
+          },
+        }}
+      >
+        <PageNotFoundLogo style={{ maxWidth: '300px', height: 'auto' }} />
+      </Box>
       <Box my={1}>
-        <Typography variant="h1" mb={1}>
+        <Typography variant="h3"  mb={1}>
           {t('application:UI.PAGE_NOT_FOUND.OOPS_PAGE_NOT_FOUND')}
         </Typography>
         <Typography component="p" color="text.secondary">

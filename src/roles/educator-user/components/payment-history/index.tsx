@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { FileDown, DollarSign } from 'lucide-react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -127,7 +127,7 @@ const PaymentHistory = () => {
     state: { rowSelection },
     enableStickyHeader: true,
     muiTableContainerProps: {
-      sx: { 
+      sx: {
         height: 'calc(100vh - 450px)',
         maxHeight: 'calc(100vh - 450px)',
       },
@@ -152,10 +152,10 @@ const PaymentHistory = () => {
       </Box>
       <Box
         sx={{
-          backgroundColor: 'background.paper',
+          backgroundColor: 'background.light',
           p: 2,
           borderRadius: '12px',
-          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+          border: `1px solid ${theme.palette.grey[200]}`,
           display: 'flex',
           flexDirection: 'column',
           height: 'calc(100vh - 280px)',
@@ -169,27 +169,34 @@ const PaymentHistory = () => {
           mb={2}
           sx={{ flexShrink: 0 }}
         >
-
-            {!!data?.data?.length && (
-              <Box display="flex" gap="10px">
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={() =>
-                    exportToCSV(
-                      'InvoiceLog',
-                      columns.filter((item) => item.accessorKey !== 'view'),
-                      data?.data,
-                    )
-                  }
-                >
-                  {t('education:EDUCATOR.PAYMENT_HISTORY.EXPORT_LOG')}
-                </Button>
-              </Box>
-            )}
+          {!!data?.data?.length && (
+            <Box display="flex" gap="10px">
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() =>
+                  exportToCSV(
+                    'InvoiceLog',
+                    columns.filter((item) => item.accessorKey !== 'view'),
+                    data?.data,
+                  )
+                }
+              >
+                {t('education:EDUCATOR.PAYMENT_HISTORY.EXPORT_LOG')}
+              </Button>
+            </Box>
+          )}
         </Box>
 
-        <Box sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+        <Box
+          sx={{
+            flex: 1,
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+          }}
+        >
           <MuiReactTable
             columns={columns}
             rows={data?.data || []}
@@ -198,11 +205,7 @@ const PaymentHistory = () => {
         </Box>
         <Box mt={2} textAlign="center" sx={{ flexShrink: 0 }}>
           {!!data?.data?.length && (
-            <PaginationComponent
-              page={page}
-              data={data}
-              setPage={setPage}
-            />
+            <PaginationComponent page={page} data={data} setPage={setPage} />
           )}
         </Box>
       </Box>

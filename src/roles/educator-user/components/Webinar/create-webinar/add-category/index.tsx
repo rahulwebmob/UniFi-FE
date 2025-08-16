@@ -11,13 +11,15 @@ import {
   TextField,
   Typography,
   FormControl,
-  Autocomplete
+  Autocomplete,
+  useTheme
 } from '@mui/material'
 
 import { useGetCategoryListQuery } from '../../../../../../Services/admin'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
 
 const AddCategory = () => {
+  const theme = useTheme()
   const {
     control,
     categories,
@@ -55,21 +57,13 @@ const AddCategory = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <FormControl fullWidth>
-            <Typography variant="body1" mb={0.5}>
-              {t('EDUCATOR.BASIC_DETAILS.COURSE_CATEGORY')}
-              <Typography variant="body1" color="error.main" component="span">
-                *
-              </Typography>
-            </Typography>
-            <Box display="flex" gap="8px" flexWrap="wrap">
+            <Box display="flex" gap={1} flexWrap="wrap">
               {categories?.map((name) => (
                 <Chip
                   key={name}
                   label={name}
-                  color="primary"
                   size="small"
-                  className={value?.includes(name) ? 'active' : ''}
-                  variant="outlined"
+                  variant={value?.includes(name) ? 'filled' : 'outlined'}
                   onClick={() => {
                     if (value?.includes(name)) {
                       onChange(value.filter((v) => v !== name))
@@ -77,23 +71,40 @@ const AddCategory = () => {
                       onChange([...value, name])
                     }
                   }}
+                  sx={{
+                    backgroundColor: value?.includes(name) ? theme.palette.primary.main : 'transparent',
+                    color: value?.includes(name) ? 'white' : theme.palette.text.primary,
+                    borderColor: value?.includes(name) ? theme.palette.primary.main : theme.palette.grey[300],
+                    '&:hover': {
+                      backgroundColor: value?.includes(name) 
+                        ? theme.palette.primary.dark 
+                        : theme.palette.grey[100],
+                    },
+                  }}
                 />
               ))}
-              <Chip
-                icon={<Plus size={16} />}
-                label={t('EDUCATOR.BASIC_DETAILS.ADD_EXPERTISE')}
-                color="primary"
-                variant="body1"
+              <Button
+                startIcon={<Plus size={16} />}
+                variant="outlined"
                 size="small"
                 onClick={() => categoryRef.current.openModal()}
                 sx={{
-                  borderColor: (theme) => theme.palette.primary.main,
-                  color: (theme) => theme.palette.primary.main,
+                  borderColor: theme.palette.primary.main,
+                  color: theme.palette.primary.main,
+                  textTransform: 'none',
+                  borderRadius: '16px',
+                  height: '32px',
+                  '&:hover': {
+                    backgroundColor: theme.palette.primary.main + '10',
+                    borderColor: theme.palette.primary.main,
+                  },
                 }}
-              />
+              >
+                {t('EDUCATOR.BASIC_DETAILS.ADD_EXPERTISE')}
+              </Button>
             </Box>
             {errors?.category && (
-              <Typography color="error">{errors?.category?.message}</Typography>
+              <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>{errors?.category?.message}</Typography>
             )}
           </FormControl>
         )}

@@ -16,7 +16,6 @@ const LoadingError = () => {
         justifyContent: 'center',
         flexDirection: 'column',
         textAlign: 'center',
-        // background: theme.palette.background.default,
         width: '100%',
         minHeight: '400px',
       }}
@@ -28,7 +27,7 @@ const LoadingError = () => {
             alignItems: 'center',
             justifyContent: 'center',
             '& .background': {
-              fill: theme.palette.primary.darker,
+              fill: theme.palette.primary.dark,
             },
           }}
         >

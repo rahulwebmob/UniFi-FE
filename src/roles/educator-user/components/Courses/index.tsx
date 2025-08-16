@@ -229,6 +229,7 @@ const Courses = () => {
             disabled={row?.original?.status === 'draft'}
             sx={{
               textTransform: 'none',
+              width: 150,
             }}
           >
             View Course
@@ -277,7 +278,7 @@ const Courses = () => {
   }
 
   return (
-    <Box>
+    <Box >
       <Box sx={{ mb: 3 }}>
         <Box display="flex" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap" mb={2}>
           <Box>
@@ -306,7 +307,6 @@ const Courses = () => {
       </Box>
       <Box
         sx={{
-          backgroundColor: 'background.paper',
           p: 2,
           borderRadius: '12px',
           border: (theme) => `1px solid ${theme.palette.grey[200]}`,
@@ -314,6 +314,7 @@ const Courses = () => {
           flexDirection: 'column',
           height: 'calc(100vh - 280px)',
           overflow: 'hidden',
+          backgroundColor: 'background.light',
         }}
       >
         <Box

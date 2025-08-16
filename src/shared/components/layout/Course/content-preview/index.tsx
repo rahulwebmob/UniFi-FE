@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Box } from '@mui/material'
 
-// import useAesDecoder from '../../../../../hooks/useAesDecoder'
+import useAesDecoder from '../../../../../Hooks/useAesDecoder'
 
 interface ContentPreviewProps {
   type: string
@@ -10,6 +10,10 @@ interface ContentPreviewProps {
 }
 
 const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
+  // Decrypt the URL if it's encrypted
+  const decryptedUrl = useAesDecoder(url)
+
+  console.log(url,'url',type)
   const renderNormalVideo = () => (
     <Box
       sx={{
@@ -18,7 +22,7 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
         height: 'calc(100vh - 200px)',
       }}
     >
-      <video width="100%" height="100%" src={url} controls autoPlay>
+      <video width="100%" height="100%" src={decryptedUrl} controls autoPlay>
         <track kind="captions" />
       </video>
     </Box>
@@ -36,7 +40,7 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
       <iframe
         height="100%"
         width="100%"
-        src={url}
+        src={decryptedUrl}
         allow="autoplay"
         title="Unicitizens"
         frameBorder="0"
@@ -55,7 +59,7 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({ type, url }) => {
     }
   }
 
-  return !!url && <>{renderContent()}</>
+  return !!decryptedUrl && <>{renderContent()}</>
 }
 
 export default ContentPreview

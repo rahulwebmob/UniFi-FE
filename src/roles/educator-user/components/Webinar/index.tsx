@@ -319,7 +319,7 @@ const AllWebinars = ({ page, setPage }) => {
     <>
     <Box
       sx={{ 
-        backgroundColor: 'background.paper',
+        backgroundColor: 'background.light',
         p: 2,
         borderRadius: '12px',
         border: (theme) => `1px solid ${theme.palette.grey[200]}`,
@@ -575,7 +575,7 @@ const PastWebinars = ({ page, setPage }) => {
   return (
     <Box
       sx={{ 
-        backgroundColor: 'background.paper',
+        backgroundColor: 'background.light',
         p: 2,
         borderRadius: '12px',
         border: (theme) => `1px solid ${theme.palette.grey[200]}`,

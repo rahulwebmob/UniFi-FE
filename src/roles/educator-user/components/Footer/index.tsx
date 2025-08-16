@@ -1,21 +1,27 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { X, Facebook, Linkedin } from 'lucide-react'
 
 import { Box, Link } from '@mui/material'
+
+// Social media SVG icons
+import FacebookIcon from '../../../../Assets/social-icons/facebook.svg'
+import LinkedinIcon from '../../../../Assets/social-icons/linkedin.svg'
+import XIcon from '../../../../Assets/social-icons/x-twitter.svg'
 
 const socialLinks = [
   {
     url: '#',
-    icon: <Facebook size={18} />,
+    icon: FacebookIcon,
+    name: 'Facebook',
   },
   {
     url: '#',
-    icon: <Linkedin size={18} />,
+    icon: LinkedinIcon,
+    name: 'LinkedIn',
   },
   {
     url: '#',
-    icon: <X size={18} />,
+    icon: XIcon,
+    name: 'X',
   },
 ]
 
@@ -80,13 +86,19 @@ const Footer = () => {
         >
           {socialLinks.map((item) => (
             <Link
-              key={item.url}
+              key={item.name}
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
               className="sociallink"
             >
-              {item.icon}
+              <img 
+                src={item.icon} 
+                alt={item.name} 
+                width="18" 
+                height="18"
+                style={{ display: 'block' }}
+              />
             </Link>
           ))}
         </Box>

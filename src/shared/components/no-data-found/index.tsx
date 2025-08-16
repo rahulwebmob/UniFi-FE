@@ -8,9 +8,10 @@ import NoDataIcon from '../../../Assets/svgicons/no-data.svg?react'
 interface NoDataFoundProps {
   title?: string
   description?: string
+  isTable?: boolean
 }
 
-const NoDataFound: React.FC<NoDataFoundProps> = ({ title, description }) => {
+const NoDataFound: React.FC<NoDataFoundProps> = ({ title, description, isTable = false }) => {
   const theme = useTheme()
   const { t } = useTranslation('application')
 
@@ -23,33 +24,33 @@ const NoDataFound: React.FC<NoDataFoundProps> = ({ title, description }) => {
         flexDirection: 'column',
         textAlign: 'center',
         width: '100%',
-        minHeight: '100%',
+        minHeight: isTable ? '400px' : '300px',
+        py: isTable ? 8 : 4,
+        px: 2,
       }}
     >
-      <Box>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          mb: 2,
+        }}
+      >
+        <NoDataIcon
+          fill={theme.palette.primary.light}
+          style={{
+            maxWidth: '150px',
+            height: 'auto',
           }}
-        >
-          <NoDataIcon
-            fill={theme.palette.primary.light}
-            style={{
-              maxWidth: '200px',
-              height: 'auto',
-            }}
-          />
-        </Box>
-        <Typography variant="h3" mb={1}>
-          {title ?? t('application:UI.NO_DATA_FOUND.TITLE')}
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          {description ?? t('application:UI.NO_DATA_FOUND.DESCRIPTION')}
-        </Typography>
+        />
       </Box>
+      <Typography variant="h5" mb={1} fontWeight={600}>
+        {title ?? t('application:UI.NO_DATA_FOUND.TITLE')}
+      </Typography>
+      <Typography variant="body2" color="text.secondary">
+        {description ?? t('application:UI.NO_DATA_FOUND.DESCRIPTION')}
+      </Typography>
     </Box>
   )
 }

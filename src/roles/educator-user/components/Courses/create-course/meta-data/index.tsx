@@ -3,9 +3,10 @@ import { Image, Video } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Controller, useFormContext } from 'react-hook-form'
 
-import { Box, Grid, Typography, FormControl } from '@mui/material'
+import { Box, Grid, Typography, FormControl, useTheme } from '@mui/material'
 
 const MetaData = () => {
+  const theme = useTheme()
   const { t } = useTranslation('education')
   const {
     control,
@@ -13,178 +14,233 @@ const MetaData = () => {
   } = useFormContext()
 
   return (
-    <Grid container spacing={1}>
-      <Grid size={{ xs: 12 }}>
-        <FormControl fullWidth>
-          <Typography variant="body1" mb={0.5} fontWeight={600}>
-            {t('EDUCATOR.SETUP_COURSE.COURSE_IMAGE')}
-            <Typography variant="body1" color="error.main" component="span">
-              *
+    <Box>
+      <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
+        {t('EDUCATOR.CREATE_COURSE.SETUP_COURSE')}
+      </Typography>
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12 }}>
+          <FormControl fullWidth>
+            <Typography variant="body1" sx={{ fontWeight: 500, mb: 1 }}>
+              {t('EDUCATOR.SETUP_COURSE.COURSE_IMAGE')}
+              <Typography color="error.main" component="span" sx={{ ml: 0.5 }}>
+                *
+              </Typography>
             </Typography>
-          </Typography>
-          <Box
-            sx={{
-              border: '2px solid ',
-              borderStyle: 'dotted',
-              borderColor: (theme) => theme.palette.primary[100],
-              borderRadius: '8px',
-              padding: '16px',
-              marginBottom: '10px',
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: (theme) => theme.palette.primary.light,
-              cursor: 'pointer',
-              textAlign: 'center',
-              '&:hover': {
-                bgcolor: 'action.hover',
-              },
-            }}
-          >
-            <Controller
-              name="image"
-              control={control}
-              defaultValue=""
-              rules={{
-                required: t('EDUCATOR.SETUP_COURSE.COURSE_IMAGE_REQUIRED'),
+            <Box
+              sx={{
+                border: `2px dashed ${theme.palette.grey[300]}`,
+                borderRadius: '16px',
+                padding: '32px',
+                marginBottom: '10px',
+                width: '100%',
+                minHeight: '200px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: theme.palette.background.paper,
+                cursor: 'pointer',
+                textAlign: 'center',
+                position: 'relative',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  backgroundColor: theme.palette.primary.main + '08',
+                  borderColor: theme.palette.primary.main,
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                },
               }}
-              render={({ field: { onChange, value } }) => (
-                <>
-                  <input
-                    type="file"
-                    accept=".png,.jpeg,.jpg"
-                    style={{
-                      position: 'absolute',
-                      opacity: '0',
-                      width: '100%',
-                      height: '100%',
-                      cursor: 'pointer',
-                    }}
-                    onChange={(event) => onChange(event.target.files[0])}
-                  />
-                  <Image
-                    size={40}
-                    style={{
-                      color: (theme) => theme.palette.primary.light,
-                    }}
-                  />
-                  <Typography
-                    noWrap
-                    variant="body1"
-                    sx={{
-                      color: 'text.primary',
-                      width: '200px',
-                      height: 'max-content',
-                    }}
-                  >
-                    {value?.name || value}
-                  </Typography>
-                  <Typography variant="body1" color="primary">
-                    {t('EDUCATOR.SETUP_COURSE.CLICK_TO_UPLOAD_OR_DRAG_DROP')}
-                  </Typography>
-                  <Typography variant="body2" color="secondary">
-                    {t('EDUCATOR.SETUP_COURSE.IMAGE_FORMAT_GUIDELINES')}
-                  </Typography>
-                  {errors.image && (
-                    <Typography component="p" color="error">
-                      {errors.image.message}
+            >
+              <Controller
+                name="image"
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: t('EDUCATOR.SETUP_COURSE.COURSE_IMAGE_REQUIRED'),
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <>
+                    <input
+                      type="file"
+                      accept=".png,.jpeg,.jpg"
+                      style={{
+                        position: 'absolute',
+                        opacity: '0',
+                        width: '100%',
+                        height: '100%',
+                        cursor: 'pointer',
+                      }}
+                      onChange={(event) => onChange(event.target.files[0])}
+                    />
+                    <Box
+                      sx={{
+                        width: 72,
+                        height: 72,
+                        borderRadius: '50%',
+                        backgroundColor: theme.palette.primary.main + '10',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mb: 2,
+                        border: `2px solid ${theme.palette.primary.main + '20'}`,
+                      }}
+                    >
+                      <Image size={32} color={theme.palette.primary.main} />
+                    </Box>
+                    {value && (
+                      <Box
+                        sx={{
+                          mt: 2,
+                          p: 1.5,
+                          backgroundColor: theme.palette.success.main + '10',
+                          borderRadius: '8px',
+                          border: `1px solid ${theme.palette.success.main + '30'}`,
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: theme.palette.success.main,
+                            fontWeight: 600,
+                          }}
+                        >
+                          ✓ {value?.name || value}
+                        </Typography>
+                      </Box>
+                    )}
+                    <Typography variant="body1" sx={{ fontWeight: 600, color: theme.palette.primary.main, mb: 1 }}>
+                      {t('EDUCATOR.SETUP_COURSE.CLICK_TO_UPLOAD_OR_DRAG_DROP')}
                     </Typography>
-                  )}
-                </>
-              )}
-            />
-          </Box>
-          <Typography variant="body2" color="black.main700">
-            {t('EDUCATOR.SETUP_COURSE.COURSE_IMAGE_UPLOAD_GUIDELINES')}
-          </Typography>
-        </FormControl>
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        <FormControl fullWidth>
-          <Typography variant="body1" mb={0.5} fontWeight={600}>
-            {t('EDUCATOR.SETUP_COURSE.PREVIEW_VIDEO')}
-            <Typography variant="body1" color="error.main" component="span">
-              *
+                    <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.8 }}>
+                      {t('EDUCATOR.SETUP_COURSE.IMAGE_FORMAT_GUIDELINES')}
+                    </Typography>
+                    {errors.image && (
+                      <Typography variant="caption" color="error">
+                        {errors.image.message}
+                      </Typography>
+                    )}
+                  </>
+                )}
+              />
+            </Box>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+              {t('EDUCATOR.SETUP_COURSE.COURSE_IMAGE_UPLOAD_GUIDELINES')}
             </Typography>
-          </Typography>
-          <Box
-            sx={{
-              border: '2px solid ',
-              borderStyle: 'dotted',
-              borderColor: (theme) => theme.palette.primary[100],
-              borderRadius: '8px',
-              padding: '16px',
-              marginBottom: '10px',
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: (theme) => theme.palette.primary.light,
-              cursor: 'pointer',
-              textAlign: 'center',
-              '&:hover': {
-                bgcolor: 'action.hover',
-              },
-            }}
-          >
-            <Controller
-              name="video"
-              control={control}
-              defaultValue=""
-              rules={{
-                required: t('EDUCATOR.SETUP_COURSE.PREVIEW_VIDEO_REQUIRED'),
+          </FormControl>
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <FormControl fullWidth>
+            <Typography variant="body1" sx={{ fontWeight: 500, mb: 1 }}>
+              {t('EDUCATOR.SETUP_COURSE.PREVIEW_VIDEO')}
+              <Typography color="error.main" component="span" sx={{ ml: 0.5 }}>
+                *
+              </Typography>
+            </Typography>
+            <Box
+              sx={{
+                border: `2px dashed ${theme.palette.grey[300]}`,
+                borderRadius: '16px',
+                padding: '32px',
+                marginBottom: '10px',
+                width: '100%',
+                minHeight: '200px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: theme.palette.background.paper,
+                cursor: 'pointer',
+                textAlign: 'center',
+                position: 'relative',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  backgroundColor: theme.palette.primary.main + '08',
+                  borderColor: theme.palette.primary.main,
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                },
               }}
-              render={({ field: { onChange, value } }) => (
-                <>
-                  <input
-                    type="file"
-                    accept=".mp4,.mov,.webm,.mkv"
-                    style={{
-                      position: 'absolute',
-                      opacity: '0',
-                      width: '100%',
-                      height: '100%',
-                      cursor: 'pointer',
-                    }}
-                    onChange={(event) => onChange(event.target.files[0])}
-                  />
-                  <Video
-                    size={40}
-                    style={{
-                      color: (theme) => theme.palette.primary.light,
-                    }}
-                  />
-                  <Typography
-                    variant="body1"
-                    sx={{ color: 'text.primary', width: '200px' }}
-                    noWrap
-                  >
-                    {value?.name || value}
-                  </Typography>
-                  <Typography variant="body1" color="primary">
-                    {t('EDUCATOR.SETUP_COURSE.CLICK_TO_UPLOAD_OR_DRAG_DROP')}
-                  </Typography>
-                  <Typography variant="body2" color="secondary">
-                    {t('EDUCATOR.SETUP_COURSE.VIDEO_FORMAT_GUIDELINES')}
-                  </Typography>
-                  {errors.video && (
-                    <Typography variant="caption" color="error">
-                      {errors.video.message}
+            >
+              <Controller
+                name="video"
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: t('EDUCATOR.SETUP_COURSE.PREVIEW_VIDEO_REQUIRED'),
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <>
+                    <input
+                      type="file"
+                      accept=".mp4,.mov,.webm,.mkv"
+                      style={{
+                        position: 'absolute',
+                        opacity: '0',
+                        width: '100%',
+                        height: '100%',
+                        cursor: 'pointer',
+                      }}
+                      onChange={(event) => onChange(event.target.files[0])}
+                    />
+                    <Box
+                      sx={{
+                        width: 72,
+                        height: 72,
+                        borderRadius: '50%',
+                        backgroundColor: theme.palette.primary.main + '10',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mb: 2,
+                        border: `2px solid ${theme.palette.primary.main + '20'}`,
+                      }}
+                    >
+                      <Video size={32} color={theme.palette.primary.main} />
+                    </Box>
+                    {value && (
+                      <Box
+                        sx={{
+                          mt: 2,
+                          p: 1.5,
+                          backgroundColor: theme.palette.success.main + '10',
+                          borderRadius: '8px',
+                          border: `1px solid ${theme.palette.success.main + '30'}`,
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: theme.palette.success.main,
+                            fontWeight: 600,
+                          }}
+                        >
+                          ✓ {value?.name || value}
+                        </Typography>
+                      </Box>
+                    )}
+                    <Typography variant="body1" sx={{ fontWeight: 600, color: theme.palette.primary.main, mb: 1 }}>
+                      {t('EDUCATOR.SETUP_COURSE.CLICK_TO_UPLOAD_OR_DRAG_DROP')}
                     </Typography>
-                  )}
-                </>
-              )}
-            />
-          </Box>
-          <Typography variant="body2" color="black.main700">
-            {t('EDUCATOR.SETUP_COURSE.VIDEO_UPLOAD_GUIDELINES')}
-          </Typography>
-        </FormControl>
+                    <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.8 }}>
+                      {t('EDUCATOR.SETUP_COURSE.VIDEO_FORMAT_GUIDELINES')}
+                    </Typography>
+                    {errors.video && (
+                      <Typography variant="caption" color="error">
+                        {errors.video.message}
+                      </Typography>
+                    )}
+                  </>
+                )}
+              />
+            </Box>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+              {t('EDUCATOR.SETUP_COURSE.VIDEO_UPLOAD_GUIDELINES')}
+            </Typography>
+          </FormControl>
+        </Grid>
       </Grid>
-    </Grid>
+    </Box>
   )
 }
 

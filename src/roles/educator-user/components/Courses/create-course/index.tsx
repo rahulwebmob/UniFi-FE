@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, FormProvider } from 'react-hook-form'
-import { Check, Circle, CheckCircle } from 'lucide-react'
+import { Check, Circle, CheckCircle2 } from 'lucide-react'
 import React, { useMemo, useState, useEffect } from 'react'
 
 import {
@@ -42,12 +42,53 @@ interface StepIconProps {
 }
 
 const StepIcon = ({ active, completed }: StepIconProps) => {
+  const theme = useTheme()
+  
   if (completed) {
-    return <Check size={32} color="green" />
+    return (
+      <Box
+        sx={{
+          width: 32,
+          height: 32,
+          borderRadius: '50%',
+          backgroundColor: theme.palette.success.main,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Check size={18} color="white" strokeWidth={3} />
+      </Box>
+    )
   } else if (active) {
-    return <CheckCircle size={32} color="green" />
+    return (
+      <Box
+        sx={{
+          width: 32,
+          height: 32,
+          borderRadius: '50%',
+          backgroundColor: theme.palette.primary.main,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: `0 0 0 4px ${theme.palette.primary.main}20`,
+        }}
+      >
+        <Circle size={8} color="white" fill="white" />
+      </Box>
+    )
   } else {
-    return <Circle size={32} color="black" />
+    return (
+      <Box
+        sx={{
+          width: 32,
+          height: 32,
+          borderRadius: '50%',
+          border: `2px solid ${theme.palette.grey[300]}`,
+          backgroundColor: 'transparent',
+        }}
+      />
+    )
   }
 }
 
@@ -409,13 +450,7 @@ const CreateCourse = ({
   }
 
   return (
-    <Box
-      sx={{
-        '& .MuiTypography-root': {
-          fontFamily: 'inter',
-        },
-      }}
-    >
+    <Box>
       <FormProvider
         {...form}
         categories={categories}
@@ -426,81 +461,108 @@ const CreateCourse = ({
         setCategories={setCategories}
       >
         {activeStep !== 3 && (
-          <Box>
-            <Typography variant="h1">
+          <Box mb={3}>
+            <Typography variant="h4" sx={{ fontWeight: 600, mb: 0.5 }}>
               {handleGetTitle()} {t('EDUCATOR.CREATE_COURSE.COURSE')}
             </Typography>
-            <Typography variant="body1" color="text.secondary">
+            <Typography component="p" color="text.secondary">
               {t('EDUCATOR.CREATE_COURSE.DESCRIPTION')}
             </Typography>
           </Box>
         )}
 
-        <Grid container sx={{ mt: 3 }}>
+        <Grid container spacing={3}>
           {/* Stepper Section */}
           {activeStep !== 3 && (
             <Grid
               size={{ xs: 12, md: 3 }}
               sx={{
-                background: theme.palette.primary.light,
-                borderRadius: '8px',
-                p: 2,
-                minHeight: '380px',
-                '& .MuiStepLabel-root': {
-                  '.Mui-active ': {
-                    color: theme.palette.primary.main,
-                  },
-                },
+                position: { xs: 'relative', md: 'sticky' },
+                top: { xs: 0, md: 20 },
+                height: 'fit-content',
+                mb: { xs: 3, md: 0 },
               }}
             >
-              <Stepper
-                activeStep={activeStep}
-                orientation="vertical"
+              <Box
                 sx={{
-                  position: 'sticky',
-                  top: 0,
-                  '& .MuiStepContent-root': {
-                    borderLeft: `5px solid ${theme.palette.common.white}`,
-                    borderRight: '0',
-                    marginRight: '0',
-                  },
-                  '& .MuiStepConnector-root': {
-                    borderLeft: `5px solid ${theme.palette.common.white}`,
-                    borderRight: '0',
-                    marginRight: '0',
-                  },
-                  '& .MuiStepConnector-line': {
-                    borderLeft: '0',
-                  },
+                  backgroundColor: 'background.light',
+                  borderRadius: { xs: '8px', md: '12px' },
+                  p: { xs: 2, md: 3 },
+                  border: `1px solid ${theme.palette.grey[200]}`,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 }}
               >
+                <Stepper
+                  activeStep={activeStep}
+                  orientation="vertical"
+                  sx={{
+                    '& .MuiStepContent-root': {
+                      borderLeft: `2px solid ${theme.palette.grey[200]}`,
+                      borderRight: '0',
+                      marginLeft: '16px',
+                      paddingLeft: '20px',
+                    },
+                    '& .MuiStepConnector-root': {
+                      marginLeft: '16px',
+                    },
+                    '& .MuiStepConnector-line': {
+                      borderLeft: `2px solid ${theme.palette.grey[200]}`,
+                      minHeight: '20px',
+                    },
+                    '& .Mui-completed .MuiStepConnector-line': {
+                      borderLeftColor: theme.palette.success.main,
+                    },
+                  }}
+                >
                 {stepsConfig(t).map((step) => (
                   <Step key={step.label}>
                     <StepLabel
                       StepIconComponent={StepIcon}
                       sx={{
-                        textAlign: 'left',
+                        '& .MuiStepLabel-label': {
+                          fontWeight: 500,
+                          fontSize: { xs: '0.85rem', sm: '0.95rem' },
+                          '&.Mui-active': {
+                            fontWeight: 600,
+                            color: theme.palette.primary.main,
+                          },
+                          '&.Mui-completed': {
+                            fontWeight: 500,
+                            color: theme.palette.success.main,
+                          },
+                        },
                       }}
                     >
                       {step.label}
                     </StepLabel>
-                    <StepContent
-                      sx={{
-                        textAlign: 'left',
-                      }}
-                    >
-                      <Typography variant="body2" color="secondary">
+                    <StepContent>
+                      <Typography 
+                        variant="body2" 
+                        color="text.secondary" 
+                        sx={{ 
+                          mt: 0.5,
+                          display: { xs: 'none', sm: 'block' }
+                        }}
+                      >
                         {step.description}
                       </Typography>
                     </StepContent>
                   </Step>
                 ))}
-              </Stepper>
+                </Stepper>
+              </Box>
             </Grid>
           )}
           {/* Form Section */}
-          <Grid size={{ md: activeStep !== 3 ? 9 : 12 }}>
-            <Box sx={{ px: activeStep !== 3 ? 3 : 0 }}>
+          <Grid size={{ xs: 12, md: activeStep !== 3 ? 9 : 12 }}>
+            <Box
+              sx={{
+                backgroundColor: 'background.light',
+                borderRadius: activeStep !== 3 ? '12px' : 0,
+                p: activeStep !== 3 ? 3 : 0,
+                border: activeStep !== 3 ? `1px solid ${theme.palette.grey[200]}` : 'none',
+              }}
+            >
               <form onSubmit={(e) => { void form.handleSubmit((data) => { void onSubmit(data) })(e) }}>
                 {renderStepContent(activeStep)}
                 <Box
@@ -508,35 +570,44 @@ const CreateCourse = ({
                     display: 'flex',
                     flexWrap: 'wrap',
                     justifyContent: 'space-between',
-                    mt: 2,
-                    gap: '10px',
+                    mt: 3,
+                    pt: 3,
+                    borderTop: activeStep !== 3 ? `1px solid ${theme.palette.grey[200]}` : 'none',
+                    gap: 2,
                   }}
                 >
                   {!isPreview && (
                     <Button
-                      variant="contained"
-                      color="secondary"
-                      sx={{
-                        textTransform: 'none',
-                      }}
+                      variant="outlined"
                       disabled={isLoading}
                       onClick={handleBack}
+                      sx={{
+                        textTransform: 'none',
+                        borderColor: theme.palette.grey[300],
+                        color: 'text.primary',
+                        '&:hover': {
+                          borderColor: theme.palette.grey[400],
+                          backgroundColor: theme.palette.grey[50],
+                        },
+                      }}
                     >
                       {activeStep === 0
                         ? t('EDUCATOR.CREATE_COURSE.BACK_TO_DASHBOARD')
                         : t('EDUCATOR.CREATE_COURSE.BACK')}
                     </Button>
                   )}
-                  <Box display="flex" gap="10px">
+                  <Box display="flex" gap={2}>
                     {!isPublished && (
                       <Button
                         type="submit"
-                        variant="contained"
-                        color="secondary"
+                        variant="outlined"
                         onClick={() => {
                           setIsDraft(true)
                         }}
                         disabled={isLoading}
+                        sx={{
+                          textTransform: 'none',
+                        }}
                       >
                         {t('EDUCATOR.CREATE_COURSE.SAVE_AS_DRAFT')}
                       </Button>
@@ -546,7 +617,11 @@ const CreateCourse = ({
                         variant="contained"
                         type="submit"
                         disabled={isLoading}
-                        startIcon={isLoading && <CircularProgress size="1em" />}
+                        startIcon={isLoading && <CircularProgress size={16} sx={{ color: 'inherit' }} />}
+                        sx={{
+                          textTransform: 'none',
+                          minWidth: 120,
+                        }}
                       >
                         {isLoading
                           ? t('EDUCATOR.CREATE_COURSE.SUBMITTING')

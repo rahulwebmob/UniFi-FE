@@ -192,12 +192,10 @@ const ModernAdminLayout: React.FC = () => {
                   justifyContent: 'center',
                   width: 32,
                   height: 32,
+                  color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
                 }}
               >
-                {React.cloneElement(item.icon, {
-                  sx: { fontSize: 22 },
-                  color: isActive ? 'primary' : 'inherit',
-                })}
+                {item.icon}
               </Box>
             </ListItemIcon>
 

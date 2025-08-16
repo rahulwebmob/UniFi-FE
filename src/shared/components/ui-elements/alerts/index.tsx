@@ -86,7 +86,7 @@ const GenericAlert = ({ alert }) => {
                 '& svg': {
                   color: (theme) =>
                     alert.severity === 'success'
-                      ? theme.palette.primary.main
+                      ? theme.palette.success.main
                       : theme.palette.error.main,
                   fontSize: 24,
                   mr: 1,

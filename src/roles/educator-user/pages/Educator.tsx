@@ -22,6 +22,7 @@ import {
 import About from './About/About'
 import Links from './Links/Links'
 import Document from './Document/Document'
+import ThankYou from '../components/ThankYou'
 import MainLogo from '../../../Assets/logo.svg'
 import { urlRegexPatterns } from './constant/constant'
 import Qualification from './Qualification/Qualification'
@@ -317,6 +318,8 @@ const Educator = () => {
   const [cvFile, setCvFile] = useState(null)
   const [progress, setProgress] = useState(0)
   const [activeStep, setCurrentStep] = useState(0)
+  const [showThankYou, setShowThankYou] = useState(false)
+  const [thankYouText, setThankYouText] = useState('')
 
   const [verifyEducatorEmail] = useLazyVerifyEducatorEmailQuery()
   const [registerTutor, { isLoading }] = useRegisterEducatorMutation()
@@ -401,7 +404,8 @@ const Educator = () => {
         },
       })
       if (!response?.error) {
-        void navigate('/thank-you', { state: { text: TEXT(t) } })
+        setThankYouText(TEXT(t))
+        setShowThankYou(true)
       }
     } else {
       setCurrentStep((prev) => prev + 1)
@@ -452,6 +456,11 @@ const Educator = () => {
       </Box>
     </Box>
   )
+
+  // Show ThankYou component if form is successfully submitted
+  if (showThankYou) {
+    return <ThankYou text={thankYouText} />
+  }
 
   return (
     // Outer wrapper - same as auth-wrapper

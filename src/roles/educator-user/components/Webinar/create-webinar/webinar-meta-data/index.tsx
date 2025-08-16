@@ -138,7 +138,7 @@ const WebinarMetaData = () => {
                       )}
 
                       {errors.resources?.[index]?.file && (
-                        <Typography variant="caption" color="error">
+                        <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
                           {errors.resources?.[index]?.file?.message}
                         </Typography>
                       )}
@@ -167,8 +167,8 @@ const WebinarMetaData = () => {
               <>
                 <Box
                   sx={{
-                    border: '1px solid ',
-                    borderColor: (theme) => theme.palette.primary[100],
+                    border: '2px dashed',
+                    borderColor: 'primary.light',
                     borderRadius: '8px',
                     padding: '16px',
                     width: '100%',
@@ -177,11 +177,13 @@ const WebinarMetaData = () => {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background: (theme) => theme.palette.primary.light,
+                    backgroundColor: 'background.default',
                     cursor: 'pointer',
                     textAlign: 'center',
+                    transition: 'all 0.2s ease',
                     '&:hover': {
-                      bgcolor: 'action.hover',
+                      backgroundColor: (theme) => theme.palette.action.hover,
+                      borderColor: 'primary.main',
                     },
                   }}
                 >
@@ -212,7 +214,7 @@ const WebinarMetaData = () => {
                   </Typography>
                 </Box>
                 {errors.image && (
-                  <Typography variant="caption" color="error">
+                  <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
                     {errors.image.message}
                   </Typography>
                 )}

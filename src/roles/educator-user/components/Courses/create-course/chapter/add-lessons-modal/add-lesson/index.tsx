@@ -18,6 +18,7 @@ import {
   FormControl,
   CircularProgress,
   FormControlLabel,
+  useTheme,
 } from '@mui/material'
 
 import UploadPrompt from '../../../upload-prompt'
@@ -44,8 +45,9 @@ const AddLesson = ({
   isChapter,
   chapterId,
   handleClose,
-  defaultValues,
+  defaultValues = { isFree: false, lessonTitle: '', resource: '' },
 }) => {
+  const theme = useTheme()
   const { t } = useTranslation('education')
   const dispatch = useDispatch()
   const fileInputRef = useRef(null)
@@ -55,8 +57,8 @@ const AddLesson = ({
   const { isCourseFree } = useFormContext()
 
   const [formData, setFormData] = useState({
-    isFree: defaultValues.isFree,
-    lessonTitle: defaultValues.lessonTitle,
+    isFree: defaultValues?.isFree || false,
+    lessonTitle: defaultValues?.lessonTitle || '',
   })
   const [errors, setErrors] = useState({})
   const [resource, setResource] = useState(null)
@@ -79,8 +81,8 @@ const AddLesson = ({
 
   useEffect(() => {
     setFormData({
-      isFree: defaultValues.isFree,
-      lessonTitle: defaultValues.lessonTitle,
+      isFree: defaultValues?.isFree || false,
+      lessonTitle: defaultValues?.lessonTitle || '',
     })
   }, [defaultValues])
 
@@ -241,16 +243,19 @@ const AddLesson = ({
   }
 
   const renderForm = () => (
-    <Grid container spacing={1}>
+    <Grid container spacing={2.5}>
       {!isChapter && (
         <Grid size={{ xs: 12 }}>
-          <Typography component="p">
+          <Typography 
+            variant="h6" 
+            sx={{ fontWeight: 600, mb: 1 }}
+          >
             {t('EDUCATOR.ADD_CHAPTERS.LESSON_DETAILS')}
           </Typography>
         </Grid>
       )}
       {isChapter && (
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12 }}>
           <FormControl fullWidth>
             <Typography variant="body1" mb={0.5}>
               {t('EDUCATOR.ADD_CHAPTERS.CHAPTER_TITLE')}{' '}
@@ -270,7 +275,7 @@ const AddLesson = ({
           </FormControl>
         </Grid>
       )}
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, sm: isChapter ? 6 : 12, md: isChapter ? 6 : 6 }}>
         <FormControl fullWidth>
           <Typography variant="body1" mb={0.5}>
             {t('EDUCATOR.ADD_CHAPTERS.LESSON_TITLE')}{' '}
@@ -289,14 +294,18 @@ const AddLesson = ({
           />
         </FormControl>
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, sm: isChapter ? 6 : 12, md: 6 }}>
         <FormControl fullWidth>
           <Tooltip title={t('EDUCATOR.ADD_CHAPTERS.UPLOAD_RESOURCE')}>
             <Typography
               variant="body1"
               mb={0.5}
-              noWrap
-              sx={{ maxWidth: '300px' }}
+              sx={{ 
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: { xs: 'normal', sm: 'nowrap' },
+                maxWidth: { xs: '100%', sm: '300px' }
+              }}
             >
               {t('EDUCATOR.ADD_CHAPTERS.UPLOAD_RESOURCE')}{' '}
               <Typography variant="body1" color="error.main" component="span">
@@ -306,12 +315,18 @@ const AddLesson = ({
           </Tooltip>
           <Box
             sx={{
-              p: 0.1,
-              border: '1px solid',
-              borderColor: 'grey.400',
+              p: 1.5,
+              border: `1px solid ${theme.palette.grey[300]}`,
               borderRadius: '8px',
               display: 'flex',
-              gap: '10px',
+              alignItems: 'center',
+              gap: 2,
+              backgroundColor: theme.palette.grey[50],
+              transition: 'all 0.2s',
+              '&:hover': {
+                borderColor: theme.palette.primary.main,
+                backgroundColor: theme.palette.background.paper,
+              },
             }}
           >
             <input
@@ -327,27 +342,46 @@ const AddLesson = ({
               onChange={(e) => handleFileChange(e, setErrors, setResource)}
             />
             <Button
-              sx={{ gap: '0' }}
               variant="contained"
-              color="secondary"
+              color="primary"
+              size="small"
               onClick={() => fileInputRef.current.click()}
               startIcon={<CloudUpload size={16} />}
+              sx={{ 
+                textTransform: 'none',
+                flexShrink: 0
+              }}
             >
               {t('EDUCATOR.ADD_CHAPTERS.BROWSE')}
             </Button>
-            <Typography variant="body2" mt={1} noWrap maxWidth={150}>
-              {defaultValues.resource || resource?.name}
-            </Typography>
+            {(defaultValues.resource || resource?.name) && (
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  flex: 1,
+                  minWidth: 0,
+                  color: theme.palette.text.secondary,
+                  fontWeight: 500,
+                  display: '-webkit-box',
+                  WebkitLineClamp: 1,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {defaultValues.resource || resource?.name}
+              </Typography>
+            )}
           </Box>
         </FormControl>
         {errors.resource && (
-          <Typography color="error" variant="body2" mt={1}>
+          <Typography variant="caption" color="error" mt={1}>
             {errors.resource}
           </Typography>
         )}
       </Grid>
       {!isCourseFree && (
-        <Grid size={{ sm: 12, md: 6 }} mt={1.5}>
+        <Grid size={{ xs: 12, sm: 6 }} mt={{ xs: 1, sm: 1.5 }}>
           <Typography variant="body1">
             {t('EDUCATOR.ADD_CHAPTERS.LESSON_TYPE')}
           </Typography>
@@ -375,26 +409,29 @@ const AddLesson = ({
       )}
       {!isChapter && (
         <Grid size={{ xs: 12 }}>
-          <Box display="flex" flexWrap="wrap" mt={1} gap={1}>
+          <Box display="flex" flexWrap="wrap" mt={2} gap={1}>
             <Button
               onClick={() => { void handleOnSubmit() }}
               variant="contained"
               color="primary"
               startIcon={<Save size={16} />}
               disabled={isLoading}
-              endIcon={isLoading && <CircularProgress size="1em" />}
+              sx={{ textTransform: 'none' }}
             >
-              {t('EDUCATOR.ADD_CHAPTERS.SAVE_LESSON')}
+              {isLoading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                t('EDUCATOR.ADD_CHAPTERS.SAVE_LESSON')
+              )}
             </Button>
-            {isChapter ? (
-              <Button variant="contained" color="error" onClick={handleReset}>
-                {t('EDUCATOR.ADD_CHAPTERS.RESET')}
-              </Button>
-            ) : (
-              <Button onClick={handleClose} variant="contained" color="error">
-                {t('EDUCATOR.ADD_CHAPTERS.CLOSE')}
-              </Button>
-            )}
+            <Button 
+              onClick={handleClose} 
+              variant="outlined" 
+              color="inherit"
+              sx={{ textTransform: 'none' }}
+            >
+              {t('EDUCATOR.ADD_CHAPTERS.CLOSE')}
+            </Button>
           </Box>
         </Grid>
       )}
@@ -412,41 +449,59 @@ const AddLesson = ({
   if (isChapter)
     return (
       <Box>
-        <Box
-          display="flex"
-          flexWrap="wrap"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={2}
-        >
-          <Typography variant="h6">
+        <Box mb={2}>
+          <Typography variant="h6" sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' }, fontWeight: 600 }}>
             {t('EDUCATOR.ADD_CHAPTERS.CHAPTER_DETAILS')}
           </Typography>
-          <Box display="flex" gap="10px" mt={1}>
-            <Button
-              sx={{ gap: '0' }}
-              onClick={() => { void handleOnSubmit() }}
-              variant="outlined"
-              color="primary"
-              startIcon={<Save size={16} />}
-              disabled={isLoading}
-              endIcon={isLoading && <CircularProgress size="1em" />}
-            >
-              {t('EDUCATOR.ADD_CHAPTERS.SAVE_CHAPTER')}
-            </Button>
-            <IconButton variant="contained" color="error" onClick={handleReset}>
-              <RotateCcw size={16} />
-            </IconButton>
-          </Box>
         </Box>
         <Box
-          p={2}
           sx={{
-            background: (theme) => theme.palette.primary.light,
-            borderRadius: '8px',
+            p: { xs: 2, sm: 3 },
+            background: theme.palette.background.paper,
+            borderRadius: { xs: '8px', sm: '12px' },
+            border: `1px solid ${theme.palette.grey[200]}`,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
           }}
         >
           {renderForm()}
+          <Grid size={{ xs: 12 }}>
+            <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} mt={3} gap={1}>
+              <Button
+                onClick={() => { void handleOnSubmit() }}
+                variant="contained"
+                color="primary"
+                startIcon={<Save size={16} />}
+                disabled={isLoading}
+                sx={{ 
+                  textTransform: 'none',
+                  flex: { xs: '1', sm: 'none' }
+                }}
+              >
+                {isLoading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  t('EDUCATOR.ADD_CHAPTERS.SAVE_CHAPTER')
+                )}
+              </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={handleReset}
+                startIcon={<RotateCcw size={16} />}
+                sx={{ 
+                  textTransform: 'none',
+                  flex: { xs: '1', sm: 'none' },
+                  borderColor: theme.palette.grey[300],
+                  '&:hover': {
+                    borderColor: theme.palette.grey[400],
+                    backgroundColor: theme.palette.grey[50],
+                  }
+                }}
+              >
+                Reset
+              </Button>
+            </Box>
+          </Grid>
         </Box>
       </Box>
     )

@@ -60,7 +60,7 @@ const MuiTabs = ({ listItems, alignment }: MuiTabsProps) => {
         onChange={handleChange}
         aria-label="Horizontal tabs example"
         sx={{
-          borderColor: 'divider',
+          borderColor: 'transparent',
           '& div[role="tabpanel"]': {
             height: '100%',
           },
