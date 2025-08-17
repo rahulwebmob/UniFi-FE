@@ -10,27 +10,25 @@ import { removeAlert } from '../../../../redux/reducers/app-slice'
 const CustomTransition = React.forwardRef<
   HTMLDivElement,
   React.ComponentPropsWithRef<typeof Slide>
->(
-  function CustomTransition(props, ref) {
-    return (
-      <Slide
-        {...props}
-        ref={ref}
-        direction="left"
-        style={{
-          transitionTimingFunction: props.in
-            ? 'cubic-bezier(0.4, 0, 0.2, 1)'
-            : 'cubic-bezier(0.4, 0, 0.6, 1)',
-        }}
-      />
-    )
-  },
-)
+>(function CustomTransition(props, ref) {
+  return (
+    <Slide
+      {...props}
+      ref={ref}
+      direction="left"
+      style={{
+        transitionTimingFunction: props.in
+          ? 'cubic-bezier(0.4, 0, 0.2, 1)'
+          : 'cubic-bezier(0.4, 0, 0.6, 1)',
+      }}
+    />
+  )
+})
 
 interface GenericAlertProps {
   alert: {
     key: string
-    severity: 'success' | 'error'
+    severity: 'success' | 'error' | 'warning' | 'info'
     message: string
   }
 }
@@ -39,7 +37,10 @@ const GenericAlert: React.FC<GenericAlertProps> = ({ alert }) => {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(true)
 
-  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: string,
+  ) => {
     if (reason === 'clickaway') {
       return
     }

@@ -37,7 +37,10 @@ const SocialMediaAuth: React.FC<SocialMediaAuthProps> = ({
     authType: string
     accessToken: string
   }) => {
-    const response = await oAuthLogin(values)
+    const response = await oAuthLogin({
+      provider: values.authType,
+      accessToken: values.accessToken,
+    })
 
     if (response && 'data' in response && response.data) {
       const responseData = response.data as {

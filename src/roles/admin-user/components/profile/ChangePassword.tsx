@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useForm, Controller } from 'react-hook-form'
@@ -18,21 +18,25 @@ import {
   type Theme,
 } from '@mui/material'
 
-import * as Style from '../tablestyle'
 import type { RootState } from '../../../../redux/types'
 import { updateUser } from '../../../../redux/reducers/user-slice'
 import { useResetPasswordMutation } from '../../../../services/admin'
 import { useEditAdminProfileMutation } from '../../../../services/onboarding'
+
+interface PasswordFormValues {
+  currentPassword?: string
+  password: string
+  confirmPassword: string
+}
 
 interface ChangePasswordProps {
   closeModal: () => void
   userEmail?: string
   headerName?: string | null
   isUserAdmin?: boolean
-  resetPassword?: (values: Record<string, string>) => void
+  resetPassword?: (values: PasswordFormValues) => void
   isResetPassword?: boolean
 }
-
 
 const ChangePassword = ({
   closeModal,
@@ -52,7 +56,7 @@ const ChangePassword = ({
   const { t } = useTranslation('application')
   const matches = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'))
   const isPasswordMissing = useSelector(
-    (state: RootState) => state.user.user.isPasswordMissing,
+    (state: RootState) => state.user?.user?.isPasswordMissing ?? false,
   )
 
   const [resetUserPassword] = useResetPasswordMutation()
@@ -109,7 +113,7 @@ const ChangePassword = ({
             ),
         })
 
-  const defaultValues = isPasswordMissing
+  const defaultValues: PasswordFormValues = isPasswordMissing
     ? { password: '', confirmPassword: '' }
     : { currentPassword: '', password: '', confirmPassword: '' }
 
@@ -118,12 +122,12 @@ const ChangePassword = ({
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<PasswordFormValues>({
     resolver: yupResolver(schemaResolver),
     defaultValues,
   })
 
-  const onSubmit = async (values: Record<string, string>) => {
+  const onSubmit = async (values: PasswordFormValues) => {
     let response
     if (isUserAdmin) {
       response = await updateAdminPassword({ ...values, update: 'password' })
@@ -134,18 +138,29 @@ const ChangePassword = ({
     if (!response?.error) {
       closeModal()
       reset()
-      if (!isUserAdmin && !isResetPassword) {
-        localStorage.setItem(
-          'token',
-          (response as { data: { token: string } }).data.token,
-        )
+      if (
+        !isUserAdmin &&
+        !isResetPassword &&
+        response?.data &&
+        typeof response.data === 'object' &&
+        response.data !== null &&
+        'token' in response.data
+      ) {
+        const responseData = response.data as { token: string }
+        localStorage.setItem('token', responseData.token)
+        
+        // After successful password reset, logout the user
+        setTimeout(() => {
+          localStorage.removeItem('token')
+          window.location.href = '/login'
+        }, 1500) // Give user 1.5 seconds to see success before redirect
       }
     }
     resetPassword?.(values)
   }
 
   return (
-    <Style.ChangePassword isUserAdmin={isUserAdmin}>
+    <Box>
       <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
         {!!headerName && (
           <Typography variant="h6" className="profileTitle">
@@ -170,22 +185,14 @@ const ChangePassword = ({
               >
                 Email
               </Typography>
-              <Controller
-                name="businessEmail"
-                control={control}
-                defaultValue={userEmail}
+              <TextField
+                variant="outlined"
+                type="email"
+                size="small"
                 fullWidth
-                render={({ field }) => (
-                  <TextField
-                    variant="outlined"
-                    type="email"
-                    size="small"
-                    fullWidth
-                    {...field}
-                    autoComplete="email"
-                    disabled
-                  />
-                )}
+                value={userEmail || ''}
+                autoComplete="email"
+                disabled
               />
             </FormControl>
           ) : (
@@ -211,8 +218,6 @@ const ChangePassword = ({
                   <Controller
                     name="currentPassword"
                     control={control}
-                    defaultValue=""
-                    fullWidth
                     render={({ field }) => (
                       <TextField
                         placeholder={t(
@@ -248,7 +253,7 @@ const ChangePassword = ({
                           ),
                         }}
                         error={!!errors.currentPassword}
-                        helperText={errors.currentPassword?.message}
+                        helperText={errors.currentPassword?.message as string}
                         autoComplete="current-password"
                       />
                     )}
@@ -274,8 +279,6 @@ const ChangePassword = ({
               <Controller
                 name="password"
                 control={control}
-                defaultValue=""
-                fullWidth
                 render={({ field }) => (
                   <TextField
                     placeholder={t('application:PROFILE.ENTERYOUR_NEWPASSWORD')}
@@ -306,7 +309,7 @@ const ChangePassword = ({
                       ),
                     }}
                     error={!!errors.password}
-                    helperText={errors.password?.message}
+                    helperText={errors.password?.message as string}
                     autoComplete="new-password"
                   />
                 )}
@@ -329,8 +332,6 @@ const ChangePassword = ({
             <Controller
               name="confirmPassword"
               control={control}
-              defaultValue=""
-              fullWidth
               render={({ field }) => (
                 <TextField
                   placeholder={t(
@@ -363,7 +364,7 @@ const ChangePassword = ({
                     ),
                   }}
                   error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword?.message}
+                  helperText={errors.confirmPassword?.message as string}
                   autoComplete="new-password"
                 />
               )}
@@ -383,7 +384,7 @@ const ChangePassword = ({
           {t('application:MISCELLANEOUS.SAVE')}
         </Button>
       </form>
-    </Style.ChangePassword>
+    </Box>
   )
 }
 

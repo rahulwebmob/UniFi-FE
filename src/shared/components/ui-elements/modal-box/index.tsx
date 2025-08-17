@@ -24,7 +24,7 @@ const Transition = React.forwardRef<
 
 Transition.displayName = 'TransitionComponent'
 
-interface ModalBoxHandle {
+export interface ModalBoxHandle {
   openModal: () => void
   closeModal: () => void
 }
@@ -38,6 +38,7 @@ interface ModalBoxProps {
   noWidth?: boolean
   fullScreen?: boolean
   disablePadding?: boolean
+  isBackdropAllowed?: boolean
 }
 
 const ModalBox = forwardRef<ModalBoxHandle, ModalBoxProps>(

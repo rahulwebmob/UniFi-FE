@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Menu as MenuIcon } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -20,7 +20,7 @@ const Navigation = () => {
   const location = useLocation()
   const { t } = useTranslation('education')
   const isMobile = useMediaQuery('(max-width:1024px)')
-  const [anchorEl, setAnchorEl] = useState(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
   const navItems = [
     { path: '/educator', label: t('EDUCATOR.HEADER.DASHBOARD') },
@@ -35,7 +35,7 @@ const Navigation = () => {
   const currentPath =
     navItems.find((item) => item.path === location.pathname)?.path || false
 
-  const handleMenuOpen = (event) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
 
@@ -43,7 +43,7 @@ const Navigation = () => {
     setAnchorEl(null)
   }
 
-  const handleChange = (path) => {
+  const handleChange = (path: string) => {
     if (location.pathname.includes('educator-room')) {
       const userConfirmed = window.confirm(
         'Are you sure you want to leave the webinar ?',

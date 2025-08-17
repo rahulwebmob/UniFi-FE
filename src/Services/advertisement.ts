@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { onQueryStarted } from './serviceUtility'
 import { ENV } from '../shared/utils/validation/env'
 
 export const adsApi = createApi({
@@ -20,25 +19,22 @@ export const adsApi = createApi({
       query: (params) => ({
         url: `/ads/get-ads`,
         method: 'GET',
-        params: { ...params },
+        params,
       }),
-      onQueryStarted,
     }),
     getCenterAds: builder.query({
       query: () => ({
         url: `/ads/get-row-categories`,
         method: 'GET',
       }),
-      onQueryStarted,
     }),
     getAdWindows: builder.query({
       query: (params) => ({
         url: `/ads/get-ads-windows`,
         method: 'GET',
-        params: { ...params },
+        params,
       }),
       transformResponse: (response) => response.data,
-      onQueryStarted,
     }),
   }),
 })

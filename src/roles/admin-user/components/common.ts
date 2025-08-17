@@ -7,7 +7,9 @@ interface ApiResponse {
 
 type RequestCallback = (params: {
   transactionId: string
-}) => Promise<{ unwrap: () => Promise<ApiResponse> }>
+}) =>
+  | Promise<{ unwrap: () => Promise<ApiResponse> }>
+  | { unwrap: () => Promise<ApiResponse> }
 
 const fetchImageAsBase64 = async (url: string) => {
   try {
@@ -65,7 +67,7 @@ export const handleGeneratePdf = async (
       element.style.color = '#8A1C1C'
     })
 
-    void (html2pdf() as ReturnType<typeof html2pdf>)
+    html2pdf()
       .from(div)
       .set({
         margin: 10,

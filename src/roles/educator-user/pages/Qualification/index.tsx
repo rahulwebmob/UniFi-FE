@@ -1,7 +1,11 @@
 import { Plus, Minus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { NumericFormat } from 'react-number-format'
-import { Controller, type Control, type FieldValues, useFieldArray } from 'react-hook-form'
+import {
+  Controller,
+  type Control,
+  useFieldArray,
+} from 'react-hook-form'
 
 import {
   Box,
@@ -13,8 +17,11 @@ import {
   FormControl,
 } from '@mui/material'
 
+import type { EducatorFormData } from '../../types/form-types'
+
+
 interface QualificationProps {
-  control: Control<FieldValues>
+  control: Control<EducatorFormData>
 }
 
 const Qualification = ({ control }: QualificationProps) => {
@@ -109,10 +116,9 @@ const Qualification = ({ control }: QualificationProps) => {
             <Controller
               name="experience"
               control={control}
-
-              render={({ fieldState }) => (
+              render={({ field, fieldState }) => (
                 <NumericFormat
-                
+                  {...field}
                   customInput={TextField}
                   type="text"
                   placeholder={t(
@@ -123,6 +129,9 @@ const Qualification = ({ control }: QualificationProps) => {
                   decimalScale={2}
                   error={!!fieldState.error}
                   helperText={fieldState.error?.message}
+                  onValueChange={(values) => {
+                    field.onChange(values.floatValue || 0)
+                  }}
                 />
               )}
             />
@@ -224,7 +233,7 @@ const Qualification = ({ control }: QualificationProps) => {
             size="small"
             variant="outlined"
             color="primary"
-            onClick={() => addEducation({ degree: '', fos: '' })}
+            onClick={() => addEducation({ degree: '', field: '' })}
             sx={{
               height: '32px',
               fontSize: '0.875rem',
@@ -326,7 +335,7 @@ const Qualification = ({ control }: QualificationProps) => {
             size="small"
             variant="outlined"
             color="primary"
-            onClick={() => addCertificate({ name: '', issueOrg: '' })}
+            onClick={() => addCertificate({ name: '', organization: '' })}
             sx={{
               height: '32px',
               fontSize: '0.875rem',

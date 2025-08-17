@@ -26,10 +26,10 @@ interface DropdownMenuItem {
 }
 
 interface DropdownButtonProps {
-  buttonName: string | object
+  buttonName: string | React.ReactNode
   menuItems: DropdownMenuItem[]
   showSelectedItem?: boolean
-  element?: React.ReactElement
+  element?: React.ComponentType<unknown> | null
   defaultValue?: { item?: string; subItem?: string } | string | null
   [key: string]: unknown
 }
@@ -38,14 +38,22 @@ const DropdownButton = ({
   buttonName,
   menuItems,
   showSelectedItem = false,
-  element = null,
+  element,
   defaultValue = null,
   ...props
 }: DropdownButtonProps) => {
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [nestedAnchorEl, setNestedAnchorEl] = useState(null)
-  const [selectedItem, setSelectedItem] = useState(defaultValue?.item)
-  const [selectedSubItem, setSelectedSubItem] = useState(defaultValue?.subItem)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const [nestedAnchorEl, setNestedAnchorEl] = useState<HTMLElement | null>(null)
+  const [selectedItem, setSelectedItem] = useState<string | undefined>(
+    typeof defaultValue === 'object' && defaultValue !== null
+      ? defaultValue.item
+      : undefined,
+  )
+  const [selectedSubItem, setSelectedSubItem] = useState<string | undefined>(
+    typeof defaultValue === 'object' && defaultValue !== null
+      ? defaultValue.subItem
+      : undefined,
+  )
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false)
   const [textValue, setTextValue] = useState('')
   // const { direction } = useSelector((state) => state.app.language) // Uncomment if direction is needed
@@ -61,16 +69,19 @@ const DropdownButton = ({
     setAnchorEl(null)
   }
 
-  const handleNestedClick = (event: React.MouseEvent<HTMLElement>, itemName: string) => {
+  const handleNestedClick = (
+    event: React.MouseEvent<HTMLElement>,
+    itemName: string,
+  ) => {
     setNestedAnchorEl(event.currentTarget)
     setSelectedItem(itemName)
-    setSelectedSubItem(null)
+    setSelectedSubItem(undefined)
     setIsSubMenuOpen(true)
   }
 
   const handleNestedClose = () => {
     setNestedAnchorEl(null)
-    setSelectedItem(null)
+    setSelectedItem(undefined)
     setIsSubMenuOpen(false)
   }
 
@@ -101,6 +112,21 @@ const DropdownButton = ({
 
   const renderElement = () => {
     const Component = element || Button
+
+    if (showSelectedItem) {
+      return (
+        <TextField
+          type="text"
+          fullWidth
+          size="small"
+          label={typeof buttonName === 'string' ? buttonName : ''}
+          value={getValue()}
+          onClick={handleClick}
+          {...props}
+        />
+      )
+    }
+
     return (
       <Component
         id="dropdown-button"
@@ -110,17 +136,7 @@ const DropdownButton = ({
         onClick={handleClick}
         {...props}
       >
-        {showSelectedItem ? (
-          <TextField
-            type="text"
-            fullWidth
-            size="small"
-            label={buttonName}
-            value={getValue()}
-          />
-        ) : (
-          buttonName
-        )}
+        {buttonName}
       </Component>
     )
   }
@@ -149,7 +165,7 @@ const DropdownButton = ({
             padding: 0,
             '& .MuiMenuItem-root': {
               ':hover': {
-                background: theme.palette.primary[200],
+                background: theme.palette.primary.main,
               },
             },
           },
@@ -163,7 +179,7 @@ const DropdownButton = ({
                 handleNestedClick(e, item.name)
               } else {
                 setSelectedItem(item.name)
-                setSelectedSubItem(null)
+                setSelectedSubItem(undefined)
                 item.onClick()
                 handleClose()
               }
@@ -204,7 +220,7 @@ const DropdownButton = ({
                   padding: 0,
                   '& .MuiMenuItem-root': {
                     ':hover': {
-                      background: theme.palette.primary[200],
+                      background: theme.palette.primary.main,
                     },
                   },
                 },

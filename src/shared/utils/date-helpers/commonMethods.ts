@@ -153,7 +153,7 @@ const convertCoordinatesToDirection = (
   latitude: number | null | undefined,
   longitude: number | null | undefined,
 ): { latitude: string; longitude: string } => {
-  if (!latitude && !longitude) {
+  if (latitude == null || longitude == null) {
     return { latitude: '', longitude: '' }
   }
   const directionNorthSouth = latitude >= 0 ? 'N' : 'S'

@@ -18,7 +18,7 @@ import {
 
 import EducationPayments from './education-payments'
 import PersonalInfo from './personal-info'
-import UserSettings from './user-settings/UserSettings'
+import UserSettings from './user-settings'
 import Logout from '../../../../shared/components/auth-wrapper/logout'
 
 interface ProfileRef {

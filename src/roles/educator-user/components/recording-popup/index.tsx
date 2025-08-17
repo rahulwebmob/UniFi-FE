@@ -1,10 +1,17 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Cast, Circle, XCircle } from 'lucide-react'
 
 import { Box, Paper, Button, Typography, IconButton } from '@mui/material'
 
-const RecordingPopup = ({ handleOnClose, handleToggleRecording }) => {
+interface RecordingPopupProps {
+  handleOnClose: () => void
+  handleToggleRecording: () => void
+}
+
+const RecordingPopup = ({
+  handleOnClose,
+  handleToggleRecording,
+}: RecordingPopupProps) => {
   const { t } = useTranslation('education')
 
   return (

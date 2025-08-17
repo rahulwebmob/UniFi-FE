@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import React, { useRef, useEffect, useCallback } from 'react'
+import { useRef, useEffect, useCallback } from 'react'
 import {
   Users,
   Video,
@@ -27,13 +27,15 @@ import {
 import { chatSocket, initializeSocket } from '../../../../services/sockets'
 
 const Dashboard = () => {
-  const setTimeoutId = useRef<NodeJS.Timeout | null>(null)
+  const setTimeoutId = useRef<number | null>(null)
   const navigate = useNavigate()
   const { t } = useTranslation('education')
   const theme = useTheme()
 
   const socketReconnection = useCallback(() => {
-    window.clearTimeout(setTimeoutId.current)
+    if (setTimeoutId.current) {
+      window.clearTimeout(setTimeoutId.current)
+    }
     setTimeoutId.current = window.setTimeout(() => {
       const token = localStorage.getItem('token')
       if (token) initializeSocket(token, false)
@@ -42,7 +44,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     chatSocket?.on('connect', () => {
-      window.clearTimeout(setTimeoutId.current)
+      if (setTimeoutId.current) {
+        window.clearTimeout(setTimeoutId.current)
+      }
     })
     chatSocket?.on('disconnect', () => {
       socketReconnection()
@@ -52,7 +56,9 @@ const Dashboard = () => {
     })
 
     return () => {
-      window.clearTimeout(setTimeoutId.current)
+      if (setTimeoutId.current) {
+        window.clearTimeout(setTimeoutId.current)
+      }
     }
   }, [socketReconnection])
 

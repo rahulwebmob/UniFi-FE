@@ -1,4 +1,5 @@
 import type { Theme } from '@mui/material/styles'
+import type { Locale } from 'date-fns'
 
 import React from 'react'
 import { format } from 'date-fns'
@@ -41,7 +42,7 @@ interface WebinarCardProps {
     }
   }
   isPurchased?: boolean
-  locale?: string
+  locale?: Locale
 }
 
 const WebinarCard: React.FC<WebinarCardProps> = ({
@@ -610,7 +611,7 @@ const WebinarCard: React.FC<WebinarCardProps> = ({
         {/* Bottom Section */}
         <Box>
           {/* Enrollment Count for Paid */}
-          {webinar.isPaid && webinar.totalEnrolled > 0 && (
+          {webinar.isPaid && (webinar.totalEnrolled ?? 0) > 0 && (
             <Typography
               sx={{
                 fontSize: '0.65rem',

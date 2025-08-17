@@ -26,7 +26,7 @@ interface NavItem {
 }
 
 const Navbar = ({ open }: NavbarProps) => {
-  const openWindow = useWindowOpen('')
+  const openWindowFunction = useWindowOpen()
   const educationList: NavItem[] = [
     {
       label: 'Tutor Applications',
@@ -51,38 +51,49 @@ const Navbar = ({ open }: NavbarProps) => {
     },
   ]
 
-  const renderByType = (eachItem: NavItem) => (
-    <ListItem
-      key={eachItem.label}
-      component={eachItem.to ? NavLink : undefined}
-      to={eachItem.to ?? undefined}
-      style={{ cursor: `${eachItem.link && 'pointer'}`, padding: '0' }}
-      onClick={() => {
-        if (eachItem.link) {
-          openWindow(eachItem.link)
+  const renderByType = (eachItem: NavItem) => {
+    const listItemProps = eachItem.to
+      ? {
+          component: NavLink as React.ElementType,
+          to: eachItem.to,
         }
-      }}
-    >
-      <ListItemButton
-        sx={{
-          minHeight: 48,
-          justifyContent: open ? 'initial' : 'center',
-          px: 2.5,
+      : {}
+
+    return (
+      <ListItem
+        key={eachItem.label}
+        {...listItemProps}
+        style={{ cursor: `${eachItem.link && 'pointer'}`, padding: '0' }}
+        onClick={() => {
+          if (eachItem.link && typeof eachItem.link === 'string') {
+            openWindowFunction(eachItem.link)
+          }
         }}
       >
-        <ListItemIcon
+        <ListItemButton
           sx={{
-            minWidth: 0,
-            mr: open ? 3 : 'auto',
-            justifyContent: 'center',
+            minHeight: 48,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
           }}
         >
-          {eachItem.icon}
-        </ListItemIcon>
-        <ListItemText primary={eachItem.label} sx={{ opacity: open ? 1 : 0 }} />
-      </ListItemButton>
-    </ListItem>
-  )
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+            }}
+          >
+            {eachItem.icon}
+          </ListItemIcon>
+          <ListItemText
+            primary={eachItem.label}
+            sx={{ opacity: open ? 1 : 0 }}
+          />
+        </ListItemButton>
+      </ListItem>
+    )
+  }
 
   return (
     <NavbarContainer>

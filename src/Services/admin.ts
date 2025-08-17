@@ -3,11 +3,38 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { ENV } from '../shared/utils/validation/env'
 import { readLangCookie } from '../utils/globalUtils'
 import {
-  onQueryStarted,
-  onMutationStarted,
-  onQueryStartedDefault,
   onMutationStartedDefault,
-} from '../services/serviceUtility'
+  onQueryStartedDefault,
+} from './serviceUtility'
+import type {
+  LoginRequest,
+  LoginResponse,
+  SignUpRequest,
+  LogoutRequest,
+  OAuthLoginRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+  EmailVerificationParams,
+  UserData,
+  UserProfileUpdateRequest,
+  BuySubscriptionRequest,
+  CancelSubscriptionRequest,
+  InvoiceParams,
+  Invoice,
+  ApiResponse,
+  PaginatedResponse,
+  PaginationParams,
+  PartnerRequest,
+  FeedbackRequest,
+  ZoomAuthRequest,
+  UserActivity,
+} from '../types/api.types'
+import type {
+  TutorDetailsResponse,
+  DownloadCVResponse,
+  WatchVideoResponse,
+} from '../types/admin.types'
+import type { CourseData, CourseCountResponse, CoursesResponse, PaymentData, WebinarCountResponse, LessonData, WebinarAttachmentsResponse } from '../types/education.types'
 
 // Define a service using a base URL and expected endpoints
 export const adminApi = createApi({
@@ -26,87 +53,104 @@ export const adminApi = createApi({
       return headers
     },
   }),
-  tagTypes: ['Layouts', 'Webinars'],
+  tagTypes: [
+    'Layouts',
+    'Webinars',
+    'Me',
+    'partners',
+    'Subscription',
+    'Zoom-meetings',
+    'UserProfile',
+    'Tutor',
+    'ApprovedTutors',
+    'Chapters',
+    'Lessons',
+    'Courses',
+  ],
   endpoints: (builder) => ({
-    login: builder.mutation({
+    login: builder.mutation<LoginResponse, LoginRequest>({
       query: (data) => ({
         url: `/user-api/auth/login`,
         method: 'POST',
         body: data,
       }),
-      onQueryStarted: onMutationStartedDefault,
+      onQueryStarted: onQueryStartedDefault,
     }),
-    oAuthLogin: builder.mutation({
+    oAuthLogin: builder.mutation<LoginResponse, OAuthLoginRequest>({
       query: (data) => ({
         url: `/user-api/auth/oauth-login`,
         method: 'POST',
         body: data,
       }),
-      onQueryStarted: onMutationStartedDefault,
+      onQueryStarted: onQueryStartedDefault,
     }),
-    logout: builder.mutation({
+    logout: builder.mutation<ApiResponse, LogoutRequest>({
       query: (postData) => ({
         url: `/user-api/auth/logout`,
         method: 'POST',
-        body: { ...postData },
+        body: postData,
       }),
-      onQueryStarted: onMutationStartedDefault,
+      onQueryStarted: onQueryStartedDefault,
     }),
-    signUp: builder.mutation({
+    signUp: builder.mutation<ApiResponse, SignUpRequest>({
       query: (data) => ({
         url: '/user-api/auth/signup',
         method: 'post',
         body: data,
       }),
-      onQueryStarted: onMutationStartedDefault,
+      onQueryStarted: onQueryStartedDefault,
     }),
     loggedUser: builder.query({
       query: () => '/user-api/auth/me',
       keepUnusedDataFor: 0,
       providesTags: ['Me'],
-      onQueryStarted,
+      onQueryStarted: onQueryStartedDefault,
     }),
-    partner: builder.mutation({
+    partner: builder.mutation<ApiResponse, PartnerRequest>({
       query: (data) => ({
         url: '/user-api/partner/create-partner',
         method: 'POST',
         body: data,
       }),
-      onQueryStarted: onMutationStartedDefault,
+      onQueryStarted: onQueryStartedDefault,
     }),
-    recentlyViewed: builder.mutation({
+    recentlyViewed: builder.mutation<ApiResponse, UserActivity>({
       query: (data) => ({
         url: `/user-api/user-actions/add-user-activity`,
         method: 'POST',
         body: data,
       }),
       invalidatesTags: ['partners'],
+      onQueryStarted: onQueryStartedDefault,
     }),
     // custom layout
-    buyPremiumSubscription: builder.mutation({
+    buyPremiumSubscription: builder.mutation<
+      ApiResponse,
+      BuySubscriptionRequest
+    >({
       query: (data) => ({
         url: `/user-api/user-actions/buy-premium-subscription`,
         method: 'POST',
         body: data,
       }),
-      onQueryStarted: onMutationStartedDefault,
+      onQueryStarted: onQueryStartedDefault,
     }),
-    getUsersList: builder.query({
+    getUsersList: builder.query<PaginatedResponse<UserData>, PaginationParams>({
       query: (data) => ({
         url: `/user-api/user-actions/get-all-users`,
         method: 'GET',
-        params: { ...data },
+        params: data,
       }),
     }),
-    forgetPassword: builder.mutation({
+    forgetPassword: builder.mutation<ApiResponse, ForgotPasswordRequest>({
       query: (data) => ({
         url: `/user-api/auth/forgot-password`,
         method: 'POST',
         body: data,
       }),
-      onQueryStarted: onMutationStartedDefault,
+      onQueryStarted: onQueryStartedDefault,
     }),
-    resetPassword: builder.mutation({
+    resetPassword: builder.mutation<ApiResponse, ResetPasswordRequest>({
       query: (data) => ({
         url: `/user-api/user-actions/change-password`,
         method: 'POST',
@@ -114,7 +158,7 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onMutationStartedDefault,
     }),
-    emailVerification: builder.query({
+    emailVerification: builder.query<ApiResponse, EmailVerificationParams>({
       query: (body) => ({
         url: `/user-api/auth/email-verification`,
         method: 'GET',
@@ -122,114 +166,84 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onQueryStartedDefault,
     }),
-    resendEmail: builder.mutation({
+    resendEmail: builder.mutation<ApiResponse, { email: string }>({
       query: (data) => ({
         url: `user-api/auth/resend-verification-email`,
         method: 'POST',
         body: data,
       }),
-      onQueryStarted: onMutationStartedDefault,
+      onQueryStarted: onQueryStartedDefault,
     }),
-    profileActions: builder.mutation({
+    profileActions: builder.mutation<
+      ApiResponse<UserData>,
+      UserProfileUpdateRequest
+    >({
       query: (payload) => ({
         url: `/user-api/user-actions/edit-profile`,
         method: 'PUT',
         body: payload,
       }),
-      onQueryStarted: onMutationStartedDefault,
+      onQueryStarted: onQueryStartedDefault,
       invalidatesTags: ['Me'],
     }),
-    createPassword: builder.mutation({
+    createPassword: builder.mutation<ApiResponse, ResetPasswordRequest>({
       query: (data) => ({
         url: `/user-api/auth/reset-password`,
         method: 'POST',
         body: data,
       }),
-      onQueryStarted: onMutationStartedDefault,
-    }),
-    getSubscriptionDetails: builder.query({
-      query: (data) => ({
-        url: '/user-api/user-actions/get-particular-subscription',
-        method: 'GET',
-        params: { ...data },
-      }),
-      transformResponse: (response) => response.data,
-      keepUnusedDataFor: 0,
-      providesTags: ['Subscription'],
       onQueryStarted: onQueryStartedDefault,
     }),
-    getInvoiceDetails: builder.query({
+
+    getInvoiceDetails: builder.query<Invoice[], InvoiceParams>({
       query: (data) => ({
         url: '/user-api/user-actions/get-invoices',
         method: 'GET',
-        params: { ...data },
+        params: data,
       }),
-      transformResponse: (response) => response.data,
+      transformResponse: (response: ApiResponse<Invoice[]>) =>
+        response.data || [],
     }),
     downloadPdf: builder.query({
       query: (data) => ({
         url: '/user-api/user-actions/download-invoice',
         method: 'GET',
-        params: { ...data },
+        params: data as Record<string, unknown>,
       }),
       onQueryStarted: onQueryStartedDefault,
     }),
-    cancelSubscription: builder.mutation({
+    cancelSubscription: builder.mutation<
+      ApiResponse,
+      CancelSubscriptionRequest
+    >({
       query: (data) => ({
         url: '/user-api/user-actions/cancel-subscription',
         method: 'PUT',
         body: data,
       }),
-      onQueryStarted: onMutationStartedDefault,
+      onQueryStarted: onQueryStartedDefault,
     }),
     // Zoom Api's
-    authenticateZoom: builder.mutation({
+    authenticateZoom: builder.mutation<ApiResponse, ZoomAuthRequest>({
       query: (payload) => ({
         url: `/user-api/zoom/auth`,
         method: 'POST',
         body: payload,
       }),
+      onQueryStarted: onQueryStartedDefault,
       invalidatesTags: ['Me'],
-      onQueryStarted: onMutationStartedDefault,
     }),
-    deAuthenticateZoom: builder.mutation({
+    deAuthenticateZoom: builder.mutation<ApiResponse, { userId: string }>({
       query: (payload) => ({
         url: `/user-api/zoom/deauthenticate`,
         method: 'POST',
         body: payload,
       }),
+      onQueryStarted: onQueryStartedDefault,
       invalidatesTags: ['Me'],
-      onQueryStarted: onMutationStartedDefault,
     }),
-    createZoomMeeting: builder.mutation({
-      query: (payload) => ({
-        url: `/user-api/zoom/create-meeting`,
-        method: 'POST',
-        body: payload,
-      }),
-      invalidatesTags: ['Zoom-meetings'],
-      onQueryStarted: onMutationStartedDefault,
-    }),
-    joinZoomMeeting: builder.query({
-      query: (payload) => ({
-        url: `/user-api/zoom/join-meeting`,
-        method: 'GET',
-        params: { ...payload },
-      }),
-      keepUnusedDataFor: 0,
-      onQueryStarted: onMutationStarted,
-    }),
-    zoomMeetings: builder.query({
-      query: (payload) => ({
-        url: `/user-api/zoom/list-meetings`,
-        method: 'GET',
-        params: { ...payload },
-      }),
-      keepUnusedDataFor: 0,
-      providesTags: ['Zoom-meetings'],
-      onQueryStarted: onMutationStartedDefault,
-    }),
-    feedback: builder.mutation({
+
+    feedback: builder.mutation<ApiResponse, FeedbackRequest>({
       query: (data) => ({
         url: `/user-api/feedback/submit`,
         method: 'POST',
@@ -237,7 +251,7 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onMutationStartedDefault,
     }),
-    getUserProfile: builder.query({
+    getUserProfile: builder.query<ApiResponse<UserData>, { userId: string }>({
       query: ({ userId }) => ({
         url: `/user-api/user-actions/profile/${userId}`,
         method: 'GET',
@@ -245,7 +259,10 @@ export const adminApi = createApi({
       providesTags: ['UserProfile'],
       onQueryStarted: onQueryStartedDefault,
     }),
-    myProfile: builder.mutation({
+    myProfile: builder.mutation<
+      ApiResponse<UserData>,
+      UserProfileUpdateRequest
+    >({
       query: (data) => ({
         url: '/user-api/user-actions/edit-profile',
         method: 'PUT',
@@ -254,45 +271,15 @@ export const adminApi = createApi({
       invalidatesTags: ['UserProfile'],
       onQueryStarted: onMutationStartedDefault,
     }),
-    submitFeedback: builder.mutation({
+    submitFeedback: builder.mutation<ApiResponse, FeedbackRequest>({
       query: (data) => ({
         url: '/user-api/feedback/submit',
         method: 'POST',
         body: data,
       }),
-      onQueryStarted: onMutationStarted,
-    }),
-    tourGuide: builder.mutation({
-      query: (data) => ({
-        url: '/user-api/auth/tour-guide-update',
-        method: 'POST',
-        body: data,
-      }),
-    }),
-    getUserCoupons: builder.query({
-      query: (body) => ({
-        url: `/user-api/user-actions/get-coupons`,
-        method: 'GET',
-        params: body,
-      }),
-      onQueryStarted: onQueryStartedDefault,
-    }),
-    getDiscountPrice: builder.query({
-      query: (body) => ({
-        url: `/user-api/user-actions/get-discount-price`,
-        method: 'GET',
-        params: body,
-      }),
-      onQueryStarted: onQueryStartedDefault,
-    }),
-    tradePulseFreeTrial: builder.mutation({
-      query: (data) => ({
-        url: '/user-api/user-actions/skip-free-trial',
-        method: 'POST',
-        body: data,
-      }),
       onQueryStarted: onMutationStartedDefault,
     }),
+
     setUserAppearance: builder.mutation({
       query: (data) => ({
         url: `/user-api/user-actions/set-user-appearance`,
@@ -301,7 +288,7 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onMutationStartedDefault,
     }),
-    getUserExperiences: builder.query({
+    getUserExperiences: builder.query<ApiResponse, Record<string, unknown>>({
       query: (body) => ({
         url: `/user-api/user-actions/get-signup-preferences`,
         method: 'GET',
@@ -310,7 +297,7 @@ export const adminApi = createApi({
       onQueryStarted: onQueryStartedDefault,
     }),
     // Education auth
-    getEducationAuthToken: builder.query({
+    getEducationAuthToken: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `/user-api/auth/data-encryption`,
         method: 'GET',
@@ -318,7 +305,7 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onQueryStartedDefault,
     }),
-    getEducationTutorApplication: builder.query({
+    getEducationTutorApplication: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `/education-api/admin-panel/get-educators-applications`,
         method: 'GET',
@@ -327,7 +314,7 @@ export const adminApi = createApi({
       onQueryStarted: onQueryStartedDefault,
       providesTags: ['Tutor'],
     }),
-    getApprovedTutor: builder.query({
+    getApprovedTutor: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `/education-api/admin-panel/get-approved-educators`,
         method: 'GET',
@@ -418,7 +405,7 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onMutationStartedDefault,
     }),
-    getCourseDetails: builder.query({
+    getCourseDetails: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `/education-api/onboarding/get-particular-course-details`,
         method: 'GET',
@@ -426,19 +413,22 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onMutationStartedDefault,
     }),
-    getLessonsDetails: builder.query({
+    getLessonsDetails: builder.query<ApiResponse<LessonData[]>, { courseId?: string; chapterId?: string }>({
       query: (params) => ({
         url: `/education-api/onboarding/get-lessons-of-chapter`,
         method: 'GET',
         params,
       }),
-      providesTags: (_, __, { courseId, chapterId }) => [
-        { type: 'Lessons', id: `${courseId}${chapterId}` },
+      providesTags: (_, __, arg) => [
+        {
+          type: 'Lessons',
+          id: `${(arg as { courseId?: string; chapterId?: string })?.courseId}${(arg as { courseId?: string; chapterId?: string })?.chapterId}`,
+        },
       ],
       onQueryStarted: onQueryStartedDefault,
     }),
 
-    viewTutorDetail: builder.query({
+    viewTutorDetail: builder.query<TutorDetailsResponse, { educatorId: string | undefined }>({
       query: (params) => ({
         url: `/education-api/admin-panel/get-particular-educator-details`,
         method: 'GET',
@@ -446,7 +436,7 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onQueryStartedDefault,
     }),
-    downloadCV: builder.query({
+    downloadCV: builder.query<DownloadCVResponse, { educatorId: string | undefined }>({
       query: (params) => ({
         url: `/education-api/admin-panel/get-cv-of-educator`,
         method: 'GET',
@@ -454,7 +444,7 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onQueryStartedDefault,
     }),
-    watchVideo: builder.query({
+    watchVideo: builder.query<WatchVideoResponse, { educatorId: string | undefined }>({
       query: (params) => ({
         url: `/education-api/admin-panel/get-intro-video-of-educator`,
         method: 'GET',
@@ -479,7 +469,7 @@ export const adminApi = createApi({
       onQueryStarted: onQueryStartedDefault,
       invalidatesTags: ['Chapters'],
     }),
-    listChapers: builder.query({
+    listChapers: builder.query<ApiResponse<CourseData>, { courseId?: string }>({
       query: (params) => ({
         url: `/education-api/onboarding/get-particular-course-details`,
         method: 'GET',
@@ -529,9 +519,11 @@ export const adminApi = createApi({
         method: 'POST',
         body,
       }),
-      onQueryStarted: onQueryStartedDefault,
-      invalidatesTags: (_, __, { courseId, chapterId }) => [
-        { type: 'Lessons', id: `${courseId}${chapterId}` },
+      invalidatesTags: (_, __, arg) => [
+        {
+          type: 'Lessons',
+          id: `${(arg as { courseId?: string; chapterId?: string })?.courseId}${(arg as { courseId?: string; chapterId?: string })?.chapterId}`,
+        },
       ],
     }),
     downloadResource: builder.mutation({
@@ -542,7 +534,7 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onQueryStartedDefault,
     }),
-    coursePreview: builder.query({
+    coursePreview: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `/education-api/onboarding/get-preview-of-course`,
         method: 'GET',
@@ -586,7 +578,7 @@ export const adminApi = createApi({
       providesTags: ['Webinars'],
       onQueryStarted: onQueryStartedDefault,
     }),
-    getAllCourses: builder.query({
+    getAllCourses: builder.query<CoursesResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `/education-api/onboarding/get-my-courses`,
         method: 'GET',
@@ -596,7 +588,7 @@ export const adminApi = createApi({
       onQueryStarted: onQueryStartedDefault,
       keepUnusedDataFor: 0,
     }),
-    getCoursesCount: builder.query({
+    getCoursesCount: builder.query<CourseCountResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `education-api/onboarding/get-courses-count`,
         method: 'GET',
@@ -606,7 +598,7 @@ export const adminApi = createApi({
       onQueryStarted: onQueryStartedDefault,
       keepUnusedDataFor: 0,
     }),
-    getWebinarsCount: builder.query({
+    getWebinarsCount: builder.query<WebinarCountResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `education-api/onboarding/get-webinars-count`,
         method: 'GET',
@@ -616,7 +608,7 @@ export const adminApi = createApi({
       onQueryStarted: onQueryStartedDefault,
       keepUnusedDataFor: 0,
     }),
-    getPaymentHistory: builder.query({
+    getPaymentHistory: builder.query<PaymentData[], Record<string, unknown>>({
       query: (params) => ({
         url: `education-api/onboarding/get-my-payments`,
         method: 'GET',
@@ -624,9 +616,9 @@ export const adminApi = createApi({
       }),
       keepUnusedDataFor: 0,
       onQueryStarted: onQueryStartedDefault,
-      transformResponse: (response) => response.data,
+      transformResponse: (response: ApiResponse<PaymentData[]>) => response.data,
     }),
-    generateInvoice: builder.query({
+    generateInvoice: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `education-api/onboarding/get-payment-invoice`,
         method: 'GET',
@@ -634,7 +626,7 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onQueryStartedDefault,
     }),
-    verifyEducatorEmail: builder.query({
+    verifyEducatorEmail: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `education-api/onboarding/email-exist`,
         method: 'GET',
@@ -660,7 +652,7 @@ export const adminApi = createApi({
       invalidatesTags: ['Webinars'],
     }),
 
-    getWebinarDetail: builder.query({
+    getWebinarDetail: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `education-api/onboarding/get-webinar-details`,
         method: 'GET',
@@ -670,19 +662,19 @@ export const adminApi = createApi({
       keepUnusedDataFor: 0,
       providesTags: ['Webinars'],
     }),
-    getWebinarAttachments: builder.query({
+    getWebinarAttachments: builder.query<WebinarAttachmentsResponse, { webinarId: string }>({
       query: (data) => ({
         url: `education-api/onboarding/get-webinar-resources`,
         method: 'GET',
-        params: { ...data },
+        params: data as Record<string, unknown>,
       }),
       keepUnusedDataFor: 0,
     }),
-    getPastWebinars: builder.query({
+    getPastWebinars: builder.query<ApiResponse, Record<string, unknown>>({
       query: (data) => ({
         url: `education-api/onboarding/get-past-webinar-details`,
         method: 'GET',
-        params: { ...data },
+        params: data as Record<string, unknown>,
       }),
       onQueryStarted: onQueryStartedDefault,
       keepUnusedDataFor: 0,
@@ -694,7 +686,7 @@ export const adminApi = createApi({
         body,
       }),
     }),
-    getCategoryList: builder.query({
+    getCategoryList: builder.query<ApiResponse, void>({
       query: () => ({
         url: `education-api/onboarding/get-educator-categories-list`,
         method: 'GET',
@@ -723,7 +715,7 @@ export const adminApi = createApi({
       invalidatesTags: ['ApprovedTutors'],
       onQueryStarted: onMutationStartedDefault,
     }),
-    getWebinarDetails: builder.query({
+    getWebinarDetails: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `education-api/admin-panel/view-educator-profile`,
         method: 'GET',
@@ -731,7 +723,7 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onQueryStartedDefault,
     }),
-    getAllCoursesDetails: builder.query({
+    getAllCoursesDetails: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `education-api/admin-panel/get-courses-of-educator`,
         method: 'GET',
@@ -739,16 +731,16 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onQueryStartedDefault,
     }),
-    getEducationAdminInvoice: builder.query({
+    getEducationAdminInvoice: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `education-api/admin-panel/get-all-transactions`,
         method: 'GET',
         params,
       }),
+      transformResponse: (response: ApiResponse) => response.data,
       onQueryStarted: onQueryStartedDefault,
-      transformResponse: (response) => response.data,
     }),
-    downloadAdminInvoice: builder.query({
+    downloadAdminInvoice: builder.query<ApiResponse, Record<string, unknown>>({
       query: (params) => ({
         url: `education-api/admin-panel/get-transactions-invoice`,
         method: 'GET',
@@ -784,24 +776,17 @@ export const {
   useCreatePasswordMutation,
   useEmailVerificationQuery,
   useResendEmailMutation,
-  useGetSubscriptionDetailsQuery,
   useGetInvoiceDetailsQuery,
   useLazyDownloadPdfQuery,
   useCancelSubscriptionMutation,
   // Zoom Api's
   useAuthenticateZoomMutation,
   useDeAuthenticateZoomMutation,
-  useCreateZoomMeetingMutation,
-  useJoinZoomMeetingQuery,
-  useZoomMeetingsQuery,
   useFeedbackMutation,
   useMyProfileMutation,
   useSubmitFeedbackMutation,
   useGetUserProfileQuery,
-  useTourGuideMutation,
-  useGetUserCouponsQuery,
-  useLazyGetDiscountPriceQuery,
-  useTradePulseFreeTrialMutation,
+
   useSetUserAppearanceMutation,
   useGetUserExperiencesQuery,
   // Education auth

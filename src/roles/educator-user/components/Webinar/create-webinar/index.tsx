@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { NumericFormat } from 'react-number-format'
 import { yupResolver } from '@hookform/resolvers/yup'
-import React, { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { parse, format, isAfter, isBefore } from 'date-fns'
 import { useForm, Controller, FormProvider } from 'react-hook-form'
 
@@ -41,6 +41,10 @@ import {
   getLocalTimezone,
   transformNaNToNull,
 } from '../../common/common'
+import type {
+  WebinarFormData,
+  CreateWebinarProps,
+} from '../../../../../types/education.types'
 
 const CreateWebinar = ({
   isEdit,
@@ -48,14 +52,15 @@ const CreateWebinar = ({
   isPublished,
   savedDetails,
   defaultValues,
-}) => {
+}: CreateWebinarProps) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { t } = useTranslation('education')
 
   const [previewMode, setPreviewMode] = useState(isPreview)
-  const [webinarData, setWebinarData] = useState({ ...savedDetails })
-  const [categories, setCategories] = useState(defaultValues?.category)
+  const [webinarData, setWebinarData] = useState<Partial<WebinarFormData>>({
+    ...savedDetails,
+  })
   const [scheduleType, setScheduleType] = useState(
     defaultValues?.scheduleType || 'daily',
   )
@@ -70,7 +75,7 @@ const CreateWebinar = ({
     [isCreateLoading, isUpdateLoading],
   )
 
-  const validateTimeComparison = (isEndTime) =>
+  const validateTimeComparison = (isEndTime: boolean) =>
     yup
       .date()
       .required(
@@ -162,8 +167,13 @@ const CreateWebinar = ({
                   'jpeg',
                   'png',
                 ]
-                const fileExtension = value.name.split('.').pop().toLowerCase()
-                return allowedExtensions.includes(fileExtension)
+                const fileExtension = value.name
+                  ?.split('.')
+                  .pop()
+                  ?.toLowerCase()
+                return fileExtension
+                  ? allowedExtensions.includes(fileExtension)
+                  : false
               },
             )
             .test(
@@ -171,7 +181,13 @@ const CreateWebinar = ({
               t('EDUCATOR.CREATE_WEBINAR.VALIDATION.FILE_REQUIRED'),
               (value) => {
                 const isFile = value instanceof File
-                if (isEdit && !isFile && value?.trim()) {
+                if (
+                  isEdit &&
+                  !isFile &&
+                  typeof value === 'string' &&
+                  value.length > 0 &&
+                  value.trim()
+                ) {
                   return true
                 }
                 if (isFile) {
@@ -187,11 +203,12 @@ const CreateWebinar = ({
                     'webm',
                   ]
                   const fileExtension = value.name
-                    .split('.')
-                    .pop()
-                    .toLowerCase()
-                  const fileTypeValid =
-                    allowedExtensions.includes(fileExtension)
+                    ?.split('.')
+                    ?.pop()
+                    ?.toLowerCase()
+                  const fileTypeValid = fileExtension
+                    ? allowedExtensions.includes(fileExtension)
+                    : false
                   return fileSizeValid && fileTypeValid
                 }
                 return false
@@ -209,8 +226,10 @@ const CreateWebinar = ({
         (value) => {
           if (!value || !(value instanceof File)) return true
           const allowedExtensions = ['png', 'jpg', 'jpeg']
-          const fileExtension = value.name.split('.').pop().toLowerCase()
-          return allowedExtensions.includes(fileExtension)
+          const fileExtension = value.name?.split('.').pop()?.toLowerCase()
+          return fileExtension
+            ? allowedExtensions.includes(fileExtension)
+            : false
         },
       )
       .test(
@@ -218,14 +237,22 @@ const CreateWebinar = ({
         t('EDUCATOR.CREATE_WEBINAR.VALIDATION.LESS_THAN_200'),
         (value) => {
           const isFile = value instanceof File
-          if (isEdit && !isFile && value.trim()) {
+          if (
+            isEdit &&
+            !isFile &&
+            typeof value === 'string' &&
+            value.length > 0 &&
+            value.trim()
+          ) {
             return true
           }
           if (isFile) {
             const fileSizeValid = value.size <= 20 * 1024 * 1024
             const allowedExtensions = ['png', 'jpg', 'jpeg']
-            const fileExtension = value.name.split('.').pop().toLowerCase()
-            const fileTypeValid = allowedExtensions.includes(fileExtension)
+            const fileExtension = value.name?.split('.').pop()?.toLowerCase()
+            const fileTypeValid = fileExtension
+              ? allowedExtensions.includes(fileExtension)
+              : false
             return fileSizeValid && fileTypeValid
           }
           return false
@@ -234,8 +261,8 @@ const CreateWebinar = ({
 
     isPaid: yup.bool(),
 
-    price: yup.lazy((_, schemaValues) =>
-      schemaValues?.originalValue?.isPaid
+    price: yup.lazy((_, options) =>
+      (options.context as { isPaid?: boolean })?.isPaid || (options.parent as { isPaid?: boolean })?.isPaid
         ? yup
             .number()
             .transform(transformNaNToNull)
@@ -313,7 +340,7 @@ const CreateWebinar = ({
             .test(
               'at-least-one-day-selected',
               t('EDUCATOR.CREATE_WEBINAR.VALIDATION.ONE_DAY_SELECTED'),
-              (days) => days.some((day) => day.selected),
+              (days) => days?.some((day) => day.selected) || false,
             ),
         }
       : {
@@ -333,7 +360,7 @@ const CreateWebinar = ({
         }),
   })
 
-  const form = useForm({
+  const form = useForm<WebinarFormData>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       title: '',
@@ -341,7 +368,10 @@ const CreateWebinar = ({
       category: [],
       scheduleType: 'daily',
       isPaid: false,
-      price: '',
+      price: 0,
+      startTime: null,
+      endTime: null,
+      resources: [],
       ...defaultValues,
     },
   })
@@ -357,7 +387,7 @@ const CreateWebinar = ({
       )
   }
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: WebinarFormData) => {
     const payload = { ...data }
     setWebinarData((prev) => ({ ...prev, ...payload }))
 
@@ -369,16 +399,23 @@ const CreateWebinar = ({
     const formData = new FormData()
 
     if (isEdit) {
-      const remoteSavedFile = savedDetails.resources
+      const remoteSavedFile = savedDetails?.resources
       if (remoteSavedFile?.length) {
-        const currentResources = payload.resources
-          .map(({ file }) => (file instanceof File ? null : file))
-          .filter(Boolean)
+        const currentResources =
+          payload.resources
+            ?.map(({ file }: { file: File | string }) =>
+              file instanceof File ? null : file,
+            )
+            .filter(Boolean) || []
 
         const currentSet = new Set(currentResources)
 
         const removed = remoteSavedFile.filter(
-          (fileName) => !currentSet.has(fileName),
+          (item: { file: string | File }) => {
+            const fileName =
+              typeof item.file === 'string' ? item.file : item.file.name
+            return !currentSet.has(fileName)
+          },
         )
 
         if (removed.length) {
@@ -395,35 +432,44 @@ const CreateWebinar = ({
     }
 
     if (!payload.isPaid) delete payload.price
-    if (webinarData._id) formData.append('webinarId', webinarData._id)
+    if (webinarData._id && typeof webinarData._id === 'string')
+      formData.append('webinarId', webinarData._id)
 
     formData.append('status', 'published')
 
-    Object.entries(payload).forEach(([key, value]) => {
+    Object.entries(payload).forEach(([key, value]: [string, unknown]) => {
       if (key === 'image') {
         if (value instanceof File) formData.append('image', value)
       } else if (key === 'resources') {
-        value.forEach((res) => {
-          if (res.file instanceof File) formData.append('resources', res.file)
-        })
+        ;(value as { file: File | string }[])?.forEach(
+          (res: { file: File | string }) => {
+            if (res.file instanceof File) formData.append('resources', res.file)
+          },
+        )
       } else if (key === 'removeResources') {
         formData.append(key, JSON.stringify(value))
       } else if (['startTime', 'endTime'].includes(key)) {
-        formData.append(key, convHMtoUtc(value))
+        formData.append(key, convHMtoUtc(value as string | Date))
       } else if (key === 'startDate') {
-        formData.append(key, convDateToUtc(value, payload.startTime))
+        formData.append(
+          key,
+          convDateToUtc(
+            value as string | Date,
+            payload.startTime as string | Date,
+          ),
+        )
       } else if (key === 'days') {
-        const updatedDays = value.map((day) => ({
+        const updatedDays = (value as WebinarFormData['days'])?.map((day) => ({
           ...day,
           startTime: day.startTime ? convHMtoUtc(day.startTime) : null,
           endTime: day.endTime ? convHMtoUtc(day.endTime) : null,
         }))
         formData.append(key, JSON.stringify(updatedDays))
         formData.append('timezone', getLocalTimezone())
-      } else if (typeof value === 'object') {
+      } else if (typeof value === 'object' && value !== null) {
         formData.append(key, JSON.stringify(value))
-      } else {
-        formData.append(key, value)
+      } else if (value !== null && value !== undefined) {
+        formData.append(key, String(value))
       }
     })
 
@@ -524,7 +570,12 @@ const CreateWebinar = ({
           <AddCategory />
         </Grid>
 
-        <WebinarSchedule />
+        <WebinarSchedule
+          isEdit={isEdit}
+          scheduleType={scheduleType}
+          setScheduleType={setScheduleType}
+          defaultValues={defaultValues}
+        />
         <WebinarMetaData />
         <Grid size={{ xs: 12 }}>
           <FormControl fullWidth>
@@ -535,7 +586,7 @@ const CreateWebinar = ({
               <Controller
                 name="isPaid"
                 control={control}
-                defaultValue="free"
+                defaultValue={false}
                 rules={{ required: 'Pricing Type" is required' }}
                 render={({ field: { onChange, value } }) => (
                   <ButtonGroup
@@ -634,15 +685,7 @@ const CreateWebinar = ({
   }, [form.formState.isDirty, dispatch])
 
   return (
-    <FormProvider
-      {...form}
-      isEdit={isEdit}
-      categories={categories}
-      scheduleType={scheduleType}
-      defaultValues={defaultValues}
-      setCategories={setCategories}
-      setScheduleType={setScheduleType}
-    >
+    <FormProvider {...form}>
       {!isPreview && (
         <Box sx={{ mb: 3 }}>
           <Typography
@@ -666,7 +709,22 @@ const CreateWebinar = ({
         component="form"
         onSubmit={(e) => {
           void handleSubmit((data) => {
-            void onSubmit(data)
+            const formData: WebinarFormData = {
+              ...data,
+              category: data.category || [],
+              isPaid: data.isPaid ?? false,
+              image: data.image as File | string,
+              resources:
+                data.resources?.map((resource) => ({
+                  file: resource.file as File | string,
+                })) || [],
+              days: (data as WebinarFormData).days?.map((day) => ({
+                ...day,
+                startTime: day.startTime ?? undefined,
+                endTime: day.endTime ?? undefined,
+              })),
+            }
+            void onSubmit(formData)
           }, onError)(e)
         }}
         sx={{
@@ -707,7 +765,7 @@ const CreateWebinar = ({
                   : t('EDUCATOR.CREATE_WEBINAR.BACK_TO_DASHBOARD')}
               </Button>
               <Box display="flex" gap={1}>
-                {(!isPublished || !previewMode) && (
+                {(isPublished !== true || previewMode !== true) && (
                   <Button
                     type="submit"
                     variant="contained"
@@ -716,7 +774,7 @@ const CreateWebinar = ({
                     sx={{ textTransform: 'none' }}
                   >
                     {isLoading
-                      ? iff(isEdit, 'Submitting...', 'Publishing...')
+                      ? iff(Boolean(isEdit), 'Submitting...', 'Publishing...')
                       : iff(
                           !previewMode,
                           t('EDUCATOR.CREATE_COURSE.CONTINUE'),

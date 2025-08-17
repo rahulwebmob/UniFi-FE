@@ -49,17 +49,19 @@ export const ControlsContainer = styled(Box)(({ theme }) => ({
   gap: '20px',
 }))
 
-export const ControlButton = styled(Box)(({ theme, disabled }) => ({
-  textAlign: 'center',
-  opacity: disabled ? 0.5 : 1,
-  pointerEvents: disabled ? 'none' : 'auto',
-  cursor: disabled ? 'not-allowed' : 'pointer',
-  svg: {
-    fontSize: '24px',
-    fill: theme.palette.grey[200],
-    marginBottom: '5px',
-  },
-}))
+export const ControlButton = styled(Box)<{ disabled?: boolean }>(
+  ({ theme, disabled }) => ({
+    textAlign: 'center',
+    opacity: disabled ? 0.5 : 1,
+    pointerEvents: disabled ? 'none' : 'auto',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    svg: {
+      fontSize: '24px',
+      fill: theme.palette.grey[200],
+      marginBottom: '5px',
+    },
+  }),
+)
 
 export const ToolBarSection = styled(Box)(({ theme }) => ({
   background: theme.palette.primary.light,

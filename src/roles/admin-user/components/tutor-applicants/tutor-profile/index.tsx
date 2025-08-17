@@ -131,19 +131,21 @@ const TutorProfile = () => {
                 Expertise
               </Typography>
               <Box display="flex" gap={1} flexWrap="wrap">
-                {tutorDetails?.data?.expertise.map((expertise) => (
-                  <Chip
-                    key={expertise._id}
-                    label={expertise.category}
-                    variant="outlined"
-                    size="small"
-                    color="primary"
-                    sx={{
-                      borderRadius: '8px',
-                      fontWeight: 500,
-                    }}
-                  />
-                ))}
+                {tutorDetails?.data?.expertise.map(
+                  (expertise: { _id: string; category: string }) => (
+                    <Chip
+                      key={expertise._id}
+                      label={expertise.category}
+                      variant="outlined"
+                      size="small"
+                      color="primary"
+                      sx={{
+                        borderRadius: '8px',
+                        fontWeight: 500,
+                      }}
+                    />
+                  ),
+                )}
               </Box>
             </Box>
           )}
@@ -261,17 +263,19 @@ const TutorProfile = () => {
               </Typography>
               <Box display="flex" flexDirection="column" gap={0.5}>
                 {tutorDetails?.data?.otherProfileUrls?.length ? (
-                  tutorDetails?.data?.otherProfileUrls.map((url, index) => (
-                    <Typography
-                      key={url?.link}
-                      sx={{ cursor: 'pointer', textDecoration: 'underline' }}
-                      color="primary"
-                      variant="body1"
-                      onClick={() => window.open(url?.link, '_blank')}
-                    >
-                      View {index + 1}
-                    </Typography>
-                  ))
+                  tutorDetails?.data?.otherProfileUrls.map(
+                    (url: { link: string }, index: number) => (
+                      <Typography
+                        key={url?.link}
+                        sx={{ cursor: 'pointer', textDecoration: 'underline' }}
+                        color="primary"
+                        variant="body1"
+                        onClick={() => window.open(url?.link, '_blank')}
+                      >
+                        View {index + 1}
+                      </Typography>
+                    ),
+                  )
                 ) : (
                   <Typography variant="body2">-</Typography>
                 )}

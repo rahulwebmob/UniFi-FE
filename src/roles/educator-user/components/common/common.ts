@@ -1,5 +1,11 @@
-// Stub implementations for common utilities
-// These are placeholder functions to fix import errors
+// Common utilities
+import type {
+  FileError,
+  EducatorDetail,
+  NestedArrayObject,
+  DataObject,
+  RequestCallback,
+} from '../../../../types/common'
 
 export const mergeData = (..._args: unknown[]) => {
   void _args
@@ -12,30 +18,30 @@ export const stopStream = (stream: MediaStream | null) => {
   }
 }
 
-export enum WebSocketEventType {
-  CONNECT = 'connect',
-  DISCONNECT = 'disconnect',
-  MESSAGE = 'message',
-  ERROR = 'error',
-  JOIN_ROOM = 'join_room',
-  LEAVE_ROOM = 'leave_room',
-  GET_IN_ROOM_USERS = 'get_in_room_users',
-  GET_ROUTER_RTP_CAPABILITIES = 'get_router_rtp_capabilities',
-  CREATE_WEBRTC_TRANSPORT = 'create_webrtc_transport',
-  CONNECT_TRANSPORT = 'connect_transport',
-  PRODUCE = 'produce',
-  GET_PRODUCERS = 'get_producers',
-  CLOSE_PRODUCER = 'close_producer',
-  CONSUME = 'consume',
-  USER_JOINED = 'user_joined',
-  USER_LEFT = 'user_left',
-  NEW_PRODUCERS = 'new_producers',
-  PRODUCER_CLOSED = 'producer_closed',
-  CALL_ENDED = 'call_ended',
-  HANDS_UP = 'hands_up',
-  RAISE_HAND = 'raise_hand',
-  EXIT_ROOM = 'exit_room',
-}
+export const WebSocketEventType = {
+  CONNECT: 'connect',
+  DISCONNECT: 'disconnect',
+  MESSAGE: 'message',
+  ERROR: 'error',
+  JOIN_ROOM: 'join_room',
+  LEAVE_ROOM: 'leave_room',
+  GET_IN_ROOM_USERS: 'get_in_room_users',
+  GET_ROUTER_RTP_CAPABILITIES: 'get_router_rtp_capabilities',
+  CREATE_WEBRTC_TRANSPORT: 'create_webrtc_transport',
+  CONNECT_TRANSPORT: 'connect_transport',
+  PRODUCE: 'produce',
+  GET_PRODUCERS: 'get_producers',
+  CLOSE_PRODUCER: 'close_producer',
+  CONSUME: 'consume',
+  USER_JOINED: 'user_joined',
+  USER_LEFT: 'user_left',
+  NEW_PRODUCERS: 'new_producers',
+  PRODUCER_CLOSED: 'producer_closed',
+  CALL_ENDED: 'call_ended',
+  HANDS_UP: 'hands_up',
+  RAISE_HAND: 'raise_hand',
+  EXIT_ROOM: 'exit_room',
+} as const
 
 export const ASPECT_RATIO = 16 / 9
 export const VIDEO_RESOLUTION = 720
@@ -132,7 +138,7 @@ export const handleIsTodaySelected = (selectedDate: Date | null) => {
   return isSameDay(new Date(selectedDate), new Date())
 }
 
-export const handleStatusColor = (value) => {
+export const handleStatusColor = (value: string) => {
   switch (value) {
     case 'published':
       return 'success'
@@ -145,7 +151,10 @@ export const handleStatusColor = (value) => {
 
 export const getLocalTimezone = () => moment.tz.guess()
 
-export const convDateToUtc = (localDate, localTime) => {
+export const convDateToUtc = (
+  localDate: string | Date,
+  localTime: string | Date,
+) => {
   const dateMoment = moment(localDate)
   const timeMoment = moment(localTime)
   dateMoment.hour(timeMoment.hour())
@@ -155,7 +164,7 @@ export const convDateToUtc = (localDate, localTime) => {
   return dateMoment.utc().format('YYYY-MM-DD')
 }
 
-export const convHMtoUtc = (localTime) =>
+export const convHMtoUtc = (localTime: string | Date) =>
   moment(localTime).utc().format('HH:mm')
 
 export const handleMinTime = () => {
@@ -163,16 +172,21 @@ export const handleMinTime = () => {
   return new Date(now.getTime())
 }
 
-export const iff = (condition, then, otherwise) =>
+export const iff = <T, U>(condition: boolean, then: T, otherwise: U) =>
   condition ? then : otherwise
 
-export const handleFileChange = (event, setErrors, setResource) => {
-  const file = event.target.files[0]
-  const fileExtension = file?.name?.split('.').pop().toLowerCase()
+export const handleFileChange = (
+  event: React.ChangeEvent<HTMLInputElement>,
+  setErrors: (errors: FileError | ((prev: FileError) => FileError)) => void,
+  setResource: (file: File) => void,
+) => {
+  const file = event.target.files?.[0]
+  const fileExtension = file?.name?.split('.').pop()?.toLowerCase()
 
   if (!file) return
 
   if (
+    fileExtension &&
     CHAPTER_CONFIG.VIDEO_EXTENSIONS.includes(fileExtension) &&
     file.size > CHAPTER_CONFIG.MAX_VIDEO_SIZE_MB * 1024 * 1024
   ) {
@@ -183,6 +197,7 @@ export const handleFileChange = (event, setErrors, setResource) => {
   }
 
   if (
+    fileExtension &&
     CHAPTER_CONFIG.DOCUMENT_EXTENSIONS.includes(fileExtension) &&
     file.size > CHAPTER_CONFIG.MAX_DOCUMENT_SIZE_MB * 1024 * 1024
   ) {
@@ -193,6 +208,7 @@ export const handleFileChange = (event, setErrors, setResource) => {
   }
 
   if (
+    !fileExtension ||
     ![
       ...CHAPTER_CONFIG.VIDEO_EXTENSIONS,
       ...CHAPTER_CONFIG.DOCUMENT_EXTENSIONS,
@@ -209,10 +225,10 @@ export const handleFileChange = (event, setErrors, setResource) => {
   }
 
   setResource(file)
-  setErrors((prev) => ({ ...prev, resource: '' }))
+  setErrors((prev: FileError) => ({ ...prev, resource: '' }))
 }
 
-export const handleFormatSeconds = (seconds) => {
+export const handleFormatSeconds = (seconds: number) => {
   const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
   const { hours, minutes, days, seconds: remainingSeconds } = duration
   const parts = []
@@ -228,10 +244,10 @@ export const ACTIVE_BUTTON_CSS = {
   color: 'background.paper',
 }
 
-export const transformNaNToNull = (value) =>
+export const transformNaNToNull = (value: number) =>
   Number.isNaN(value) ? null : value
 
-const areValuesEqual = (value1, value2) => {
+const areValuesEqual = (value1: unknown, value2: unknown): boolean => {
   if (Array.isArray(value1) && Array.isArray(value2)) {
     if (value1.length !== value2.length) return false
     return value1.every((item, index) => item === value2[index])
@@ -239,15 +255,19 @@ const areValuesEqual = (value1, value2) => {
   return value1 === value2
 }
 
-export const getUpdatedFields = (data, initialData, excludeKeys = []) => {
-  const updatedFields = {}
+export const getUpdatedFields = <T extends DataObject>(
+  data: T,
+  initialData: T,
+  excludeKeys: string[] = [],
+): [Partial<T>, boolean] => {
+  const updatedFields: Partial<T> = {}
 
   Object.keys(data).forEach((key) => {
     if (
       !excludeKeys.includes(key) &&
       !areValuesEqual(data[key], initialData[key])
     ) {
-      updatedFields[key] = data[key]
+      updatedFields[key as keyof T] = data[key as keyof T]
     }
   })
 
@@ -256,19 +276,29 @@ export const getUpdatedFields = (data, initialData, excludeKeys = []) => {
   return [updatedFields, isIdentical]
 }
 
-export const isNewFile = (file, previousFile) => {
+export const isNewFile = (
+  file: unknown,
+  previousFile: File | string | null,
+): boolean => {
   if (!(file instanceof File)) return false
   if (!previousFile) return true
-  return file.size !== previousFile.size || file.name !== previousFile.name
+  if (typeof previousFile === 'string') return true // If previous is a string URL, any File is new
+  if (previousFile instanceof File) {
+    return file.size !== previousFile.size || file.name !== previousFile.name
+  }
+  return true
 }
 
-export const extractFilename = (fileName) => {
+export const extractFilename = (fileName: string) => {
   if (!fileName) return ''
   const [, ...rest] = fileName.split('_')
   return rest.join('_') || fileName
 }
 
-export const getEducatorDetails = (detail, returnType = 'fullName') => {
+export const getEducatorDetails = (
+  detail: EducatorDetail,
+  returnType = 'fullName',
+): string => {
   const firstName = detail?.educatorId?.firstName || ''
   const lastName = detail?.educatorId?.lastName || ''
 
@@ -281,13 +311,16 @@ export const getEducatorDetails = (detail, returnType = 'fullName') => {
   return fullName
 }
 
-export const containsNestedArray = (objectArray, nestedArrayKey) =>
+export const containsNestedArray = (
+  objectArray: NestedArrayObject[],
+  nestedArrayKey: string,
+): boolean =>
   objectArray.every(
-    (item) =>
+    (item: NestedArrayObject) =>
       Array.isArray(item[nestedArrayKey]) && item[nestedArrayKey].length,
   )
 
-export const formatDateTime = (date) => {
+export const formatDateTime = (date: string | Date | null) => {
   if (!date) return '-'
 
   try {
@@ -307,18 +340,19 @@ const videoMimeTypes = {
   webm: 'video/webm',
 }
 
-export const getFormatType = (ext) =>
-  videoMimeTypes[ext] || 'application/octet-stream'
+export const getFormatType = (ext: string): string =>
+  videoMimeTypes[ext as keyof typeof videoMimeTypes] ||
+  'application/octet-stream'
 
 // Generate Invoice
 
-const fetchImageAsBase64 = async (url) => {
+const fetchImageAsBase64 = async (url: string): Promise<string | null> => {
   try {
     const res = await fetch(url)
     const blob = await res.blob()
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
-      reader.onloadend = () => resolve(reader.result)
+      reader.onloadend = () => resolve(reader.result as string)
       reader.onerror = () =>
         reject(new Error('Failed to convert image to base64'))
       reader.readAsDataURL(blob)
@@ -328,14 +362,14 @@ const fetchImageAsBase64 = async (url) => {
   }
 }
 
-const convertImagesToBase64 = async (div) => {
+const convertImagesToBase64 = async (div: HTMLElement): Promise<void> => {
   const images = div.querySelectorAll('img')
   const promises = Array.from(images).map(async (img) => {
     const src = (img as HTMLImageElement).getAttribute('src')
     if (src && (src.startsWith('https') || src.startsWith('data:'))) {
       const base64 = await fetchImageAsBase64(src)
       if (base64) {
-        ;(img as HTMLImageElement).setAttribute('src', base64)
+        ;(img as HTMLImageElement).setAttribute('src', base64 as string)
       } else (img as HTMLImageElement).remove()
     }
   })
@@ -344,24 +378,26 @@ const convertImagesToBase64 = async (div) => {
 }
 
 export const handleGeneratePdf = async (
-  id,
-  requestCallback,
-  successCallback,
+  id: string,
+  requestCallback: RequestCallback,
+  successCallback: () => void,
 ) => {
-  const response = await requestCallback({
+  const callbackResult = await requestCallback({
     transactionId: id,
-  }).unwrap()
+  })
+  const response =
+    'unwrap' in callbackResult ? await callbackResult.unwrap() : callbackResult
 
   if (!response.error) {
     const div = document.createElement('div')
-    div.innerHTML = response.data
+    div.innerHTML = String(response.data)
     await convertImagesToBase64(div)
 
-    div.querySelectorAll('*').forEach((node) => {
-      node.style.color = '#000'
+    div.querySelectorAll('*').forEach((node: Element) => {
+      ;(node as HTMLElement).style.color = '#000'
     })
 
-    div.querySelectorAll('p').forEach((node) => {
+    div.querySelectorAll('p').forEach((node: HTMLParagraphElement) => {
       node.style.color = '#8A1C1C'
     })
 
@@ -380,22 +416,30 @@ export const handleGeneratePdf = async (
   }
 }
 
-export const isAndroidOrIphone = () => {
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera
+export const isAndroidOrIphone = (): boolean => {
+  const userAgent =
+    navigator.userAgent ||
+    (navigator as unknown as { vendor?: string }).vendor ||
+    (window as unknown as { opera?: string }).opera ||
+    ''
   return (
     /android/i.test(userAgent) ||
-    (/iPhone/i.test(userAgent) && !window.MSStream)
+    (/iPhone/i.test(userAgent) &&
+      !(window as unknown as { MSStream?: unknown }).MSStream)
   )
 }
 
-export const convUtcToLocal = (timeStr, dateStr = new Date().toISOString()) => {
+export const convUtcToLocal = (
+  timeStr: string,
+  dateStr = new Date().toISOString(),
+): Date | null => {
   if (!dateStr || !timeStr) return null
   const datePart = dateStr.split('T')[0]
   return utc(`${datePart} ${timeStr}`, 'YYYY-MM-DD HH:mm').local().toDate()
 }
 
-export const handleAreAllFieldsFilled = (arr) =>
-  arr.every((obj) =>
+export const handleAreAllFieldsFilled = (arr: DataObject[]): boolean =>
+  arr.every((obj: DataObject) =>
     Object.values(obj).every(
       (value) => value !== '' && value !== null && value !== undefined,
     ),

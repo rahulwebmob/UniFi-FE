@@ -1,7 +1,9 @@
 import { useRef, useEffect } from 'react'
 
-const useManualPolling = (refetch, interval = 3000) => {
-  const timeoutIdRef = useRef(null)
+type RefetchFunction = () => Promise<unknown>
+
+const useManualPolling = (refetch: RefetchFunction, interval = 3000) => {
+  const timeoutIdRef = useRef<number | undefined>(undefined)
 
   useEffect(() => {
     let cancelled = false
@@ -13,7 +15,7 @@ const useManualPolling = (refetch, interval = 3000) => {
         //
       }
       if (!cancelled) {
-        timeoutIdRef.current = setTimeout(() => void poll(), interval)
+        timeoutIdRef.current = window.setTimeout(() => void poll(), interval)
       }
     }
 
@@ -21,7 +23,9 @@ const useManualPolling = (refetch, interval = 3000) => {
 
     return () => {
       cancelled = true
-      clearTimeout(timeoutIdRef.current)
+      if (timeoutIdRef.current !== undefined) {
+        clearTimeout(timeoutIdRef.current)
+      }
     }
   }, [refetch, interval])
 }

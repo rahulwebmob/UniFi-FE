@@ -1,4 +1,4 @@
-import  { useMemo } from 'react'
+import { useMemo } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -14,6 +14,7 @@ import {
 
 import { educationApi } from '../../../../../services/education'
 import { useBuyPremiumSubscriptionMutation } from '../../../../../services/admin'
+import type { BuySubscriptionRequest } from '../../../../../types/api.types'
 
 interface TransactionInfo {
   cardHolderName?: string
@@ -23,9 +24,21 @@ interface TransactionInfo {
   [key: string]: unknown
 }
 
-interface SubscriptionDetails {
+interface SubscriptionDetail {
+  _id: string
+  name: string
+  price: number
+  purchaseType: string
+  displayName: string
+  description: string
+  features: string[]
+  duration: string
+  key: string
+  scheduledDate?: string
   [key: string]: unknown
 }
+
+type SubscriptionDetails = SubscriptionDetail[]
 
 interface ReviewEducationProps {
   transactionInfo: TransactionInfo
@@ -57,19 +70,32 @@ const ReviewEducation = ({
 
   const handlePayment = async () => {
     const purchaseType = subscriptionDetails?.[0]?.purchaseType
-    const payload: Record<string, unknown> = {
+    const basePayload = {
+      planId: subscriptionDetails?.[0]?._id || '',
+      paymentMethod: 'card', // Default payment method
       ...transactionInfo,
       subscriptionType: purchaseType,
     }
 
+    const payload: Record<string, unknown> = basePayload
+
     if (purchaseType === 'COURSE') {
-      payload.courseId = (subscriptionDetails as unknown as Array<{ _id: string }>)?.[0]?._id
+      payload.courseId = (
+        subscriptionDetails as unknown as Array<{ _id: string }>
+      )?.[0]?._id
     } else if (purchaseType === 'WEBINAR') {
-      payload.webinarId = (subscriptionDetails as unknown as Array<{ _id: string; scheduledDate?: string }>)?.[0]?._id
-      payload.scheduledDate = (subscriptionDetails as unknown as Array<{ scheduledDate?: string }>)?.[0]?.scheduledDate
+      payload.webinarId = (
+        subscriptionDetails as unknown as Array<{
+          _id: string
+          scheduledDate?: string
+        }>
+      )?.[0]?._id
+      payload.scheduledDate = (
+        subscriptionDetails as unknown as Array<{ scheduledDate?: string }>
+      )?.[0]?.scheduledDate
     }
 
-    const response = await buyPremiumSubscription(payload)
+    const response = await buyPremiumSubscription(payload as unknown as BuySubscriptionRequest)
 
     if (!response.error) {
       if (purchaseType === 'COURSE') {

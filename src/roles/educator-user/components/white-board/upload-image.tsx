@@ -10,7 +10,18 @@ import { errorAlert } from '../../../../redux/reducers/app-slice'
 
 const UploadImage: React.FC = () => {
   const dispatch = useDispatch()
-  const canvas = useSelector((state: RootState) => state.education.canvas as fabric.Canvas | null)
+  const canvasId = useSelector(
+    (state: RootState) => state.education.canvasId as string | null,
+  )
+  
+  // Get fabric canvas instance from global scope or create one
+  const getFabricCanvas = (): fabric.Canvas | null => {
+    if (!canvasId) return null
+    const canvasElement = document.getElementById(canvasId) as HTMLCanvasElement
+    if (!canvasElement) return null
+    // Assume fabric canvas is already initialized elsewhere
+    return (window as { __fabric_canvas__?: fabric.Canvas }).__fabric_canvas__ || null
+  }
 
   const checkFile = (file: File): string => {
     if (file) {
@@ -28,11 +39,12 @@ const UploadImage: React.FC = () => {
   }
 
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const canvas = getFabricCanvas()
     if (!canvas) {
       return
     }
 
-    const file = e.target.files[0]
+    const file = e.target.files?.[0]
     if (!file) return
 
     const err = checkFile(file)
@@ -51,10 +63,10 @@ const UploadImage: React.FC = () => {
         fabricImage.scaleToWidth(150)
         fabricImage.scaleToHeight(150)
 
-        const canvasCenter = canvas.getCenter()
+        const canvasCenter = canvas.getCenterPoint()
         fabricImage.set({
-          left: canvasCenter.left,
-          top: canvasCenter.top,
+          left: canvasCenter.x,
+          top: canvasCenter.y,
           originX: 'center',
           originY: 'center',
         })

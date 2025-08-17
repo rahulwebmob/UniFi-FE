@@ -94,10 +94,10 @@ const AddNewCard = ({
   const { control, handleSubmit, formState } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      cardNumber: subscriptionFormData?.cardNumber || '',
-      expDate: subscriptionFormData?.expDate || '',
-      cardCode: subscriptionFormData?.cardCode || '',
-      nameOnCard: subscriptionFormData?.nameOnCard || '',
+      cardNumber: (subscriptionFormData?.cardNumber as string) || '',
+      expDate: (subscriptionFormData?.expDate as string) || '',
+      cardCode: (subscriptionFormData?.cardCode as string) || '',
+      nameOnCard: (subscriptionFormData?.nameOnCard as string) || '',
     },
   })
 
@@ -113,7 +113,7 @@ const AddNewCard = ({
   const onSubmit = (data: SubscriptionFormData) => {
     const newData = { ...data, ...subscriptionFormData }
     setSubscriptionFormData(newData)
-    setCurrentStep((prev: number) => prev + 1)
+    setCurrentStep(3)
   }
 
   return (
@@ -129,7 +129,7 @@ const AddNewCard = ({
             <ArrowLeft
               size={20}
               // sx={{ cursor: 'pointer' }}
-              onClick={() => setCurrentStep((prev: number) => prev - 1)}
+              onClick={() => setCurrentStep(1)}
             />
           </IconButton>
           <Typography variant="h6">

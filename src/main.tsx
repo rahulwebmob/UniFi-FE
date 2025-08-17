@@ -6,7 +6,7 @@ import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom/client'
 
 import App from './app'
-import Store from './redux/store'
+import Store from './redux/Store'
 import reportWebVitals from './reportWebVitals'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)

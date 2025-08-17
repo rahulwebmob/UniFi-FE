@@ -122,7 +122,7 @@ const AllContent: React.FC = () => {
             value={selectedCategory}
             getOptionLabel={(option) => option || ''}
             onChange={(__, newValue) => {
-              handleCategory(newValue)
+              handleCategory(newValue || '')
             }}
             sx={{
               width: { xs: '100%', sm: 220 },
@@ -145,7 +145,6 @@ const AllContent: React.FC = () => {
             }}
             size="small"
             placeholder={`Search ${contentType}...`}
-            value={searchTerm}
             onChange={(e) => handleDebouceSearch(e.target.value)}
           />
         </Box>

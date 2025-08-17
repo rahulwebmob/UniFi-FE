@@ -1,21 +1,26 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { Paintbrush } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Box, InputBase } from '@mui/material'
 
 import { ColorTypes } from './constants'
+import type { RootState } from '../../../../redux/types'
 import {
   updateFillColor,
   updateStrokeColor,
 } from '../../../../redux/reducers/education-slice'
 
-const ColorPicker = ({ type }) => {
-  const colorInputRef = useRef(null)
-  const dispatch = useDispatch()
-  const { fillColor, strokeColor } = useSelector((state) => state.education)
+interface ColorPickerProps {
+  type: typeof ColorTypes[keyof typeof ColorTypes]
+}
 
-  const handleColorChange = (e) => {
+const ColorPicker = ({ type }: ColorPickerProps) => {
+  const colorInputRef = useRef<HTMLInputElement>(null)
+  const dispatch = useDispatch()
+  const { fillColor, strokeColor } = useSelector((state: RootState) => state.education)
+
+  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (type === ColorTypes.FILL_COLOR) {
       dispatch(updateFillColor(e.target.value))
     } else {
@@ -24,7 +29,7 @@ const ColorPicker = ({ type }) => {
   }
 
   const handleBoxClick = () => {
-    colorInputRef.current.click()
+    colorInputRef.current?.click()
   }
 
   return (

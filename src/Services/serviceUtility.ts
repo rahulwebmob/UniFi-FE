@@ -1,6 +1,11 @@
 import i18n from '../localization/i18n'
 import { signOut } from '../redux/reducers/user-slice'
 import { errorAlert, successAlert } from '../redux/reducers/app-slice'
+import type { Dispatch } from '@reduxjs/toolkit'
+import type {
+  ApiError,
+  QueryRejectedAction,
+} from '../types/service.types'
 
 // Constants for status codes and error handling
 const NUMBER = { ZERO: 0, ONE: 1, FOUR_HUNDRED: 400, FOUR_HUNDRED_THREE: 403 }
@@ -15,21 +20,22 @@ const commonConstant = {
 }
 
 export const onQueryStartedDefault = async (
-  id,
-  { dispatch, queryFulfilled },
+  _id: unknown,
+  { dispatch, queryFulfilled }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
 ) => {
   try {
     await queryFulfilled
     // `onSuccess` side-effect
-  } catch (err) {
+  } catch (err: unknown) {
     // `onError` side-effect
-    if (err?.error?.status === 401) {
+    const error = err as QueryRejectedAction
+    if (error?.error?.status === 401) {
       // if unauthorization error,logout user.
       dispatch(signOut())
       dispatch(
         errorAlert({
-          message: err?.error?.data?.message
-            ? err?.error?.data?.message
+          message: error?.error?.data?.message
+            ? error?.error?.data?.message
             : i18n.t('application:MISCELLANEOUS.SESSION_EXPIRED'),
         }),
       )
@@ -37,7 +43,7 @@ export const onQueryStartedDefault = async (
       dispatch(
         errorAlert({
           message:
-            err?.error?.data?.message ||
+            error?.error?.data?.message ||
             i18n.t('application:MISCELLANEOUS.ERROR_LOADING_DATA'),
         }),
       )
@@ -45,23 +51,27 @@ export const onQueryStartedDefault = async (
   }
 }
 
-export const onQueryStarted = async (id, { dispatch, queryFulfilled }) => {
+export const onQueryStarted = async (
+  _id: unknown,
+  { dispatch, queryFulfilled }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
+) => {
   try {
     await queryFulfilled
-  } catch (err) {
-    if (err?.error?.status === 401) {
+  } catch (err: unknown) {
+    const error = err as QueryRejectedAction
+    if (error?.error?.status === 401) {
       // if unauthorization error,logout user.
       dispatch(signOut())
       dispatch(
         errorAlert({
-          message: err?.error?.data?.message
-            ? err?.error?.data?.message
+          message: error?.error?.data?.message
+            ? error?.error?.data?.message
             : i18n.t('application:MISCELLANEOUS.SESSION_EXPIRED'),
         }),
       )
-    } else if (err?.error?.status === NUMBER.FOUR_HUNDRED_THREE) {
+    } else if (error?.error?.status === NUMBER.FOUR_HUNDRED_THREE) {
       // if unauthorization error,logout user.
-      if (err?.error?.data?.detail === commonConstant.UNAUTHORIZED_TEXT) {
+      if (error?.error?.data?.detail === commonConstant.UNAUTHORIZED_TEXT) {
         dispatch(signOut())
         if (localStorage.getItem('token')) {
           dispatch(
@@ -71,11 +81,11 @@ export const onQueryStarted = async (id, { dispatch, queryFulfilled }) => {
           )
         }
       }
-    } else if (err?.error?.status !== 304) {
+    } else if (error?.error?.status !== 304) {
       dispatch(
         errorAlert({
           message:
-            err?.error?.data?.message ||
+            error?.error?.data?.message ||
             i18n.t('application:MISCELLANEOUS.ERROR_LOADING_DATA'),
         }),
       )
@@ -83,53 +93,58 @@ export const onQueryStarted = async (id, { dispatch, queryFulfilled }) => {
   }
 }
 export const onMutationStartedDefault = async (
-  data,
-  { dispatch, queryFulfilled },
+  _data: unknown,
+  { dispatch, queryFulfilled }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
 ) => {
   try {
     const res = await queryFulfilled
     // `onSuccess` side-effect
-    if (res?.data?.message) {
-      dispatch(successAlert(res.data))
+    if (res?.data && typeof res.data === 'object' && 'message' in res.data && typeof res.data.message === 'string') {
+      dispatch(successAlert({ message: res.data.message }))
     }
-  } catch (err) {
-    if (err?.error?.status === 401) {
+  } catch (err: unknown) {
+    const error = err as QueryRejectedAction
+    if (error?.error?.status === 401) {
       // if unauthorization error,logout user.
       dispatch(signOut())
       dispatch(
         errorAlert({
-          message: err?.error?.data?.message
-            ? err?.error?.data?.message
+          message: error?.error?.data?.message
+            ? error?.error?.data?.message
             : i18n.t('application:MISCELLANEOUS.SESSION_EXPIRED'),
         }),
       )
     } else {
       dispatch(
         errorAlert({
-          message: err?.error?.data?.message || 'Error completing request',
+          message: error?.error?.data?.message || 'Error completing request',
         }),
       )
     }
   }
 }
 
-export const onMutationStarted = async (id, { dispatch, queryFulfilled }) => {
+export const onMutationStarted = async (
+  _id: unknown,
+  { dispatch, queryFulfilled }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
+) => {
   try {
     await queryFulfilled
-  } catch (err) {
-    if (err?.error?.status === 401) {
+  } catch (err: unknown) {
+    const error = err as QueryRejectedAction
+    if (error?.error?.status === 401) {
       // if unauthorization error,logout user.
       dispatch(signOut())
       dispatch(
         errorAlert({
-          message: err?.error?.data?.message
-            ? err?.error?.data?.message
+          message: error?.error?.data?.message
+            ? error?.error?.data?.message
             : i18n.t('application:MISCELLANEOUS.SESSION_EXPIRED'),
         }),
       )
-    } else if (err?.error?.status === NUMBER.FOUR_HUNDRED_THREE) {
+    } else if (error?.error?.status === NUMBER.FOUR_HUNDRED_THREE) {
       // if unauthorization error,logout user.
-      if (err?.error?.data?.detail === commonConstant.UNAUTHORIZED_TEXT) {
+      if (error?.error?.data?.detail === commonConstant.UNAUTHORIZED_TEXT) {
         dispatch(signOut())
         dispatch(
           errorAlert({
@@ -137,19 +152,19 @@ export const onMutationStarted = async (id, { dispatch, queryFulfilled }) => {
           }),
         )
       }
-    } else if (err?.error?.status === NUMBER.FOUR_HUNDRED) {
-      if (err?.error?.data?.detail === STATICTEXT.QUESTION_INVALID) {
-        await dispatch(
+    } else if (error?.error?.status === NUMBER.FOUR_HUNDRED) {
+      if (error?.error?.data?.detail === STATICTEXT.QUESTION_INVALID) {
+        dispatch(
           errorAlert({
             message: i18n.t('application:MISCELLANEOUS.ALREADY_SAVED'),
           }),
         )
       }
-    } else if (err?.error?.message !== STATICTEXT.API_ABORTED) {
+    } else if ((error?.error as ApiError)?.message !== STATICTEXT.API_ABORTED) {
       dispatch(
         errorAlert({
           message:
-            err?.error?.data?.message ||
+            error?.error?.data?.message ||
             i18n.t('application:MISCELLANEOUS.ERROR_COMPLETING_REQUEST'),
         }),
       )

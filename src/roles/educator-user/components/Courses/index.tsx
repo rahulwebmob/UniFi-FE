@@ -28,8 +28,21 @@ import {
   ListItemText,
 } from '@mui/material'
 
+import type { MRT_ColumnDef } from 'material-react-table'
 import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
+
+interface CourseTableData {
+  thumbNail?: string
+  title?: string
+  status?: string
+  _id?: string
+  category?: string[]
+  createdAt?: string
+  totalPurchased?: number
+  [key: string]: unknown
+}
+
 import {
   useGetAllCoursesQuery,
   useUpdateCourseMutation,
@@ -45,8 +58,8 @@ const Courses = () => {
   const [status, setStatus] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [rowSelection, setRowSelection] = useState({})
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [selectedRow, setSelectedRow] = useState(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [selectedRow, setSelectedRow] = useState<CourseTableData | null>(null)
 
   const [updateCourse] = useUpdateCourseMutation()
 
@@ -69,28 +82,31 @@ const Courses = () => {
     },
   )
 
-  const debouncedSearch = debounce((value) => {
+  const debouncedSearch = debounce((value: string) => {
     setPage(1)
     setSearchTerm(value)
   }, 700)
 
-  const handleStatusColor = (value) => {
+  const handleStatusColor = (value: string) => {
     switch (value) {
       case 'published':
         return 'success'
       case 'draft':
         return 'warning'
       default:
-        return 'pirmary.main'
+        return 'primary'
     }
   }
 
-  const handleDeleteCourse = async (id) => {
+  const handleDeleteCourse = async (id: string) => {
     await updateCourse({ courseId: id, isDeleted: true })
     handleCloseMenu()
   }
 
-  const handleOpenMenu = (event, row) => {
+  const handleOpenMenu = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    row: CourseTableData,
+  ) => {
     setAnchorEl(event.currentTarget)
     setSelectedRow(row)
   }
@@ -100,13 +116,12 @@ const Courses = () => {
     setSelectedRow(null)
   }
 
-  const columns = [
+  const columns: MRT_ColumnDef<CourseTableData>[] = [
     {
       accessorKey: 'title',
       header: t('EDUCATOR.COURSES.COURSE_NAME'),
       size: 300,
-      Cell: (tableProps) => {
-        const { row, cell } = tableProps
+      Cell: ({ row, cell }) => {
         return (
           <Box display="flex" gap={2} alignItems="center">
             {row.original.thumbNail ? (
@@ -135,7 +150,7 @@ const Courses = () => {
                 <BookOpen size={20} color={theme.palette.grey[400]} />
               </Box>
             )}
-            <Tooltip title={cell.getValue() || '-'} arrow>
+            <Tooltip title={String(cell.getValue() || '-')} arrow>
               <Typography
                 sx={{
                   overflow: 'hidden',
@@ -144,7 +159,7 @@ const Courses = () => {
                   maxWidth: '240px',
                 }}
               >
-                {cell.getValue() || '-'}
+                {String(cell.getValue() || '-')}
               </Typography>
             </Tooltip>
           </Box>
@@ -155,10 +170,13 @@ const Courses = () => {
     {
       accessorKey: 'category',
       header: t('EDUCATOR.COURSES.EXPERTISE'),
-      Cell: (tableProps) => {
-        const { cell } = tableProps
+      Cell: ({ cell }) => {
+        const categories = cell.getValue() as string[] | undefined
         return (
-          <Tooltip title={cell.getValue().join(', ') || '-'} arrow>
+          <Tooltip
+            title={Array.isArray(categories) ? categories.join(', ') : '-'}
+            arrow
+          >
             <Typography
               variant="body1"
               sx={{
@@ -171,7 +189,7 @@ const Courses = () => {
                 boxSizing: 'border-box',
               }}
             >
-              {cell.getValue().join(', ') || '-'}
+              {Array.isArray(categories) ? categories.join(', ') : '-'}
             </Typography>
           </Tooltip>
         )
@@ -180,11 +198,12 @@ const Courses = () => {
     {
       accessorKey: 'createdAt',
       header: t('EDUCATOR.COURSES.CREATED_ON'),
-      Cell: (tableProps) => {
-        const { cell } = tableProps
+      Cell: ({ cell }) => {
         return (
           <Typography style={{ whiteSpace: 'pre-line' }}>
-            {cell.getValue() ? new Date(cell.getValue()).toLocaleString() : '-'}
+            {cell.getValue()
+              ? new Date(String(cell.getValue())).toLocaleString()
+              : '-'}
           </Typography>
         )
       },
@@ -192,18 +211,16 @@ const Courses = () => {
     {
       accessorKey: 'totalPurchased',
       header: t('EDUCATOR.COURSES.TOTAL_PURCHASED'),
-      Cell: (tableProps) => {
-        const { cell } = tableProps
-        return <Typography>{cell.getValue() || '-'}</Typography>
+      Cell: ({ cell }) => {
+        return <Typography>{String(cell.getValue() || '-')}</Typography>
       },
     },
     {
       accessorKey: 'status',
       header: t('EDUCATOR.COURSES.STATUS'),
       size: 120,
-      Cell: (tableProps) => {
-        const { cell } = tableProps
-        const courseStatus = cell.getValue()
+      Cell: ({ cell }) => {
+        const courseStatus = String(cell.getValue() || '')
         return (
           <Chip
             label={courseStatus || '-'}
@@ -222,8 +239,7 @@ const Courses = () => {
       accessorKey: 'view',
       header: t('EDUCATOR.COURSES.VIEW_COURSE'),
       size: 140,
-      Cell: (tableProps) => {
-        const { row } = tableProps
+      Cell: ({ row }) => {
         return (
           <Button
             size="small"
@@ -250,8 +266,7 @@ const Courses = () => {
       accessorKey: 'action',
       header: t('EDUCATOR.COURSES.ACTION'),
       size: 80,
-      Cell: (tableProps) => {
-        const { row } = tableProps
+      Cell: ({ row }) => {
         return (
           <Box display="flex" justifyContent="center">
             <IconButton
@@ -268,7 +283,7 @@ const Courses = () => {
   ]
 
   const tableOptions = {
-    getRowId: (row) => row.userId,
+    getRowId: (row: CourseTableData) => row._id || '',
     onRowSelectionChange: setRowSelection,
     state: { rowSelection },
     enableStickyHeader: true,
@@ -280,7 +295,7 @@ const Courses = () => {
     },
   }
 
-  const handleChangeStatus = (value) => {
+  const handleChangeStatus = (value: string) => {
     setPage(1)
     setStatus(value)
   }
@@ -416,10 +431,12 @@ const Courses = () => {
             minHeight: 0,
           }}
         >
-          <MuiReactTable
+          <MuiReactTable<CourseTableData>
             columns={columns}
             rows={coursesData?.data?.courses || []}
             materialReactProps={tableOptions}
+            localization={{}}
+            returnTableInstance={false}
           />
         </Box>
         <Box mt={2} textAlign="center" sx={{ flexShrink: 0 }}>

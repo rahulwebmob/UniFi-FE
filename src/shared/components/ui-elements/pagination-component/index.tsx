@@ -1,23 +1,24 @@
 import { Pagination } from '@mui/material'
 
-import * as Style from '../../../../roles/admin-user/components/tablestyle'
-
 interface PaginationComponentProps {
-  data: { totalPages?: number; [key: string]: unknown }
+  data?:
+    | { totalPages?: number; count?: number; [key: string]: unknown }
+    | null
+    | undefined
   page: number
   setPage: (page: number) => void
-  disabled: boolean
-  customStyle: React.CSSProperties
-  scrollToTop: () => void
+  disabled?: boolean
+  customStyle?: React.CSSProperties
+  scrollToTop?: () => void
 }
 
 const PaginationComponent = ({
   data,
   page,
   setPage,
-  disabled,
-  customStyle,
-  scrollToTop,
+  disabled = false,
+  customStyle = {},
+  scrollToTop = () => {},
 }: PaginationComponentProps) => {
   const pageLimit = data?.count || 0
   const pageCount = Number.isNaN(pageLimit) ? 0 : Math.ceil(pageLimit / 10)
@@ -27,19 +28,17 @@ const PaginationComponent = ({
     scrollToTop()
   }
   return (
-    <Style.PaginationBar>
-      <Pagination
-        disabled={disabled}
-        page={page}
-        count={pageCount}
-        onChange={handlePageChange}
-        variant="outlined"
-        color="primary"
-        boundaryCount={4}
-        size="medium"
-        sx={customStyle}
-      />
-    </Style.PaginationBar>
+    <Pagination
+      disabled={disabled}
+      page={page}
+      count={pageCount}
+      onChange={handlePageChange}
+      variant="outlined"
+      color="primary"
+      boundaryCount={4}
+      size="medium"
+      sx={customStyle}
+    />
   )
 }
 

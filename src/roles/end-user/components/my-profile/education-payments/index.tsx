@@ -1,60 +1,29 @@
-import { dispatch } from 'd3'
 import { FileText } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 
 import { Box, Tooltip, Typography } from '@mui/material'
 
 import ApiMiddleware from '../../../../../shared/components/api-middleware'
-
-interface EducationDetails {
-  _id: string
-  thumbNail?: string
-  title?: string
-  webinarId?: string
-  courseId?: string
-}
-
-interface EducationPayment {
-  _id: string
-  moduleType: 'webinar' | 'course'
-  webinarId?: EducationDetails
-  courseId?: EducationDetails
-  amount?: number
-  createdAt?: string
-}
-
-interface EducationPaymentsData {
-  data?: EducationPayment[]
-}
-
-type LazyGetEducationInvoiceQuery = (params: {
-  transactionId: string
-}) => Promise<{ unwrap: () => Promise<{ error: boolean; data: string }> }>
-
 import { successAlert } from '../../../../../redux/reducers/app-slice'
 import { handleGeneratePdf } from '../../../../admin-user/components/common'
 import {
   useGetEducationPaymentsQuery,
   useLazyGetEducationInvoiceQuery,
 } from '../../../../../services/education'
+import type { PaymentHistory } from '../../../../../types/api.types'
 
 const EducationPayments = () => {
   const { t } = useTranslation('application')
+  const dispatch = useDispatch()
 
-  const [getEducationPayments] = useLazyGetEducationInvoiceQuery() as [
-    LazyGetEducationInvoiceQuery,
-  ]
-  const { data, isLoading, isError } = useGetEducationPaymentsQuery() as {
-    data?: EducationPaymentsData
-    isLoading: boolean
-    isError: boolean
-  }
+  const [getEducationInvoice] = useLazyGetEducationInvoiceQuery()
+  const { data, isLoading, error } = useGetEducationPaymentsQuery({})
 
-  const handleDetails = (
-    purchase: EducationPayment,
-  ): EducationDetails | undefined => {
-    const moduleType = purchase.moduleType
-    return moduleType === 'webinar' ? purchase.webinarId : purchase.courseId
+  console.log(data)
+
+  const getDisplayName = (item: PaymentHistory): string => {
+    return item.description || `${item.itemType} Payment`
   }
 
   const handleSuccessAlert = () =>
@@ -64,16 +33,25 @@ const EducationPayments = () => {
       }),
     )
 
+  const educationInvoiceWrapper = (params: { transactionId: string }) => {
+    const result = getEducationInvoice({ invoiceId: params.transactionId })
+    return result as unknown as {
+      unwrap: () => Promise<{ error: boolean; data: string }>
+    }
+  }
+
   return (
     <Box p={1.5} height="100%">
-      <ApiMiddleware isLoading={isLoading} isError={isError}>
-        {data?.data?.map((item: EducationPayment) => {
-          const details = handleDetails(item)
-          const thumbNail = details?.thumbNail
-          const title = details?.title
+      <ApiMiddleware
+        isLoading={isLoading}
+        error={error}
+        isData={!!data?.length}
+      >
+        {data?.map((item: PaymentHistory) => {
+          const displayName = getDisplayName(item)
           return (
             <Box
-              key={item._id}
+              key={item.id}
               sx={{
                 display: { sm: 'grid', xs: 'block' },
                 gridAutoFlow: 'column',
@@ -91,12 +69,15 @@ const EducationPayments = () => {
                     height: 70,
                     overflow: 'hidden',
                     backgroundColor: (theme) => theme.palette.grey[100],
-                    backgroundImage: thumbNail ? `url(${thumbNail})` : 'none',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
-                />
+                >
+                  <Typography variant="caption" color="text.secondary">
+                    {item.itemType}
+                  </Typography>
+                </Box>
               </Box>
               <Box>
                 <Box
@@ -107,8 +88,8 @@ const EducationPayments = () => {
                   }}
                 >
                   <Box>
-                    <Tooltip title={title ?? '-'}>
-                      <Typography component="p">{title ?? '-'}</Typography>
+                    <Tooltip title={displayName}>
+                      <Typography component="p">{displayName}</Typography>
                     </Tooltip>
                   </Box>
                   <Box
@@ -136,8 +117,8 @@ const EducationPayments = () => {
                       }}
                       onClick={() => {
                         void handleGeneratePdf(
-                          item._id,
-                          getEducationPayments,
+                          item.id,
+                          educationInvoiceWrapper,
                           handleSuccessAlert,
                         )
                       }}
@@ -157,7 +138,7 @@ const EducationPayments = () => {
                       color="text.secondary"
                       textTransform="capitalize"
                     >
-                      ({item.moduleType})
+                      ({item.itemType})
                     </Typography>
                   </Box>
                 </Box>
@@ -168,7 +149,9 @@ const EducationPayments = () => {
                 }}
                 textTransform="capitalize"
               >
-                <Box>{item.amount ? `$${item.amount}` : '-'}</Box>
+                <Box>
+                  ${item.amount} {item.currency}
+                </Box>
               </Box>
             </Box>
           )

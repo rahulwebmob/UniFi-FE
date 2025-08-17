@@ -5,6 +5,8 @@ import WebinarContent from '../Webinar/webinar-content'
 import PremiumModal from '../../../../shared/components/layout/premium'
 import ApiResponseWrapper from '../../../../shared/components/api-middleware'
 import { useGetParticularWebinarDetailQuery } from '../../../../services/education'
+import type { WebinarDetail } from '../../../../types/api.types'
+import type { WebinarData } from '../../../../types/education.types'
 
 interface PremiumModalRef {
   openModal: () => void
@@ -21,25 +23,30 @@ const WebinarDetails = () => {
   )
 
   const premiumModelDetails = useMemo(() => {
-    const item = data?.data
+    const webinarResponse = data as { data?: WebinarDetail }
+    const item = webinarResponse?.data
     return {
       mediaDetails: {
-        logo: item?.thumbNail,
-        coverImage: item?.thumbNail,
-        featureImage: item?.thumbNail,
-        educatorDetails: item?.educatorId,
+        logo: item?.thumbNail || item?.thumbnail || '',
+        coverImage: item?.thumbNail || item?.thumbnail || '',
+        featureImage: item?.thumbNail || item?.thumbnail || '',
+        educatorDetails: {
+          firstName: (item?.instructor as { firstName?: string })?.firstName || '',
+          lastName: (item?.instructor as { lastName?: string })?.lastName || '',
+          id: (item?.educatorId as string) || item?.instructor?.id || 'default-educator',
+        },
       },
       subscriptionDetails: [
         {
           features: [],
           duration: '',
-          key: item?._id,
-          _id: item?._id,
-          name: item?.title,
-          price: item?.price,
-          purchaseType: 'WEBINAR',
-          displayName: item?.title,
-          description: item?.subtitle,
+          key: item?._id || item?.id || 'default-key',
+          _id: item?._id || item?.id || 'default-id',
+          name: item?.title || '',
+          price: item?.price || 0,
+          purchaseType: 'WEBINAR' as const,
+          displayName: item?.title || '',
+          description: item?.subtitle || item?.description || '',
           scheduledDate: item?.webinarScheduledObj?.join_date,
         },
       ],
@@ -50,12 +57,37 @@ const WebinarDetails = () => {
     subscriptionRef.current?.openModal()
   }
 
-  const handleCourseData = useMemo(
-    () => ({
-      ...data?.data,
-    }),
-    [data],
-  )
+  const handleCourseData = useMemo((): WebinarData => {
+    const webinarResponse = data as { data?: WebinarDetail }
+    const webinarDetail = webinarResponse?.data
+    
+    if (!webinarDetail) {
+      // Return a minimal valid WebinarData object
+      return {
+        _id: '',
+        title: '',
+        description: '',
+        thumbnail: '',
+        startTime: '',
+        endTime: '',
+        duration: 0,
+        status: 'draft' as const,
+      }
+    }
+    
+    // Transform WebinarDetail to WebinarData
+    return {
+      ...webinarDetail,
+      _id: webinarDetail._id || webinarDetail.id || '',
+      title: webinarDetail.title || '',
+      description: webinarDetail.description || '',
+      thumbnail: webinarDetail.thumbnail || webinarDetail.thumbNail || '',
+      startTime: webinarDetail.startTime || '',
+      endTime: webinarDetail.endTime || '',
+      duration: webinarDetail.duration || 0,
+      status: webinarDetail.status || 'draft' as const,
+    }
+  }, [data])
 
   return (
     <ApiResponseWrapper

@@ -1,7 +1,5 @@
 import type { Theme } from '@mui/material/styles'
 
-import React from 'react'
-
 import { Box, Tooltip } from '@mui/material'
 
 interface CategoryListProps {

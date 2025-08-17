@@ -18,7 +18,8 @@ const PublicRoutes: React.FC = () => {
   const queryParams = new URLSearchParams(window.location.search)
   const tokenInQueryParams = queryParams.get('token')
 
-  const iff = <T, U>(condition: boolean, then: T, otherwise: U): T | U => (condition ? then : otherwise)
+  const iff = <T, U>(condition: boolean, then: T, otherwise: U): T | U =>
+    condition ? then : otherwise
 
   const isEducatorPath = /\/educator\/(login|onboarding)/.test(
     location.pathname,

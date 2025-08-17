@@ -6,6 +6,7 @@ import ApiResponseWrapper from '../../../api-middleware'
 import { useGetParticularCourseQuery } from '../../../../../services/education'
 import ContentView from '../../../../../roles/educator-user/components/Courses/content-view'
 
+// Use local CourseData for component-specific structure
 interface CourseData {
   _id: string
   title: string
@@ -35,7 +36,11 @@ interface MediaDetails {
   logo: string
   coverImage: string
   featureImage: string
-  educatorDetails: string
+  educatorDetails: {
+    firstName?: string
+    lastName?: string
+    [key: string]: unknown
+  }
 }
 
 interface SubscriptionDetails {
@@ -68,7 +73,11 @@ const getPurchaseDetails = (
       logo: item?.thumbNail ?? '',
       coverImage: item?.thumbNail ?? '',
       featureImage: item?.thumbNail ?? '',
-      educatorDetails: item?.educatorId ?? '',
+      educatorDetails: {
+        firstName: '',
+        lastName: '',
+        id: item?.educatorId ?? '',
+      },
     },
     subscriptionDetails: [subscriptionDetail],
   }
@@ -104,15 +113,17 @@ const CourseDetails: React.FC = () => {
       isLoading={isLoading}
       isData={!!data?.data}
     >
-      <ContentView
-        isEdit={false}
-        courseData={courseData}
-        handleOpenPremiumModal={handleOpenPremiumModal}
-      />
+      {courseData && (
+        <ContentView
+          isEdit={false}
+          courseData={courseData as unknown as import('../../../../../types/education').CourseData}
+          handleOpenPremiumModal={handleOpenPremiumModal}
+        />
+      )}
       <PremiumModal
         ref={subscriptionRef}
-        subscriptionDetails={premiumModelDetails?.subscriptionDetails}
-        mediaDetails={premiumModelDetails?.mediaDetails}
+        subscriptionDetails={premiumModelDetails?.subscriptionDetails as { features: string[]; duration: string; key: string; _id: string; name: string; price: number; purchaseType: string; displayName: string; description: string; scheduledDate?: string; [key: string]: unknown }[]}
+        mediaDetails={premiumModelDetails?.mediaDetails as { logo: string; coverImage: string; featureImage: string; educatorDetails: { firstName?: string; lastName?: string; [key: string]: unknown } }}
         isEducation
       />
     </ApiResponseWrapper>

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Lock, Video, FileText } from 'lucide-react'
-import React, { useRef, useMemo, useState } from 'react'
+import { useRef, useMemo, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
 
@@ -16,6 +16,10 @@ interface ViewResourceProps {
     isCourseBought?: boolean
     resourceUrl?: string
     _id?: string
+    courseId?: string
+    chapterId?: string
+    url?: string
+    status?: string
   }
   isEdit?: boolean
   handleOpenPremiumModal?: () => void
@@ -26,7 +30,10 @@ const ViewResource = ({
   isEdit,
   handleOpenPremiumModal,
 }: ViewResourceProps) => {
-  const videoRef = useRef(null)
+  const videoRef = useRef<{
+    openModal: () => void
+    closeModal: () => void
+  } | null>(null)
   const navigate = useNavigate()
   const { t } = useTranslation('education')
   const [resourceUrl, setResourceUrl] = useState('')
@@ -49,9 +56,18 @@ const ViewResource = ({
         chapterId: lessonDetail?.chapterId,
       })
 
-      if (response?.data?.url) {
-        videoRef.current.openModal()
-        setResourceUrl(response.data.url)
+      if (
+        response?.data &&
+        typeof response.data === 'object' &&
+        response.data !== null &&
+        !Array.isArray(response.data) &&
+        'url' in response.data &&
+        typeof (response.data as { url: unknown }).url === 'string'
+      ) {
+        if (videoRef.current) {
+          videoRef.current.openModal()
+        }
+        setResourceUrl(String((response.data as { url: unknown }).url))
       }
     } catch {
       // error

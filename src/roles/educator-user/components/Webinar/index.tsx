@@ -1,5 +1,6 @@
+import React from 'react'
 import { debounce } from 'lodash'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -31,6 +32,13 @@ import {
 } from '@mui/material'
 
 import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
+import type { MRT_Cell, MRT_Row } from 'material-react-table'
+import type { WebinarData } from '../../../../types/education.types'
+
+interface WebinarTableCellProps {
+  cell: MRT_Cell<WebinarData>
+  row: MRT_Row<WebinarData>
+}
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import {
   useGetAllWebinarQuery,
@@ -39,9 +47,30 @@ import {
   useGetWebinarsCountQuery,
 } from '../../../../services/admin'
 
-const WebinarTable = ({ columns, data, page, setPage }) => {
+interface WebinarTableData {
+  data: WebinarData[]
+  totalPages?: number
+  count?: number
+  [key: string]: unknown
+}
+
+interface Column {
+  accessorKey: string
+  header: string
+  cell?: ({ row }: { row: { original: WebinarData } }) => React.JSX.Element
+  size?: number
+}
+
+interface WebinarTableProps {
+  columns: Column[]
+  data: WebinarTableData
+  page: number
+  setPage: (page: number) => void
+}
+
+const WebinarTable = ({ columns, data, page, setPage }: WebinarTableProps) => {
   const tableOptions = {
-    getRowId: (row) => row.userId,
+    getRowId: (row: WebinarData) => row._id,
     enableStickyHeader: true,
     muiTableContainerProps: {
       sx: {
@@ -56,12 +85,12 @@ const WebinarTable = ({ columns, data, page, setPage }) => {
       <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
         <MuiReactTable
           columns={columns}
-          rows={data?.data || []}
+          rows={data.data || []}
           materialReactProps={tableOptions}
         />
       </Box>
       <Box mt={2} textAlign="center" sx={{ flexShrink: 0 }}>
-        {!!data?.data?.length && (
+        {!!data.data?.length && (
           <PaginationComponent page={page} data={data} setPage={setPage} />
         )}
       </Box>
@@ -69,14 +98,19 @@ const WebinarTable = ({ columns, data, page, setPage }) => {
   )
 }
 
-const AllWebinars = ({ page, setPage }) => {
+interface WebinarPaginationProps {
+  page: number
+  setPage: (page: number) => void
+}
+
+const AllWebinars = ({ page, setPage }: WebinarPaginationProps) => {
   const theme = useTheme()
   const navigate = useNavigate()
   const { t } = useTranslation('education')
   const [status, setStatus] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [selectedRow, setSelectedRow] = useState(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [selectedRow, setSelectedRow] = useState<WebinarData | null>(null)
 
   const { data: webinarData } = useGetAllWebinarQuery(
     { page, searchTerm, pageSize: 10, ...(status ? { status } : {}) },
@@ -89,17 +123,20 @@ const AllWebinars = ({ page, setPage }) => {
   )
   const [updateWebinar] = useUpdateWebinarMutation()
 
-  const debouncedSearch = debounce((value) => {
+  const debouncedSearch = debounce((value: string) => {
     setPage(1)
     setSearchTerm(value)
   }, 700)
 
-  const handleDeleteWebinar = async (id) => {
+  const handleDeleteWebinar = async (id: string) => {
     await updateWebinar({ webinarId: id, isDeleted: true })
     handleCloseMenu()
   }
 
-  const handleOpenMenu = (event, row) => {
+  const handleOpenMenu = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    row: WebinarData,
+  ) => {
     setAnchorEl(event.currentTarget)
     setSelectedRow(row)
   }
@@ -109,7 +146,7 @@ const AllWebinars = ({ page, setPage }) => {
     setSelectedRow(null)
   }
 
-  const handleStatusColor = (value) => {
+  const handleStatusColor = (value: string) => {
     switch (value) {
       case 'published':
         return 'success'
@@ -127,7 +164,7 @@ const AllWebinars = ({ page, setPage }) => {
       accessorKey: 'title',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.WEBINAR_NAME'),
       size: 300,
-      Cell: (tableProps) => {
+      Cell: (tableProps: WebinarTableCellProps) => {
         const { row, cell } = tableProps
         return (
           <Box display="flex" gap={2} alignItems="center">
@@ -157,7 +194,7 @@ const AllWebinars = ({ page, setPage }) => {
                 <Video size={20} color={theme.palette.grey[400]} />
               </Box>
             )}
-            <Tooltip title={cell.getValue() || '-'} arrow>
+            <Tooltip title={String(cell.getValue() || '-')} arrow>
               <Typography
                 sx={{
                   overflow: 'hidden',
@@ -166,7 +203,7 @@ const AllWebinars = ({ page, setPage }) => {
                   maxWidth: '240px',
                 }}
               >
-                {cell.getValue() || '-'}
+                {String(cell.getValue() || '-')}
               </Typography>
             </Tooltip>
           </Box>
@@ -176,10 +213,12 @@ const AllWebinars = ({ page, setPage }) => {
     {
       accessorKey: 'category',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CATEGORY'),
-      Cell: (tableProps) => {
+      Cell: (tableProps: WebinarTableCellProps) => {
         const { cell } = tableProps
+        const categories = cell.getValue() as string[] | undefined
+        const categoryText = Array.isArray(categories) ? categories.join(', ') : '-'
         return (
-          <Tooltip title={cell.getValue()?.join(', ') || '-'} arrow>
+          <Tooltip title={categoryText} arrow>
             <Typography
               variant="body1"
               sx={{
@@ -192,7 +231,7 @@ const AllWebinars = ({ page, setPage }) => {
                 boxSizing: 'border-box',
               }}
             >
-              {cell.getValue()?.join(', ') || '-'}
+              {categoryText}
             </Typography>
           </Tooltip>
         )
@@ -201,12 +240,12 @@ const AllWebinars = ({ page, setPage }) => {
     {
       accessorKey: 'scheduled',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.SCHEDULE'),
-      Cell: (tableProps) => {
+      Cell: (tableProps: WebinarTableCellProps) => {
         const { row } = tableProps
         const { webinarScheduledObj } = row.original
-        const joinDate = new Date(
-          webinarScheduledObj?.join_date,
-        ).toLocaleString()
+        const joinDate = webinarScheduledObj?.join_date 
+          ? new Date(webinarScheduledObj.join_date).toLocaleString()
+          : '-'
 
         return webinarScheduledObj?.can_join ? (
           <Chip
@@ -231,19 +270,20 @@ const AllWebinars = ({ page, setPage }) => {
     {
       accessorKey: 'totalEnrolled',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.TOTAL_ENROLLMENT'),
-      Cell: (tableProps) => {
-        const { cell } = tableProps
-        return <Typography>{cell.getValue() || '-'}</Typography>
+      Cell: (tableProps: WebinarTableCellProps) => {
+        const { row } = tableProps
+        return <Typography>{row.original.totalEnrolled || '-'}</Typography>
       },
     },
     {
       accessorKey: 'createdAt',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CREATED_AT'),
-      Cell: (tableProps) => {
+      Cell: (tableProps: WebinarTableCellProps) => {
         const { cell } = tableProps
+        const dateValue = cell.getValue() as string | undefined
         return (
           <Typography style={{ whiteSpace: 'pre-line' }}>
-            {cell.getValue() ? new Date(cell.getValue()).toLocaleString() : '-'}
+            {dateValue ? new Date(dateValue).toLocaleString() : '-'}
           </Typography>
         )
       },
@@ -252,12 +292,13 @@ const AllWebinars = ({ page, setPage }) => {
       accessorKey: 'status',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.STATUS'),
       size: 120,
-      Cell: (tableProps) => {
-        const { cell } = tableProps
+      Cell: (tableProps: WebinarTableCellProps) => {
+        const { row } = tableProps
+        const status = row.original.status
         return (
           <Chip
-            label={cell.getValue() || '-'}
-            color={handleStatusColor(cell.getValue())}
+            label={status || '-'}
+            color={handleStatusColor(status || '')}
             size="small"
             sx={{
               fontWeight: 600,
@@ -272,7 +313,7 @@ const AllWebinars = ({ page, setPage }) => {
       accessorKey: 'view',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.VIEW_WEBINAR'),
       size: 140,
-      Cell: (tableProps) => {
+      Cell: (tableProps: WebinarTableCellProps) => {
         const { row } = tableProps
         return (
           <Button
@@ -302,7 +343,7 @@ const AllWebinars = ({ page, setPage }) => {
       accessorKey: 'action',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.ACTION'),
       size: 80,
-      Cell: (tableProps) => {
+      Cell: (tableProps: WebinarTableCellProps) => {
         const { row } = tableProps
         return (
           <Box display="flex" justifyContent="center">
@@ -319,7 +360,7 @@ const AllWebinars = ({ page, setPage }) => {
     },
   ]
 
-  const handleChangeStatus = (value) => {
+  const handleChangeStatus = (value: string) => {
     setPage(1)
     setStatus(value)
   }
@@ -398,7 +439,7 @@ const AllWebinars = ({ page, setPage }) => {
         <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
           <WebinarTable
             columns={columns}
-            data={webinarData?.data}
+            data={webinarData || { data: [] }}
             page={page}
             setPage={setPage}
           />
@@ -452,7 +493,7 @@ const AllWebinars = ({ page, setPage }) => {
   )
 }
 
-const PastWebinars = ({ page, setPage }) => {
+const PastWebinars = ({ page, setPage }: WebinarPaginationProps) => {
   const theme = useTheme()
   const { t } = useTranslation('education')
   const { data } = useGetPastWebinarsQuery(
@@ -460,7 +501,7 @@ const PastWebinars = ({ page, setPage }) => {
     { pollingInterval: 5000 },
   )
 
-  const handleStatusColor = (value) => {
+  const handleStatusColor = (value: string) => {
     switch (value) {
       case 'completed':
         return 'success'
@@ -476,7 +517,7 @@ const PastWebinars = ({ page, setPage }) => {
       accessorKey: 'title',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.WEBINAR_NAME'),
       size: 300,
-      Cell: (tableProps) => {
+      Cell: (tableProps: WebinarTableCellProps) => {
         const { row, cell } = tableProps
         return (
           <Box display="flex" gap={2} alignItems="center">
@@ -506,7 +547,7 @@ const PastWebinars = ({ page, setPage }) => {
                 <Video size={20} color={theme.palette.grey[400]} />
               </Box>
             )}
-            <Tooltip title={cell.getValue() || '-'} arrow>
+            <Tooltip title={String(cell.getValue() || '-')} arrow>
               <Typography
                 sx={{
                   overflow: 'hidden',
@@ -515,7 +556,7 @@ const PastWebinars = ({ page, setPage }) => {
                   maxWidth: '240px',
                 }}
               >
-                {cell.getValue() || '-'}
+                {String(cell.getValue() || '-')}
               </Typography>
             </Tooltip>
           </Box>
@@ -525,10 +566,12 @@ const PastWebinars = ({ page, setPage }) => {
     {
       accessorKey: 'category',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CATEGORY'),
-      Cell: (tableProps) => {
+      Cell: (tableProps: WebinarTableCellProps) => {
         const { cell } = tableProps
+        const categories = cell.getValue() as string[] | undefined
+        const categoryText = Array.isArray(categories) ? categories.join(', ') : '-'
         return (
-          <Tooltip title={cell.getValue()?.join(', ') || '-'} arrow>
+          <Tooltip title={categoryText} arrow>
             <Typography
               variant="body1"
               sx={{
@@ -541,7 +584,7 @@ const PastWebinars = ({ page, setPage }) => {
                 boxSizing: 'border-box',
               }}
             >
-              {cell.getValue()?.join(', ') || '-'}
+              {categoryText}
             </Typography>
           </Tooltip>
         )
@@ -550,11 +593,12 @@ const PastWebinars = ({ page, setPage }) => {
     {
       accessorKey: 'scheduledDate',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.SCHEDULE'),
-      Cell: (tableProps) => {
+      Cell: (tableProps: WebinarTableCellProps) => {
         const { cell } = tableProps
+        const dateValue = cell.getValue() as string | undefined
         return (
           <Typography style={{ whiteSpace: 'pre-line' }}>
-            {cell.getValue() ? new Date(cell.getValue()).toLocaleString() : '-'}
+            {dateValue ? new Date(dateValue).toLocaleString() : '-'}
           </Typography>
         )
       },
@@ -562,11 +606,12 @@ const PastWebinars = ({ page, setPage }) => {
     {
       accessorKey: 'createdAt',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CREATED_AT'),
-      Cell: (tableProps) => {
+      Cell: (tableProps: WebinarTableCellProps) => {
         const { cell } = tableProps
+        const dateValue = cell.getValue() as string | undefined
         return (
           <Typography style={{ whiteSpace: 'pre-line' }}>
-            {cell.getValue() ? new Date(cell.getValue()).toLocaleString() : '-'}
+            {dateValue ? new Date(dateValue).toLocaleString() : '-'}
           </Typography>
         )
       },
@@ -575,13 +620,13 @@ const PastWebinars = ({ page, setPage }) => {
       accessorKey: 'status',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.STATUS'),
       size: 120,
-      Cell: (tableProps) => {
-        const { cell } = tableProps
-        const status = cell.getValue()
+      Cell: (tableProps: WebinarTableCellProps) => {
+        const { row } = tableProps
+        const status = row.original.status
         return (
           <Chip
             label={status || '-'}
-            color={handleStatusColor(status)}
+            color={handleStatusColor(status || '')}
             size="small"
             sx={{
               fontWeight: 600,
@@ -607,7 +652,7 @@ const PastWebinars = ({ page, setPage }) => {
     >
       <WebinarTable
         columns={columns}
-        data={data?.data}
+        data={data || { data: [] }}
         page={page}
         setPage={setPage}
       />

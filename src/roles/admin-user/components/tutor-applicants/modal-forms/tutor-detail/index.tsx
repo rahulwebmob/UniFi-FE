@@ -1,6 +1,6 @@
 import { Play, Download } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import {
   Box,
@@ -30,30 +30,11 @@ interface TutorProps {
   [key: string]: unknown
 }
 
-interface TutorDetailsResponse {
-  data?: {
-    tutorDetails?: {
-      [key: string]: unknown
-    }
-  }
-}
-
-interface DownloadCVResponse {
-  data?: {
-    url?: string
-  }
-}
-
-interface WatchVideoResponse {
-  data?: {
-    url?: string
-  }
-}
-
 interface TutorDetailProps {
-  tutor: TutorProps
+  tutor: TutorProps | null
   onClose: () => void
   filter: string
+  onClick?: (tutor: TutorProps) => void
 }
 
 interface ModalRef {
@@ -72,19 +53,46 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
   const openVideoModalRef = useRef<ModalRef | null>(null)
   const confirmationRef = useRef<ModalRef | null>(null)
 
-  const { data: tutorDetails } = useViewTutorDetailQuery({
-    educatorId: tutor._id,
-  }) as TutorDetailsResponse
-  const { data: downloadCv } = useDownloadCVQuery({
-    educatorId: tutor._id,
-  }) as DownloadCVResponse
-  const { data: watchVideo } = useWatchVideoQuery({
-    educatorId: tutor._id,
-  }) as WatchVideoResponse
+  const { data } = useViewTutorDetailQuery(
+    {
+      educatorId: tutor?._id || '',
+    },
+    {
+      skip: !tutor,
+    },
+  )
+
+  const tutorDetails = data?.data
+  const downloadCvResponse = useDownloadCVQuery(
+    {
+      educatorId: tutor?._id || '',
+    },
+    {
+      skip: !tutor,
+    },
+  )
+  const downloadCv = downloadCvResponse.data
+  const watchVideoResponse = useWatchVideoQuery(
+    {
+      educatorId: tutor?._id || '',
+    },
+    {
+      skip: !tutor,
+    },
+  )
+  const watchVideo = watchVideoResponse.data
 
   const [tutorStatus] = useApproveEducatorStatusMutation()
   const [tutorDelete] = useDeleteEducatorMutation()
   const [reconsiderStatus] = useReconsiderStatusMutation()
+
+  if (!tutor) {
+    return (
+      <Box sx={{ p: 3, textAlign: 'center' }}>
+        <Typography>No tutor data available</Typography>
+      </Box>
+    )
+  }
 
   const handleWatchVideo = () => {
     openVideoModalRef.current?.openModal()
@@ -160,13 +168,7 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
         },
       }}
     >
-      <Box
-        sx={{
-          px: 3,
-          pt: 3,
-          pb: 2,
-        }}
-      >
+      <Box>
         <Box
           display="flex"
           justifyContent="space-between"
@@ -174,16 +176,13 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
           flexWrap="wrap"
           gap={2}
         >
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 600,
-              color: (theme) => theme.palette.text.primary,
-            }}
+          <Box
+            display="flex"
+            gap={1}
+            flexWrap="wrap"
+            justifyContent="flex-end"
+            sx={{ width: '100%' }}
           >
-            View Application
-          </Typography>
-          <Box display="flex" gap={1} flexWrap="wrap">
             {downloadCv?.url && (
               <Button
                 variant="contained"
@@ -257,16 +256,15 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                   />
                   <Box>
                     <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
-                      {tutorDetails?.data?.firstName ?? '-'}
+                      {tutorDetails?.firstName ?? '-'}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      {tutorDetails?.data?.email ?? '-'}
+                      {tutorDetails?.email ?? '-'}
                     </Typography>
                   </Box>
                 </Box>
                 <Typography variant="body2" color="text.secondary">
-                  {tutorDetails?.data?.country ?? '-'},{' '}
-                  {tutorDetails?.data?.state ?? '-'}
+                  {tutorDetails?.country ?? '-'}, {tutorDetails?.state ?? '-'}
                 </Typography>
               </Box>
 
@@ -279,11 +277,11 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                   Executive Summary
                 </Typography>
                 <Typography variant="body1">
-                  {tutorDetails?.data?.summary ?? '-'}
+                  {tutorDetails?.summary ?? '-'}
                 </Typography>
               </Box>
 
-              {!!tutorDetails?.data?.expertise?.length && (
+              {!!tutorDetails?.expertise?.length && (
                 <Box>
                   <Typography
                     variant="body2"
@@ -293,19 +291,21 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                     Expertise
                   </Typography>
                   <Box display="flex" gap={1} flexWrap="wrap">
-                    {tutorDetails?.data?.expertise.map((expertise: { _id: string; name: string }) => (
-                      <Chip
-                        label={expertise.category as string}
-                        color="primary"
-                        variant="outlined"
-                        size="small"
-                        key={expertise._id as string}
-                        sx={{
-                          borderRadius: '8px',
-                          fontWeight: 500,
-                        }}
-                      />
-                    ))}
+                    {tutorDetails?.expertise.map(
+                      (expertise: { _id: string; category: string }) => (
+                        <Chip
+                          label={expertise.category as string}
+                          color="primary"
+                          variant="outlined"
+                          size="small"
+                          key={expertise._id as string}
+                          sx={{
+                            borderRadius: '8px',
+                            fontWeight: 500,
+                          }}
+                        />
+                      ),
+                    )}
                   </Box>
                 </Box>
               )}
@@ -316,16 +316,16 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                     Company:
                   </Typography>
                   <Typography variant="body1">
-                    {tutorDetails?.data?.company ?? '-'}
+                    {tutorDetails?.company ?? '-'}
                   </Typography>
                 </Box>
-                {!!tutorDetails?.data?.experience && (
+                {!!tutorDetails?.experience && (
                   <Box>
                     <Typography variant="body1" color="text.secondary">
                       Experience
                     </Typography>
                     <Typography variant="body1">
-                      {tutorDetails?.data?.experience} Years
+                      {tutorDetails?.experience} Years
                     </Typography>
                   </Box>
                 )}
@@ -336,7 +336,7 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                   Where did you hear about us?
                 </Typography>
                 <Typography variant="body1">
-                  {tutorDetails?.data?.hau ?? '-'}
+                  {tutorDetails?.hau ?? '-'}
                 </Typography>
               </Box>
             </Box>
@@ -344,7 +344,7 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
 
           <Grid size={{ xs: 12, md: 6 }}>
             <Box display="flex" flexDirection="column" gap={3}>
-              {!!tutorDetails?.data?.education?.length && (
+              {!!tutorDetails?.education?.length && (
                 <Box>
                   <Typography
                     variant="body2"
@@ -354,26 +354,32 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                     Education
                   </Typography>
                   <Box display="flex" flexWrap="wrap" gap={1}>
-                    {tutorDetails?.data?.education.map((education: { _id: string; name: string }) => (
-                      <Chip
-                        label={`${(education.degree as string) ?? '-'}, ${
-                          (education.field as string) ?? '-'
-                        }`}
-                        color="primary"
-                        variant="outlined"
-                        size="small"
-                        key={education._id as string}
-                        sx={{
-                          borderRadius: '6px',
-                          fontWeight: 500,
-                        }}
-                      />
-                    ))}
+                    {tutorDetails?.education.map(
+                      (education: {
+                        _id: string
+                        degree: string
+                        field: string
+                      }) => (
+                        <Chip
+                          label={`${(education.degree as string) ?? '-'}, ${
+                            (education.field as string) ?? '-'
+                          }`}
+                          color="primary"
+                          variant="outlined"
+                          size="small"
+                          key={education._id as string}
+                          sx={{
+                            borderRadius: '6px',
+                            fontWeight: 500,
+                          }}
+                        />
+                      ),
+                    )}
                   </Box>
                 </Box>
               )}
 
-              {!!tutorDetails?.data?.certifications?.length && (
+              {!!tutorDetails?.certifications?.length && (
                 <Box>
                   <Typography
                     variant="body2"
@@ -383,14 +389,18 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                     Certificates
                   </Typography>
                   <Box display="flex" flexWrap="wrap" gap={1}>
-                    {tutorDetails?.data?.certifications.map(
-                      (certificate: { _id: string; name: string }) => (
+                    {tutorDetails?.certifications.map(
+                      (certificate: {
+                        _id: string
+                        name: string
+                        organization: string
+                      }) => (
                         <Chip
                           label={`${(certificate?.name as string) ?? '-'},${
                             (certificate?.organization as string) ?? '-'
                           }`}
                           color="primary"
-                          variant="contained"
+                          variant="filled"
                           size="small"
                           key={certificate._id as string}
                         />
@@ -419,13 +429,11 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                       <Typography variant="body2" color="textSecondary">
                         {label}
                       </Typography>
-                      {tutorDetails?.data?.[
-                        field as keyof typeof tutorDetails.data
-                      ] ? (
+                      {tutorDetails?.[field as keyof typeof tutorDetails] ? (
                         <Link
                           href={
-                            tutorDetails?.data?.[
-                              field as keyof typeof tutorDetails.data
+                            tutorDetails?.[
+                              field as keyof typeof tutorDetails
                             ] as string
                           }
                           target="_blank"
@@ -433,8 +441,8 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                           color="inherit"
                         >
                           {
-                            tutorDetails?.data?.[
-                              field as keyof typeof tutorDetails.data
+                            tutorDetails?.[
+                              field as keyof typeof tutorDetails
                             ] as string
                           }
                         </Link>
@@ -454,12 +462,12 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                 >
                   Profiles on other sites
                 </Typography>
-                {tutorDetails?.data?.otherProfileUrls?.length ? (
-                  tutorDetails?.data?.otherProfileUrls.map(
-                    (url: string, idx: number) => (
+                {tutorDetails?.otherProfileUrls?.length ? (
+                  tutorDetails?.otherProfileUrls.map(
+                    (url: { link: string }, idx: number) => (
                       <Link
-                        key={url.link as string}
-                        href={url.link as string}
+                        key={url.link}
+                        href={url.link}
                         target="_blank"
                         rel="noopener"
                         color="inherit"

@@ -1,11 +1,20 @@
 import { Plus, Edit2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import React, { useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 
 import { Box, Button, useTheme, IconButton } from '@mui/material'
 
 import AddLesson from './add-lesson'
 import ModalBox from '../../../../../../../shared/components/ui-elements/modal-box'
+import type {
+  AddLessonProps,
+  ModalBoxHandle,
+} from '../../../../../../../types/education'
+
+interface AddLessonsModalProps extends Omit<AddLessonProps, 'handleClose'> {
+  onClose: () => void
+  openModal?: boolean
+}
 
 const AddLessonsModal = ({
   chapterId,
@@ -15,10 +24,10 @@ const AddLessonsModal = ({
   lessonId,
   onClose,
   openModal = false,
-}) => {
+}: AddLessonsModalProps) => {
   const theme = useTheme()
   const { t } = useTranslation('education')
-  const lessionRef = useRef(null)
+  const lessionRef = useRef<ModalBoxHandle | null>(null)
 
   useEffect(() => {
     if (openModal && lessionRef.current) {

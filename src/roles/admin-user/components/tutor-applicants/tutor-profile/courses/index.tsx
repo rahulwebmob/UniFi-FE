@@ -106,7 +106,7 @@ const Courses = () => {
               <Divider
                 sx={{
                   my: 1,
-                  borderColor: (theme) => theme.palette.grey.light,
+                  borderColor: (theme) => theme.palette.grey[300],
                 }}
               />
               <Box display="flex" justifyContent="space-between" mt={1}>
@@ -129,7 +129,11 @@ const Courses = () => {
       )}
 
       {coursesData.length > 0 && (
-        <PaginationComponent data={coursesData} page={page} setPage={setPage} />
+        <PaginationComponent
+          data={coursesDetails?.data}
+          page={page}
+          setPage={setPage}
+        />
       )}
     </Box>
   )

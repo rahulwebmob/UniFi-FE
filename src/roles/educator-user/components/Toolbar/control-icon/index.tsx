@@ -1,19 +1,29 @@
-import React from 'react'
+import { type ReactNode } from 'react'
 
 import { Box, Typography } from '@mui/material'
 
 import { ControlButton } from '../../styles'
 
-const iff = (condition, then, otherwise) => (condition ? then : otherwise)
+const iff = (condition: boolean, then: string, otherwise: string): string =>
+  condition ? then : otherwise
+
+interface ControlIconProps {
+  icon: ReactNode
+  label: string
+  onClick: () => void
+  disabled: boolean
+  isActive?: boolean
+  isRecording?: boolean
+}
 
 const ControlIcon = ({
   icon,
   label,
   onClick,
   disabled,
-  isActive,
-  isRecording,
-}) => (
+  isActive = false,
+  isRecording = false,
+}: ControlIconProps) => (
   <ControlButton
     onClick={onClick}
     disabled={disabled}
@@ -42,7 +52,7 @@ const ControlIcon = ({
                 theme.palette.primary.main,
                 theme.palette.grey[500],
               ),
-            ),
+            ) as string,
         },
         cursor: disabled ? 'not-allowed' : 'pointer',
       }}
@@ -62,7 +72,7 @@ const ControlIcon = ({
               theme.palette.primary.main,
               theme.palette.text.secondary,
             ),
-          ),
+          ) as string,
       }}
     >
       {label}

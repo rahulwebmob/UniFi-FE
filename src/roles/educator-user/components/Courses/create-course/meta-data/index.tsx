@@ -1,4 +1,3 @@
-import React from 'react'
 import { Image, Video } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Controller, useFormContext } from 'react-hook-form'
@@ -71,7 +70,12 @@ const MetaData = () => {
                         height: '100%',
                         cursor: 'pointer',
                       }}
-                      onChange={(event) => onChange(event.target.files[0])}
+                      onChange={(event) => {
+                        const files = event.target.files
+                        if (files && files[0]) {
+                          onChange(files[0])
+                        }
+                      }}
                     />
                     <Box
                       sx={{
@@ -128,7 +132,7 @@ const MetaData = () => {
                     </Typography>
                     {errors.image && (
                       <Typography variant="caption" color="error">
-                        {errors.image.message}
+                        {errors.image.message as string}
                       </Typography>
                     )}
                   </>
@@ -196,7 +200,12 @@ const MetaData = () => {
                         height: '100%',
                         cursor: 'pointer',
                       }}
-                      onChange={(event) => onChange(event.target.files[0])}
+                      onChange={(event) => {
+                        const files = event.target.files
+                        if (files && files[0]) {
+                          onChange(files[0])
+                        }
+                      }}
                     />
                     <Box
                       sx={{
@@ -253,7 +262,7 @@ const MetaData = () => {
                     </Typography>
                     {errors.video && (
                       <Typography variant="caption" color="error">
-                        {errors.video.message}
+                        {errors.video.message as string}
                       </Typography>
                     )}
                   </>

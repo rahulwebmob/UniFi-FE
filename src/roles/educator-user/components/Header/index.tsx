@@ -1,5 +1,5 @@
 import { LogOut } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
@@ -17,16 +17,25 @@ import Navigation from '../Navigation'
 import MainLogo from '../../../../assets/logo.svg'
 import LogoutWrapper from '../../../../shared/components/auth-wrapper/logout'
 
+interface RootState {
+  user: {
+    user?: {
+      firstName?: string
+      lastName?: string
+    }
+  }
+}
+
 const Header = () => {
   const { t } = useTranslation('education')
   const isMobile = useMediaQuery('(max-width:1024px)')
-  const user = useSelector((state) => state.user.user)
+  const user = useSelector((state: RootState) => state.user.user)
   const firstName = user?.firstName || ''
   const lastName = user?.lastName || ''
 
-  const [anchorEl, setAnchorEl] = useState(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
-  const handleClick = (event) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
 

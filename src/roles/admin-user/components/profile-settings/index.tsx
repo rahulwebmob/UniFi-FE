@@ -88,8 +88,9 @@ const AdminProfileSettings: React.FC<AdminProfileSettingsProps> = ({
 
   const onSubmit = async (values: { firstName: string; lastName: string }) => {
     const response = await updateName({ ...values, update: 'name' })
-    if (!response.error) {
-      const newToken = (response as { data: { token: string } }).data.token
+    if (!response.error && response.data && typeof response.data === 'object' && response.data !== null && !Array.isArray(response.data) && 'token' in response.data) {
+      const responseData = response.data as { token: string }
+      const newToken = responseData.token
       localStorage.removeItem('token')
       localStorage.setItem('token', newToken)
       dispatch(signIn({ token: newToken }))

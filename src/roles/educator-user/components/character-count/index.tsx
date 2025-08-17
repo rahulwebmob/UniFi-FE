@@ -1,9 +1,13 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Typography } from '@mui/material'
 
-const CharacterCount = ({ maxLength, currentLength }) => {
+interface CharacterCountProps {
+  maxLength: number
+  currentLength: number
+}
+
+const CharacterCount = ({ maxLength, currentLength }: CharacterCountProps) => {
   const { t } = useTranslation('education')
   const remainingCharacters = maxLength - currentLength
 

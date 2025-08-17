@@ -6,7 +6,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 import { Grid, Button, TextField, InputLabel } from '@mui/material'
 
-import * as Style from '../tablestyle'
 import { signIn } from '../../../../redux/reducers/user-slice'
 import ModalBox from '../../../../shared/components/ui-elements/modal-box'
 import { useEditAdminProfileMutation } from '../../../../services/onboarding'
@@ -42,8 +41,9 @@ const EditName: React.FC = () => {
   })
   const onSubmit = async (values: { firstName: string; lastName: string }) => {
     const response = await updateName({ ...values, update: 'name' })
-    if (!response.error) {
-      const newToken = (response as { data: { token: string } }).data.token
+    if (!response.error && response.data && typeof response.data === 'object' && response.data !== null && !Array.isArray(response.data) && 'token' in response.data) {
+      const responseData = response.data as { token: string }
+      const newToken = responseData.token
       localStorage.removeItem('token')
       localStorage.setItem('token', newToken)
       dispatch(signIn({ token: newToken }))
@@ -54,79 +54,75 @@ const EditName: React.FC = () => {
 
   return (
     <>
-      <Style.ButtonProfile>
-        <Button
-          color="primary"
-          variant="contained"
-          fullWidth
-          onClick={() => {
-            ref.current?.openModal()
-            reset()
-          }}
-        >
-          Edit Name
-        </Button>
-      </Style.ButtonProfile>
+      <Button
+        color="primary"
+        variant="contained"
+        fullWidth
+        onClick={() => {
+          ref.current?.openModal()
+          reset()
+        }}
+      >
+        Edit Name
+      </Button>
 
       <ModalBox ref={ref} title=" Edit Name" size="sm">
-        <Style.TableWrapper>
-          <form
-            className="editname-form"
-            onSubmit={(e) => void handleSubmit(onSubmit)(e)}
+        <form
+          className="editname-form"
+          onSubmit={(e) => void handleSubmit(onSubmit)(e)}
+        >
+          <Grid>
+            <InputLabel>FIRST NAME</InputLabel>
+            <Controller
+              name="firstName"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  variant="outlined"
+                  placeholder="Enter your first name"
+                  fullWidth
+                  size="small"
+                  {...field}
+                  error={!!errors.firstName}
+                  helperText={errors.firstName?.message}
+                />
+              )}
+            />
+          </Grid>
+          <Grid mt={2}>
+            <InputLabel>LAST NAME</InputLabel>
+            <Controller
+              name="lastName"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  placeholder="Enter your last name"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  {...field}
+                  error={!!errors.lastName}
+                  helperText={errors.lastName?.message}
+                />
+              )}
+            />
+          </Grid>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            fullWidth
+            sx={{
+              marginTop: '10px',
+              width: '100px',
+              textTransform: 'none',
+            }}
           >
-            <Grid>
-              <InputLabel>FIRST NAME</InputLabel>
-              <Controller
-                name="firstName"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    variant="outlined"
-                    placeholder="Enter your first name"
-                    fullWidth
-                    size="small"
-                    {...field}
-                    error={!!errors.firstName}
-                    helperText={errors.firstName?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid mt={2}>
-              <InputLabel>LAST NAME</InputLabel>
-              <Controller
-                name="lastName"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    placeholder="Enter your last name"
-                    variant="outlined"
-                    fullWidth
-                    size="small"
-                    {...field}
-                    error={!!errors.lastName}
-                    helperText={errors.lastName?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              fullWidth
-              sx={{
-                marginTop: '10px',
-                width: '100px',
-                textTransform: 'none',
-              }}
-            >
-              Update
-            </Button>
-          </form>
-        </Style.TableWrapper>
+            Update
+          </Button>
+        </form>
       </ModalBox>
     </>
   )

@@ -1,12 +1,16 @@
 import { User } from 'lucide-react'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { Box, Avatar, Typography } from '@mui/material'
 
 import { styles, CarouselItem } from '../styles'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
 
-const PeerCarouselItem = ({ label }) => (
+interface PeerCarouselItemProps {
+  label: string
+}
+
+const PeerCarouselItem = ({ label }: PeerCarouselItemProps) => (
   <CarouselItem>
     <Box sx={{ ...styles.container }}>
       <Box sx={styles.videoContainer}>
@@ -26,7 +30,19 @@ const PeerCarouselItem = ({ label }) => (
   </CarouselItem>
 )
 
-const Peers = ({ usersInRoom, isHost }) => {
+interface User {
+  _id: string
+  firstName: string
+  lastName: string
+  role?: string
+}
+
+interface PeersProps {
+  usersInRoom: User[]
+  isHost: boolean
+}
+
+const Peers = ({ usersInRoom, isHost }: PeersProps) => {
   const filteredUsers = useMemo(
     () => usersInRoom.filter((user) => user.role !== 'educator'),
     [usersInRoom],

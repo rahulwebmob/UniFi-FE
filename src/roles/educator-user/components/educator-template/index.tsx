@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -14,15 +14,22 @@ import { updateLanguage } from '../../../../redux/reducers/app-slice'
 const EducatorTemplate = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
-  const { user } = useSelector((state) => state.user)
-  const { isFullscreen } = useSelector((state) => state.app)
+  const { user } = useSelector(
+    (state: { user: { user?: { language?: string } } }) => state.user,
+  )
+  const { isFullscreen } = useSelector(
+    (state: { app: { isFullscreen: boolean } }) => state.app,
+  )
 
-  const { refetch } = useEducatorAuthQuery()
+  const { refetch } = useEducatorAuthQuery(undefined)
 
   useManualPolling(refetch, 3000)
 
   useEffect(() => {
-    if (user?.language) dispatch(updateLanguage(LANGUAGES[user?.language]))
+    if (user?.language)
+      dispatch(
+        updateLanguage(LANGUAGES[user.language as keyof typeof LANGUAGES]),
+      )
   }, [user?.language, dispatch])
 
   return (

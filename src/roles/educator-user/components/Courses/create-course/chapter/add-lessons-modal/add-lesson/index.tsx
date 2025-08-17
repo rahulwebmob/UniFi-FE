@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useFormContext } from 'react-hook-form'
 import { Save, RotateCcw, CloudUpload } from 'lucide-react'
-import React, { useRef, useMemo, useState, useEffect } from 'react'
+import { useRef, useMemo, useState, useEffect } from 'react'
 
 import {
   Box,
@@ -28,6 +28,7 @@ import {
   CHAPTER_CONFIG,
   handleFileChange,
 } from '../../../../../common/common'
+import type { FileError } from '../../../../../../../../types/common'
 import {
   adminApi,
   useAddLessonMutation,
@@ -36,6 +37,27 @@ import {
   useGetAwsUrlForUploadMutation,
   useSuccessForVideoUploadMutation,
 } from '../../../../../../../../services/admin'
+import type {
+  AddLessonProps,
+  DefaultValues,
+} from '../../../../../../../../types/education'
+import type { ModalBoxHandle } from '../../../../../../../../shared/components/ui-elements/modal-box'
+
+interface LessonResponse {
+  data: {
+    data: {
+      _id: string
+    }
+  }
+  error?: boolean
+}
+
+interface AwsUrlResponse {
+  data?: {
+    url?: string
+  }
+  error?: boolean
+}
 
 const AddLesson = ({
   isEdit,
@@ -45,22 +67,23 @@ const AddLesson = ({
   chapterId,
   handleClose,
   defaultValues = { isFree: false, lessonTitle: '', resource: '' },
-}) => {
+}: AddLessonProps & { defaultValues?: DefaultValues }) => {
   const theme = useTheme()
   const { t } = useTranslation('education')
   const dispatch = useDispatch()
-  const fileInputRef = useRef(null)
-  const uploadPrompt = useRef(null)
-  const awsControllerRef = useRef(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const uploadPrompt = useRef<ModalBoxHandle>(null)
+  const awsControllerRef = useRef<AbortController | null>(null)
 
-  const { isCourseFree } = useFormContext()
+  const formContext = useFormContext()
+  const isCourseFree = Boolean(formContext.watch?.('isFree')) || false
 
   const [formData, setFormData] = useState({
     isFree: defaultValues?.isFree ?? false,
     lessonTitle: defaultValues?.lessonTitle ?? '',
   })
-  const [errors, setErrors] = useState({})
-  const [resource, setResource] = useState(null)
+  const [errors, setErrors] = useState<FileError>({})
+  const [resource, setResource] = useState<File | null>(null)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [newChapterTitle, setNewChapterTitle] = useState('')
 
@@ -93,13 +116,13 @@ const AddLesson = ({
     setErrors({})
     setResource(null)
     setNewChapterTitle('')
-    uploadPrompt.current.closeModal()
+    uploadPrompt.current?.closeModal?.()
   }
 
-  const handleOnSuccess = (id) => {
+  const handleOnSuccess = (id: string) => {
     dispatch(
       adminApi.util.invalidateTags([
-        { type: 'Lessons', id: `${courseId}${id}` },
+        { type: 'Webinars' as const, id: `${courseId}${id}` },
       ]),
     )
     setUploadProgress(0)
@@ -110,16 +133,20 @@ const AddLesson = ({
   const handleClosePrompt = () => {
     if (awsControllerRef.current) {
       setUploadProgress(0)
-      awsControllerRef.current.abort()
+      awsControllerRef.current?.abort?.()
       dispatch(
         errorAlert({ message: t('EDUCATOR.ADD_CHAPTERS.UPLOAD_CANCELLED') }),
       )
-      uploadPrompt.current.closeModal()
+      uploadPrompt.current?.closeModal?.()
     }
   }
 
-  const handleVideoUpload = async (lessonResponse, id, fileExtension) => {
-    uploadPrompt.current.openModal()
+  const handleVideoUpload = async (
+    lessonResponse: LessonResponse,
+    id: string,
+    fileExtension: string,
+  ) => {
+    uploadPrompt.current?.openModal?.()
     awsControllerRef.current = new AbortController()
     try {
       // Step 1: Get AWS URL for upload
@@ -131,18 +158,22 @@ const AddLesson = ({
 
       if (!res.error) {
         // Step 2: Upload video to AWS using Axios
-        const awsResponse = await axios.put(res?.data?.url, resource, {
-          headers: {
-            'Content-Type': getFormatType(fileExtension),
+        const awsResponse = await axios.put(
+          (res as AwsUrlResponse)?.data?.url || '',
+          resource,
+          {
+            headers: {
+              'Content-Type': getFormatType(fileExtension),
+            },
+            signal: awsControllerRef?.current?.signal,
+            onUploadProgress: (progressEvent) => {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / (progressEvent.total || 1),
+              )
+              setUploadProgress(percentCompleted)
+            },
           },
-          signal: awsControllerRef?.current?.signal,
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total,
-            )
-            setUploadProgress(percentCompleted)
-          },
-        })
+        )
 
         // Step 3: Notify backend of successful upload
         if (awsResponse.status === 200) {
@@ -166,14 +197,14 @@ const AddLesson = ({
     }
   }
 
-  const handleAddLesson = async (newChapterId) => {
+  const handleAddLesson = async (newChapterId: string) => {
     const form = new FormData()
-    form.append('courseId', courseId)
+    form.append('courseId', courseId || '')
     form.append('chapterId', newChapterId)
-    form.append('isFree', isCourseFree || formData.isFree)
+    form.append('isFree', String(isCourseFree || formData.isFree))
     form.append('title', formData.lessonTitle)
 
-    const fileExtension = resource?.name?.split('.').pop().toLowerCase()
+    const fileExtension = resource?.name?.split('.').pop()?.toLowerCase() || ''
 
     if (resource) {
       if (CHAPTER_CONFIG.VIDEO_EXTENSIONS.includes(fileExtension)) {
@@ -183,22 +214,29 @@ const AddLesson = ({
       }
     }
 
-    if (isEdit) form.append('lessonId', lessonId)
+    if (isEdit && lessonId) form.append('lessonId', lessonId)
 
     const id = isChapter ? newChapterId : chapterId
 
     const response = isEdit ? await updateLesson(form) : await addLesson(form)
     if (!response.error) {
-      if (CHAPTER_CONFIG.VIDEO_EXTENSIONS.includes(fileExtension)) {
-        uploadPrompt.current.closeModal()
-        void handleVideoUpload(response, id, fileExtension)
+      if (
+        fileExtension &&
+        CHAPTER_CONFIG.VIDEO_EXTENSIONS.includes(fileExtension)
+      ) {
+        uploadPrompt.current?.closeModal?.()
+        void handleVideoUpload(
+          response as LessonResponse,
+          id || '',
+          fileExtension,
+        )
       } else {
-        handleOnSuccess(id)
+        handleOnSuccess(id || chapterId || '')
       }
     }
   }
 
-  const handleChange = (field, value) => {
+  const handleChange = (field: string, value: boolean | string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
@@ -208,13 +246,16 @@ const AddLesson = ({
       title: newChapterTitle,
     })
     if (!response.error) {
-      const newChapterId = response.data.response._id
-      await handleAddLesson(newChapterId)
+      const newChapterId = (response.data as { response?: { _id?: string } })
+        ?.response?._id
+      if (newChapterId) {
+        await handleAddLesson(newChapterId)
+      }
     }
   }
 
   const handleOnSubmit = async () => {
-    const validationErrors = {}
+    const validationErrors: Record<string, string> = {}
 
     if (isChapter && !newChapterTitle.trim()) {
       validationErrors.chapterTitle = t(
@@ -237,7 +278,7 @@ const AddLesson = ({
     if (isChapter) {
       await handleCreateChapter()
     } else {
-      await handleAddLesson(chapterId)
+      await handleAddLesson(chapterId || '')
     }
   }
 
@@ -341,7 +382,7 @@ const AddLesson = ({
               variant="contained"
               color="primary"
               size="small"
-              onClick={() => fileInputRef.current.click()}
+              onClick={() => fileInputRef.current?.click()}
               startIcon={<CloudUpload size={16} />}
               sx={{
                 textTransform: 'none',
@@ -437,7 +478,7 @@ const AddLesson = ({
         ref={uploadPrompt}
         onCloseModal={() => {
           handleClosePrompt()
-          uploadPrompt.current.closeModal()
+          uploadPrompt.current?.closeModal?.()
         }}
       >
         <UploadPrompt progress={uploadProgress} />

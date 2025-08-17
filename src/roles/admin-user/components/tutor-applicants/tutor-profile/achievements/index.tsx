@@ -4,25 +4,17 @@ import { useParams } from 'react-router-dom'
 import { Box, Typography } from '@mui/material'
 
 import { useViewTutorDetailQuery } from '../../../../../../services/admin'
-
-interface Education {
-  degree: string
-  field: string
-  institution?: string
-  startDate?: string
-  endDate?: string
-}
-
-interface Certification {
-  name: string
-  organization: string
-  link?: string
-}
+import type {
+  Education,
+  Certification,
+} from '../../../../../../types/education'
 
 interface TutorDetailsResponse {
   data?: {
-    education: Education[]
-    certifications: Certification[]
+    tutorDetails?: {
+      education?: Education[]
+      certifications?: Certification[]
+    }
   }
 }
 
@@ -32,9 +24,10 @@ const Achievements = () => {
     educatorId: id,
   }) as { data: TutorDetailsResponse | undefined }
 
-  const educationData: Education[] = tutorDetails?.data?.education ?? []
+  const educationData: Education[] =
+    tutorDetails?.data?.tutorDetails?.education ?? []
   const certificationData: Certification[] =
-    tutorDetails?.data?.certifications ?? []
+    tutorDetails?.data?.tutorDetails?.certifications ?? []
 
   return (
     <Box>
@@ -101,7 +94,7 @@ const Achievements = () => {
             }}
           >
             {certificationData.map((certificate, index) => (
-              <Box key={`${certificate.degree}-${index}`} className="course">
+              <Box key={`${certificate.name}-${index}`} className="course">
                 <Box display="flex">
                   <Beaker size={48} />
                   <Box ml={1}>

@@ -112,9 +112,9 @@ const PurchasedContent: React.FC = () => {
         }}
       >
         {contentType === 'course' ? (
-          <CourseList isPurchased />
+          <CourseList isPurchased page={1} />
         ) : (
-          <WebinarList isPurchased />
+          <WebinarList isPurchased page={1} />
         )}
       </Box>
     </Box>

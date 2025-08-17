@@ -1,5 +1,5 @@
 import Lottie from 'lottie-react'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -24,7 +24,10 @@ const WaitingRoom = ({ handleInit }: WaitingRoomProps) => {
   )
 
   useEffect(() => {
-    if (!isLoading && !data?.data?.webinarScheduledObj?.can_join)
+    const webinarData = data as {
+      data?: { webinarScheduledObj?: { can_join?: boolean } }
+    }
+    if (!isLoading && !webinarData?.data?.webinarScheduledObj?.can_join)
       void navigate('/dashboard')
   }, [data, isLoading, navigate])
 

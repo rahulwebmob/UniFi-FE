@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { de, fr, it, ja, pt, arSA, enUS } from 'date-fns/locale'
 
 import { Box } from '@mui/material'
@@ -11,8 +11,6 @@ import NoDataFound from '../../../../shared/components/no-data-found'
 import { useGetAllWebinarsQuery } from '../../../../services/education'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
 
-const iff = <T,>(condition: boolean, trueCase: T, falseCase: T): T =>
-  condition ? trueCase : falseCase
 
 const getLocaleByLanguageCode = (languageCode: string) => {
   const localeMap = { ar: arSA, jp: ja, en: enUS, de, fr, pt, it }
@@ -65,9 +63,9 @@ const WebinarList = ({
   const { data, isLoading, isFetching, isSuccess } = useGetAllWebinarsQuery(
     {
       page,
-      searchTerm,
+      search: searchTerm,
       isPurchased,
-      pageSize: 20,
+      limit: 20,
       categories: selectedCategory,
     },
     {
@@ -85,10 +83,10 @@ const WebinarList = ({
       if (data?.data?.webinars?.length) {
         setList((prev) =>
           page === 1
-            ? (data.data.webinars ?? [])
-            : [...prev, ...(data.data.webinars ?? [])],
+            ? (data.data?.webinars ?? [])
+            : [...prev, ...(data.data?.webinars ?? [])],
         )
-        setCount(data.data.count ?? 0)
+        setCount(data.data?.count ?? 0)
       } else {
         setList([])
         setCount(0)
@@ -107,80 +105,84 @@ const WebinarList = ({
   if (isPurchased)
     return (
       <MuiCarousel>
-        {iff(
-          isLoading,
-          <ContentSkeleton isPurchased />,
-          iff(
-            !!list.length,
-            list.map((item) => (
+        {isLoading ? (
+          <ContentSkeleton isPurchased />
+        ) : list.length > 0 ? (
+          <>
+            {list.map((item) => (
               <WebinarCard
                 key={item._id}
-                webinar={item}
+                webinar={{
+                  ...item,
+                  title: item.title ?? '',
+                }}
                 isPurchased
                 locale={locale}
               />
-            )),
-            <Box
-              sx={{
-                '&.MuiTabs-flexContainer': {
-                  display: 'inline',
-                },
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                '& .MuiBox-root': {
-                  minHeight: 'auto',
-                  height: 'auto',
-                },
-                svg: {
-                  width: '107px',
-                },
-                '& .MuiTypography-h3': {
-                  display: 'none',
-                },
-              }}
-            >
-              <NoDataFound
-                description={t(
-                  'EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_WEBINAR',
-                )}
-              />
-            </Box>,
-          ),
+            ))}
+          </>
+        ) : (
+          <Box
+            sx={{
+              '&.MuiTabs-flexContainer': {
+                display: 'inline',
+              },
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              '& .MuiBox-root': {
+                minHeight: 'auto',
+                height: 'auto',
+              },
+              svg: {
+                width: '107px',
+              },
+              '& .MuiTypography-h3': {
+                display: 'none',
+              },
+            }}
+          >
+            <NoDataFound
+              description={t(
+                'EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_WEBINAR',
+              )}
+            />
+          </Box>
         )}
       </MuiCarousel>
     )
 
   return (
     <>
-      {iff(
-        isLoading,
+      {isLoading ? (
         <GridContainer>
           <ContentSkeleton isPurchased={false} />
-        </GridContainer>,
-        !list.length ? (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '300px',
-            }}
-          >
-            <NoDataFound />
-          </Box>
-        ) : (
-          <GridContainer>
-            {list.map((item) => (
-              <WebinarCard
-                key={item._id}
-                webinar={item}
-                isPurchased={false}
-                locale={locale}
-              />
-            ))}
-          </GridContainer>
-        ),
+        </GridContainer>
+      ) : !list.length ? (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '300px',
+          }}
+        >
+          <NoDataFound />
+        </Box>
+      ) : (
+        <GridContainer>
+          {list.map((item) => (
+            <WebinarCard
+              key={item._id}
+              webinar={{
+                ...item,
+                title: item.title ?? '',
+              }}
+              isPurchased={false}
+              locale={locale}
+            />
+          ))}
+        </GridContainer>
       )}
     </>
   )

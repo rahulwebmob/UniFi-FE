@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import React, { useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import {
   User,
   Clock,
@@ -32,17 +32,35 @@ import {
 
 import ViewResource from '../create-course/view-resource'
 import ModalBox from '../../../../../shared/components/ui-elements/modal-box'
+import type { ModalBoxHandle } from '../../../../../shared/components/ui-elements/modal-box'
 // import { getEducatorDetails, handleFormatSeconds } from '../../../common'
 
-const handleFormatSeconds = (seconds) => {
+const handleFormatSeconds = (seconds: number) => {
   const hours = Math.floor(seconds / 3600)
   const minutes = Math.floor((seconds % 3600) / 60)
   const remainingSeconds = seconds % 60
   return `${hours}:${minutes}:${remainingSeconds}`
 }
 
-const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
-  const previewRef = useRef()
+import type {
+  CourseData,
+  ChapterData,
+  LessonData,
+  CategoryData,
+} from '../../../../../types/education.types'
+
+interface ContentViewProps {
+  courseData: CourseData
+  isEdit: boolean
+  handleOpenPremiumModal: () => void
+}
+
+const ContentView = ({
+  courseData,
+  isEdit,
+  handleOpenPremiumModal,
+}: ContentViewProps) => {
+  const previewRef = useRef<ModalBoxHandle>(null)
   const navigate = useNavigate()
   const { t } = useTranslation('education')
   const theme = useTheme()
@@ -52,9 +70,9 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
 
     elements.forEach((element) => {
       if (reset) {
-        element.style.overflow = ''
+        ;(element as HTMLElement).style.overflow = ''
       } else {
-        element.style.overflow = 'unset'
+        ;(element as HTMLElement).style.overflow = 'unset'
       }
     })
   }
@@ -67,7 +85,7 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
       <Button
         fullWidth
         disabled={isEdit}
-        color="priamry"
+        color="primary"
         variant="contained"
         onClick={handleOpenPremiumModal}
       >
@@ -79,7 +97,7 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
       <Button
         fullWidth
         disabled={isEdit}
-        color="priamry"
+        color="primary"
         variant="contained"
         onClick={() => {
           void navigate(`/dashboard/course/${courseData?._id}/lessons`)
@@ -104,9 +122,7 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
       width="100%"
       height="100%"
       title="modal-preview-video"
-      src={courseData?.previewVideo}
-      allowFullScreen
-      frameBorder="0"
+      src={typeof courseData?.previewVideo === 'object' ? courseData.previewVideo?.fileName : courseData?.previewVideo}
       controls
       autoPlay
       muted
@@ -114,6 +130,8 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
       <track kind="captions" />
     </video>
   )
+
+  console.warn({img : courseData?.thumbnail})
 
   return (
     <Box
@@ -160,24 +178,26 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
                 {courseData?.title}
               </Typography>
 
-              {courseData?.category?.length > 0 && (
+              {courseData?.categories && courseData.categories.length > 0 && (
                 <Box display="flex" gap={1} flexWrap="wrap" mb={2}>
-                  {courseData.category.map((cat, index) => (
-                    <Chip
-                      key={index}
-                      label={cat.category || cat}
-                      size="small"
-                      sx={{
-                        background: alpha(theme.palette.primary.main, 0.1),
-                        color: theme.palette.primary.main,
-                        fontWeight: 500,
-                        borderRadius: '6px',
-                        '&:hover': {
-                          background: alpha(theme.palette.primary.main, 0.15),
-                        },
-                      }}
-                    />
-                  ))}
+                  {(courseData.categories as CategoryData[]).map(
+                    (cat: CategoryData, index: number) => (
+                      <Chip
+                        key={index}
+                        label={cat.category || cat.name}
+                        size="small"
+                        sx={{
+                          background: alpha(theme.palette.primary.main, 0.1),
+                          color: theme.palette.primary.main,
+                          fontWeight: 500,
+                          borderRadius: '6px',
+                          '&:hover': {
+                            background: alpha(theme.palette.primary.main, 0.15),
+                          },
+                        }}
+                      />
+                    ),
+                  )}
                 </Box>
               )}
 
@@ -206,20 +226,44 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
                 }}
               >
                 <Box display="flex" alignItems="center" gap={1}>
-                  <BookOpen size={18} color={theme.palette.text.secondary} />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: theme.palette.text.secondary,
+                    }}
+                  >
+                    <BookOpen size={18} />
+                  </Box>
                   <Typography variant="body2" color="text.secondary">
                     {courseData?.totalChaptersCount || 0} Chapters
                   </Typography>
                 </Box>
                 <Box display="flex" alignItems="center" gap={1}>
-                  <PlayCircle size={18} color={theme.palette.text.secondary} />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: theme.palette.text.secondary,
+                    }}
+                  >
+                    <PlayCircle size={18} />
+                  </Box>
                   <Typography variant="body2" color="text.secondary">
                     {courseData?.totalLessonsCount || 0} Lessons
                   </Typography>
                 </Box>
                 {courseData?.totalDurationOfCourse && (
                   <Box display="flex" alignItems="center" gap={1}>
-                    <Clock size={18} color={theme.palette.text.secondary} />
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: theme.palette.text.secondary,
+                      }}
+                    >
+                      <Clock size={18} />
+                    </Box>
                     <Typography variant="body2" color="text.secondary">
                       {handleFormatSeconds(courseData.totalDurationOfCourse)}
                     </Typography>
@@ -288,8 +332,8 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
                       height: '100%',
                       objectFit: 'cover',
                     }}
-                    image={courseData?.thumbNail}
-                    title={courseData?.title}
+                    image={courseData?.thumbNail || ''}
+                    title={courseData?.title || ''}
                   />
                   <Box
                     sx={{
@@ -353,7 +397,9 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
                           mt: 0.5,
                         }}
                       >
-                        ${courseData?.price}
+                        {courseData?.price
+                          ? `$${courseData.price}`
+                          : 'Contact for pricing'}
                       </Typography>
                     </Box>
                   )}
@@ -398,203 +444,234 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
         >
           <Box>
             {!!courseData?.chapters?.length &&
-              courseData?.chapters?.map((chapter, chapterIndex) => (
-                <Accordion
-                  defaultExpanded={chapterIndex === 0}
-                  key={chapter._id}
-                  sx={{
-                    mb: 2,
-                    background: 'white',
-                    borderRadius: 2,
-                    boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.06)}`,
-                    border: `1px solid ${alpha(theme.palette.primary.main, 0.08)}`,
-                    overflow: 'hidden',
-                    '&:before': {
-                      display: 'none',
-                    },
-                    '& .MuiAccordionSummary-content': {
-                      margin: '12px 0',
-                    },
-                  }}
-                >
-                  <AccordionSummary
-                    expandIcon={<ChevronDown size={20} />}
-                    aria-controls={`panel-${chapter._id}-content`}
-                    id={`panel-${chapter._id}-header`}
+              courseData?.chapters?.map(
+                (chapter: ChapterData, chapterIndex: number) => (
+                  <Accordion
+                    defaultExpanded={chapterIndex === 0}
+                    key={chapter._id}
                     sx={{
-                      background: alpha(theme.palette.primary.main, 0.03),
-                      borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.08)}`,
-                      '&:hover': {
-                        background: alpha(theme.palette.primary.main, 0.05),
+                      mb: 2,
+                      background: 'white',
+                      borderRadius: 2,
+                      boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.06)}`,
+                      border: `1px solid ${alpha(theme.palette.primary.main, 0.08)}`,
+                      overflow: 'hidden',
+                      '&:before': {
+                        display: 'none',
                       },
-                      '& .MuiAccordionSummary-expandIconWrapper': {
-                        color: theme.palette.primary.main,
-                        '&.Mui-expanded': {
-                          transform: 'rotate(180deg)',
-                        },
+                      '& .MuiAccordionSummary-content': {
+                        margin: '12px 0',
                       },
                     }}
                   >
-                    <Box
-                      display="flex"
-                      justifyContent="space-between"
-                      width="100%"
-                      alignItems="center"
-                      flexWrap="wrap"
-                      gap={2}
+                    <AccordionSummary
+                      expandIcon={<ChevronDown size={20} />}
+                      aria-controls={`panel-${chapter._id}-content`}
+                      id={`panel-${chapter._id}-header`}
+                      sx={{
+                        background: alpha(theme.palette.primary.main, 0.03),
+                        borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.08)}`,
+                        '&:hover': {
+                          background: alpha(theme.palette.primary.main, 0.05),
+                        },
+                        '& .MuiAccordionSummary-expandIconWrapper': {
+                          color: theme.palette.primary.main,
+                          '&.Mui-expanded': {
+                            transform: 'rotate(180deg)',
+                          },
+                        },
+                      }}
                     >
-                      <Box display="flex" alignItems="center" gap={2}>
-                        <Box
-                          sx={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: 1,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            background: alpha(theme.palette.primary.main, 0.1),
-                            color: theme.palette.primary.main,
-                            fontWeight: 600,
-                            fontSize: '0.875rem',
-                          }}
-                        >
-                          {chapterIndex + 1}
-                        </Box>
-                        <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                          {chapter.title || '-'}
-                        </Typography>
-                      </Box>
-                      <Box display="flex" alignItems="center" gap={2}>
-                        <Chip
-                          label={`${chapter?.totalLessons} ${chapter?.totalLessons === 1 ? 'Lesson' : 'Lessons'}`}
-                          size="small"
-                          sx={{
-                            height: 24,
-                            fontSize: '0.75rem',
-                            background: alpha(theme.palette.primary.main, 0.08),
-                            color: theme.palette.primary.dark,
-                          }}
-                        />
-                        {!!chapter?.totalDuration && (
-                          <Typography
-                            variant="caption"
-                            color="text.secondary"
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        width="100%"
+                        alignItems="center"
+                        flexWrap="wrap"
+                        gap={2}
+                      >
+                        <Box display="flex" alignItems="center" gap={2}>
+                          <Box
                             sx={{
+                              width: 32,
+                              height: 32,
+                              borderRadius: 1,
                               display: 'flex',
                               alignItems: 'center',
-                              gap: 0.5,
-                            }}
-                          >
-                            <Clock size={14} />
-                            {handleFormatSeconds(chapter.totalDuration)}
-                          </Typography>
-                        )}
-                      </Box>
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ p: 0 }}>
-                    {!!chapter?.lessonList.length &&
-                      chapter?.lessonList?.map((lesson, lessonIndex) => (
-                        <Box
-                          key={lesson?._id}
-                          display="flex"
-                          justifyContent="space-between"
-                          width="100%"
-                          alignItems="center"
-                          sx={{
-                            px: 3,
-                            py: 2,
-                            borderBottom:
-                              lessonIndex < chapter.lessonList.length - 1
-                                ? `1px solid ${alpha(theme.palette.grey[500], 0.08)}`
-                                : 'none',
-                            transition: 'background 0.2s',
-                            '&:hover': {
+                              justifyContent: 'center',
                               background: alpha(
                                 theme.palette.primary.main,
-                                0.02,
+                                0.1,
                               ),
-                            },
-                          }}
-                        >
-                          <Box
-                            display="flex"
-                            alignItems="center"
-                            gap={2}
-                            flex={1}
+                              color: theme.palette.primary.main,
+                              fontWeight: 600,
+                              fontSize: '0.875rem',
+                            }}
                           >
-                            <Box
+                            {chapterIndex + 1}
+                          </Box>
+                          <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                            {chapter.title || '-'}
+                          </Typography>
+                        </Box>
+                        <Box display="flex" alignItems="center" gap={2}>
+                          <Chip
+                            label={`${chapter?.totalLessons} ${chapter?.totalLessons === 1 ? 'Lesson' : 'Lessons'}`}
+                            size="small"
+                            sx={{
+                              height: 24,
+                              fontSize: '0.75rem',
+                              background: alpha(
+                                theme.palette.primary.main,
+                                0.08,
+                              ),
+                              color: theme.palette.primary.dark,
+                            }}
+                          />
+                          {!!chapter?.totalDuration && (
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
                               sx={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: 1,
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'center',
-                                background:
-                                  lesson?.lessonType === 'pdf'
-                                    ? alpha(theme.palette.warning.main, 0.1)
-                                    : alpha(theme.palette.info.main, 0.1),
-                                color:
-                                  lesson?.lessonType === 'pdf'
-                                    ? theme.palette.warning.main
-                                    : theme.palette.info.main,
+                                gap: 0.5,
                               }}
                             >
-                              {lesson?.lessonType === 'pdf' ? (
-                                <FileText size={18} />
-                              ) : (
-                                <Video size={18} />
-                              )}
-                            </Box>
-                            <Box flex={1}>
-                              <Typography
-                                variant="body2"
+                              <Box
+                                component="span"
                                 sx={{
-                                  fontWeight: 500,
-                                  color: theme.palette.text.primary,
-                                }}
-                              >
-                                {lesson?.title || '-'}
-                              </Typography>
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                              >
-                                Lesson {lessonIndex + 1}
-                              </Typography>
-                            </Box>
-                          </Box>
-                          <Box display="flex" alignItems="center" gap={2}>
-                            {lesson?.durationInSeconds && (
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                                sx={{
-                                  display: 'flex',
+                                  display: 'inline-flex',
                                   alignItems: 'center',
-                                  gap: 0.5,
                                 }}
                               >
                                 <Clock size={14} />
-                                {handleFormatSeconds(lesson?.durationInSeconds)}
-                              </Typography>
-                            )}
-                            <ViewResource
-                              isEdit={isEdit}
-                              lessonDetail={{
-                                ...lesson,
-                                courseId: courseData._id,
-                                isCourseBought: courseData.isCourseBought,
-                              }}
-                              handleOpenPremiumModal={handleOpenPremiumModal}
-                            />
-                          </Box>
+                              </Box>
+                              {handleFormatSeconds(chapter.totalDuration)}
+                            </Typography>
+                          )}
                         </Box>
-                      ))}
-                  </AccordionDetails>
-                </Accordion>
-              ))}
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ p: 0 }}>
+                      {chapter?.lessonList &&
+                        chapter.lessonList.length > 0 &&
+                        chapter.lessonList.map(
+                          (lesson: LessonData, lessonIndex: number) => (
+                            <Box
+                              key={lesson?._id}
+                              display="flex"
+                              justifyContent="space-between"
+                              width="100%"
+                              alignItems="center"
+                              sx={{
+                                px: 3,
+                                py: 2,
+                                borderBottom:
+                                  lessonIndex <
+                                  (chapter.lessonList?.length || 0) - 1
+                                    ? `1px solid ${alpha(theme.palette.grey[500], 0.08)}`
+                                    : 'none',
+                                transition: 'background 0.2s',
+                                '&:hover': {
+                                  background: alpha(
+                                    theme.palette.primary.main,
+                                    0.02,
+                                  ),
+                                },
+                              }}
+                            >
+                              <Box
+                                display="flex"
+                                alignItems="center"
+                                gap={2}
+                                flex={1}
+                              >
+                                <Box
+                                  sx={{
+                                    width: 36,
+                                    height: 36,
+                                    borderRadius: 1,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    background:
+                                      lesson?.lessonType === 'pdf'
+                                        ? alpha(theme.palette.warning.main, 0.1)
+                                        : alpha(theme.palette.info.main, 0.1),
+                                    color:
+                                      lesson?.lessonType === 'pdf'
+                                        ? theme.palette.warning.main
+                                        : theme.palette.info.main,
+                                  }}
+                                >
+                                  {lesson?.lessonType === 'pdf' ? (
+                                    <FileText size={18} />
+                                  ) : (
+                                    <Video size={18} />
+                                  )}
+                                </Box>
+                                <Box flex={1}>
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      fontWeight: 500,
+                                      color: theme.palette.text.primary,
+                                    }}
+                                  >
+                                    {lesson?.title || '-'}
+                                  </Typography>
+                                  <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                  >
+                                    Lesson {lessonIndex + 1}
+                                  </Typography>
+                                </Box>
+                              </Box>
+                              <Box display="flex" alignItems="center" gap={2}>
+                                {lesson?.durationInSeconds && (
+                                  <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                    sx={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: 0.5,
+                                    }}
+                                  >
+                                    <Box
+                                      component="span"
+                                      sx={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                      }}
+                                    >
+                                      <Clock size={14} />
+                                    </Box>
+                                    {handleFormatSeconds(
+                                      lesson?.durationInSeconds,
+                                    )}
+                                  </Typography>
+                                )}
+                                <ViewResource
+                                  isEdit={isEdit}
+                                  lessonDetail={{
+                                    ...lesson,
+                                    isCourseBought: courseData.isCourseBought,
+                                  }}
+                                  handleOpenPremiumModal={
+                                    handleOpenPremiumModal
+                                  }
+                                />
+                              </Box>
+                            </Box>
+                          ),
+                        )}
+                    </AccordionDetails>
+                  </Accordion>
+                ),
+              )}
           </Box>
           {courseData?.previewVideo && (
             <Box
@@ -634,7 +711,7 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
                       opacity: 1,
                     },
                   }}
-                  onClick={() => previewRef.current.openModal()}
+                  onClick={() => previewRef.current?.openModal?.()}
                 >
                   <video
                     style={{
@@ -642,7 +719,7 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
                       height: 'auto',
                       display: 'block',
                     }}
-                    src={courseData?.previewVideo}
+                    src={typeof courseData?.previewVideo === 'object' ? courseData.previewVideo?.fileName : courseData?.previewVideo}
                   >
                     <track kind="captions" />
                   </video>
@@ -674,10 +751,9 @@ const ContentView = ({ courseData, isEdit, handleOpenPremiumModal }) => {
                         boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
                       }}
                     >
-                      <PlayCircle
-                        size={32}
-                        color={theme.palette.primary.main}
-                      />
+                      <Box sx={{ color: theme.palette.primary.main }}>
+                        <PlayCircle size={32} />
+                      </Box>
                     </Box>
                   </Box>
                 </Box>

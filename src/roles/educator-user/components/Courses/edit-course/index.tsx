@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import CreateCourse from '../create-course'
 import { extractFilename } from '../../common/common'
 import { useListChapersQuery } from '../../../../../services/admin'
 import ApiMiddleware from '../../../../../shared/components/api-middleware'
+import type { CourseData } from '../../../../../types/education.types'
 
 interface EditCourseProps {
   currentStep?: number
@@ -21,7 +22,7 @@ const EditCourse = ({ currentStep }: EditCourseProps) => {
   )
 
   const defaultValues = useMemo(() => {
-    const courseData = data?.data || {}
+    const courseData = (data?.data as CourseData) || {}
     return {
       isPaid: courseData.isPaid,
       title: courseData.title || '',
@@ -30,8 +31,8 @@ const EditCourse = ({ currentStep }: EditCourseProps) => {
       subtitle: courseData.subtitle || '',
       description: courseData.description || '',
       category: courseData.category || [],
-      image: extractFilename(courseData.thumbNail?.fileName),
-      video: extractFilename(courseData.previewVideo?.fileName),
+      image: extractFilename(typeof courseData.thumbNail === 'object' ? courseData.thumbNail?.fileName : courseData.thumbNail),
+      video: extractFilename(typeof courseData.previewVideo === 'object' ? courseData.previewVideo?.fileName : courseData.previewVideo),
     }
   }, [data])
 

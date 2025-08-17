@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Controller, useFormContext } from 'react-hook-form'
 
@@ -17,21 +16,33 @@ import {
 } from '@mui/material'
 
 import { handleMinTime, handleIsTodaySelected } from '../../../common/common'
+import type { WebinarFormData } from '../../../../../../types/education.types'
 
-const WebinarSchedule = () => {
+interface WebinarScheduleProps {
+  isEdit?: boolean
+  scheduleType?: string
+  setScheduleType?: (type: string) => void
+  defaultValues?: Partial<WebinarFormData>
+}
+
+const WebinarSchedule = ({
+  isEdit = false,
+  scheduleType = 'daily',
+  setScheduleType,
+  defaultValues,
+}: WebinarScheduleProps = {}) => {
   const {
     watch,
-    isEdit,
     control,
-    scheduleType,
-    defaultValues,
-    setScheduleType,
     formState: { errors },
-  } = useFormContext()
+  } = useFormContext<WebinarFormData>()
 
-  const handleScheduleTypeChange = async (type, onChange) => {
+  const handleScheduleTypeChange = async (
+    type: string,
+    onChange: (value: string) => void,
+  ) => {
     onChange(type)
-    setScheduleType(type)
+    setScheduleType?.(type)
   }
 
   const { t } = useTranslation('education')
@@ -173,16 +184,18 @@ const WebinarSchedule = () => {
                   <DatePicker
                     {...field}
                     minDate={handleMinTime()}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        placeholder={t(
+                    slots={{
+                      textField: TextField,
+                    }}
+                    slotProps={{
+                      textField: {
+                        placeholder: t(
                           'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.DATE_PLACEHOLDER',
-                        )}
-                        size="small"
-                        fullWidth
-                      />
-                    )}
+                        ),
+                        size: 'small' as const,
+                        fullWidth: true,
+                      },
+                    }}
                   />
                 )}
               />
@@ -192,7 +205,9 @@ const WebinarSchedule = () => {
                   color="error"
                   sx={{ mt: 0.5, display: 'block' }}
                 >
-                  {errors?.startDate?.message}
+                  {typeof errors.startDate === 'string'
+                    ? errors.startDate
+                    : errors.startDate?.message}
                 </Typography>
               )}
             </FormControl>
@@ -208,27 +223,34 @@ const WebinarSchedule = () => {
               <Controller
                 name="startTime"
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <TimePicker
-                    ampm={false}
-                    value={value}
-                    minTime={
-                      watch('scheduleType') === 'one time' &&
-                      handleIsTodaySelected(watch('startDate'))
-                        ? handleMinTime()
-                        : null
-                    }
-                    onChange={(newValue) => onChange(newValue)}
-                    renderInput={(params) => (
-                      <TextField
-                        placeholder={t(
-                          'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.TIME_PLACEHOLDER',
-                        )}
-                        {...params}
-                      />
-                    )}
-                  />
-                )}
+                render={({ field: { onChange, value } }) => {
+                  const handleChange = (newValue: Date | null) => {
+                    onChange(newValue)
+                  }
+                  return (
+                    <TimePicker
+                      ampm={false}
+                      value={value ?? undefined}
+                      minTime={
+                        watch('scheduleType') === 'one time' &&
+                        handleIsTodaySelected(watch('startDate') ?? null)
+                          ? handleMinTime() || undefined
+                          : undefined
+                      }
+                      onChange={handleChange}
+                      slots={{
+                        textField: TextField,
+                      }}
+                      slotProps={{
+                        textField: {
+                          placeholder: t(
+                            'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.TIME_PLACEHOLDER',
+                          ),
+                        },
+                      }}
+                    />
+                  )
+                }}
               />
               {errors?.startTime && (
                 <Typography
@@ -252,27 +274,34 @@ const WebinarSchedule = () => {
               <Controller
                 name="endTime"
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <TimePicker
-                    ampm={false}
-                    minTime={
-                      watch('scheduleType') === 'one time' &&
-                      handleIsTodaySelected(watch('startDate'))
-                        ? handleMinTime()
-                        : null
-                    }
-                    value={value}
-                    onChange={(newValue) => onChange(newValue)}
-                    renderInput={(params) => (
-                      <TextField
-                        placeholder={t(
-                          'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.TIME_PLACEHOLDER',
-                        )}
-                        {...params}
-                      />
-                    )}
-                  />
-                )}
+                render={({ field: { onChange, value } }) => {
+                  const handleChange = (newValue: Date | null) => {
+                    onChange(newValue)
+                  }
+                  return (
+                    <TimePicker
+                      ampm={false}
+                      minTime={
+                        watch('scheduleType') === 'one time' &&
+                        handleIsTodaySelected(watch('startDate') ?? null)
+                          ? handleMinTime() || undefined
+                          : undefined
+                      }
+                      value={value ?? undefined}
+                      onChange={handleChange}
+                      slots={{
+                        textField: TextField,
+                      }}
+                      slotProps={{
+                        textField: {
+                          placeholder: t(
+                            'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.TIME_PLACEHOLDER',
+                          ),
+                        },
+                      }}
+                    />
+                  )
+                }}
               />
               {errors?.endTime && (
                 <Typography
@@ -280,7 +309,9 @@ const WebinarSchedule = () => {
                   color="error"
                   sx={{ mt: 0.5, display: 'block' }}
                 >
-                  {errors?.endTime?.message}
+                  {typeof errors.endTime === 'string'
+                    ? errors.endTime
+                    : errors.endTime?.message}
                 </Typography>
               )}
             </FormControl>
@@ -289,7 +320,7 @@ const WebinarSchedule = () => {
       ) : (
         <Grid size={{ xs: 12 }}>
           <Grid container spacing={0.8}>
-            {defaultValues.days.map((day, index) => (
+            {(defaultValues?.days || [])?.map((day: { day: string; startTime?: Date | null; endTime?: Date | null; selected?: boolean }, index: number) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={day.day}>
                 <Controller
                   name={`days.${index}.selected`}
@@ -320,7 +351,11 @@ const WebinarSchedule = () => {
                     <Controller
                       name={`days.${index}.startTime`}
                       control={control}
-                      render={({ field: { onChange, value } }) => (
+                      render={({ field: { onChange, value } }) => {
+                        const handleChange = (newValue: Date | null) => {
+                          onChange(newValue)
+                        }
+                        return (
                         <TimePicker
                           sx={{
                             flexDirection: 'unset',
@@ -329,13 +364,19 @@ const WebinarSchedule = () => {
                           label={t(
                             'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.START_TIME',
                           )}
-                          value={value}
-                          onChange={(newValue) => onChange(newValue)}
-                          renderInput={(params) => (
-                            <TextField {...params} fullWidth />
-                          )}
+                          value={value ?? undefined}
+                          onChange={handleChange}
+                          slots={{
+                            textField: TextField,
+                          }}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                            },
+                          }}
                         />
-                      )}
+                        )
+                      }}
                     />
                     {errors?.days?.[index]?.startTime && (
                       <Typography
@@ -343,7 +384,7 @@ const WebinarSchedule = () => {
                         color="error"
                         sx={{ mt: 0.5, display: 'block' }}
                       >
-                        {errors?.days?.[index]?.startTime?.message}
+                        {errors?.days?.[index]?.startTime?.message as string}
                       </Typography>
                     )}
                   </Grid>
@@ -351,19 +392,29 @@ const WebinarSchedule = () => {
                     <Controller
                       name={`days.${index}.endTime`}
                       control={control}
-                      render={({ field: { onChange, value } }) => (
+                      render={({ field: { onChange, value } }) => {
+                        const handleChange = (newValue: Date | null) => {
+                          onChange(newValue)
+                        }
+                        return (
                         <TimePicker
                           label={t(
                             'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.END_TIME',
                           )}
                           ampm={false}
-                          value={value}
-                          onChange={(newValue) => onChange(newValue)}
-                          renderInput={(params) => (
-                            <TextField {...params} fullWidth />
-                          )}
+                          value={value ?? undefined}
+                          onChange={handleChange}
+                          slots={{
+                            textField: TextField,
+                          }}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                            },
+                          }}
                         />
-                      )}
+                        )
+                      }}
                     />
                     {errors?.days?.[index]?.endTime && (
                       <Typography
@@ -371,7 +422,7 @@ const WebinarSchedule = () => {
                         color="error"
                         sx={{ mt: 0.5, display: 'block' }}
                       >
-                        {errors?.days?.[index]?.endTime?.message}
+                        {errors?.days?.[index]?.endTime?.message as string}
                       </Typography>
                     )}
                   </Grid>

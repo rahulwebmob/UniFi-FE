@@ -3,11 +3,14 @@ import type { TFunction } from 'i18next'
 import * as yup from 'yup'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useForm, type FieldValues } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { User, Check, Link2, FileText, GraduationCap } from 'lucide-react'
+
+import type { RootState } from '../../../redux/types'
+import type { EducatorFormData } from '../types/form-types'
 
 import {
   Box,
@@ -31,10 +34,10 @@ import { useLazyVerifyEducatorEmailQuery } from '../../../services/admin'
 import { useRegisterEducatorMutation } from '../../../services/uploadProgress'
 import {
   transformNaNToNull,
-  handleAreAllFieldsFilled,
 } from '../components/common/common'
 
 const TEXT = (t: TFunction) => t('education:REGISTER_EDUCATOR.THANK_YOU_TEXT')
+
 
 interface StepIconProps {
   active?: boolean
@@ -87,7 +90,7 @@ const StepIcon = ({
 }
 
 const validationSchema = (t: TFunction) => [
-  yup.object({
+  yup.object().shape({
     firstName: yup
       .string()
       .trim()
@@ -110,7 +113,7 @@ const validationSchema = (t: TFunction) => [
       .trim()
       .required(t('REGISTER_EDUCATOR.VALIDATION.STATE_REQUIRED')),
   }),
-  yup.object({
+  yup.object().shape({
     summary: yup
       .string()
       .trim()
@@ -122,7 +125,7 @@ const validationSchema = (t: TFunction) => [
       .transform(transformNaNToNull)
       .min(0, t('REGISTER_EDUCATOR.VALIDATION.EXPERIENCE_MORE_THAN_ONE_YEAR'))
       .max(99.99, t('REGISTER_EDUCATOR.VALIDATION.NOT_EXCEED_99_YEARS')),
-    expertise: yup.array().of(yup.object({ category: yup.string().trim() })),
+    expertise: yup.array().of(yup.object().shape({ category: yup.string().trim() })),
     education: yup.array().of(
       yup.object().shape({
         degree: yup
@@ -131,10 +134,10 @@ const validationSchema = (t: TFunction) => [
           .test(
             'degree-required-if-field',
             t('REGISTER_EDUCATOR.VALIDATION.DEGREE_REQUIRED'),
-            (value, ctx) => {
-              const { field } = ctx.parent as { field?: string }
-              if (typeof field === 'string' && field.trim().length) {
-                return typeof value === 'string' && value.trim().length
+            function (value) {
+              const { field } = this.parent as { field?: string }
+              if (typeof field === 'string' && field.trim().length > 0) {
+                return typeof value === 'string' && value.trim().length > 0
               }
               return true
             },
@@ -145,10 +148,10 @@ const validationSchema = (t: TFunction) => [
           .test(
             'field-required-if-degree',
             t('REGISTER_EDUCATOR.VALIDATION.FIELD_OF_STUDY_REQUIRED'),
-            (value, ctx) => {
-              const { degree } = ctx.parent as { degree?: string }
-              if (typeof degree === 'string' && degree.trim().length) {
-                return typeof value === 'string' && value.trim().length
+            function (value) {
+              const { degree } = this.parent as { degree?: string }
+              if (typeof degree === 'string' && degree.trim().length > 0) {
+                return typeof value === 'string' && value.trim().length > 0
               }
               return true
             },
@@ -163,13 +166,13 @@ const validationSchema = (t: TFunction) => [
           .test(
             'name-required-if-org',
             t('REGISTER_EDUCATOR.VALIDATION.ISSUING_ORGANIZATION_REQUIRED'),
-            (value, ctx) => {
-              const { organization } = ctx.parent as { organization?: string }
+            function (value) {
+              const { organization } = this.parent as { organization?: string }
               if (
                 typeof organization === 'string' &&
-                organization.trim().length
+                organization.trim().length > 0
               ) {
-                return typeof value === 'string' && value.trim().length
+                return typeof value === 'string' && value.trim().length > 0
               }
               return true
             },
@@ -180,10 +183,10 @@ const validationSchema = (t: TFunction) => [
           .test(
             'org-required-if-name',
             t('REGISTER_EDUCATOR.VALIDATION.ISSUING_ORGANIZATION_REQUIRED'),
-            (value, ctx) => {
-              const { name } = ctx.parent as { name?: string }
-              if (typeof name === 'string' && name.trim().length) {
-                return typeof value === 'string' && value.trim().length
+            function (value) {
+              const { name } = this.parent as { name?: string }
+              if (typeof name === 'string' && name.trim().length > 0) {
+                return typeof value === 'string' && value.trim().length > 0
               }
               return true
             },
@@ -191,7 +194,7 @@ const validationSchema = (t: TFunction) => [
       }),
     ),
   }),
-  yup.object({
+  yup.object().shape({
     linkedinUrl: yup
       .string()
       .trim()
@@ -233,16 +236,17 @@ const validationSchema = (t: TFunction) => [
       }),
     ),
   }),
-  yup.object({
+  yup.object().shape({
     cv: yup
-      .mixed()
+      .mixed<File>()
+      .nullable()
       .notRequired()
       .test(
         'fileSize',
         t('REGISTER_EDUCATOR.VALIDATION.CV_LESS_THAN_500'),
         (value) => {
           if (!value) return true
-          const fileSize = value.size / (1024 * 1024)
+          const fileSize = (value as File).size / (1024 * 1024)
           return fileSize <= 50
         },
       )
@@ -252,19 +256,20 @@ const validationSchema = (t: TFunction) => [
         (value) => {
           if (!value) return true
           const allowedExtensions = ['pdf', 'doc', 'docx']
-          const fileExtension = value.name.split('.').pop().toLowerCase()
+          const fileExtension = (value as File).name.split('.').pop()?.toLowerCase() ?? ''
           return allowedExtensions.includes(fileExtension)
         },
       ),
     video: yup
-      .mixed()
+      .mixed<File>()
+      .nullable()
       .notRequired()
       .test(
         'fileSize',
         t('REGISTER_EDUCATOR.VALIDATION.VIDEO_LESS_THAN_200'),
         (value) => {
           if (!value) return true
-          const fileSize = value.size / (1024 * 1024)
+          const fileSize = (value as File).size / (1024 * 1024)
           return fileSize <= 200
         },
       )
@@ -286,7 +291,7 @@ const validationSchema = (t: TFunction) => [
   }),
 ]
 
-const defaultValues = {
+const defaultValues: EducatorFormData = {
   firstName: '',
   lastName: '',
   email: '',
@@ -312,15 +317,15 @@ const Educator: React.FC = () => {
   const theme = useTheme()
   const navigate = useNavigate()
   const { t } = useTranslation('education')
-  const { language } = useSelector((state) => state.app)
+  const { language } = useSelector((state: RootState) => state.app)
 
   // Responsive breakpoints - same as auth-wrapper
   // const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   // const isTablet = useMediaQuery(theme.breakpoints.down('md'))
   // const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
 
-  const [mp4, setMp4File] = useState(null)
-  const [cvFile, setCvFile] = useState(null)
+  const [mp4, setMp4File] = useState<File | null>(null)
+  const [cvFile, setCvFile] = useState<File | null>(null)
   const [progress, setProgress] = useState(0)
   const [activeStep, setCurrentStep] = useState(0)
   const [showThankYou, setShowThankYou] = useState(false)
@@ -329,12 +334,12 @@ const Educator: React.FC = () => {
   const [verifyEducatorEmail] = useLazyVerifyEducatorEmailQuery()
   const [registerTutor, { isLoading }] = useRegisterEducatorMutation()
 
-  const { control, handleSubmit, formState, setError } = useForm({
-    resolver: yupResolver(validationSchema(t)?.[activeStep]),
+  const { control, handleSubmit, formState, setError } = useForm<EducatorFormData>({
+    resolver: yupResolver(validationSchema(t)[activeStep] as yup.AnyObjectSchema),
     defaultValues,
   })
 
-  const steps = {
+  const steps: Record<number, { name: string; component: React.ReactElement }> = {
     0: {
       name: t('REGISTER_EDUCATOR.ABOUT'),
       component: <About control={control} />,
@@ -360,7 +365,7 @@ const Educator: React.FC = () => {
     },
   }
 
-  const onSubmit = async (data: FieldValues) => {
+  const onSubmit = async (data: EducatorFormData) => {
     if (activeStep === 0) {
       const emailResponse = await verifyEducatorEmail({ email: data.email })
 
@@ -376,26 +381,38 @@ const Educator: React.FC = () => {
     if (activeStep === Object.keys(steps).length - 1) {
       const formData = new FormData()
       Object.keys(data).forEach((name) => {
+        const key = name as keyof EducatorFormData
+        const value = data[key]
         if (
-          data[name] &&
-          !(data[name]?.length === 1 && data[name]?.[0] === '')
+          value &&
+          !(Array.isArray(value) && value.length === 1 && (value as unknown[])[0] === '')
         ) {
           if (name === 'cv') {
-            formData.append(name, cvFile)
+            if (cvFile) formData.append(name, cvFile)
           } else if (name === 'video') {
-            formData.append(name, mp4)
+            if (mp4) formData.append(name, mp4)
           } else if (name === 'otherProfileUrls') {
-            const nonEmptyLinks = (data[name] as { link?: string }[]).filter(
+            const nonEmptyLinks = (value as { link?: string }[]).filter(
               (urlObject) => urlObject.link,
             )
             if (nonEmptyLinks.length) {
               formData.append(name, JSON.stringify(nonEmptyLinks))
             }
-          } else if (typeof data[name] === 'object') {
-            if (handleAreAllFieldsFilled(data[name]))
-              formData.append(name, JSON.stringify(data[name]))
-          } else {
-            formData.append(name, data[name])
+          } else if (typeof value === 'object' && Array.isArray(value)) {
+            // Check if all array items are objects with filled fields
+            const allFilled = value.every((item) => {
+              if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
+                return Object.values(item).every(
+                  (val) => val !== '' && val !== null && val !== undefined
+                )
+              }
+              return false
+            })
+            if (allFilled) {
+              formData.append(name, JSON.stringify(value))
+            }
+          } else if (typeof value === 'object' && value !== null) {
+            formData.append(name, String(value))
           }
         }
         return null
@@ -613,9 +630,7 @@ const Educator: React.FC = () => {
               <Box
                 component="form"
                 onSubmit={(e) => {
-                  void handleSubmit((data) => {
-                    void onSubmit(data)
-                  })(e)
+                  void handleSubmit(onSubmit)(e)
                 }}
                 sx={{
                   flex: 1,

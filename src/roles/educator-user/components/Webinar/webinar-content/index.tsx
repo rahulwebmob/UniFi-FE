@@ -1,4 +1,3 @@
-import React from 'react'
 import { format } from 'date-fns'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -30,9 +29,16 @@ import {
 } from '@mui/material'
 
 import { getEducatorDetails } from '../../common/common'
-import { getLocaleByLanguageCode } from '../../../../../utils/globalUtils'
+import { getLocaleByLanguageCode } from '../../../../../shared/utils/date-helpers/commonMethods'
+import type { WebinarData } from '../../../../../types/education.types'
 
-const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
+interface WebinarContentProps {
+  webinarData: WebinarData
+  isEdit: boolean
+  handleOpenPremiumModal: () => void
+}
+
+const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }: WebinarContentProps) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const { t, i18n } = useTranslation('education')
@@ -91,12 +97,12 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
       </Button>
     )
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | undefined) => {
     if (!dateString) return '-'
     return format(new Date(dateString), 'EEEE, dd MMMM yyyy', { locale })
   }
 
-  const formatTime = (dateString) => {
+  const formatTime = (dateString: string | undefined) => {
     if (!dateString) return '-'
     return format(new Date(dateString), 'hh:mm a', { locale })
   }
@@ -154,12 +160,12 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
               )}
 
               {/* Categories */}
-              {webinarData?.category?.length > 0 && (
+              {webinarData?.category && Array.isArray(webinarData.category) && webinarData.category.length > 0 && (
                 <Box display="flex" gap={1} flexWrap="wrap" mb={3}>
-                  {webinarData.category.map((cat, index) => (
+                  {webinarData.category!.map((cat: string, index: number) => (
                     <Chip
                       key={index}
-                      label={cat.category || cat}
+                      label={cat}
                       size="small"
                       sx={{
                         background: alpha(theme.palette.primary.main, 0.1),
@@ -180,14 +186,14 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                 <Box display="flex" alignItems="center" gap={1.5}>
                   <Calendar size={20} color={theme.palette.primary.main} />
                   <Typography variant="body1" fontWeight={500}>
-                    {formatDate(webinarData?.webinarScheduledObj?.join_date)}
+                    {formatDate(webinarData?.webinarScheduledObj?.join_date || '')}
                   </Typography>
                 </Box>
 
                 <Box display="flex" alignItems="center" gap={1.5}>
                   <Clock size={20} color={theme.palette.primary.main} />
                   <Typography variant="body1" fontWeight={500}>
-                    {formatTime(webinarData?.webinarScheduledObj?.join_date)}
+                    {formatTime(webinarData?.webinarScheduledObj?.join_date || '')}
                   </Typography>
                   {webinarData?.duration && (
                     <Chip

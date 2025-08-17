@@ -4,9 +4,17 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { ENV } from '../utils/env'
 import { onMutationStartedDefault } from './serviceUtility'
 
+interface AxiosBaseQueryArgs {
+  url: string
+  method: string
+  data?: unknown
+  params?: Record<string, unknown>
+  onUploadProgress?: (progressEvent: unknown) => void
+}
+
 const axiosBaseQuery =
   ({ baseUrl } = { baseUrl: '' }) =>
-  async ({ url, method, data, params, onUploadProgress }) => {
+  async ({ url, method, data, params, onUploadProgress }: AxiosBaseQueryArgs) => {
     try {
       const token = localStorage.getItem('token')
       const result = await axios({
@@ -19,10 +27,11 @@ const axiosBaseQuery =
       })
       return { data: result.data }
     } catch (axiosError) {
+      const error = axiosError as { response?: { status?: number; data?: unknown }; message?: string }
       return {
         error: {
-          status: axiosError.response?.status,
-          data: axiosError.response?.data || axiosError.message,
+          status: error.response?.status,
+          data: error.response?.data || error.message,
         },
       }
     }
@@ -33,10 +42,11 @@ export const uploadApi = createApi({
   baseQuery: axiosBaseQuery({ baseUrl: ENV.BASE_URL }),
   endpoints: (builder) => ({
     registerEducator: builder.mutation({
-      query: ({ data, onUploadProgress }) => ({
+      query: ({ data, onUploadProgress }: { data: FormData; onUploadProgress: (progressEvent: unknown) => void }) => ({
         url: '/education-api/onboarding/register-educator',
         method: 'POST',
         data,
+        params: {},
         onUploadProgress,
       }),
       onQueryStarted: onMutationStartedDefault,

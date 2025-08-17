@@ -19,19 +19,30 @@ import { ENV } from '../../../../../utils/env'
 interface MediaDetails {
   title?: string
   thumbnail?: string
-  [key: string]: unknown
+  coverImage?: string
+  logo?: string
+  [key: string]: string | undefined
 }
 
 interface SubscriptionDetail {
+  _id?: string
   price?: number
-  [key: string]: unknown
+  duration?: string
+  displayName?: string
+  features?: string[]
+  note?: string
+  coverImage?: string
+  logo?: string
+  [key: string]: string | number | string[] | undefined
 }
 
 interface SubscriptionDetailsProps {
   mediaDetails: MediaDetails
   subscriptionDetails: SubscriptionDetail[]
   setCurrentStep: (step: number) => void
-  setSubscriptionFormData: React.Dispatch<React.SetStateAction<Record<string, unknown>>>
+  setSubscriptionFormData: React.Dispatch<
+    React.SetStateAction<Record<string, unknown>>
+  >
 }
 
 const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
@@ -41,7 +52,9 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
   setSubscriptionFormData,
 }) => {
   const { t } = useTranslation('application')
-  const [selectedPlan, setSelectedPlan] = useState(subscriptionDetails?.[0])
+  const [selectedPlan, setSelectedPlan] = useState<
+    SubscriptionDetail | undefined
+  >(subscriptionDetails?.[0])
   const COVER_IMG = `${ENV.CDN}${mediaDetails?.coverImage}`
   const LOGO_IMG = `${ENV.CDN}${mediaDetails?.logo}`
 
@@ -68,8 +81,8 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
     return isUnique
   }
 
-  const getKeyValue = (item: SubscriptionDetail) =>
-    isKeyUnique('duration') ? item?.duration : item?.displayName
+  const getKeyValue = (item: SubscriptionDetail): string =>
+    isKeyUnique('duration') ? item?.duration || '' : item?.displayName || ''
 
   return (
     <>
@@ -122,7 +135,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
                   row
                   aria-labelledby="plans-radio-buttons-group-label"
                   name="plans-radio-buttons-group"
-                  value={getKeyValue(selectedPlan)}
+                  value={selectedPlan ? getKeyValue(selectedPlan) : ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const key = isKeyUnique('duration')
                       ? 'duration'
@@ -130,12 +143,12 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
                     const matchedPlan = subscriptionDetails?.find(
                       (plan) => plan[key] === e.target.value,
                     )
-                    setSelectedPlan(matchedPlan)
+                    setSelectedPlan(matchedPlan || undefined)
                   }}
                 >
-                  {subscriptionDetails?.map((item) => (
+                  {subscriptionDetails?.map((item, index) => (
                     <FormControlLabel
-                      key={item._id}
+                      key={item._id || index}
                       value={getKeyValue(item)}
                       control={<Radio />}
                       label={
@@ -163,9 +176,9 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({
             {t('application:PREMIUM_MODAL.PREMIUM_FEATURES')}
           </Typography>
           <Box sx={{ mt: 1, maxHeight: 120, overflow: 'auto' }}>
-            {selectedPlan?.features?.map((feature) => (
+            {selectedPlan?.features?.map((feature: string, index: number) => (
               <Box
-                key={feature}
+                key={feature || index}
                 display="flex"
                 alignItems="center"
                 sx={{

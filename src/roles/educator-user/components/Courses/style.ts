@@ -4,13 +4,13 @@ export default styled('div')(({ theme }) => ({
   '& .MuiPaper-root': {
     background: 'none',
     '& .MuiDivider-root': {
-      background: theme.palette.primary.default,
+      background: theme.palette.primary.main,
     },
 
     '& .MuiTableRow-root': {
       background: 'none !important',
       '& .MuiTableCell-head': {
-        background: theme.palette.primary[100],
+        background: theme.palette.primary.light,
         fontWeight: '100',
       },
     },

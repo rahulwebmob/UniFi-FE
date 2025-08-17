@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { NumericFormat } from 'react-number-format'
 import { Controller, useFormContext } from 'react-hook-form'
@@ -58,10 +57,13 @@ const BasicDetails = () => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    control={control}
                     placeholder={t('EDUCATOR.BASIC_DETAILS.TITLE_PLACEHOLDER')}
                     error={!!errors.title}
-                    helperText={errors.title?.message}
+                    helperText={
+                      errors.title?.message
+                        ? String(errors.title.message)
+                        : undefined
+                    }
                     fullWidth
                     sx={{
                       '& .MuiOutlinedInput-root': {
@@ -105,13 +107,16 @@ const BasicDetails = () => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    control={control}
                     placeholder={t(
                       'EDUCATOR.BASIC_DETAILS.SUBTITLE_DESCRIPTION',
                     )}
                     size="small"
                     error={!!errors.subtitle}
-                    helperText={errors.subtitle?.message}
+                    helperText={
+                      errors.subtitle?.message
+                        ? String(errors.subtitle.message)
+                        : undefined
+                    }
                     fullWidth
                   />
                 )}
@@ -142,7 +147,6 @@ const BasicDetails = () => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    control={control}
                     placeholder={t(
                       'EDUCATOR.BASIC_DETAILS.CATEGORY_DESCRIPTION',
                     )}
@@ -151,7 +155,11 @@ const BasicDetails = () => {
                     variant="outlined"
                     fullWidth
                     error={!!errors.description}
-                    helperText={errors.description?.message}
+                    helperText={
+                      errors.description?.message
+                        ? String(errors.description.message)
+                        : undefined
+                    }
                     sx={{
                       '& .MuiOutlinedInput-root': {
                         borderRadius: '8px',

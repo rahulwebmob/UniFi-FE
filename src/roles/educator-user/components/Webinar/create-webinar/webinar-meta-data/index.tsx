@@ -1,18 +1,32 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Plus, CloudUpload } from 'lucide-react'
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
+import {
+  Controller,
+  useFieldArray,
+  useFormContext,
+  type FieldError,
+} from 'react-hook-form'
 
 import { Box, Grid, Button, Typography, FormControl } from '@mui/material'
+import type { WebinarFormData } from '../../../../../../types/education.types'
+
+// Helper function to safely render error messages
+const getErrorMessage = (error: FieldError | undefined): string => {
+  if (!error) return ''
+  if (typeof error === 'string') return error
+  if (typeof error.message === 'string') return error.message
+  return ''
+}
 
 const WebinarMetaData = () => {
-  const fileInputRefs = useRef([])
+  const fileInputRefs = useRef<(HTMLInputElement | null)[]>([])
   const { t } = useTranslation('education')
 
   const {
     control,
     formState: { errors },
-  } = useFormContext()
+  } = useFormContext<WebinarFormData>()
 
   const {
     fields: resourceFields,
@@ -20,7 +34,7 @@ const WebinarMetaData = () => {
     remove: removeResource,
   } = useFieldArray({
     control,
-    name: 'resources',
+    name: 'resources' as any,
   })
 
   return (
@@ -51,10 +65,10 @@ const WebinarMetaData = () => {
             </Typography>
             <Button
               startIcon={<Plus size={16} />}
-              onClick={() => addResource({ file: '' })}
-              variant="label"
+              onClick={() => addResource({ file: '' } as { file: File | string; id?: string })}
+              variant="outlined"
               disabled={resourceFields?.length > 4}
-              color="primary.main"
+              color="primary"
               sx={{ width: 'fit-content', marginLeft: 'auto' }}
             >
               {t('EDUCATOR.WEBINAR_META_DATA.ADD_MORE_RESOURCES')}
@@ -100,26 +114,31 @@ const WebinarMetaData = () => {
                             maxWidth: 'fit-content',
                           }}
                           startIcon={<CloudUpload size={16} />}
-                          onClick={() => fileInputRefs.current[index].click()}
+                          onClick={() => fileInputRefs.current[index]?.click()}
                         >
                           <input
-                            ref={(el) => {
+                            ref={(el: HTMLInputElement | null) => {
                               fileInputRefs.current[index] = el
                             }}
                             type="file"
                             accept=".doc,.docx,.pdf"
                             style={{ display: 'none' }}
-                            onChange={(event) =>
-                              onChange(event.target.files[0])
-                            }
+                            onChange={(
+                              event: React.ChangeEvent<HTMLInputElement>,
+                            ) => {
+                              const file = event.target.files?.[0]
+                              if (file) onChange(file)
+                            }}
                           />
                           {t('EDUCATOR.WEBINAR_META_DATA.BROWSE')}
                         </Button>
                         <Typography
-                          variant="body2 "
+                          variant="body2"
                           sx={{ color: 'text.primary' }}
                         >
-                          {value.name || value}
+                          {(value as File)?.name ||
+                            (value as string) ||
+                            'No file selected'}
                         </Typography>
                       </Box>
                       {!!resourceFields?.length && (
@@ -142,7 +161,9 @@ const WebinarMetaData = () => {
                           color="error"
                           sx={{ mt: 0.5, display: 'block' }}
                         >
-                          {errors.resources?.[index]?.file?.message}
+                          {getErrorMessage(
+                            errors.resources[index]?.file as FieldError,
+                          )}
                         </Typography>
                       )}
                     </>
@@ -193,7 +214,10 @@ const WebinarMetaData = () => {
                   <input
                     type="file"
                     accept=".png,.jpg,.jpeg"
-                    onChange={(event) => onChange(event.target.files[0])}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      const file = event.target.files?.[0]
+                      if (file) onChange(file)
+                    }}
                     style={{
                       position: 'absolute',
                       opacity: '0',
@@ -213,7 +237,9 @@ const WebinarMetaData = () => {
                     {t('EDUCATOR.WEBINAR_META_DATA.PNG_JPG_JPEG')}
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                    {value.name || value}
+                    {(value as File)?.name ||
+                      (value as string) ||
+                      'No file selected'}
                   </Typography>
                 </Box>
                 {errors.image && (
@@ -222,7 +248,7 @@ const WebinarMetaData = () => {
                     color="error"
                     sx={{ mt: 0.5, display: 'block' }}
                   >
-                    {errors.image.message}
+                    {getErrorMessage(errors.image as FieldError)}
                   </Typography>
                 )}
               </>

@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from 'react'
+import { useState, forwardRef } from 'react'
 
 import AddNewCard from './add-new-card'
 import BillingAddress from './billing-adress'
@@ -17,13 +17,19 @@ interface PurchaseDetails {
   displayName: string
   description: string
   scheduledDate?: string
+  [key: string]: unknown
 }
 
 interface MediaDetails {
-  logo: string
-  coverImage: string
-  featureImage: string
-  educatorDetails: string
+  logo?: string
+  coverImage?: string
+  featureImage?: string
+  educatorDetails?: {
+    firstName?: string
+    lastName?: string
+    [key: string]: unknown
+  }
+  [key: string]: unknown
 }
 
 interface PremiumModalProps {
@@ -97,8 +103,7 @@ const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
     return (
       <ModalBox
         ref={ref}
-        title={null}
-        isBackdropAllowed={false}
+        title={undefined}
         size={currentStep === 1 ? 'xs' : 'sm'}
         disablePadding
         onCloseModal={() => {

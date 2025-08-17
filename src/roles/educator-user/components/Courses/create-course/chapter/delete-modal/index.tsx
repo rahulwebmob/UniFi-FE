@@ -1,10 +1,11 @@
 import { X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import React, { useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 
 import { Box, Button, IconButton, Typography } from '@mui/material'
 
 import ModalBox from '../../../../../../../shared/components/ui-elements/modal-box'
+import type { DeleteModalProps } from '../../../../../../../types/education'
 
 const DeleteModal = ({
   handleDelete,
@@ -12,9 +13,12 @@ const DeleteModal = ({
   isDisabled,
   forceOpen,
   onClose,
-}) => {
+}: DeleteModalProps) => {
   const { t } = useTranslation('education')
-  const deleteRef = useRef(null)
+  const deleteRef = useRef<{
+    openModal: () => void
+    closeModal: () => void
+  } | null>(null)
 
   useEffect(() => {
     if (forceOpen && deleteRef.current) {
@@ -38,7 +42,7 @@ const DeleteModal = ({
         <IconButton
           color="error"
           disabled={isDisabled}
-          onClick={() => deleteRef.current.openModal()}
+          onClick={() => deleteRef.current?.openModal()}
         >
           <X size={20} />
         </IconButton>

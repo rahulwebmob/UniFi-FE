@@ -38,6 +38,11 @@ const gradients = {
   professional: `linear-gradient(135deg, ${colors.primary.main} 0%, ${colors.tertiary.brandBlue} 50%, ${colors.accent.lightBlue} 100%)`,
   modern: `linear-gradient(135deg, ${colors.tertiary.navy} 0%, ${colors.primary.main} 50%, ${colors.accent.skyBlue} 100%)`,
   education: `linear-gradient(135deg, ${colors.primary[700]} 0%, ${colors.accent.navy} 50%, ${colors.secondary[400]} 100%)`,
+
+  // Additional gradients
+  sunset: `linear-gradient(135deg, ${colors.warning[800]} 0%, ${colors.warning.main} 50%, ${colors.warning[300]} 100%)`,
+  aurora: `linear-gradient(135deg, ${colors.info[800]} 0%, ${colors.info.main} 50%, ${colors.info[300]} 100%)`,
+  health: `linear-gradient(135deg, ${colors.success[800]} 0%, ${colors.success.main} 50%, ${colors.success[300]} 100%)`,
 }
 
 // UniCitizens shadow system with brand colors
@@ -217,6 +222,10 @@ declare module '@mui/material/styles' {
     700?: string
     800?: string
     900?: string
+    light: string
+    main: string
+    dark: string
+    contrastText: string
   }
 
   interface SimplePaletteColorOptions {
@@ -230,5 +239,9 @@ declare module '@mui/material/styles' {
     700?: string
     800?: string
     900?: string
+    light?: string
+    main: string
+    dark?: string
+    contrastText?: string
   }
 }

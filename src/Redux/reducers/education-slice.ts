@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 // Define interfaces for the state
 interface EducationState {
-  canvas: HTMLCanvasElement | null // Canvas element or null
+  canvasId: string | null // Canvas element ID instead of the element itself
   isChatOpen: boolean
   strokeColor: string
   fillColor: string
@@ -20,7 +20,7 @@ interface EducationState {
 }
 
 const initialState: EducationState = {
-  canvas: null,
+  canvasId: null,
   isChatOpen: false,
   strokeColor: '#000',
   fillColor: '#E74C3C',
@@ -39,9 +39,8 @@ export const EducationSlice = createSlice({
   name: 'education',
   initialState,
   reducers: {
-    updateCanvas: (state, action: PayloadAction<HTMLCanvasElement | null>) => {
-      const { payload } = action
-      state.canvas = payload
+    updateCanvasId: (state, action: PayloadAction<string | null>) => {
+      state.canvasId = action.payload
     },
     updateStrokeColor: (state, action: PayloadAction<string>) => {
       const { payload } = action
@@ -96,7 +95,7 @@ export const EducationSlice = createSlice({
 })
 
 export const {
-  updateCanvas,
+  updateCanvasId,
   updateStrokeColor,
   updateFillColor,
   toggleChat,

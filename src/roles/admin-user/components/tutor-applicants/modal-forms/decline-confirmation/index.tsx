@@ -26,7 +26,7 @@ const DeclineConfirmation = ({
   return (
     <Box>
       <Typography variant="h4">Confirm</Typography>
-      <Typography variant="body">
+      <Typography variant="body1">
         Are you sure you want to decline this application?
       </Typography>
       <Box mt={2}>

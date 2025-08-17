@@ -2,7 +2,7 @@ import './style.css'
 
 import * as fabric from 'fabric'
 import { useTranslation } from 'react-i18next'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Type, Move, Pencil, Trash2, Download, RotateCcw } from 'lucide-react'
 
@@ -16,19 +16,25 @@ import { ToolBarSection } from '../styles'
 import { SizeType, ColorTypes } from './constants'
 import useWindowOpen from '../../../../hooks/useWindowOpen'
 import {
-  updateCanvas,
+  updateCanvasId,
   updateStrokeColor,
   updateStrokeWidth,
 } from '../../../../redux/reducers/education-slice'
 
-let canvas
+let canvas: fabric.Canvas | null = null
 
 const WhiteBoardToolbar = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation('application')
   const { strokeColor, eraserWidth, strokeWidth } = useSelector(
-    (state) => state.education,
+    (state: {
+      education: {
+        strokeColor: string
+        eraserWidth: number
+        strokeWidth: number
+      }
+    }) => state.education,
   )
   const [selectedTool, setSelectedTool] = useState('brush')
   const openWindow = useWindowOpen()
@@ -48,7 +54,7 @@ const WhiteBoardToolbar = () => {
     canvas.freeDrawingBrush.width = strokeWidth
 
     return () => {
-      canvas.dispose()
+      canvas?.dispose()
     }
   }, [strokeWidth, strokeColor])
 
@@ -71,17 +77,19 @@ const WhiteBoardToolbar = () => {
   }, [eraserWidth])
 
   const handleDeleteObject = () => {
+    if (!canvas) return
     const activeObjects = canvas.getActiveObjects()
     if (activeObjects.length) {
-      activeObjects.forEach((object) => {
-        canvas.remove(object)
+      activeObjects.forEach((object: fabric.Object) => {
+        canvas?.remove(object)
       })
     }
   }
 
   const handleClearCanvas = () => {
-    canvas.getObjects().forEach((obj) => {
-      canvas.remove(obj)
+    if (!canvas) return
+    canvas.getObjects().forEach((obj: fabric.Object) => {
+      canvas?.remove(obj)
     })
     canvas.renderAll()
   }
@@ -95,7 +103,8 @@ const WhiteBoardToolbar = () => {
         fontSize: 30,
         fontFamily: 'arial black',
       })
-      textInput.hiddenTextareaContainer = canvas.lowerCanvasEl.parentNode
+      textInput.hiddenTextareaContainer = canvas.lowerCanvasEl
+        ?.parentNode as HTMLElement
       canvas.add(textInput)
       canvas.setActiveObject(textInput)
       textInput.enterEditing()
@@ -110,9 +119,11 @@ const WhiteBoardToolbar = () => {
   }
 
   const handleDownload = () => {
+    if (!canvas) return
     const dataURL = canvas.toDataURL({
       format: 'jpeg',
       quality: 0.9,
+      multiplier: 1,
     })
     const imageLink = document.createElement('a')
     if (typeof imageLink.download === 'string') {
@@ -127,7 +138,7 @@ const WhiteBoardToolbar = () => {
   }
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Delete') {
         handleDeleteObject()
       }
@@ -139,14 +150,14 @@ const WhiteBoardToolbar = () => {
   }, [])
 
   useEffect(() => {
-    dispatch(updateCanvas(canvas))
+    dispatch(updateCanvasId(canvas?.toJSON() || null))
   }, [dispatch])
 
   return (
     <Box
       className="toolSection"
       sx={{
-        background: (thm) => thm.palette.primary.darker,
+        background: (thm) => thm.palette.primary.dark,
       }}
     >
       <Box className="toolField" p={1}>
@@ -160,7 +171,7 @@ const WhiteBoardToolbar = () => {
               <IconButton
                 onClick={() => {
                   dispatch(updateStrokeColor(theme.palette.common.black))
-                  canvas.isDrawingMode = true
+                  if (canvas) canvas.isDrawingMode = true
                   setSelectedTool('brush')
                 }}
                 className={selectedTool === 'brush' ? 'activeTool' : ''}
@@ -185,7 +196,7 @@ const WhiteBoardToolbar = () => {
           >
             <IconButton
               onClick={() => {
-                canvas.isDrawingMode = false
+                if (canvas) canvas.isDrawingMode = false
                 setSelectedTool('hand')
               }}
               className={selectedTool === 'hand' ? 'activeTool' : ''}
@@ -231,7 +242,7 @@ const WhiteBoardToolbar = () => {
             placement="top"
           >
             <Box component="span">
-              <UploadImage canvas={canvas} className="shapeIcon" />
+              <UploadImage />
             </Box>
           </Tooltip>
           <Tooltip

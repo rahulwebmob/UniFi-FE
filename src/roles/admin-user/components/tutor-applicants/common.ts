@@ -35,7 +35,9 @@ const DateFormatInTutor = ({
 
 const handleGeneratePdf = async (
   id: string,
-  downloadFunction: (params: { invoiceId: string }) => Promise<{ error: boolean; data?: { url: string } }>,
+  downloadFunction: (params: {
+    invoiceId: string
+  }) => Promise<{ error: boolean; data?: { url: string } }>,
   successCallback: () => void,
 ) => {
   try {

@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -10,11 +9,35 @@ import {
   CardContent,
 } from '@mui/material'
 
+interface MediaDetails {
+  logo?: string
+  coverImage?: string
+  educatorDetails?: {
+    firstName?: string
+    lastName?: string
+    [key: string]: unknown
+  }
+  [key: string]: unknown
+}
+
+interface SubscriptionDetail {
+  price?: number
+  displayName?: string
+  description?: string
+  [key: string]: unknown
+}
+
+interface EducationPremiumProps {
+  mediaDetails: MediaDetails
+  setCurrentStep: (updater: (prev: number) => number) => void
+  subscriptionDetails: SubscriptionDetail[]
+}
+
 const EducationPremium = ({
   mediaDetails,
   setCurrentStep,
   subscriptionDetails,
-}) => {
+}: EducationPremiumProps) => {
   const { t } = useTranslation('education')
 
   return (

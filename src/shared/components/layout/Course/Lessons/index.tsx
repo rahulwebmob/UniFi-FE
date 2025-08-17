@@ -34,19 +34,15 @@ import {
   useGetParticularCourseQuery,
 } from '../../../../../services/education'
 
-interface Lesson {
-  _id: string
-  title: string
-  chapterId: string
-  lessonType?: string
-  isFree?: boolean
-  durationInSeconds?: number
+import type { ChapterData, LessonData } from '../../../../../types/education.types'
+
+interface Lesson extends LessonData {
+  id?: string
 }
 
-interface Chapter {
-  _id: string
-  title: string
-  lessonList: Lesson[]
+interface LessonsChapter extends ChapterData {
+  _id: string // Make _id required for UI component use
+  lessonList?: Lesson[]
 }
 
 interface SelectedVideo {
@@ -106,30 +102,33 @@ const Lessons: React.FC = () => {
     const { chapterId, lessonId } = (location.state as LocationState) ?? {}
 
     if (chapterId && lessonId && courseData?.data?.chapters) {
-      const chapter = courseData.data.chapters.find(
-        (ch: Chapter) => ch._id === chapterId,
+      const chapter = (courseData.data.chapters as unknown as LessonsChapter[]).find(
+        (ch: LessonsChapter) => ch._id === chapterId,
       )
       const lessonIndex = chapter?.lessonList?.findIndex(
         (lesson: Lesson) => lesson._id === lessonId,
-      )
+      ) ?? -1
 
       if (lessonIndex !== -1) {
         setSelectedVideo({ courseId: id ?? '', chapterId, lessonId })
         setSelectedVideoIndex(
-          courseData.data.chapters
-            .flatMap((ch: Chapter) => ch.lessonList)
-            .findIndex((lesson: Lesson) => lesson._id === lessonId),
+          (courseData.data.chapters as unknown as LessonsChapter[])
+            .flatMap((ch: LessonsChapter) => ch.lessonList || [])
+            .filter((lesson): lesson is Lesson => lesson !== undefined)
+            .findIndex((lesson) => lesson._id === lessonId),
         )
       }
-    } else if (courseData?.data?.chapters?.length > 0) {
+    } else if (courseData?.data?.chapters?.length && courseData.data.chapters.length > 0) {
       const firstChapter = courseData.data.chapters[0]
-      const firstLesson = firstChapter.lessonList[0]
+      const firstLesson = firstChapter.lessonList?.[0]
 
-      setSelectedVideo({
-        courseId: id ?? '',
-        chapterId: firstChapter._id,
-        lessonId: firstLesson._id,
-      })
+      if (firstLesson && firstLesson._id && firstChapter._id) {
+        setSelectedVideo({
+          courseId: id ?? '',
+          chapterId: firstChapter._id,
+          lessonId: firstLesson._id,
+        })
+      }
       setSelectedVideoIndex(0)
     }
   }, [location.state, courseData, id])
@@ -138,7 +137,8 @@ const Lessons: React.FC = () => {
     if (!courseData?.data?.chapters) return
 
     const maxIndex =
-      courseData.data.chapters.flatMap((ch: Chapter) => ch.lessonList).length -
+      (courseData.data.chapters as unknown as LessonsChapter[]).flatMap((ch: LessonsChapter) => ch.lessonList || [])
+        .filter((lesson): lesson is Lesson => lesson !== undefined).length -
       1
     let newIndex = selectedVideoIndex
 
@@ -148,12 +148,12 @@ const Lessons: React.FC = () => {
       newIndex = selectedVideoIndex - 1
     }
 
-    const allLessons = courseData.data.chapters.flatMap(
-      (ch: Chapter) => ch.lessonList,
-    )
+    const allLessons = (courseData.data.chapters as unknown as LessonsChapter[]).flatMap(
+      (ch: LessonsChapter) => ch.lessonList || [],
+    ).filter((lesson): lesson is Lesson => lesson !== undefined)
     const newLesson = allLessons[newIndex]
 
-    if (newLesson) {
+    if (newLesson && newLesson._id) {
       setSelectedVideo({
         courseId: id ?? '',
         chapterId: newLesson.chapterId,
@@ -164,21 +164,21 @@ const Lessons: React.FC = () => {
   }
 
   const totalLessons =
-    courseData?.data?.chapters?.flatMap((ch: Chapter) => ch.lessonList)
-      .length || 0
+    (courseData?.data?.chapters as unknown as LessonsChapter[] | undefined)?.flatMap((ch: LessonsChapter) => ch.lessonList || [])
+      .filter((lesson): lesson is Lesson => lesson !== undefined).length || 0
 
-  const getCurrentLesson = () => {
+  const getCurrentLesson = (): Lesson | null => {
     if (!courseData?.data?.chapters || !selectedVideo) return null
-    const allLessons = courseData.data.chapters.flatMap(
-      (ch: Chapter) => ch.lessonList,
-    )
-    return allLessons[selectedVideoIndex]
+    const allLessons = (courseData.data.chapters as unknown as LessonsChapter[]).flatMap(
+      (ch: LessonsChapter) => ch.lessonList || [],
+    ).filter((lesson): lesson is Lesson => lesson !== undefined)
+    return allLessons[selectedVideoIndex] || null
   }
 
   const getCurrentChapter = () => {
     if (!courseData?.data?.chapters || !selectedVideo) return null
-    return courseData.data.chapters.find(
-      (ch: Chapter) => ch._id === selectedVideo.chapterId,
+    return (courseData.data.chapters as unknown as LessonsChapter[]).find(
+      (ch: LessonsChapter) => ch._id === selectedVideo.chapterId,
     )
   }
 
@@ -239,7 +239,7 @@ const Lessons: React.FC = () => {
                   <Box display="flex" alignItems="center" gap={1}>
                     <Clock size={18} color={theme.palette.text.secondary} />
                     <Typography variant="body2" color="text.secondary">
-                      {handleFormatSeconds(currentLesson.durationInSeconds)}
+                      {handleFormatSeconds(currentLesson.durationInSeconds as number)}
                     </Typography>
                   </Box>
                 )}
@@ -318,9 +318,9 @@ const Lessons: React.FC = () => {
                   }}
                 >
                   <ContentPreview
-                    url={data?.data?.url}
-                    type={data?.data?.contentType}
-                    key={data?.data?.url}
+                    url={data?.data?.url ?? ''}
+                    type={data?.data?.contentType ?? ''}
+                    key={data?.data?.url ?? ''}
                   />
                 </Box>
 
@@ -460,8 +460,8 @@ const Lessons: React.FC = () => {
                     },
                   }}
                 >
-                  {courseData?.data?.chapters?.map(
-                    (chapter: Chapter, chapterIndex: number) => (
+                  {(courseData?.data?.chapters as unknown as LessonsChapter[] | undefined)?.map(
+                    (chapter: LessonsChapter, chapterIndex: number) => (
                       <Accordion
                         key={chapter._id}
                         defaultExpanded={
@@ -583,7 +583,7 @@ const Lessons: React.FC = () => {
                                     },
                                     borderBottom:
                                       lessonIndex <
-                                      chapter.lessonList.length - 1
+                                      (chapter.lessonList?.length ?? 0) - 1
                                         ? `1px solid ${alpha(theme.palette.grey[200], 0.5)}`
                                         : 'none',
                                   }}
@@ -591,14 +591,15 @@ const Lessons: React.FC = () => {
                                     if (!isLocked) {
                                       setSelectedVideo({
                                         courseId: id ?? '',
-                                        chapterId: chapter._id,
-                                        lessonId: lesson._id,
+                                        chapterId: chapter._id ?? '',
+                                        lessonId: lesson._id ?? '',
                                       })
                                       setSelectedVideoIndex(
-                                        courseData?.data?.chapters
+                                        (courseData?.data?.chapters as unknown as LessonsChapter[] | undefined)
                                           ?.flatMap(
-                                            (ch: Chapter) => ch.lessonList,
+                                            (ch: LessonsChapter) => ch.lessonList || [],
                                           )
+                                          .filter((l): l is Lesson => l !== undefined)
                                           .findIndex(
                                             (l: Lesson) => l._id === lesson._id,
                                           ) ?? 0,
@@ -682,7 +683,7 @@ const Lessons: React.FC = () => {
                                               color="text.secondary"
                                             >
                                               {handleFormatSeconds(
-                                                lesson.durationInSeconds,
+                                                lesson.durationInSeconds as number,
                                               )}
                                             </Typography>
                                           </Box>

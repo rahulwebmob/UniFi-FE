@@ -4,7 +4,7 @@ export type { EducationState } from '../reducers/education-slice'
 export type { Alert, AppState, Language } from '../reducers/app-slice'
 
 // Root state type
-import type { store } from '../store'
+import Store from '../Store'
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof Store.getState>
+export type AppDispatch = typeof Store.dispatch

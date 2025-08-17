@@ -131,7 +131,7 @@ const Webinars = () => {
                     <Chip
                       key={categoryName}
                       size="small"
-                      variant="contained"
+                      variant="filled"
                       color="primary"
                       label={categoryName ?? '-'}
                     />
@@ -150,7 +150,7 @@ const Webinars = () => {
                 <Divider
                   sx={{
                     my: 1,
-                    borderColor: (theme) => theme.palette.grey.light,
+                    borderColor: (theme) => theme.palette.grey[300],
                   }}
                 />
                 <Box display="flex" justifyContent="space-between" mt={1}>

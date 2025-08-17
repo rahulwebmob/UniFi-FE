@@ -32,26 +32,37 @@ const useFullscreen = () => {
           //
         }) // Handle potential errors silently
     } else if ((element as ElementWithVendorFullscreen).mozRequestFullScreen) {
-      void (element as ElementWithVendorFullscreen)
-        .mozRequestFullScreen()
-        .then(() => dispatch(enterFullscreen()))
-        .catch(() => {
-          //
-        }) // Handle potential errors silently
-    } else if ((element as ElementWithVendorFullscreen).webkitRequestFullscreen) {
-      void (element as ElementWithVendorFullscreen)
-        .webkitRequestFullscreen()
-        .then(() => dispatch(enterFullscreen()))
-        .catch(() => {
-          //
-        }) // Handle potential errors silently
+      const mozElement = element as ElementWithVendorFullscreen
+      if (mozElement.mozRequestFullScreen) {
+        void mozElement
+          .mozRequestFullScreen()
+          .then(() => dispatch(enterFullscreen()))
+          .catch(() => {
+            //
+          }) // Handle potential errors silently
+      }
+    } else if (
+      (element as ElementWithVendorFullscreen).webkitRequestFullscreen
+    ) {
+      const webkitElement = element as ElementWithVendorFullscreen
+      if (webkitElement.webkitRequestFullscreen) {
+        void webkitElement
+          .webkitRequestFullscreen()
+          .then(() => dispatch(enterFullscreen()))
+          .catch(() => {
+            //
+          }) // Handle potential errors silently
+      }
     } else if ((element as ElementWithVendorFullscreen).msRequestFullscreen) {
-      void (element as ElementWithVendorFullscreen)
-        .msRequestFullscreen()
-        .then(() => dispatch(enterFullscreen()))
-        .catch(() => {
-          //
-        }) // Handle potential errors silently
+      const msElement = element as ElementWithVendorFullscreen
+      if (msElement.msRequestFullscreen) {
+        void msElement
+          .msRequestFullscreen()
+          .then(() => dispatch(enterFullscreen()))
+          .catch(() => {
+            //
+          }) // Handle potential errors silently
+      }
     }
   }
 
@@ -66,28 +77,39 @@ const useFullscreen = () => {
         })
     } else if ((document as DocumentWithVendorFullscreen).mozCancelFullScreen) {
       // Firefox
-      void (document as DocumentWithVendorFullscreen)
-        .mozCancelFullScreen()
-        .then(() => dispatch(exitFullscreen()))
-        .catch(() => {
-          //
-        })
-    } else if ((document as DocumentWithVendorFullscreen).webkitExitFullscreen) {
+      const mozDoc = document as DocumentWithVendorFullscreen
+      if (mozDoc.mozCancelFullScreen) {
+        void mozDoc
+          .mozCancelFullScreen()
+          .then(() => dispatch(exitFullscreen()))
+          .catch(() => {
+            //
+          })
+      }
+    } else if (
+      (document as DocumentWithVendorFullscreen).webkitExitFullscreen
+    ) {
       // Chrome, Safari and Opera
-      void (document as DocumentWithVendorFullscreen)
-        .webkitExitFullscreen()
-        .then(() => dispatch(exitFullscreen()))
-        .catch(() => {
-          //
-        })
+      const webkitDoc = document as DocumentWithVendorFullscreen
+      if (webkitDoc.webkitExitFullscreen) {
+        void webkitDoc
+          .webkitExitFullscreen()
+          .then(() => dispatch(exitFullscreen()))
+          .catch(() => {
+            //
+          })
+      }
     } else if ((document as DocumentWithVendorFullscreen).msExitFullscreen) {
       // IE/Edge
-      void (document as DocumentWithVendorFullscreen)
-        .msExitFullscreen()
-        .then(() => dispatch(exitFullscreen()))
-        .catch(() => {
-          //
-        })
+      const msDoc = document as DocumentWithVendorFullscreen
+      if (msDoc.msExitFullscreen) {
+        void msDoc
+          .msExitFullscreen()
+          .then(() => dispatch(exitFullscreen()))
+          .catch(() => {
+            //
+          })
+      }
     }
   }, [dispatch, isDocument])
 

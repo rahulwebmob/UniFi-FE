@@ -13,6 +13,7 @@ interface User {
   role?: string
   language?: string
   layout?: string[]
+  isPasswordMissing?: boolean
   appearance?: {
     language?: string
     menuPosition?: string
@@ -20,6 +21,7 @@ interface User {
   [key: string]:
     | string
     | string[]
+    | boolean
     | { language?: string; menuPosition?: string }
     | undefined // For decoded token properties
 }
@@ -49,9 +51,16 @@ export const UserSlice = createSlice({
       localStorage.removeItem('token')
       state.user = null
     },
-    updateUser: (state, action: PayloadAction<Partial<User>>) => {
+    updateUser: (
+      state,
+      action: PayloadAction<{ user?: Partial<User> } & Partial<User>>,
+    ) => {
       const { payload } = action
-      state.user = { ...state.user, ...payload }
+      if ('user' in payload && payload.user) {
+        state.user = { ...state.user, ...payload.user }
+      } else {
+        state.user = { ...state.user, ...payload }
+      }
     },
     updateToken: (state, action: PayloadAction<{ token: string }>) => {
       const { payload } = action

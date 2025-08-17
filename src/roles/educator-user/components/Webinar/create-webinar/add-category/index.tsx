@@ -1,9 +1,8 @@
 import { Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import React, { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
-// import AutocompleteComponent from '@Components/Modules/TradingView/Common/AutocompleteComponent'
 import {
   Box,
   Chip,
@@ -17,37 +16,50 @@ import {
 
 import { useGetCategoryListQuery } from '../../../../../../services/admin'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
+import type { Category } from '../../../../../../types/api.types'
+
+interface WebinarFormData {
+  category: string[]
+  [key: string]: unknown
+}
 
 const AddCategory = () => {
   const theme = useTheme()
   const {
     control,
-    categories,
-    setCategories,
     formState: { errors },
-  } = useFormContext()
-  const categoryRef = useRef(null)
+  } = useFormContext<WebinarFormData>()
+
+  const categoryRef = useRef<{
+    openModal: () => void
+    closeModal: () => void
+  } | null>(null)
+  const [categories, setCategories] = useState<string[]>([])
 
   const { t } = useTranslation('education')
   const [selectedCategory, setSelectedCategory] = useState('')
 
-  const { data, isLoading } = useGetCategoryListQuery()
+  const { data, isLoading } = useGetCategoryListQuery(undefined)
 
   useEffect(() => {
-    if (data?.data?.length && !isLoading) {
-      setCategories((prev) => [...new Set([...data.data.slice(0, 5), ...prev])])
+    if (data?.data && Array.isArray(data.data) && data.data.length && !isLoading) {
+      const categoryNames = data.data.map((category: Category) => category.name)
+      setCategories((prev: string[]) => [
+        ...new Set([...categoryNames.slice(0, 5), ...prev]),
+      ])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, isLoading])
 
-  const handleAddCategory = (newCategory) => {
+  const handleAddCategory = (newCategory: string) => {
     setCategories((prev) => [...prev, newCategory])
   }
 
   const handleAdd = () => {
-    handleAddCategory(selectedCategory)
-    setSelectedCategory('')
-    categoryRef.current.closeModal()
+    if (selectedCategory.trim()) {
+      handleAddCategory(selectedCategory)
+      setSelectedCategory('')
+      categoryRef.current?.closeModal()
+    }
   }
 
   return (
@@ -58,17 +70,18 @@ const AddCategory = () => {
         render={({ field: { onChange, value } }) => (
           <FormControl fullWidth>
             <Box display="flex" gap={1} flexWrap="wrap">
-              {categories?.map((name) => (
+              {categories?.map((name: string) => (
                 <Chip
                   key={name}
                   label={name}
                   size="small"
                   variant={value?.includes(name) ? 'filled' : 'outlined'}
                   onClick={() => {
-                    if (value?.includes(name)) {
-                      onChange(value.filter((v) => v !== name))
+                    const currentValue = value || []
+                    if (currentValue.includes(name)) {
+                      onChange(currentValue.filter((v: string) => v !== name))
                     } else {
-                      onChange([...value, name])
+                      onChange([...currentValue, name])
                     }
                   }}
                   sx={{
@@ -93,7 +106,7 @@ const AddCategory = () => {
                 startIcon={<Plus size={16} />}
                 variant="outlined"
                 size="small"
-                onClick={() => categoryRef.current.openModal()}
+                onClick={() => categoryRef.current?.openModal()}
                 sx={{
                   borderColor: theme.palette.primary.main,
                   color: theme.palette.primary.main,
@@ -115,7 +128,9 @@ const AddCategory = () => {
                 color="error"
                 sx={{ mt: 0.5, display: 'block' }}
               >
-                {errors?.category?.message}
+                {typeof errors.category === 'string'
+                  ? errors.category
+                  : errors.category.message}
               </Typography>
             )}
           </FormControl>
@@ -133,12 +148,15 @@ const AddCategory = () => {
             size="small"
             disablePortal
             options={
-              data?.data?.filter((value) => !categories.includes(value)) || []
+              (data?.data && Array.isArray(data.data) 
+                ? data.data.map((category: Category) => category.name)
+                    .filter((name: string) => !categories.includes(name)) 
+                : [])
             }
             value={selectedCategory}
-            getOptionLabel={(option) => option || ''}
-            onChange={(__, newValue) => {
-              setSelectedCategory(newValue)
+            getOptionLabel={(option: string) => option || ''}
+            onChange={(__, newValue: string | null) => {
+              setSelectedCategory(newValue || '')
             }}
             renderInput={(params) => (
               <TextField
@@ -149,7 +167,7 @@ const AddCategory = () => {
           />
           <Box display="flex" justifyContent="flex-end" marginTop={2}>
             <Button
-              onClick={() => categoryRef.current.closeModal()}
+              onClick={() => categoryRef.current?.closeModal()}
               color="secondary"
               sx={{ marginRight: 1 }}
             >

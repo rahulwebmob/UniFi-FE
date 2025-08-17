@@ -1,6 +1,5 @@
 import Draggable from 'react-draggable'
 import { useTranslation } from 'react-i18next'
-import { useFormContext } from 'react-hook-form'
 import React, { useRef, useState, useEffect } from 'react'
 import {
   Eye,
@@ -41,19 +40,31 @@ import {
   useUpdateChapterMutation,
   useGetLessonsDetailsQuery,
 } from '../../../../../../services/admin'
+import type { ChapterData, LessonData } from '../../../../../../types/education.types'
 
-const SavedChapters = ({ courseId }) => {
+interface SavedChaptersProps {
+  courseId: string
+}
+
+const SavedChapters = ({ courseId }: SavedChaptersProps) => {
   const theme = useTheme()
   const { t } = useTranslation('education')
-  const { setHasLessons } = useFormContext()
 
-  const [chapters, setChapters] = useState([])
+  const [chapters, setChapters] = useState<ChapterData[]>([])
   const [newChapterTitle, setNewChapterTitle] = useState('')
-  const [isEditingChapter, setIsEditingChapter] = useState('')
-  const [expandedChapters, setExpandedChapters] = useState({})
-  const chapterRefs = useRef({})
-  const [anchorElChapter, setAnchorElChapter] = useState(null)
-  const [selectedChapter, setSelectedChapter] = useState(null)
+  const [isEditingChapter, setIsEditingChapter] = useState<string | null>('')
+  const [expandedChapters, setExpandedChapters] = useState<
+    Record<string, boolean>
+  >({})
+  const chapterRefs = useRef<
+    Record<string, React.RefObject<HTMLDivElement | null>>
+  >({})
+  const [anchorElChapter, setAnchorElChapter] = useState<HTMLElement | null>(
+    null,
+  )
+  const [selectedChapter, setSelectedChapter] = useState<ChapterData | null>(
+    null,
+  )
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   const [sortChapters] = useSortChaptersMutation()
@@ -68,23 +79,28 @@ const SavedChapters = ({ courseId }) => {
 
   useEffect(() => {
     if (data?.data?.chapters) {
-      const initialExpanded = {}
-      data?.data?.chapters?.forEach((chap) => {
-        initialExpanded[chap._id] = true
+      const initialExpanded: Record<string, boolean> = {}
+      data?.data?.chapters?.forEach((chap: ChapterData) => {
+        if (chap._id) {
+          initialExpanded[chap._id] = true
+        }
       })
       setExpandedChapters(initialExpanded)
-      setChapters(data.data.chapters)
+      setChapters(data.data.chapters as ChapterData[])
     }
   }, [data, isFetching])
 
-  const handleToggleAccordion = (chapterId) => {
+  const handleToggleAccordion = (chapterId: string) => {
     setExpandedChapters((prev) => ({
       ...prev,
       [chapterId]: !prev[chapterId],
     }))
   }
 
-  const handleChapterMenuOpen = (event, chapter) => {
+  const handleChapterMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    chapter: ChapterData,
+  ) => {
     setAnchorElChapter(event.currentTarget)
     setSelectedChapter(chapter)
   }
@@ -94,14 +110,11 @@ const SavedChapters = ({ courseId }) => {
     setSelectedChapter(null)
   }
 
-  const handleUpdateChapter = async (chapterId, title, isDeleted = false) => {
-    if (isDeleted)
-      setHasLessons((prev) => {
-        const copy = { ...prev }
-        delete copy[chapterId]
-        const rest = copy
-        return rest
-      })
+  const handleUpdateChapter = async (
+    chapterId: string,
+    title: string,
+    isDeleted = false,
+  ) => {
     const payload = {
       courseId,
       chapterId,
@@ -114,7 +127,11 @@ const SavedChapters = ({ courseId }) => {
     }
   }
 
-  const handleChapterDragStop = async (_, newData, draggedIndex) => {
+  const handleChapterDragStop = (
+    _: unknown,
+    newData: { y: number },
+    draggedIndex: number,
+  ) => {
     const newChapters = [...chapters]
     const draggedChapter = newChapters[draggedIndex]
 
@@ -136,7 +153,7 @@ const SavedChapters = ({ courseId }) => {
     const replacedChapter = newChapters[replacedChapterIndex]
 
     if (draggedChapter?._id && replacedChapter?._id) {
-      await sortChapters({
+      void sortChapters({
         firstDocId: draggedChapter._id,
         secondDocId: replacedChapter._id,
       })
@@ -160,21 +177,24 @@ const SavedChapters = ({ courseId }) => {
           >
             {chapters.map((chap, index) => {
               // Create ref for each chapter if it doesn't exist
-              if (!chapterRefs.current[chap._id]) {
+              if (chap._id && !chapterRefs.current[chap._id]) {
                 chapterRefs.current[chap._id] = React.createRef()
               }
               return (
                 <Draggable
                   key={chap._id}
-                  nodeRef={chapterRefs.current[chap._id]}
+                  nodeRef={chap._id ? chapterRefs.current[chap._id] : undefined}
                   axis="y"
                   position={{ x: 0, y: 0 }}
                   onStop={(e, d) => handleChapterDragStop(e, d, index)}
                   handle=".drag-chapter"
                 >
-                  <Box ref={chapterRefs.current[chap._id]} sx={{ mb: 2 }}>
+                  <Box
+                    ref={chap._id ? chapterRefs.current[chap._id] : undefined}
+                    sx={{ mb: 2 }}
+                  >
                     <Accordion
-                      expanded={!!expandedChapters[chap._id]}
+                      expanded={chap._id ? !!expandedChapters[chap._id] : false}
                       key={chap._id}
                       sx={{
                         backgroundColor: 'background.paper',
@@ -218,7 +238,9 @@ const SavedChapters = ({ courseId }) => {
                           >
                             <IconButton
                               size="small"
-                              onClick={() => handleToggleAccordion(chap._id)}
+                              onClick={() =>
+                                chap._id && handleToggleAccordion(chap._id)
+                              }
                               sx={{
                                 backgroundColor: theme.palette.primary.main,
                                 color: 'white',
@@ -230,7 +252,7 @@ const SavedChapters = ({ courseId }) => {
                                 height: 28,
                               }}
                             >
-                              {expandedChapters[chap._id] ? (
+                              {chap._id && expandedChapters[chap._id] ? (
                                 <ChevronUp size={16} />
                               ) : (
                                 <ChevronDown size={16} />
@@ -294,7 +316,7 @@ const SavedChapters = ({ courseId }) => {
                                     title: chap.title,
                                   })}
                                 </Typography>
-                                {chap.lessons?.length > 0 && (
+                                {chap.lessons && chap.lessons.length > 0 && (
                                   <Typography
                                     variant="caption"
                                     color="text.secondary"
@@ -334,10 +356,12 @@ const SavedChapters = ({ courseId }) => {
                                 <Button
                                   variant="contained"
                                   onClick={() => {
-                                    void handleUpdateChapter(
-                                      chap._id,
-                                      newChapterTitle,
-                                    )
+                                    if (chap._id) {
+                                      void handleUpdateChapter(
+                                        chap._id,
+                                        newChapterTitle,
+                                      )
+                                    }
                                   }}
                                   size="small"
                                   sx={{ textTransform: 'none' }}
@@ -349,9 +373,9 @@ const SavedChapters = ({ courseId }) => {
                                 size="small"
                                 onClick={() => {
                                   setIsEditingChapter((prev) =>
-                                    prev === chap._id ? null : chap._id,
+                                    prev === chap._id ? null : chap._id || null,
                                   )
-                                  setNewChapterTitle(chap.title)
+                                  setNewChapterTitle(chap.title || '')
                                 }}
                                 sx={{
                                   color: theme.palette.primary.main,
@@ -364,20 +388,24 @@ const SavedChapters = ({ courseId }) => {
                                 <Edit2 size={16} />
                               </IconButton>
                               <DeleteModal
-                                handleDelete={() =>
-                                  handleUpdateChapter(
-                                    chap._id,
-                                    chap?.title,
-                                    true,
-                                  )
-                                }
+                                handleDelete={() => {
+                                  if (chap._id && chap.title) {
+                                    void handleUpdateChapter(
+                                      chap._id,
+                                      chap.title,
+                                      true,
+                                    )
+                                  }
+                                }}
                                 message="chapter"
                               />
                             </Box>
                           )}
                         </Box>
                       </AccordionSummary>
-                      <LessonsList chapterId={chap._id} courseId={courseId} />
+                      {chap._id && (
+                        <LessonsList chapterId={chap._id} courseId={courseId} />
+                      )}
                     </Accordion>
                   </Box>
                 </Draggable>
@@ -398,7 +426,7 @@ const SavedChapters = ({ courseId }) => {
           >
             <MenuItem
               onClick={() => {
-                setIsEditingChapter(selectedChapter?._id)
+                setIsEditingChapter(selectedChapter?._id || null)
                 setNewChapterTitle(selectedChapter?.title || '')
                 handleChapterMenuClose()
               }}
@@ -410,7 +438,11 @@ const SavedChapters = ({ courseId }) => {
             </MenuItem>
             <MenuItem
               onClick={() => {
-                if (selectedChapter) {
+                if (
+                  selectedChapter &&
+                  selectedChapter._id &&
+                  selectedChapter.title
+                ) {
                   void handleUpdateChapter(
                     selectedChapter._id,
                     selectedChapter.title,
@@ -434,18 +466,26 @@ const SavedChapters = ({ courseId }) => {
   )
 }
 
-const LessonsList = ({ courseId, chapterId }) => {
+interface LessonsListProps {
+  courseId: string
+  chapterId: string
+}
+
+const LessonsList = ({ courseId, chapterId }: LessonsListProps) => {
   const theme = useTheme()
   const { t } = useTranslation('education')
-  const [lessons, setLessons] = useState([])
-  const lessonRefs = useRef({})
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [selectedLesson, setSelectedLesson] = useState(null)
+  const [lessons, setLessons] = useState<LessonData[]>([])
+  const lessonRefs = useRef<
+    Record<string, React.RefObject<HTMLDivElement | null>>
+  >({})
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const [selectedLesson, setSelectedLesson] = useState<LessonData | null>(null)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
-  const { setHasLessons } = useFormContext()
+  // Local state for lesson counts instead of using form context
+  const [, setLocalLessonCount] = useState(0)
 
   const [sortLesson] = useSortLessonMutation()
   const [updateLesson] = useUpdateLessonMutation()
@@ -457,15 +497,16 @@ const LessonsList = ({ courseId, chapterId }) => {
 
   useEffect(() => {
     if (data?.data) {
-      setLessons(data.data)
-      setHasLessons((prev) => ({
-        ...prev,
-        [chapterId]: data.data.length,
-      }))
+      setLessons(data.data as LessonData[])
+      setLocalLessonCount(data.data?.length || 0)
     }
-  }, [data, isFetching, chapterId, setHasLessons])
+  }, [data, isFetching, chapterId])
 
-  const handleLessonDragStop = async (_, newData, draggedIndex) => {
+  const handleLessonDragStop = (
+    _: unknown,
+    newData: { y: number },
+    draggedIndex: number,
+  ) => {
     const newLessons = [...lessons]
     const draggedItem = newLessons[draggedIndex]
 
@@ -488,14 +529,17 @@ const LessonsList = ({ courseId, chapterId }) => {
     const replacedItem = newLessons[replacedItemIndex]
 
     if (draggedItem._id && replacedItem?._id) {
-      await sortLesson({
+      void sortLesson({
         firstDocId: draggedItem._id,
         secondDocId: replacedItem._id,
       })
     }
   }
 
-  const handleMenuOpen = (event, lesson) => {
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    lesson: LessonData,
+  ) => {
     setAnchorEl(event.currentTarget)
     setSelectedLesson(lesson)
   }
@@ -505,11 +549,8 @@ const LessonsList = ({ courseId, chapterId }) => {
     setSelectedLesson(null)
   }
 
-  const handleDeleteLesson = async (lessonId) => {
-    setHasLessons((prevCounts) => ({
-      ...prevCounts,
-      [chapterId]: prevCounts[chapterId] - 1,
-    }))
+  const handleDeleteLesson = async (lessonId: string) => {
+    setLocalLessonCount((prev) => prev - 1)
     await updateLesson({
       courseId,
       chapterId,
@@ -524,20 +565,28 @@ const LessonsList = ({ courseId, chapterId }) => {
       {!!lessons.length &&
         lessons.map((lessonDetail, index) => {
           // Create ref for each lesson if it doesn't exist
-          if (!lessonRefs.current[lessonDetail._id]) {
+          if (lessonDetail._id && !lessonRefs.current[lessonDetail._id]) {
             lessonRefs.current[lessonDetail._id] = React.createRef()
           }
           return (
             <Draggable
               key={lessonDetail._id}
-              nodeRef={lessonRefs.current[lessonDetail._id]}
+              nodeRef={
+                lessonDetail._id
+                  ? lessonRefs.current[lessonDetail._id]
+                  : undefined
+              }
               axis="y"
               position={{ x: 0, y: 0 }}
               handle=".drag-handle"
               onStop={(e, d) => handleLessonDragStop(e, d, index)}
             >
               <Box
-                ref={lessonRefs.current[lessonDetail._id]}
+                ref={
+                  lessonDetail._id
+                    ? lessonRefs.current[lessonDetail._id]
+                    : undefined
+                }
                 display="flex"
                 flexDirection="row"
                 justifyContent="space-between"
@@ -632,7 +681,9 @@ const LessonsList = ({ courseId, chapterId }) => {
                       />
                     </Box>
                     <DeleteModal
-                      handleDelete={() => handleDeleteLesson(lessonDetail._id)}
+                      handleDelete={() =>
+                        lessonDetail._id && handleDeleteLesson(lessonDetail._id)
+                      }
                       message="lesson"
                     />
                     <AddLessonsModal
@@ -641,10 +692,18 @@ const LessonsList = ({ courseId, chapterId }) => {
                       courseId={courseId}
                       defaultValues={{
                         lessonTitle: lessonDetail.title || '',
-                        resource: lessonDetail.file || '',
-                        isFree: lessonDetail.isFree || false,
+                        resource:
+                          (typeof lessonDetail.resourceUrl === 'string'
+                            ? lessonDetail.resourceUrl
+                            : '') ||
+                          (typeof lessonDetail.file === 'string'
+                            ? lessonDetail.file
+                            : '') ||
+                          '',
+                        isFree: Boolean(lessonDetail.isFree),
                       }}
                       lessonId={lessonDetail._id}
+                      onClose={() => {}}
                     />
                   </Box>
                 )}
@@ -658,6 +717,7 @@ const LessonsList = ({ courseId, chapterId }) => {
           chapterId={chapterId}
           courseId={courseId}
           defaultValues={{ isFree: false, lessonTitle: '', resource: '' }}
+          onClose={() => {}}
         />
       </Box>
 
@@ -681,7 +741,7 @@ const LessonsList = ({ courseId, chapterId }) => {
                 setTimeout(() => {
                   const viewButton = document.querySelector(
                     `#view-resource-wrapper-${selectedLesson._id} button`,
-                  )
+                  ) as HTMLButtonElement | null
                   if (viewButton) {
                     viewButton.click()
                   }
@@ -726,7 +786,9 @@ const LessonsList = ({ courseId, chapterId }) => {
       {showDeleteModal && selectedLesson && (
         <DeleteModal
           handleDelete={() => {
-            void handleDeleteLesson(selectedLesson._id)
+            if (selectedLesson._id) {
+              void handleDeleteLesson(selectedLesson._id)
+            }
             setShowDeleteModal(false)
             setSelectedLesson(null)
           }}
@@ -747,8 +809,15 @@ const LessonsList = ({ courseId, chapterId }) => {
           courseId={courseId}
           defaultValues={{
             lessonTitle: selectedLesson.title || '',
-            resource: selectedLesson.file || '',
-            isFree: selectedLesson.isFree || false,
+            resource:
+              (typeof selectedLesson.resourceUrl === 'string'
+                ? selectedLesson.resourceUrl
+                : '') ||
+              (typeof selectedLesson.file === 'string'
+                ? selectedLesson.file
+                : '') ||
+              '',
+            isFree: Boolean(selectedLesson.isFree),
           }}
           lessonId={selectedLesson._id}
           onClose={() => {

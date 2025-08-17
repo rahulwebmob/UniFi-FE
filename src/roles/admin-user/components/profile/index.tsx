@@ -89,7 +89,16 @@ const Profile: React.FC = () => {
             }}
           >
             <Box display="flex" alignItems="center" mb={3}>
-              <User size={20} sx={{ mr: 1.5, color: 'primary.main' }} />
+              <Box
+                sx={{
+                  mr: 1.5,
+                  color: 'primary.main',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <User size={20} />
+              </Box>
               <Typography variant="h6" fontWeight={600}>
                 Personal Information
               </Typography>
@@ -143,7 +152,16 @@ const Profile: React.FC = () => {
             }}
           >
             <Box display="flex" alignItems="center" mb={3}>
-              <Lock size={20} sx={{ mr: 1.5, color: 'primary.main' }} />
+              <Box
+                sx={{
+                  mr: 1.5,
+                  color: 'primary.main',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <Lock size={20} />
+              </Box>
               <Typography variant="h6" fontWeight={600}>
                 Password & Security
               </Typography>

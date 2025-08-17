@@ -29,8 +29,22 @@ const CourseList: React.FC<CourseListProps> = ({
   const { t } = useTranslation('education')
   interface Course {
     _id: string
-    title?: string
+    title: string
     description?: string
+    thumbNail?: string
+    price?: number
+    currency?: string
+    category?: string | string[]
+    totalPurchased?: number
+    isPurchased?: boolean
+    isPaid?: boolean
+    isNew?: boolean
+    isCourseBought?: boolean
+    educatorId?: {
+      _id: string
+      firstName: string
+      lastName: string
+    }
     [key: string]: unknown
   }
 
@@ -55,10 +69,10 @@ const CourseList: React.FC<CourseListProps> = ({
       if (data?.data?.courses?.length) {
         setList((prev) =>
           page === 1
-            ? (data.data.courses ?? [])
-            : [...prev, ...(data.data.courses ?? [])],
+            ? (data.data?.courses ?? [])
+            : [...prev, ...(data.data?.courses ?? [])],
         )
-        setCount(data.data.count ?? 0)
+        setCount(data.data?.count ?? 0)
       } else {
         setList([])
         setCount(0)
@@ -82,11 +96,16 @@ const CourseList: React.FC<CourseListProps> = ({
           <ContentSkeleton isPurchased />,
           iff(
             !!list.length,
-            list.map((item) => (
-              <Box key={item._id} sx={{ minWidth: 420, maxWidth: 420, px: 1 }}>
-                <CourseCard course={item} isPurchased />
-              </Box>
-            )),
+            <>
+              {list.map((item) => (
+                <Box
+                  key={item._id}
+                  sx={{ minWidth: 420, maxWidth: 420, px: 1 }}
+                >
+                  <CourseCard course={item} isPurchased />
+                </Box>
+              ))}
+            </>,
             <Box
               sx={{
                 '&.MuiTabs-flexContainer': {

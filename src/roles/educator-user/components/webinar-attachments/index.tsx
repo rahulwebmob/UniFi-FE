@@ -6,22 +6,39 @@ import { Box, Tooltip, Typography } from '@mui/material'
 
 import { useGetWebinarAttachmentsQuery } from '../../../../services/admin'
 import { useGetAttachmentsListQuery } from '../../../../services/education'
+import type { AttachmentFile } from '../../../../types/education.types'
+import type { WebinarResource } from '../../../../types/api.types'
 
-const WebinarAttachments = ({ handleOnClose, isHost }) => {
+interface WebinarAttachmentsProps {
+  handleOnClose: () => void
+  isHost: boolean
+}
+
+const WebinarAttachments = ({
+  handleOnClose,
+  isHost,
+}: WebinarAttachmentsProps) => {
   const { t } = useTranslation('application')
-  const useAttachmentQuery = isHost
-    ? useGetWebinarAttachmentsQuery
-    : useGetAttachmentsListQuery
   const { roomId: webinarId } = useParams()
-  const { data } = useAttachmentQuery({ webinarId }, { skip: !webinarId })
+  
+  // Use separate queries based on isHost
+  const hostData = useGetWebinarAttachmentsQuery(
+    { webinarId: webinarId || '' },
+    { skip: !webinarId || !isHost }
+  )
+  
+  const guestData = useGetAttachmentsListQuery(
+    { webinarId: webinarId || '' },
+    { skip: !webinarId || isHost }
+  )
 
-  const handleDownloadAttachment = async (value) => {
+  const handleDownloadAttachment = async (value: AttachmentFile | WebinarResource) => {
     const response = await fetch(value.url)
     const blob = await response.blob()
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = value.file
+    a.download = 'file' in value ? value.file : value.name
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -29,7 +46,7 @@ const WebinarAttachments = ({ handleOnClose, isHost }) => {
   }
 
   return (
-    <Box verticalAlign="center" verticalFill>
+    <Box>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -51,37 +68,40 @@ const WebinarAttachments = ({ handleOnClose, isHost }) => {
           <X size={20} />
         </Box>
       </Box>
-      {!data?.data?.length ? (
+      {!(isHost ? (hostData.data?.data?.length) : (guestData.data?.length)) ? (
         <Box p={2}>
           <Typography component="p" color="text.secondary">
             {t('application:CONFERENCE.ATTACHMENTS.NO_ATTACHMENTS_AVAILABLE')}
           </Typography>
         </Box>
       ) : (
-        <Box verticalFill horizontalAlign="center">
-          {data?.data.map((item) => (
-            <Box
-              key={item.file}
-              display="flex"
-              alignItems="center"
-              gap={1}
-              mb={0.2}
-              sx={{
-                padding: 1,
-                background: (theme) => theme.palette.primary[100],
-              }}
-            >
-              <File size={20} />
-              <Tooltip title={item.file}>
-                <Typography
-                  variant="body1"
-                  color="secondary"
-                  width={300}
-                  noWrap
-                >
-                  {item.file}
-                </Typography>
-              </Tooltip>
+        <Box>
+          {(isHost ? hostData.data?.data : guestData.data)?.map((item) => {
+            const fileName = 'file' in item ? item.file : item.name
+            const itemKey = 'file' in item ? item.file : item.id
+            return (
+              <Box
+                key={itemKey}
+                display="flex"
+                alignItems="center"
+                gap={1}
+                mb={0.2}
+                sx={{
+                  padding: 1,
+                  background: (theme) => theme.palette.primary[100],
+                }}
+              >
+                <File size={20} />
+                <Tooltip title={fileName}>
+                  <Typography
+                    variant="body1"
+                    color="secondary"
+                    width={300}
+                    noWrap
+                  >
+                    {fileName}
+                  </Typography>
+                </Tooltip>
               <Box
                 sx={{
                   svg: {
@@ -98,7 +118,8 @@ const WebinarAttachments = ({ handleOnClose, isHost }) => {
                 />
               </Box>
             </Box>
-          ))}
+            )
+          })}
         </Box>
       )}
     </Box>

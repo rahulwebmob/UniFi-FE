@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Controller, type Control, type FieldValues } from 'react-hook-form'
+import { Controller, type Control } from 'react-hook-form'
 
 import {
   Box,
@@ -14,9 +14,11 @@ import {
 
 import countries from '../../../../constants/countries'
 import RequiredFieldIndicator from '../../../../shared/components/ui-elements/required-field-indicator'
+import type { EducatorFormData } from '../../types/form-types'
+
 
 interface AboutProps {
-  control: Control<FieldValues>
+  control: Control<EducatorFormData>
 }
 
 const About = ({ control }: AboutProps) => {
@@ -111,20 +113,22 @@ const About = ({ control }: AboutProps) => {
                 <TextField
                   select
                   size="small"
-                  renderValue={(selected) => {
-                    if (!selected) {
-                      return (
-                        <Typography
-                          component="p"
-                          sx={{ color: 'text.secondary' }}
-                        >
-                          {t(
-                            'REGISTER_EDUCATOR.ABOUT_PAGE.COUNTRY_PLACEHOLDER',
-                          )}
-                        </Typography>
-                      )
-                    }
-                    return selected
+                  SelectProps={{
+                    renderValue: (selected: unknown): React.ReactNode => {
+                      if (!selected) {
+                        return (
+                          <Typography
+                            component="p"
+                            sx={{ color: 'text.secondary' }}
+                          >
+                            {t(
+                              'REGISTER_EDUCATOR.ABOUT_PAGE.COUNTRY_PLACEHOLDER',
+                            )}
+                          </Typography>
+                        )
+                      }
+                      return selected as string
+                    },
                   }}
                   {...field}
                   slotProps={{

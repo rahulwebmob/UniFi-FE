@@ -9,6 +9,7 @@ import TopNavigation from '../top-navigation'
 import LANGUAGES from '../../../../constants/languages'
 import { useLoggedUserQuery } from '../../../../services/admin'
 import { loggedIn } from '../../../../redux/reducers/user-slice'
+import type { User } from '../../../../redux/reducers/user-slice'
 import { updateLanguage } from '../../../../redux/reducers/app-slice'
 import ScrollToTop from '../../../../shared/components/scroll-to-top'
 
@@ -18,10 +19,7 @@ interface RootState {
   }
 }
 
-interface Language {
-  code: string
-  name: string
-}
+import type { Language } from '../../../../redux/reducers/app-slice'
 
 interface UserAppearance {
   language: string
@@ -36,7 +34,9 @@ const DashboardLayout = () => {
   const dispatch = useDispatch()
   const theme = useTheme()
   const containerRef = useRef<HTMLElement>(null)
-  const { data: loggedUser } = useLoggedUserQuery() as { data?: LoggedUser }
+  const { data: loggedUser } = useLoggedUserQuery(undefined) as {
+    data?: LoggedUser
+  }
 
   const { isFullscreen } = useSelector((state: RootState) => state.app)
 
@@ -47,17 +47,19 @@ const DashboardLayout = () => {
     if (loggedUser?.appearance?.language) {
       const languagesTyped = LANGUAGES as unknown as Record<string, Language>
       const selectedLang = languagesTyped[loggedUser.appearance.language]
-      dispatch(updateLanguage(selectedLang as unknown as Language))
+      dispatch(updateLanguage(selectedLang))
     }
 
     // Refresh timer setting removed - no longer needed
 
     // Settings the user details
-    dispatch(
-      loggedIn({
-        loggedUser: loggedUser as unknown as LoggedUser,
-      }),
-    )
+    if (loggedUser) {
+      dispatch(
+        loggedIn({
+          loggedUser: loggedUser as unknown as User,
+        }),
+      )
+    }
   }, [loggedUser, dispatch])
 
   useEffect(() => {

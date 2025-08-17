@@ -45,6 +45,9 @@ interface TutorData {
 
 interface ApprovedTutorResponse {
   data: TutorData[]
+  totalPages?: number
+  count?: number
+  [key: string]: unknown
 }
 
 const ApprovedTtutors: React.FC = () => {
@@ -227,9 +230,12 @@ const ApprovedTtutors: React.FC = () => {
 
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
         <PaginationComponent
-          data={ApprovedTutor!}
+          data={ApprovedTutor || { totalPages: 0 }}
           page={page}
           setPage={setPage}
+          disabled={false}
+          customStyle={{}}
+          scrollToTop={() => window.scrollTo(0, 0)}
         />
       </Box>
     </Box>

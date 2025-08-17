@@ -6,8 +6,11 @@
   "scripts": {
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
+    "lint:strict": "eslint src --max-warnings 0",
     "format": "prettier --write .",
     "dev": "vite",
+    "type-check": "tsc --project tsconfig.app.json --noEmit",
+    "type-check:watch": "tsc --project tsconfig.app.json --noEmit --watch",
     "build": "vite build",
     "build:check": "tsc -b && vite build",
     "preview": "vite preview"

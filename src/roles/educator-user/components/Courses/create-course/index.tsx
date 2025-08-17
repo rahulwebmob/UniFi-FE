@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, FormProvider } from 'react-hook-form'
-import React, { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 
+import type { CreateCourseFormData, DataObject } from '../../../../../types'
 import {
   Box,
   Grid,
@@ -144,14 +145,15 @@ const CreateCourse = ({
   const { t } = useTranslation('education')
 
   const [isDraft, setIsDraft] = useState(false)
-  const [hasLesons, setHasLessons] = useState({})
-  const [previousVideo, setPreviousVideo] = useState(null)
-  const [previousImage, setPreviousImage] = useState(null)
+  const [hasLesons] = useState({})
+  const [previousVideo, setPreviousVideo] = useState<File | string | null>(null)
+  const [previousImage, setPreviousImage] = useState<File | string | null>(null)
   const [activeStep, setActiveStep] = useState(currentStep)
-  const [initialData, setInitialData] = useState(defaultValues)
+  const [initialData, setInitialData] = useState<DataObject>(
+    defaultValues as DataObject,
+  )
   const [currentCourseId, setCurrentCourseId] = useState(courseId)
-  const [categories, setCategories] = useState(defaultValues?.category)
-  const [isCourseFree, setIsCourseFree] = useState(!defaultValues?.isPaid)
+  const [, setIsCourseFree] = useState(!defaultValues?.isPaid)
 
   const [updateCourse, { isLoading: isUpdateLoading }] =
     useUpdateCourseMutation()
@@ -210,7 +212,8 @@ const CreateCourse = ({
         .max(5, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_5_CATEGORIES')),
       isPaid: yup.bool(),
       price: yup.lazy((_, schemaValues) =>
-        schemaValues?.originalValue?.isPaid
+        (schemaValues as { originalValue?: { isPaid?: boolean } })
+          ?.originalValue?.isPaid
           ? yup
               .number()
               .transform(transformNaNToNull)
@@ -239,7 +242,8 @@ const CreateCourse = ({
           (value) => {
             if (!value || !(value instanceof File)) return true
             const allowedExtensions = ['jpg', 'jpeg', 'png']
-            const fileExtension = value.name.split('.').pop().toLowerCase()
+            const fileExtension =
+              value.name.split('.').pop()?.toLowerCase() || ''
             return allowedExtensions.includes(fileExtension)
           },
         )
@@ -250,13 +254,19 @@ const CreateCourse = ({
           ),
           (value) => {
             const isFile = value instanceof File
-            if (isEdit && !isFile && value.trim()) {
+            if (
+              isEdit &&
+              !isFile &&
+              typeof value === 'string' &&
+              value.trim()
+            ) {
               return true
             }
             if (isFile) {
               const fileSizeValid = value.size <= 50 * 1024 * 1024
               const allowedExtensions = ['jpg', 'jpeg', 'png']
-              const fileExtension = value.name.split('.').pop().toLowerCase()
+              const fileExtension =
+                value.name.split('.').pop()?.toLowerCase() || ''
               const fileTypeValid = allowedExtensions.includes(fileExtension)
               return fileSizeValid && fileTypeValid
             }
@@ -271,7 +281,8 @@ const CreateCourse = ({
           (value) => {
             if (!value || !(value instanceof File)) return true
             const allowedExtensions = ['mp4', 'mov', 'webm', 'mkv']
-            const fileExtension = value.name.split('.').pop().toLowerCase()
+            const fileExtension =
+              value.name.split('.').pop()?.toLowerCase() || ''
             return allowedExtensions.includes(fileExtension)
           },
         )
@@ -282,13 +293,19 @@ const CreateCourse = ({
           ),
           (value) => {
             const isFile = value instanceof File
-            if (isEdit && !isFile && value.trim()) {
+            if (
+              isEdit &&
+              !isFile &&
+              typeof value === 'string' &&
+              value.trim()
+            ) {
               return true
             }
             if (isFile) {
               const fileSizeValid = value.size <= 200 * 1024 * 1024
               const allowedExtensions = ['mp4', 'mov', 'webm', 'mkv']
-              const fileExtension = value.name.split('.').pop().toLowerCase()
+              const fileExtension =
+                value.name.split('.').pop()?.toLowerCase() || ''
               const fileTypeValid = allowedExtensions.includes(fileExtension)
               return fileSizeValid && fileTypeValid
             }
@@ -316,7 +333,7 @@ const CreateCourse = ({
     else setActiveStep((prev) => prev - 1)
   }
 
-  const handleBasicDetailsSubmit = async (data) => {
+  const handleBasicDetailsSubmit = async (data: CreateCourseFormData) => {
     // checks if data is identical
     setIsCourseFree(!data.isPaid)
     const [updatedFields, isIdentical] = getUpdatedFields(data, initialData, [
@@ -330,7 +347,7 @@ const CreateCourse = ({
     }
 
     // payload
-    const payload = {
+    const payload: Partial<CreateCourseFormData> & { saveAsDraft?: boolean } = {
       ...updatedFields,
       isPaid: data.isPaid,
       saveAsDraft: isDraft,
@@ -338,7 +355,11 @@ const CreateCourse = ({
     }
 
     // checks if course is free
-    if (!data.isPaid) delete payload.price
+    if (!data.isPaid && 'price' in payload) {
+      const { price, ...payloadWithoutPrice } = payload
+      void price // Mark as used
+      Object.assign(payload, payloadWithoutPrice)
+    }
 
     try {
       const response = currentCourseId
@@ -347,7 +368,18 @@ const CreateCourse = ({
 
       if (!response?.error) {
         setInitialData((prev) => ({ ...prev, ...data }))
-        if (!currentCourseId) setCurrentCourseId(response?.data?.data?._id)
+        if (
+          !currentCourseId &&
+          response?.data &&
+          typeof response.data === 'object' &&
+          response.data !== null &&
+          'data' in response.data &&
+          response.data.data &&
+          typeof response.data.data === 'object' &&
+          '_id' in (response.data.data as object)
+        ) {
+          setCurrentCourseId((response.data.data as { _id: string })._id)
+        }
         if (!isDraft) setActiveStep((prev) => prev + 1)
       }
 
@@ -357,18 +389,18 @@ const CreateCourse = ({
     }
   }
 
-  const handleMetaData = async (data) => {
+  const handleMetaData = async (data: CreateCourseFormData) => {
     const { image, video } = data
     const formData = new FormData()
-    formData.append('courseId', currentCourseId)
-    if (isDraft) formData.append('saveAsDraft', true)
+    formData.append('courseId', currentCourseId || '')
+    if (isDraft) formData.append('saveAsDraft', 'true')
 
     if (isNewFile(image, previousImage)) {
-      formData.append('image', image)
+      formData.append('image', image as File)
     }
 
     if (isNewFile(video, previousVideo)) {
-      formData.append('video', video)
+      formData.append('video', video as File)
     }
     if (
       !isNewFile(image, previousImage) &&
@@ -383,8 +415,10 @@ const CreateCourse = ({
       const response = await addCourseMetaData(formData)
 
       if (!response.error) {
-        if (isNewFile(image, previousImage)) setPreviousImage(image)
-        if (isNewFile(video, previousVideo)) setPreviousVideo(video)
+        if (isNewFile(image, previousImage))
+          setPreviousImage(image as File | string | null)
+        if (isNewFile(video, previousVideo))
+          setPreviousVideo(video as File | string | null)
 
         if (!isDraft) setActiveStep((prev) => prev + 1)
 
@@ -421,7 +455,7 @@ const CreateCourse = ({
     }
   }
 
-  const renderStepContent = (stepIndex) => {
+  const renderStepContent = (stepIndex: number) => {
     switch (stepIndex) {
       case 0:
         return <BasicDetails />
@@ -436,9 +470,10 @@ const CreateCourse = ({
     }
   }
 
-  const onSubmit = async (data) => {
-    if (activeStep === 0) await handleBasicDetailsSubmit(data)
-    if (activeStep === 1) await handleMetaData(data)
+  const onSubmit = async (data: Record<string, unknown>) => {
+    if (activeStep === 0)
+      await handleBasicDetailsSubmit(data as CreateCourseFormData)
+    if (activeStep === 1) await handleMetaData(data as CreateCourseFormData)
     if (activeStep === 2) await handlePreview()
     if (activeStep === 3) await handlePublish()
   }
@@ -451,15 +486,7 @@ const CreateCourse = ({
 
   return (
     <Box>
-      <FormProvider
-        {...form}
-        categories={categories}
-        courseId={currentCourseId}
-        savedValues={defaultValues}
-        isCourseFree={isCourseFree}
-        setHasLessons={setHasLessons}
-        setCategories={setCategories}
-      >
+      <FormProvider {...form}>
         {activeStep !== 3 && (
           <Box mb={3}>
             <Typography variant="h4" sx={{ fontWeight: 600, mb: 0.5 }}>

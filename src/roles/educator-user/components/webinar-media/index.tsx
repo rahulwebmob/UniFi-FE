@@ -1,23 +1,35 @@
 import { Volume2 } from 'lucide-react'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { Box, useTheme } from '@mui/material'
 
 import { styles } from '../styles'
 
-const WebinarMedia = ({ stream, mediaType, isMirror }) => {
+interface WebinarMediaProps {
+  stream: unknown
+  mediaType?: string
+  isMirror?: boolean
+}
+
+const WebinarMedia = ({
+  stream,
+  mediaType = 'video',
+  isMirror = false,
+}: WebinarMediaProps) => {
   const theme = useTheme()
-  const audioRef = useRef(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
   const [audioError, setAudioError] = useState(false)
 
-  const setMediaRef = (node) => {
+  const setMediaRef = (node: HTMLVideoElement | HTMLAudioElement | null) => {
     if (node) {
       if (stream && node.srcObject !== stream) {
-        node.srcObject = stream
+        node.srcObject = stream as MediaStream
         node.autoplay = true
         if (mediaType === 'video') {
           node.muted = true
-          node.playsInline = true
+          if ('playsInline' in node) {
+            ;(node as HTMLVideoElement).playsInline = true
+          }
         }
         node.onloadedmetadata = async () => {
           try {
@@ -37,7 +49,7 @@ const WebinarMedia = ({ stream, mediaType, isMirror }) => {
   const handleEnableAudio = async () => {
     if (audioRef.current) {
       try {
-        await audioRef.current.play()
+        await audioRef.current?.play()
         setAudioError(false)
       } catch (error) {
         console.error('Error enabling audio:', error)

@@ -37,7 +37,9 @@ interface SubscriptionFormData {
 
 interface BillingAddressProps {
   subscriptionFormData: SubscriptionFormData
-  setSubscriptionFormData: React.Dispatch<React.SetStateAction<SubscriptionFormData>>
+  setSubscriptionFormData: React.Dispatch<
+    React.SetStateAction<SubscriptionFormData>
+  >
   setCurrentStep: (step: number | ((prev: number) => number)) => void
 }
 
@@ -93,13 +95,13 @@ const BillingAddress: React.FC<BillingAddressProps> = ({
   const { control, handleSubmit, formState, setValue } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      firstName: subscriptionFormData?.firstName || '',
-      lastName: subscriptionFormData?.lastName || '',
-      country: subscriptionFormData?.country || '',
-      state: subscriptionFormData?.state || '',
-      city: subscriptionFormData?.city || '',
-      zip: subscriptionFormData?.zip || '',
-      address: subscriptionFormData?.address || '',
+      firstName: (subscriptionFormData?.firstName as string) || '',
+      lastName: (subscriptionFormData?.lastName as string) || '',
+      country: (subscriptionFormData?.country as string) || '',
+      state: (subscriptionFormData?.state as string) || '',
+      city: (subscriptionFormData?.city as string) || '',
+      zip: (subscriptionFormData?.zip as string) || '',
+      address: (subscriptionFormData?.address as string) || '',
     },
   })
 
@@ -295,7 +297,6 @@ const BillingAddress: React.FC<BillingAddressProps> = ({
                   {...field}
                   fullWidth
                   size="small"
-                  format="##########"
                   placeholder="000000"
                   variant="outlined"
                   error={!!errors.zip}
@@ -351,7 +352,7 @@ const BillingAddress: React.FC<BillingAddressProps> = ({
                   value={false}
                   control={<Checkbox />}
                   onChange={(e) => {
-                    setValue('isAgree', e.target.checked)
+                    setValue('isAgree', (e.target as HTMLInputElement).checked)
                   }}
                   label={
                     <Typography>

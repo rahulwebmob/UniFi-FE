@@ -1,7 +1,11 @@
 import React from 'react'
 import { CloudUpload } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Controller, type Control, type FieldValues, type FieldErrors } from 'react-hook-form'
+import {
+  Controller,
+  type Control,
+  type FieldErrors,
+} from 'react-hook-form'
 
 import {
   Box,
@@ -14,10 +18,12 @@ import {
 } from '@mui/material'
 
 import RequiredFieldIndicator from '../../../../shared/components/ui-elements/required-field-indicator'
+import type { EducatorFormData } from '../../types/form-types'
+
 
 interface DocumentProps {
-  control: Control<FieldValues>
-  errors: FieldErrors<FieldValues>
+  control: Control<EducatorFormData>
+  errors: FieldErrors<EducatorFormData>
   setCvFile: (file: File) => void
   setMp4File: (file: File) => void
 }
@@ -52,11 +58,11 @@ const Document = ({
         <Controller
           name="cv"
           control={control}
-          defaultValue=""
+          defaultValue={null}
           rules={{ required: 'CV is required' }}
           render={({ field: { onChange, value } }) => (
             <TextField
-              value={value?.name || ''}
+              value={(value as File)?.name || ''}
               placeholder={t(
                 'REGISTER_EDUCATOR.DOCUMENT_PAGE.ACCEPTED_FILE_TYPE',
               )}
@@ -87,7 +93,7 @@ const Document = ({
                 ),
               }}
               error={!!errors.cv}
-              helperText={errors.cv?.message}
+              helperText={errors.cv?.message ? String(errors.cv.message) : undefined}
             />
           )}
         />
@@ -99,11 +105,11 @@ const Document = ({
         <Controller
           name="video"
           control={control}
-          defaultValue=""
+          defaultValue={null}
           rules={{ required: 'Sample work/video is required' }}
           render={({ field: { onChange, value } }) => (
             <TextField
-              value={value?.name || ''}
+              value={(value as File)?.name || ''}
               placeholder={t(
                 'REGISTER_EDUCATOR.DOCUMENT_PAGE.VIDEO_FILE_FORMAT',
               )}
@@ -134,7 +140,7 @@ const Document = ({
                 ),
               }}
               error={!!errors.video}
-              helperText={errors.video?.message}
+              helperText={errors.video?.message ? String(errors.video.message) : undefined}
             />
           )}
         />
@@ -158,7 +164,7 @@ const Document = ({
               fullWidth
               size="small"
               error={!!errors.hau}
-              helperText={errors.hau?.message}
+              helperText={errors.hau?.message ? String(errors.hau.message) : undefined}
             >
               <MenuItem value="Social Media">
                 {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.SOCIAL_MEDIA')}

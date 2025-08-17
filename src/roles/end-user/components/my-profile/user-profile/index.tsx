@@ -31,8 +31,7 @@ const UserProfile = () => {
   )
   const navigate = useNavigate()
   const imageUrl = generateImageUrl(
-    profileImage?.folderName,
-    profileImage?.fileName,
+    `${profileImage?.folderName}/${profileImage?.fileName}`
   )
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
@@ -46,11 +45,10 @@ const UserProfile = () => {
 
   return (
     <Grid
-      item
-      xs={3}
+      container
       sx={{
         display: 'flex',
-        alignItem: 'center',
+        alignItems: 'center',
         justifyContent: 'flex-end',
         flexDirection: {
           xs: 'column',

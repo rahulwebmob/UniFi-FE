@@ -33,6 +33,7 @@ interface PersonalInfoData {
   }
   firstName?: string
   lastName?: string
+  email?: string
   [key: string]: unknown
 }
 
@@ -103,8 +104,7 @@ const PersonalInfo = () => {
   useEffect(() => {
     if (profileImage) {
       const imageUrl = generateImageUrl(
-        profileImage.folderName,
-        profileImage.fileName,
+        `${profileImage.folderName}/${profileImage.fileName}`
       )
       setAvatar((prev) => ({ ...prev, image: imageUrl }))
     } else {
@@ -195,7 +195,7 @@ const PersonalInfo = () => {
             >
               <Avatar
                 alt={t('application:PROFILE.PROFILE_PICTURE')}
-                src={avatar.image}
+                src={avatar.image ?? undefined}
                 sx={{
                   width: 80,
                   height: 80,
@@ -392,12 +392,12 @@ const PersonalInfo = () => {
             {t('application:PROFILE.CHANGE_PASSWORD')}
           </Typography>
           <ChangePassword
-            closeModal={undefined}
-            userEmail={undefined}
-            headerName={undefined}
-            isUserAdmin={undefined}
+            closeModal={() => {}}
+            userEmail={userData?.email as string}
+            headerName={null}
+            isUserAdmin={false}
             resetPassword={undefined}
-            isResetPassword={undefined}
+            isResetPassword={false}
           />
         </Box>
       </>

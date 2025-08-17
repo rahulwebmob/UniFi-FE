@@ -4,7 +4,7 @@ export default styled('div')(({ theme }) => ({
   '& .MuiPaper-root': {
     background: 'none',
     '& .MuiDivider-root': {
-      background: theme.palette.primary.default,
+      background: theme.palette.primary.main,
     },
 
     '& .MuiTableRow-root': {

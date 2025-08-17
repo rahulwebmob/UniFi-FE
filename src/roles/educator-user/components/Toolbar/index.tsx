@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   Mic,
   Hand,
@@ -30,6 +30,23 @@ import useScreenRecorder from '../../../../hooks/useScreenRecorder'
 import ModalBox from '../../../../shared/components/ui-elements/modal-box'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
 
+interface MediaStatus {
+  isAudio: boolean
+  isVideo: boolean
+  isScreen: boolean
+}
+
+interface ToolbarProps {
+  isHost: boolean
+  audioStream: MediaStream | null | undefined
+  mediaStatus: MediaStatus
+  handleRaiseHand: () => void
+  handleEndWebinar: () => void
+  handleTurnedMicOn: () => void
+  handleTurnedVideoOn: () => void
+  handleTurnedScreenShare: () => void
+}
+
 const Toolbar = ({
   isHost,
   audioStream,
@@ -39,25 +56,34 @@ const Toolbar = ({
   handleTurnedMicOn,
   handleTurnedVideoOn,
   handleTurnedScreenShare,
-}) => {
+}: ToolbarProps) => {
   const navigate = useNavigate()
-  const intervalRef = useRef(null)
-  const whiteBoardRef = useRef(null)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const whiteBoardRef = useRef<{
+    openModal: () => void
+    closeModal: () => void
+  } | null>(null)
   const { t } = useTranslation('application')
 
-  const { isLoading } = useSelector((state) => state.education)
-  const { isFullscreen } = useSelector((state) => state.app)
+  const { isLoading } = useSelector(
+    (state: { education: { isLoading: boolean } }) => state.education,
+  )
+  const { isFullscreen } = useSelector(
+    (state: { app: { isFullscreen: boolean } }) => state.app,
+  )
 
   const { handleFullScreen, handleExitFullScreen } = useFullscreen()
   const { isRecording, handleToggleRecording } = useScreenRecorder({
     isHost,
-    externalAudioStream: audioStream,
+    externalAudioStream: audioStream as MediaStream | null | undefined,
     isMicAudioRequired: mediaStatus.isAudio,
   })
 
   const [isRecPopup, setIsRecPopup] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [activeDrawerContent, setActiveDrawerContent] = useState(null)
+  const [activeDrawerContent, setActiveDrawerContent] = useState<string | null>(
+    null,
+  )
   const [isHandRaisedDisabled, setIsHandRaisedDisabled] = useState(false)
 
   const handleDisableRefresh = () => {
@@ -75,7 +101,11 @@ const Toolbar = ({
 
   const handleLeaveCall = () => {
     if (isHost) handleEndWebinar()
-    void navigate(isHost ? '/educator/webinars' : -1)
+    if (isHost) {
+      void navigate('/educator/webinars')
+    } else {
+      window.history.back()
+    }
   }
 
   const handleDebounceRaiseHand = () => {
@@ -84,11 +114,11 @@ const Toolbar = ({
   }
 
   const handleOpenWhiteBoard = () => {
-    whiteBoardRef.current.openModal()
+    whiteBoardRef.current?.openModal()
     if (!mediaStatus.isScreen && !isAndroidOrIphone()) handleTurnedScreenShare()
   }
 
-  const handleOpenDrawer = (content) => {
+  const handleOpenDrawer = (content: string) => {
     setActiveDrawerContent(content)
     setIsDrawerOpen(true)
   }
@@ -102,6 +132,7 @@ const Toolbar = ({
               disabled={isLoading}
               onClick={handleTurnedMicOn}
               isActive={mediaStatus.isAudio}
+              isRecording={isRecording}
               label={
                 mediaStatus.isAudio
                   ? t('application:CONFERENCE.CONTROL_SECTION.MUTE')
@@ -115,6 +146,7 @@ const Toolbar = ({
               disabled={isLoading}
               onClick={handleTurnedVideoOn}
               isActive={mediaStatus.isVideo}
+              isRecording={isRecording}
               label={
                 mediaStatus.isVideo
                   ? t('application:CONFERENCE.CONTROL_SECTION.STOP_VIDEO')
@@ -154,6 +186,7 @@ const Toolbar = ({
             icon={<MessageCircle size={18} />}
             onClick={() => handleOpenDrawer('chat')}
             isActive={activeDrawerContent === 'chat' && isDrawerOpen}
+            isRecording={isRecording}
             label={t('application:CONFERENCE.CONTROL_SECTION.CHAT')}
           />
           <ControlIcon
@@ -162,6 +195,7 @@ const Toolbar = ({
             label={t('application:CONFERENCE.CONTROL_SECTION.ATTACHMENTS')}
             onClick={() => handleOpenDrawer('attachments')}
             isActive={activeDrawerContent === 'attachments' && isDrawerOpen}
+            isRecording={isRecording}
           />
           {!isHost && (
             <ControlIcon
@@ -169,6 +203,7 @@ const Toolbar = ({
               icon={<Hand size={18} />}
               onClick={handleDebounceRaiseHand}
               disabled={isLoading || isHandRaisedDisabled}
+              isRecording={isRecording}
             />
           )}
           {isHost && !isAndroidOrIphone() && (
@@ -177,6 +212,7 @@ const Toolbar = ({
               icon={<ArrowUp size={18} />}
               isActive={mediaStatus.isScreen}
               onClick={handleTurnedScreenShare}
+              isRecording={isRecording}
               label={
                 mediaStatus.isScreen
                   ? t('application:CONFERENCE.CONTROL_SECTION.STOP_SHARING')
@@ -189,6 +225,7 @@ const Toolbar = ({
               icon={<PenTool size={18} />}
               disabled={isLoading}
               onClick={handleOpenWhiteBoard}
+              isRecording={isRecording}
               label={t('application:CONFERENCE.CONTROL_SECTION.WHITE_BOARD')}
             />
           )}
@@ -197,6 +234,7 @@ const Toolbar = ({
             isActive={isFullscreen}
             icon={<Maximize size={18} />}
             onClick={handleToggleFullscreen}
+            isRecording={isRecording}
             label={
               isFullscreen
                 ? t('application:CONFERENCE.CONTROL_SECTION.EXIT')
@@ -205,7 +243,6 @@ const Toolbar = ({
           />
           {!isAndroidOrIphone() && (
             <ControlIcon
-              isRecording
               disabled={isLoading}
               isActive={isRecording}
               icon={<Circle size={18} />}
@@ -213,6 +250,7 @@ const Toolbar = ({
                 void handleToggleRecording()
                 setIsRecPopup(true)
               }}
+              isRecording={isRecording}
               label={
                 isRecording
                   ? t('application:CONFERENCE.CONTROL_SECTION.STOP_RECORD')

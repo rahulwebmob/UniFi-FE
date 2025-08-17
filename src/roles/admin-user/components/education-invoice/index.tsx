@@ -10,7 +10,6 @@ import {
 
 import { Box, Chip, alpha, Button, useTheme, Typography } from '@mui/material'
 
-import { handleGeneratePdf } from '../common'
 import { successAlert } from '../../../../redux/reducers/app-slice'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import {
@@ -36,6 +35,7 @@ interface InvoiceItem {
 interface InvoiceData {
   data: InvoiceItem[]
   totalPages?: number
+  [key: string]: unknown
 }
 
 interface ProcessedInvoice {
@@ -60,6 +60,15 @@ const EducationInvoice: React.FC = () => {
   const { data } = useGetEducationAdminInvoiceQuery({ page, pageSize: 10 }) as {
     data: InvoiceData | undefined
   }
+
+  // Wrapper function to match RequestCallback type
+  const downloadInvoiceWrapper = useCallback(
+    async (params: { transactionId: string }) => {
+      const result = await downloadAdminInvoice(params)
+      return result
+    },
+    [downloadAdminInvoice],
+  )
 
   const columnsList = useMemo<ProcessedInvoice[] | undefined>(
     () =>
@@ -105,7 +114,9 @@ const EducationInvoice: React.FC = () => {
         Cell: (tableProps) => {
           const { cell } = tableProps
           return (
-            <Typography component="span">{cell.getValue() ?? '-'}</Typography>
+            <Typography component="span">
+              {String(cell.getValue() ?? '-')}
+            </Typography>
           )
         },
       },
@@ -115,7 +126,9 @@ const EducationInvoice: React.FC = () => {
         Cell: (tableProps) => {
           const { cell } = tableProps
           return (
-            <Typography component="span">{cell.getValue() ?? '-'}</Typography>
+            <Typography component="span">
+              {String(cell.getValue() ?? '-')}
+            </Typography>
           )
         },
       },
@@ -184,13 +197,37 @@ const EducationInvoice: React.FC = () => {
               variant="contained"
               size="small"
               startIcon={<FileDown size={16} />}
-              onClick={() =>
-                void handleGeneratePdf(
-                  row.original._id,
-                  downloadAdminInvoice,
-                  handleSuccessAlert,
-                )
-              }
+              onClick={() => {
+                void (async () => {
+                  try {
+                    const result = downloadAdminInvoice({
+                      transactionId: row.original._id,
+                    })
+                    if ('unwrap' in result) {
+                      const response = await result.unwrap()
+                      if (!response.error) {
+                        const div = document.createElement('div')
+                        div.innerHTML = String(response.data || '')
+                        const html2pdf = (await import('html2pdf.js')).default
+                        html2pdf()
+                          .from(div)
+                          .set({
+                            margin: 10,
+                            filename: `Invoice_${row.original._id}.pdf`,
+                            html2canvas: { scale: 2 },
+                            jsPDF: { orientation: 'portrait' },
+                          })
+                          .save()
+                          .then(() => {
+                            handleSuccessAlert()
+                          })
+                      }
+                    }
+                  } catch (error) {
+                    console.error('Error generating PDF:', error)
+                  }
+                })()
+              }}
               sx={{
                 textTransform: 'none',
                 borderRadius: '8px',
@@ -205,7 +242,7 @@ const EducationInvoice: React.FC = () => {
       },
     ],
     [
-      downloadAdminInvoice,
+      downloadInvoiceWrapper,
       handleSuccessAlert,
       theme.palette.primary.main,
       theme.palette.success.main,
@@ -215,7 +252,7 @@ const EducationInvoice: React.FC = () => {
   const table = useMaterialReactTable({
     columns,
     data: columnsList ?? [],
-    getRowId: (row) => row.userId,
+    getRowId: (row) => row.userId || '',
     enablePagination: false,
     enableTopToolbar: false,
     enableBottomToolbar: false,
@@ -250,12 +287,12 @@ const EducationInvoice: React.FC = () => {
 
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
         <PaginationComponent
-          data={data}
+          data={data || { totalPages: 0 }}
           page={page}
           setPage={setPage}
-          disabled={undefined}
-          customStyle={undefined}
-          scrollToTop={undefined}
+          disabled={false}
+          customStyle={{}}
+          scrollToTop={() => window.scrollTo(0, 0)}
         />
       </Box>
     </Box>

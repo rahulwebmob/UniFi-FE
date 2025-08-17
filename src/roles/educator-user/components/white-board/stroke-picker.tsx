@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import type { SelectChangeEvent } from '@mui/material'
 import { Box, Select, Tooltip, MenuItem, FormControl } from '@mui/material'
@@ -11,19 +11,22 @@ import { SizeType } from './constants'
 interface StrokePickerProps {
   setFunc: (value: number) => void
   options: number[]
-  type: SizeType
+  type: string
 }
 
-const StrokePicker: React.FC<StrokePickerProps> = ({ setFunc, options, type }) => {
-  const dispatch = useDispatch()
+const StrokePicker: React.FC<StrokePickerProps> = ({
+  setFunc,
+  options,
+  type,
+}) => {
   const { t } = useTranslation('application')
   const { fontSize, strokeWidth, eraserWidth } = useSelector(
     (state: RootState) => state.education,
   )
 
   const handleChange = (event: SelectChangeEvent<number>) => {
-    const selectedSize = parseInt(event.target.value, 10)
-    dispatch(setFunc(selectedSize))
+    const selectedSize = parseInt(String(event.target.value), 10)
+    setFunc(selectedSize)
   }
 
   const getTooltipTitle = (): string => {

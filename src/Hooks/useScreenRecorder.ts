@@ -1,19 +1,30 @@
 import fixWebmDuration from 'webm-duration-fix'
 import { useRef, useState, useEffect, useCallback } from 'react'
 
+// Extend Window interface for vendor prefixes
+interface WindowWithVendorAudio extends Window {
+  webkitAudioContext?: typeof AudioContext
+}
+
+interface ScreenRecorderProps {
+  isHost: boolean
+  isMicAudioRequired: boolean
+  externalAudioStream?: MediaStream | null
+}
+
 const useScreenRecorder = ({
   isHost,
   isMicAudioRequired,
   externalAudioStream = null,
-}) => {
-  const chunksRef = useRef([])
+}: ScreenRecorderProps) => {
+  const chunksRef = useRef<Blob[]>([])
   const startTimeRef = useRef(0)
-  const audioCtxRef = useRef(null)
-  const micStreamRef = useRef(null)
-  const screenStreamRef = useRef(null)
-  const remoteSourceRef = useRef(null)
-  const mediaRecorderRef = useRef(null)
-  const mixDestinationRef = useRef(null)
+  const audioCtxRef = useRef<AudioContext | null>(null)
+  const micStreamRef = useRef<MediaStream | null>(null)
+  const screenStreamRef = useRef<MediaStream | null>(null)
+  const remoteSourceRef = useRef<MediaStreamAudioSourceNode | null>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const mixDestinationRef = useRef<MediaStreamAudioDestinationNode | null>(null)
 
   const [isRecording, setIsRecording] = useState(false)
 
@@ -53,8 +64,13 @@ const useScreenRecorder = ({
         micStreamRef.current = null
       }
 
-      const AudioContext = window.AudioContext || window.webkitAudioContext
-      const audioCtx = new AudioContext()
+      const AudioContextClass =
+        window.AudioContext ||
+        (window as WindowWithVendorAudio).webkitAudioContext
+      if (!AudioContextClass) {
+        throw new Error('AudioContext not supported')
+      }
+      const audioCtx = new AudioContextClass()
       audioCtxRef.current = audioCtx
 
       const mixDestination = audioCtx.createMediaStreamDestination()
@@ -104,7 +120,9 @@ const useScreenRecorder = ({
         try {
           const duration = Date.now() - startTimeRef.current
           const blob = new Blob(chunksRef.current, { type: 'video/webm' })
-          const fixedBlob = await fixWebmDuration(blob, duration)
+          const fixedBlob = await fixWebmDuration(blob, duration, {
+            logger: false,
+          })
           const url = URL.createObjectURL(fixedBlob)
 
           const anchor = document.createElement('a')
@@ -153,14 +171,20 @@ const useScreenRecorder = ({
 
   useEffect(() => {
     if (isRecording && micStreamRef.current) {
-      micStreamRef.current.getAudioTracks()[0].enabled = isMicAudioRequired
+      const audioTrack = micStreamRef.current.getAudioTracks()[0]
+      if (audioTrack) {
+        audioTrack.enabled = isMicAudioRequired
+      }
     }
   }, [isMicAudioRequired, isRecording])
 
-  useEffect(
-    () => () => isRecording && stopRecording(),
-    [isRecording, stopRecording],
-  )
+  useEffect(() => {
+    return () => {
+      if (isRecording) {
+        stopRecording()
+      }
+    }
+  }, [isRecording, stopRecording])
 
   const handleToggleRecording = useCallback(
     () => (isRecording ? stopRecording() : startRecording()),
