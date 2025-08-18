@@ -1,23 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { ENV } from '../utils/env'
-import type {
-  CourseParams,
-  Course,
-  ChapterParams,
-  Chapter,
-  WebinarParams,
-  Webinar,
-  WebinarDetail,
-  WebinarResource,
-  PaymentParams,
-  PaymentHistory,
-  Invoice,
-  InvoiceParams,
-  Category,
-  PaginatedResponse,
-  ApiResponse,
-} from '../types/api.types'
+// Type imports will be reorganized
 import { onQueryStartedDefault } from './serviceUtility'
 
 export const educationApi = createApi({
@@ -34,7 +18,7 @@ export const educationApi = createApi({
   }),
   tagTypes: ['All-Course', 'Course', 'All-Webinar', 'Webinar'],
   endpoints: (builder) => ({
-    getAllCourses: builder.query<PaginatedResponse<Course>, CourseParams>({
+    getAllCourses: builder.query<any, any>({
       query: (params) => ({
         url: `/get-all-courses`,
         method: 'GET',
@@ -44,7 +28,7 @@ export const educationApi = createApi({
 
       providesTags: ['All-Course'],
     }),
-    getParticularCourse: builder.query<ApiResponse<Course>, CourseParams>({
+    getParticularCourse: builder.query<any, any>({
       query: (params) => ({
         url: `/get-particular-course-details`,
         method: 'GET',
@@ -54,7 +38,7 @@ export const educationApi = createApi({
 
       providesTags: ['Course'],
     }),
-    getChapterDetails: builder.query<ApiResponse<Chapter>, ChapterParams>({
+    getChapterDetails: builder.query<any, any>({
       query: (params) => ({
         url: `/get-url-for-resource`,
         method: 'GET',
@@ -62,7 +46,7 @@ export const educationApi = createApi({
       }),
       onQueryStarted: onQueryStartedDefault,
     }),
-    getAllWebinars: builder.query<PaginatedResponse<Webinar>, WebinarParams>({
+    getAllWebinars: builder.query<any, any>({
       query: (params) => ({
         url: `/get-all-published-webinars`,
         method: 'GET',
@@ -72,10 +56,7 @@ export const educationApi = createApi({
 
       providesTags: ['All-Webinar'],
     }),
-    getParticularWebinarDetail: builder.query<
-      ApiResponse<WebinarDetail>,
-      WebinarParams
-    >({
+    getParticularWebinarDetail: builder.query<any, any>({
       query: (params) => ({
         url: `/get-particular-webinar-details`,
         method: 'GET',
@@ -85,16 +66,15 @@ export const educationApi = createApi({
 
       providesTags: ['Webinar'],
     }),
-    getAttachmentsList: builder.query<WebinarResource[], { webinarId: string }>(
-      {
+    getAttachmentsList: builder.query<any, any>({
         query: (params) => ({
           url: `/get-webinar-resources-links`,
           method: 'GET',
           params,
         }),
-      },
-    ),
-    getEducationPayments: builder.query<PaymentHistory[], PaymentParams>({
+      onQueryStarted: onQueryStartedDefault,
+    }),
+    getEducationPayments: builder.query<any, any>({
       query: (params) => ({
         url: `/my-payments`,
         method: 'GET',
@@ -102,10 +82,10 @@ export const educationApi = createApi({
       }),
       onQueryStarted: onQueryStartedDefault,
 
-      transformResponse: (response: ApiResponse<{ data: PaymentHistory[]; count: number }>) => response.data?.data || [],
+      transformResponse: (response: any) => response.data?.data || [],
       keepUnusedDataFor: 0,
     }),
-    getEducationInvoice: builder.query<ApiResponse<Invoice>, InvoiceParams>({
+    getEducationInvoice: builder.query<any, any>({
       query: (params) => ({
         url: `/get-my-payment-invoice`,
         method: 'GET',
@@ -113,7 +93,7 @@ export const educationApi = createApi({
       }),
       onQueryStarted: onQueryStartedDefault,
     }),
-    getCategoryList: builder.query<ApiResponse<Category[]>, void>({
+    getCategoryList: builder.query<any, void>({
       query: () => ({
         url: `/get-categories-list`,
         method: 'GET',

@@ -105,45 +105,43 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
   }
 
   const handleDecline = async (reason: string) => {
-    const payload = {
-      educatorIds: [deleteUser],
-      approval: false,
-      ...(reason ? { declinedReason: reason } : {}),
-    }
-    const response = await tutorStatus(payload)
-    if (!response.error) {
-      confirmationRef.current?.closeModal()
-      onClose()
+    if (deleteUser) {
+      const response = await tutorStatus({
+        educatorId: deleteUser,
+        status: 'declined' as const,
+        comments: reason,
+      })
+      if ('data' in response || !('error' in response)) {
+        confirmationRef.current?.closeModal()
+        onClose()
+      }
     }
   }
 
   const handleAccept = async (id: string) => {
-    const payload = {
-      educatorIds: [id],
-      approval: true,
-    }
-    const response = await tutorStatus(payload)
-    if (!response.error) {
+    const response = await tutorStatus({
+      educatorId: id,
+      status: 'approved' as const,
+    })
+    if ('data' in response || !('error' in response)) {
       onClose()
     }
   }
 
   const handleDelete = async (id: string) => {
-    const payload = {
-      educatorIds: [id],
-    }
-    const response = await tutorDelete(payload)
-    if (!response.error) {
+    const response = await tutorDelete({
+      educatorId: id,
+    })
+    if ('data' in response || !('error' in response)) {
       onClose()
     }
   }
 
   const handleBulkReconsider = async (id: string) => {
-    const payload = {
-      educatorIds: [id],
-    }
-    const response = await reconsiderStatus(payload)
-    if (!response.error) {
+    const response = await reconsiderStatus({
+      educatorId: id,
+    })
+    if ('data' in response || !('error' in response)) {
       onClose()
     }
   }

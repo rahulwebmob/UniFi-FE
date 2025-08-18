@@ -38,7 +38,11 @@ interface WebinarContentProps {
   handleOpenPremiumModal: () => void
 }
 
-const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }: WebinarContentProps) => {
+const WebinarContent = ({
+  webinarData,
+  isEdit,
+  handleOpenPremiumModal,
+}: WebinarContentProps) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const { t, i18n } = useTranslation('education')
@@ -160,40 +164,46 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }: Webinar
               )}
 
               {/* Categories */}
-              {webinarData?.category && Array.isArray(webinarData.category) && webinarData.category.length > 0 && (
-                <Box display="flex" gap={1} flexWrap="wrap" mb={3}>
-                  {webinarData.category!.map((cat: string, index: number) => (
-                    <Chip
-                      key={index}
-                      label={cat}
-                      size="small"
-                      sx={{
-                        background: alpha(theme.palette.primary.main, 0.1),
-                        color: theme.palette.primary.main,
-                        fontWeight: 500,
-                        borderRadius: '6px',
-                        '&:hover': {
-                          background: alpha(theme.palette.primary.main, 0.15),
-                        },
-                      }}
-                    />
-                  ))}
-                </Box>
-              )}
+              {webinarData?.category &&
+                Array.isArray(webinarData.category) &&
+                webinarData.category.length > 0 && (
+                  <Box display="flex" gap={1} flexWrap="wrap" mb={3}>
+                    {webinarData.category!.map((cat: string, index: number) => (
+                      <Chip
+                        key={index}
+                        label={cat}
+                        size="small"
+                        sx={{
+                          background: alpha(theme.palette.primary.main, 0.1),
+                          color: theme.palette.primary.main,
+                          fontWeight: 500,
+                          borderRadius: '6px',
+                          '&:hover': {
+                            background: alpha(theme.palette.primary.main, 0.15),
+                          },
+                        }}
+                      />
+                    ))}
+                  </Box>
+                )}
 
               {/* Webinar Info */}
               <Box display="flex" flexDirection="column" gap={2} mb={3}>
                 <Box display="flex" alignItems="center" gap={1.5}>
                   <Calendar size={20} color={theme.palette.primary.main} />
                   <Typography variant="body1" fontWeight={500}>
-                    {formatDate(webinarData?.webinarScheduledObj?.join_date || '')}
+                    {formatDate(
+                      webinarData?.webinarScheduledObj?.join_date || '',
+                    )}
                   </Typography>
                 </Box>
 
                 <Box display="flex" alignItems="center" gap={1.5}>
                   <Clock size={20} color={theme.palette.primary.main} />
                   <Typography variant="body1" fontWeight={500}>
-                    {formatTime(webinarData?.webinarScheduledObj?.join_date || '')}
+                    {formatTime(
+                      webinarData?.webinarScheduledObj?.join_date || '',
+                    )}
                   </Typography>
                   {webinarData?.duration && (
                     <Chip

@@ -29,11 +29,10 @@ import {
   useEducatorLoginMutation,
 } from '../../../../services/admin'
 
-// Define view states for better maintainability
 const ViewState = {
   LOGIN: 'LOGIN',
-  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
   RESEND_EMAIL: 'RESEND_EMAIL',
+  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
 } as const
 
 type ViewStateType = (typeof ViewState)[keyof typeof ViewState]
@@ -48,18 +47,15 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  // State management
   const [visible, setVisible] = useState(false)
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.LOGIN)
   const [isOAuthLoading, setIsOAuthLoading] = useState(false)
   const [verificationEmail, setVerificationEmail] = useState('')
 
-  // API hooks
   const [educatorLogin] = useEducatorLoginMutation()
   const [submitLoginForm, { isLoading }] = useLoginMutation()
   const [adminLogin, { isLoading: isAdminLoading }] = useAdminLoginMutation()
 
-  // Form validation schema
   const schema = yup.object().shape({
     email: yup
       .string()
@@ -77,11 +73,9 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
     resolver: yupResolver(schema),
   })
 
-  // Handle form submission
   const onSubmit = async (values: { email: string; password: string }) => {
     let response
 
-    // Select appropriate login method based on user type
     switch (type) {
       case 'educator':
         response = await educatorLogin(values)
@@ -93,12 +87,11 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
         response = await submitLoginForm(values)
     }
 
-    if (response && 'data' in response && response.data) {
-      const token = (response.data as { token: string }).token
+    if (response?.data) {
+      const token = response.data.token
       localStorage.setItem('token', token)
       dispatch(signIn({ token }))
 
-      // Navigate based on user type
       switch (type) {
         case 'admin':
           void navigate('/admin')
@@ -114,9 +107,9 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
           }, 100)
       }
     } else if (
-      response &&
-      'error' in response &&
-      (response.error as { status?: number })?.status === 406 &&
+      response.error &&
+      'status' in response.error &&
+      response.error.status === 406 &&
       values.email
     ) {
       setVerificationEmail(values.email)
@@ -124,7 +117,6 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
     }
   }
 
-  // Render helper functions for better organization
   const renderHeader = () => (
     <Box display="flex" alignItems="center">
       <Box
@@ -348,7 +340,6 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
     </Box>
   )
 
-  // Main render method using switch statement for cleaner view management
   const renderContent = () => {
     switch (viewState) {
       case ViewState.LOGIN:
@@ -375,7 +366,6 @@ const Login = ({ type = '', setIsLoginPage }: LoginProps) => {
         )
 
       default:
-        // Fallback to login view
         return renderLoginView()
     }
   }

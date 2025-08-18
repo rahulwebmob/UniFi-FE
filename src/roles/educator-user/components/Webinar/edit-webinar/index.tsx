@@ -31,19 +31,34 @@ const EditWebinar = () => {
       webinar.scheduleType === 'daily'
     ) {
       timeFields = {
-        endTime: convUtcToLocal(webinar.endTime, webinar.startDate) || undefined,
-        startTime: convUtcToLocal(webinar.startTime, webinar.startDate) || undefined,
-        startDate: convUtcToLocal(webinar.startTime, webinar.startDate) || undefined,
+        endTime:
+          convUtcToLocal(
+            webinar.endTime as string,
+            webinar.startDate as string,
+          ) || undefined,
+        startTime:
+          convUtcToLocal(
+            webinar.startTime as string,
+            webinar.startDate as string,
+          ) || undefined,
+        startDate:
+          convUtcToLocal(
+            webinar.startTime as string,
+            webinar.startDate as string,
+          ) || undefined,
       }
     } else if (webinar.scheduleType === 'weekly') {
       timeFields = {
-        days: webinar.days?.length
-          ? webinar.days.map((day: { day: string; endTime: string; startTime: string }) => ({
-              ...day,
-              endTime: convUtcToLocal(day.endTime) || undefined,
-              startTime: convUtcToLocal(day.startTime) || undefined,
-            }))
-          : [],
+        days:
+          Array.isArray(webinar.days) && webinar.days.length
+            ? webinar.days.map(
+                (day: { day: string; endTime: string; startTime: string }) => ({
+                  ...day,
+                  endTime: convUtcToLocal(day.endTime) || undefined,
+                  startTime: convUtcToLocal(day.startTime) || undefined,
+                }),
+              )
+            : [],
       }
     }
 
@@ -65,7 +80,23 @@ const EditWebinar = () => {
       <CreateWebinar
         isEdit
         isPreview={isPreview}
-        savedDetails={data?.data}
+        savedDetails={
+          data?.data
+            ? {
+                ...data.data,
+                startTime: data.data.startTime
+                  ? new Date(data.data.startTime)
+                  : undefined,
+                endTime: data.data.endTime
+                  ? new Date(data.data.endTime)
+                  : undefined,
+                resources: data.data.resources?.map((resource) => ({
+                  file: resource.url || resource.name || '',
+                  id: resource._id,
+                })),
+              }
+            : undefined
+        }
         defaultValues={defaultValues}
         isPublished={data?.data?.status === 'published'}
       />

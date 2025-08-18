@@ -51,9 +51,8 @@ const ViewResource = ({
   const handleViewResource = async () => {
     try {
       const response = await downloadResource({
+        resourceKey: lessonDetail?.resourceUrl || '',
         lessonId: lessonDetail?._id,
-        courseId: lessonDetail?.courseId,
-        chapterId: lessonDetail?.chapterId,
       })
 
       if (

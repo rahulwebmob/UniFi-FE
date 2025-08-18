@@ -113,7 +113,7 @@ const AddNewCard = ({
   const onSubmit = (data: SubscriptionFormData) => {
     const newData = { ...data, ...subscriptionFormData }
     setSubscriptionFormData(newData)
-    setCurrentStep(3)
+    setCurrentStep(1)
   }
 
   return (
@@ -124,25 +124,7 @@ const AddNewCard = ({
           void handleSubmit(onSubmit)()
         }}
       >
-        <Box p={2} pb={1} display="flex" alignItems="center">
-          <IconButton disableRipple>
-            <ArrowLeft
-              size={20}
-              // sx={{ cursor: 'pointer' }}
-              onClick={() => setCurrentStep(1)}
-            />
-          </IconButton>
-          <Typography variant="h6">
-            {t('application:PREMIUM_MODAL.ADD_NEW_CARD')}
-          </Typography>
-        </Box>
-        <Divider
-          sx={{
-            my: 1,
-            borderColor: (theme) => theme.palette.primary.main,
-          }}
-        />
-        <Box pl={2} pr={2}>
+        <Box p={3}>
           <Grid container spacing={1} columnSpacing={2}>
             <Grid size={{ xs: 12 }} mb={1}>
               <Typography component="p">
@@ -283,7 +265,7 @@ const AddNewCard = ({
             color="primary"
             sx={{ borderRadius: '8px', fontWeight: 600 }}
           >
-            {t('application:PREMIUM_MODAL.ADD_CARD')}
+            Next
           </Button>
         </Box>
       </form>

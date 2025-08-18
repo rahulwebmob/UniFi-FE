@@ -1,41 +1,27 @@
 import { useState, forwardRef } from 'react'
+import {
+  Box,
+  Stepper,
+  Step,
+  StepLabel,
+  useTheme,
+  Divider,
+  Typography,
+  type StepIconProps,
+} from '@mui/material'
+import { CreditCard, MapPin, ShoppingCart, CheckCircle } from 'lucide-react'
 
 import AddNewCard from './add-new-card'
 import BillingAddress from './billing-adress'
 import ReviewEducation from './review-education'
-import EducationPremium from './education-premium'
 import ModalBox from '../../ui-elements/modal-box'
 
 interface PurchaseDetails {
-  features: string[]
-  duration: string
-  key: string
   _id: string
   name: string
   price: number
   purchaseType: string
   displayName: string
-  description: string
-  scheduledDate?: string
-  [key: string]: unknown
-}
-
-interface MediaDetails {
-  logo?: string
-  coverImage?: string
-  featureImage?: string
-  educatorDetails?: {
-    firstName?: string
-    lastName?: string
-    [key: string]: unknown
-  }
-  [key: string]: unknown
-}
-
-interface PremiumModalProps {
-  subscriptionDetails: PurchaseDetails[]
-  mediaDetails: MediaDetails
-  isEducation?: boolean
 }
 
 interface PremiumModalRef {
@@ -43,13 +29,45 @@ interface PremiumModalRef {
   closeModal: () => void
 }
 
+interface PremiumModalProps {
+  purchaseDetails: PurchaseDetails
+}
+
 const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
-  ({ subscriptionDetails, mediaDetails }, ref) => {
-    const [currentStep, setCurrentStep] = useState(1)
+  ({ purchaseDetails }, ref) => {
+    const [currentStep, setCurrentStep] = useState(0)
     const [subscriptionFormData, setSubscriptionFormData] = useState({})
+    const theme = useTheme()
+
+    const steps = [
+      { label: 'Payment Details', icon: CreditCard },
+      { label: 'Billing Address', icon: MapPin },
+      { label: 'Review Order', icon: ShoppingCart },
+    ]
+
+    const CustomStepIcon = (props: StepIconProps & { iconComponent: any }) => {
+      const { active, completed, iconComponent: Icon } = props
+
+      return (
+        <Box
+          sx={{
+            color: completed
+              ? theme.palette.success.main
+              : active
+                ? theme.palette.primary.main
+                : theme.palette.grey[400],
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {completed ? <CheckCircle size={24} /> : <Icon size={24} />}
+        </Box>
+      )
+    }
 
     const resetModal = () => {
-      setCurrentStep(1)
+      setCurrentStep(0)
       setSubscriptionFormData({})
     }
 
@@ -62,15 +80,7 @@ const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
 
     const renderStepContent = () => {
       switch (currentStep) {
-        case 1:
-          return (
-            <EducationPremium
-              mediaDetails={mediaDetails}
-              subscriptionDetails={subscriptionDetails}
-              setCurrentStep={setCurrentStep}
-            />
-          )
-        case 2:
+        case 0:
           return (
             <AddNewCard
               setCurrentStep={setCurrentStep}
@@ -78,7 +88,7 @@ const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
               subscriptionFormData={subscriptionFormData}
             />
           )
-        case 3:
+        case 1:
           return (
             <BillingAddress
               setCurrentStep={setCurrentStep}
@@ -86,13 +96,13 @@ const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
               subscriptionFormData={subscriptionFormData}
             />
           )
-        case 4:
+        case 2:
           return (
             <ReviewEducation
               setCurrentStep={setCurrentStep}
               transactionInfo={subscriptionFormData}
               closeModal={closeModal}
-              subscriptionDetails={subscriptionDetails}
+              purchaseDetails={purchaseDetails}
             />
           )
         default:
@@ -104,7 +114,7 @@ const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
       <ModalBox
         ref={ref}
         title={undefined}
-        size={currentStep === 1 ? 'xs' : 'sm'}
+        size="lg"
         disablePadding
         onCloseModal={() => {
           resetModal()
@@ -113,7 +123,47 @@ const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
           }
         }}
       >
-        {renderStepContent()}
+        <Box>
+          <Box sx={{ px: 3, pt: 3, pb: 2 }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>
+              Complete Purchase
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {purchaseDetails?.purchaseType === 'COURSE'
+                ? `Purchase access to ${purchaseDetails?.displayName || 'this course'}`
+                : purchaseDetails?.purchaseType === 'WEBINAR'
+                  ? `Register for ${purchaseDetails?.displayName || 'this webinar'}`
+                  : 'Subscribe to premium plan'}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              width: '100%',
+              px: 3,
+              pb: 2,
+              '& .MuiStepLabel-label': {
+                fontSize: '0.875rem',
+                mt: 1,
+              },
+            }}
+          >
+            <Stepper activeStep={currentStep} alternativeLabel>
+              {steps.map((step, index) => (
+                <Step key={step.label}>
+                  <StepLabel
+                    StepIconComponent={(props) => (
+                      <CustomStepIcon {...props} iconComponent={step.icon} />
+                    )}
+                  >
+                    {step.label}
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Box>
+          <Divider />
+          {renderStepContent()}
+        </Box>
       </ModalBox>
     )
   },

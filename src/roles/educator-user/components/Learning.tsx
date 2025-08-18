@@ -175,9 +175,7 @@ const Learning = ({
         }}
       >
         {renderSecondaryScreen()}
-        {areUsersInRoom && (
-          <Peers isHost={isHost} usersInRoom={usersInRoom} />
-        )}
+        {areUsersInRoom && <Peers isHost={isHost} usersInRoom={usersInRoom} />}
       </Box>
 
       <VideoPlaceholder sx={{ height: streamHeight, position: 'relative' }}>

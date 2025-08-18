@@ -16,7 +16,6 @@ import {
 
 import { useGetCategoryListQuery } from '../../../../../../services/admin'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
-import type { Category } from '../../../../../../types/api.types'
 
 interface WebinarFormData {
   category: string[]
@@ -42,8 +41,21 @@ const AddCategory = () => {
   const { data, isLoading } = useGetCategoryListQuery(undefined)
 
   useEffect(() => {
-    if (data?.data && Array.isArray(data.data) && data.data.length && !isLoading) {
-      const categoryNames = data.data.map((category: Category) => category.name)
+    if (
+      data?.data &&
+      Array.isArray(data.data) &&
+      data.data.length &&
+      !isLoading
+    ) {
+      const categoryNames = data.data.map(
+        (category: {
+          _id: string
+          name: string
+          slug: string
+          icon?: string
+          subcategories?: string[]
+        }) => category.name,
+      )
       setCategories((prev: string[]) => [
         ...new Set([...categoryNames.slice(0, 5), ...prev]),
       ])
@@ -148,10 +160,19 @@ const AddCategory = () => {
             size="small"
             disablePortal
             options={
-              (data?.data && Array.isArray(data.data) 
-                ? data.data.map((category: Category) => category.name)
-                    .filter((name: string) => !categories.includes(name)) 
-                : [])
+              data?.data && Array.isArray(data.data)
+                ? data.data
+                    .map(
+                      (category: {
+                        _id: string
+                        name: string
+                        slug: string
+                        icon?: string
+                        subcategories?: string[]
+                      }) => category.name,
+                    )
+                    .filter((name: string) => !categories.includes(name))
+                : []
             }
             value={selectedCategory}
             getOptionLabel={(option: string) => option || ''}

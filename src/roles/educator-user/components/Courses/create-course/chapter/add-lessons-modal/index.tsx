@@ -9,7 +9,7 @@ import ModalBox from '../../../../../../../shared/components/ui-elements/modal-b
 import type {
   AddLessonProps,
   ModalBoxHandle,
-} from '../../../../../../../types/education'
+} from '../../../../../../../types/education.types'
 
 interface AddLessonsModalProps extends Omit<AddLessonProps, 'handleClose'> {
   onClose: () => void

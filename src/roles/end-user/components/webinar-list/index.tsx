@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { useState, useEffect } from 'react'
-import { de, fr, it, ja, pt, arSA, enUS } from 'date-fns/locale'
 
 import { Box } from '@mui/material'
 
@@ -10,36 +9,7 @@ import ContentSkeleton from '../content-skeleton'
 import NoDataFound from '../../../../shared/components/no-data-found'
 import { useGetAllWebinarsQuery } from '../../../../services/education'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
-
-
-const getLocaleByLanguageCode = (languageCode: string) => {
-  const localeMap = { ar: arSA, jp: ja, en: enUS, de, fr, pt, it }
-  return localeMap[languageCode as keyof typeof localeMap]
-}
-
-interface WebinarItem {
-  _id: string
-  title?: string
-  description?: string
-  thumbNail?: string
-  price?: number
-  category?: string | string[]
-  webinarScheduledObj?: {
-    join_date?: string
-    can_join?: boolean
-    [key: string]: unknown
-  }
-  isPaid?: boolean
-  isWebinarBought?: boolean
-  totalEnrolled?: number
-  educatorDetail?: {
-    firstName?: string
-    lastName?: string
-    profilePic?: string
-    [key: string]: unknown
-  }
-  [key: string]: unknown
-}
+import type { WebinarData } from '../../../../types/education.types'
 
 interface WebinarListProps {
   page: number
@@ -55,10 +25,9 @@ const WebinarList = ({
   isPurchased,
   selectedCategory,
 }: WebinarListProps) => {
-  const { t, i18n } = useTranslation('education')
-  const [list, setList] = useState<WebinarItem[]>([])
+  const { t } = useTranslation('education')
+  const [list, setList] = useState<WebinarData[]>([])
   const [count, setCount] = useState(0)
-  const locale = getLocaleByLanguageCode(i18n.language)
 
   const { data, isLoading, isFetching, isSuccess } = useGetAllWebinarsQuery(
     {
@@ -71,12 +40,7 @@ const WebinarList = ({
     {
       pollingInterval: 5000,
     },
-  ) as {
-    data?: { data?: { webinars?: WebinarItem[]; count?: number } }
-    isLoading: boolean
-    isFetching: boolean
-    isSuccess: boolean
-  }
+  )
 
   useEffect(() => {
     if (isSuccess && !isFetching) {
@@ -110,15 +74,7 @@ const WebinarList = ({
         ) : list.length > 0 ? (
           <>
             {list.map((item) => (
-              <WebinarCard
-                key={item._id}
-                webinar={{
-                  ...item,
-                  title: item.title ?? '',
-                }}
-                isPurchased
-                locale={locale}
-              />
+              <WebinarCard key={item._id} webinar={item} isPurchased />
             ))}
           </>
         ) : (
@@ -172,15 +128,7 @@ const WebinarList = ({
       ) : (
         <GridContainer>
           {list.map((item) => (
-            <WebinarCard
-              key={item._id}
-              webinar={{
-                ...item,
-                title: item.title ?? '',
-              }}
-              isPurchased={false}
-              locale={locale}
-            />
+            <WebinarCard key={item._id} webinar={item} isPurchased />
           ))}
         </GridContainer>
       )}

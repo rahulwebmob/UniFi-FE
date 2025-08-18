@@ -29,9 +29,9 @@ interface CourseCardProps {
     isNew?: boolean
     isCourseBought?: boolean
     educatorId?: {
-      _id: string
-      firstName: string
-      lastName: string
+      _id?: string
+      firstName?: string
+      lastName?: string
     }
   }
   isPurchased?: boolean
@@ -177,7 +177,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
     <Card
       onClick={handleCardClick}
       sx={{
-        height: '100%', // Take full height of grid cell
+        height: '100%',
         borderRadius: '12px',
         boxShadow: 'none',
         cursor: 'pointer',
@@ -196,11 +196,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
         },
       }}
     >
-      {/* Image Container - Fixed aspect ratio */}
       <Box
         sx={{
           width: '100%',
-          paddingTop: '56.25%', // True 16:9 aspect ratio
+          paddingTop: '56.25%',
           position: 'relative',
           backgroundColor: (thm) => thm.palette.grey[100],
           overflow: 'hidden',
@@ -216,7 +215,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
             left: 0,
             width: '100%',
             height: '100%',
-            objectFit: 'contain', // Show FULL image without any cropping
+            objectFit: 'contain',
             objectPosition: 'center',
           }}
           onError={(e) => {
@@ -224,7 +223,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
           }}
         />
 
-        {/* Free Badge - Top Right */}
         {!course.isPaid && (
           <Box
             sx={{
@@ -246,7 +244,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
           </Box>
         )}
 
-        {/* Educator Name - Top Left */}
         {course.educatorId && (
           <Box
             sx={{
@@ -272,7 +269,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
                 fontSize: '0.6rem',
               }}
             >
-              {course.educatorId.firstName[0].toUpperCase()}
+              {course.educatorId.firstName?.[0]?.toUpperCase() || 'E'}
             </Avatar>
             <Typography
               sx={{
@@ -282,12 +279,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
                 pr: 0.5,
               }}
             >
-              {course.educatorId.firstName} {course.educatorId.lastName}
+              {course.educatorId.firstName || 'Educator'}{' '}
+              {course.educatorId.lastName || ''}
             </Typography>
           </Box>
         )}
 
-        {/* Categories Overlay - Bottom */}
         {categoryArray.length > 0 && (
           <Box
             sx={{
@@ -306,7 +303,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
         )}
       </Box>
 
-      {/* Content Section - Optimized */}
       <Box
         sx={{
           p: 2,
@@ -316,7 +312,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
           overflow: 'hidden',
         }}
       >
-        {/* Title - Compact */}
         <Typography
           sx={{
             fontWeight: 700,
@@ -334,7 +329,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
           {course.title}
         </Typography>
 
-        {/* Description - Compact */}
         {course.description && (
           <Typography
             sx={{
@@ -354,12 +348,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
           </Typography>
         )}
 
-        {/* Spacer */}
         <Box sx={{ flexGrow: 1 }} />
 
-        {/* Bottom Section */}
         <Box>
-          {/* Price and CTA Row - Compact */}
           <Box
             sx={{
               display: 'flex',
@@ -368,7 +359,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
               gap: 1,
             }}
           >
-            {/* Price - Only for paid courses */}
             {course.isPaid && course.price ? (
               <Box>
                 <Typography
@@ -386,7 +376,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
                       fontSize: '0.65rem',
                       color: (thm) => thm.palette.text.secondary,
                       mt: 0.25,
-                      opacity: 0.7,
+                      fontWeight: 600,
                     }}
                   >
                     {course.totalPurchased} students
@@ -395,30 +385,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isPurchased }) => {
               </Box>
             ) : null}
 
-            {/* CTA Button */}
             <Button
               variant="contained"
               size="small"
               fullWidth={!course.isPaid}
-              sx={{
-                textTransform: 'none',
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                px: 2,
-                py: 0.6,
-                borderRadius: '6px',
-                minWidth: 'auto',
-                backgroundColor: (thm) =>
-                  course.isPaid
-                    ? thm.palette.primary.main
-                    : thm.palette.success.main,
-                '&:hover': {
-                  backgroundColor: (thm) =>
-                    course.isPaid
-                      ? thm.palette.primary.dark
-                      : thm.palette.success.dark,
-                },
-              }}
               onClick={(e) => {
                 e.stopPropagation()
                 handleCardClick()

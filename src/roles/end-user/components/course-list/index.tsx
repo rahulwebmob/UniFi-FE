@@ -8,6 +8,7 @@ import ContentSkeleton from '../content-skeleton'
 import NoDataFound from '../../../../shared/components/no-data-found'
 import { useGetAllCoursesQuery } from '../../../../services/education'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
+import type { CourseData } from '../../../../types/education.types'
 
 const iff = <T,>(condition: boolean, trueCase: T, falseCase: T): T =>
   condition ? trueCase : falseCase
@@ -27,28 +28,8 @@ const CourseList: React.FC<CourseListProps> = ({
   selectedCategory,
 }) => {
   const { t } = useTranslation('education')
-  interface Course {
-    _id: string
-    title: string
-    description?: string
-    thumbNail?: string
-    price?: number
-    currency?: string
-    category?: string | string[]
-    totalPurchased?: number
-    isPurchased?: boolean
-    isPaid?: boolean
-    isNew?: boolean
-    isCourseBought?: boolean
-    educatorId?: {
-      _id: string
-      firstName: string
-      lastName: string
-    }
-    [key: string]: unknown
-  }
 
-  const [list, setList] = useState<Course[]>([])
+  const [list, setList] = useState<CourseData[]>([])
   const [count, setCount] = useState(0)
 
   const { data, isFetching, isSuccess, isLoading } = useGetAllCoursesQuery({
@@ -57,12 +38,7 @@ const CourseList: React.FC<CourseListProps> = ({
     isPurchased,
     pageSize: 20,
     categories: selectedCategory,
-  }) as {
-    data?: { data?: { courses?: Course[]; count?: number } }
-    isFetching: boolean
-    isSuccess: boolean
-    isLoading: boolean
-  }
+  })
 
   useEffect(() => {
     if (isSuccess && !isFetching) {
@@ -91,49 +67,44 @@ const CourseList: React.FC<CourseListProps> = ({
   if (isPurchased) {
     return (
       <MuiCarousel>
-        {iff(
-          isLoading,
-          <ContentSkeleton isPurchased />,
-          iff(
-            !!list.length,
-            <>
-              {list.map((item) => (
-                <Box
-                  key={item._id}
-                  sx={{ minWidth: 420, maxWidth: 420, px: 1 }}
-                >
-                  <CourseCard course={item} isPurchased />
-                </Box>
-              ))}
-            </>,
-            <Box
-              sx={{
-                '&.MuiTabs-flexContainer': {
-                  display: 'inline',
-                },
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                '& .MuiBox-root': {
-                  minHeight: 'auto',
-                  height: 'auto',
-                },
-                svg: {
-                  width: '107px',
-                },
-                '& .MuiTypography-h3': {
-                  display: 'none',
-                },
-              }}
-            >
-              <NoDataFound
-                description={t(
-                  'EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_COURSE',
-                )}
-                title={undefined}
-              />
-            </Box>,
-          ),
+        {isLoading ? (
+          <ContentSkeleton isPurchased />
+        ) : !!list.length ? (
+          <>
+            {list.map((item) => (
+              <Box key={item._id} sx={{ minWidth: 420, maxWidth: 420, px: 1 }}>
+                <CourseCard course={item} isPurchased />
+              </Box>
+            ))}
+          </>
+        ) : (
+          <Box
+            sx={{
+              '&.MuiTabs-flexContainer': {
+                display: 'inline',
+              },
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              '& .MuiBox-root': {
+                minHeight: 'auto',
+                height: 'auto',
+              },
+              svg: {
+                width: '107px',
+              },
+              '& .MuiTypography-h3': {
+                display: 'none',
+              },
+            }}
+          >
+            <NoDataFound
+              description={t(
+                'EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_COURSE',
+              )}
+              title={undefined}
+            />
+          </Box>
         )}
       </MuiCarousel>
     )
@@ -155,7 +126,7 @@ const CourseList: React.FC<CourseListProps> = ({
               minHeight: '300px',
             }}
           >
-            <NoDataFound title={undefined} description={undefined} />
+            <NoDataFound />
           </Box>
         ) : (
           <Grid container spacing={3}>

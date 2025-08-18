@@ -3,7 +3,10 @@ import { useState, useEffect, useCallback } from 'react'
 
 import WebinarContent from '../webinar-content'
 import type { RootState } from '../../../../../redux/types'
-import type { WebinarFormData, WebinarData } from '../../../../../types/education.types'
+import type {
+  WebinarFormData,
+  WebinarData,
+} from '../../../../../types/education.types'
 
 interface WebinarFormDataWithId extends WebinarFormData {
   _id?: string
@@ -36,14 +39,28 @@ const PreviewWebinar = ({ webinarData, isTdSkip }: PreviewWebinarProps) => {
 
     if (['daily', 'one time'].includes(scheduleType || '')) {
       return {
+        webinarId: webinarData._id || '',
         scheduleType,
-        endTime: isTdSkip ? endTime : (endTime ? convHMtoUtc(endTime) : undefined),
-        startTime: isTdSkip ? startTime : (startTime ? convHMtoUtc(startTime) : undefined),
-        startDate: isTdSkip ? startDate : (startDate && startTime ? convDateToUtc(startDate as string | Date, startTime) : undefined),
+        endTime: isTdSkip
+          ? endTime
+          : endTime
+            ? convHMtoUtc(endTime)
+            : undefined,
+        startTime: isTdSkip
+          ? startTime
+          : startTime
+            ? convHMtoUtc(startTime)
+            : undefined,
+        startDate: isTdSkip
+          ? startDate
+          : startDate && startTime
+            ? convDateToUtc(startDate as string | Date, startTime)
+            : undefined,
       }
     }
 
     return {
+      webinarId: webinarData._id || '',
       days: days?.map((day) => ({
         ...day,
         startTime: iff(
@@ -98,18 +115,26 @@ const PreviewWebinar = ({ webinarData, isTdSkip }: PreviewWebinarProps) => {
     thumbnail: updatedWebinarData.image ? String(updatedWebinarData.image) : '',
     duration: 0, // Default value
     status: 'draft' as const,
-    startTime: updatedWebinarData.startTime ? String(updatedWebinarData.startTime) : '',
-    endTime: updatedWebinarData.endTime ? String(updatedWebinarData.endTime) : '',
+    startTime: updatedWebinarData.startTime
+      ? String(updatedWebinarData.startTime)
+      : '',
+    endTime: updatedWebinarData.endTime
+      ? String(updatedWebinarData.endTime)
+      : '',
     price: updatedWebinarData.price || 0,
     instructor: updatedWebinarData.educatorId,
     scheduleType: updatedWebinarData.scheduleType,
     category: updatedWebinarData.category,
     isPaid: updatedWebinarData.isPaid,
-    resources: updatedWebinarData.resources?.map(resource => ({
+    resources: updatedWebinarData.resources?.map((resource) => ({
       id: resource.id || '',
-      name: typeof resource.file === 'string' ? resource.file : resource.file.name,
+      name:
+        typeof resource.file === 'string' ? resource.file : resource.file.name,
       type: 'file' as const,
-      url: typeof resource.file === 'string' ? resource.file : URL.createObjectURL(resource.file),
+      url:
+        typeof resource.file === 'string'
+          ? resource.file
+          : URL.createObjectURL(resource.file),
       size: 0,
     })),
     days: updatedWebinarData.days,

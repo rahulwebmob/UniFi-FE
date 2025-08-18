@@ -1,11 +1,7 @@
 import React from 'react'
 import { CloudUpload } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import {
-  Controller,
-  type Control,
-  type FieldErrors,
-} from 'react-hook-form'
+import { Controller, type Control, type FieldErrors } from 'react-hook-form'
 
 import {
   Box,
@@ -19,7 +15,6 @@ import {
 
 import RequiredFieldIndicator from '../../../../shared/components/ui-elements/required-field-indicator'
 import type { EducatorFormData } from '../../types/form-types'
-
 
 interface DocumentProps {
   control: Control<EducatorFormData>
@@ -93,7 +88,9 @@ const Document = ({
                 ),
               }}
               error={!!errors.cv}
-              helperText={errors.cv?.message ? String(errors.cv.message) : undefined}
+              helperText={
+                errors.cv?.message ? String(errors.cv.message) : undefined
+              }
             />
           )}
         />
@@ -140,7 +137,9 @@ const Document = ({
                 ),
               }}
               error={!!errors.video}
-              helperText={errors.video?.message ? String(errors.video.message) : undefined}
+              helperText={
+                errors.video?.message ? String(errors.video.message) : undefined
+              }
             />
           )}
         />
@@ -164,7 +163,9 @@ const Document = ({
               fullWidth
               size="small"
               error={!!errors.hau}
-              helperText={errors.hau?.message ? String(errors.hau.message) : undefined}
+              helperText={
+                errors.hau?.message ? String(errors.hau.message) : undefined
+              }
             >
               <MenuItem value="Social Media">
                 {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.SOCIAL_MEDIA')}

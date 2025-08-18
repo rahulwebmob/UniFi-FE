@@ -61,15 +61,6 @@ const EducationInvoice: React.FC = () => {
     data: InvoiceData | undefined
   }
 
-  // Wrapper function to match RequestCallback type
-  const downloadInvoiceWrapper = useCallback(
-    async (params: { transactionId: string }) => {
-      const result = await downloadAdminInvoice(params)
-      return result
-    },
-    [downloadAdminInvoice],
-  )
-
   const columnsList = useMemo<ProcessedInvoice[] | undefined>(
     () =>
       data?.data.map((item) => ({
@@ -201,11 +192,11 @@ const EducationInvoice: React.FC = () => {
                 void (async () => {
                   try {
                     const result = downloadAdminInvoice({
-                      transactionId: row.original._id,
+                      invoiceId: row.original._id,
                     })
                     if ('unwrap' in result) {
                       const response = await result.unwrap()
-                      if (!response.error) {
+                      if (response.data) {
                         const div = document.createElement('div')
                         div.innerHTML = String(response.data || '')
                         const html2pdf = (await import('html2pdf.js')).default
@@ -242,7 +233,7 @@ const EducationInvoice: React.FC = () => {
       },
     ],
     [
-      downloadInvoiceWrapper,
+      downloadAdminInvoice,
       handleSuccessAlert,
       theme.palette.primary.main,
       theme.palette.success.main,

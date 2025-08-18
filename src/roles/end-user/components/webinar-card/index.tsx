@@ -42,14 +42,9 @@ interface WebinarCardProps {
     }
   }
   isPurchased?: boolean
-  locale?: Locale
 }
 
-const WebinarCard: React.FC<WebinarCardProps> = ({
-  webinar,
-  isPurchased,
-  locale,
-}) => {
+const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, isPurchased }) => {
   const { t } = useTranslation('education')
   const navigate = useNavigate()
 
@@ -240,7 +235,7 @@ const WebinarCard: React.FC<WebinarCardProps> = ({
           )}
 
           {/* Date and Time */}
-          {webinar.webinarScheduledObj?.join_date && locale && (
+          {webinar.webinarScheduledObj?.join_date && (
             <Box
               sx={{
                 display: 'flex',
@@ -257,13 +252,11 @@ const WebinarCard: React.FC<WebinarCardProps> = ({
                 {format(
                   new Date(webinar.webinarScheduledObj.join_date),
                   'MMM dd, yyyy',
-                  { locale },
                 )}
                 {' at '}
                 {format(
                   new Date(webinar.webinarScheduledObj.join_date),
                   'h:mm a',
-                  { locale },
                 )}
               </Typography>
             </Box>
@@ -564,7 +557,7 @@ const WebinarCard: React.FC<WebinarCardProps> = ({
         )}
 
         {/* Date and Time */}
-        {webinar.webinarScheduledObj?.join_date && locale && (
+        {webinar.webinarScheduledObj?.join_date && (
           <Box
             sx={{
               display: 'flex',
@@ -585,7 +578,6 @@ const WebinarCard: React.FC<WebinarCardProps> = ({
                 {format(
                   new Date(webinar.webinarScheduledObj.join_date),
                   'MMM dd, yyyy',
-                  { locale },
                 )}
               </Typography>
             </Box>
@@ -598,7 +590,6 @@ const WebinarCard: React.FC<WebinarCardProps> = ({
                 {format(
                   new Date(webinar.webinarScheduledObj.join_date),
                   'h:mm a',
-                  { locale },
                 )}
               </Typography>
             </Box>

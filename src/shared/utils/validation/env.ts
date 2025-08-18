@@ -1,9 +1,4 @@
-// Environment variables utility
-// This file provides a unified way to access environment variables
-// Supporting both Vite (import.meta.env) and legacy process.env
-
 const getEnvVar = (viteKey: string, legacyKey: string): string => {
-  // Try Vite env first
   if (import.meta?.env && viteKey in import.meta.env) {
     return import.meta.env[viteKey] as string
   }

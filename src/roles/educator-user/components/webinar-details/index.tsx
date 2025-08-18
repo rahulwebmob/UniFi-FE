@@ -31,9 +31,13 @@ const WebinarDetails = () => {
         coverImage: item?.thumbNail || item?.thumbnail || '',
         featureImage: item?.thumbNail || item?.thumbnail || '',
         educatorDetails: {
-          firstName: (item?.instructor as { firstName?: string })?.firstName || '',
+          firstName:
+            (item?.instructor as { firstName?: string })?.firstName || '',
           lastName: (item?.instructor as { lastName?: string })?.lastName || '',
-          id: (item?.educatorId as string) || item?.instructor?.id || 'default-educator',
+          id:
+            (item?.educatorId as string) ||
+            item?.instructor?.id ||
+            'default-educator',
         },
       },
       subscriptionDetails: [
@@ -60,7 +64,7 @@ const WebinarDetails = () => {
   const handleCourseData = useMemo((): WebinarData => {
     const webinarResponse = data as { data?: WebinarDetail }
     const webinarDetail = webinarResponse?.data
-    
+
     if (!webinarDetail) {
       // Return a minimal valid WebinarData object
       return {
@@ -74,7 +78,7 @@ const WebinarDetails = () => {
         status: 'draft' as const,
       }
     }
-    
+
     // Transform WebinarDetail to WebinarData
     return {
       ...webinarDetail,
@@ -85,7 +89,7 @@ const WebinarDetails = () => {
       startTime: webinarDetail.startTime || '',
       endTime: webinarDetail.endTime || '',
       duration: webinarDetail.duration || 0,
-      status: webinarDetail.status || 'draft' as const,
+      status: webinarDetail.status || ('draft' as const),
     }
   }, [data])
 
@@ -102,9 +106,7 @@ const WebinarDetails = () => {
       />
       <PremiumModal
         ref={subscriptionRef}
-        subscriptionDetails={premiumModelDetails?.subscriptionDetails}
-        mediaDetails={premiumModelDetails?.mediaDetails}
-        isEducation
+        purchaseDetails={premiumModelDetails?.subscriptionDetails?.[0]}
       />
     </ApiResponseWrapper>
   )

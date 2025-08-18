@@ -13,14 +13,17 @@ const UploadImage: React.FC = () => {
   const canvasId = useSelector(
     (state: RootState) => state.education.canvasId as string | null,
   )
-  
+
   // Get fabric canvas instance from global scope or create one
   const getFabricCanvas = (): fabric.Canvas | null => {
     if (!canvasId) return null
     const canvasElement = document.getElementById(canvasId) as HTMLCanvasElement
     if (!canvasElement) return null
     // Assume fabric canvas is already initialized elsewhere
-    return (window as { __fabric_canvas__?: fabric.Canvas }).__fabric_canvas__ || null
+    return (
+      (window as { __fabric_canvas__?: fabric.Canvas }).__fabric_canvas__ ||
+      null
+    )
   }
 
   const checkFile = (file: File): string => {

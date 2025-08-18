@@ -32,12 +32,9 @@ import { urlRegexPatterns } from './constant/constant'
 import EducatorLoginImage from '../../../assets/educator-login.avif'
 import { useLazyVerifyEducatorEmailQuery } from '../../../services/admin'
 import { useRegisterEducatorMutation } from '../../../services/uploadProgress'
-import {
-  transformNaNToNull,
-} from '../components/common/common'
+import { transformNaNToNull } from '../components/common/common'
 
 const TEXT = (t: TFunction) => t('education:REGISTER_EDUCATOR.THANK_YOU_TEXT')
-
 
 interface StepIconProps {
   active?: boolean
@@ -125,7 +122,9 @@ const validationSchema = (t: TFunction) => [
       .transform(transformNaNToNull)
       .min(0, t('REGISTER_EDUCATOR.VALIDATION.EXPERIENCE_MORE_THAN_ONE_YEAR'))
       .max(99.99, t('REGISTER_EDUCATOR.VALIDATION.NOT_EXCEED_99_YEARS')),
-    expertise: yup.array().of(yup.object().shape({ category: yup.string().trim() })),
+    expertise: yup
+      .array()
+      .of(yup.object().shape({ category: yup.string().trim() })),
     education: yup.array().of(
       yup.object().shape({
         degree: yup
@@ -256,7 +255,8 @@ const validationSchema = (t: TFunction) => [
         (value) => {
           if (!value) return true
           const allowedExtensions = ['pdf', 'doc', 'docx']
-          const fileExtension = (value as File).name.split('.').pop()?.toLowerCase() ?? ''
+          const fileExtension =
+            (value as File).name.split('.').pop()?.toLowerCase() ?? ''
           return allowedExtensions.includes(fileExtension)
         },
       ),
@@ -334,36 +334,40 @@ const Educator: React.FC = () => {
   const [verifyEducatorEmail] = useLazyVerifyEducatorEmailQuery()
   const [registerTutor, { isLoading }] = useRegisterEducatorMutation()
 
-  const { control, handleSubmit, formState, setError } = useForm<EducatorFormData>({
-    resolver: yupResolver(validationSchema(t)[activeStep] as yup.AnyObjectSchema),
-    defaultValues,
-  })
-
-  const steps: Record<number, { name: string; component: React.ReactElement }> = {
-    0: {
-      name: t('REGISTER_EDUCATOR.ABOUT'),
-      component: <About control={control} />,
-    },
-    1: {
-      name: t('REGISTER_EDUCATOR.QUALIFICATION'),
-      component: <Qualification control={control} />,
-    },
-    2: {
-      name: t('REGISTER_EDUCATOR.LINKS'),
-      component: <Links control={control} />,
-    },
-    3: {
-      name: t('REGISTER_EDUCATOR.DOCUMENTS'),
-      component: (
-        <Document
-          control={control}
-          errors={formState.errors}
-          setCvFile={setCvFile}
-          setMp4File={setMp4File}
-        />
+  const { control, handleSubmit, formState, setError } =
+    useForm<EducatorFormData>({
+      resolver: yupResolver(
+        validationSchema(t)[activeStep] as yup.AnyObjectSchema,
       ),
-    },
-  }
+      defaultValues,
+    })
+
+  const steps: Record<number, { name: string; component: React.ReactElement }> =
+    {
+      0: {
+        name: t('REGISTER_EDUCATOR.ABOUT'),
+        component: <About control={control} />,
+      },
+      1: {
+        name: t('REGISTER_EDUCATOR.QUALIFICATION'),
+        component: <Qualification control={control} />,
+      },
+      2: {
+        name: t('REGISTER_EDUCATOR.LINKS'),
+        component: <Links control={control} />,
+      },
+      3: {
+        name: t('REGISTER_EDUCATOR.DOCUMENTS'),
+        component: (
+          <Document
+            control={control}
+            errors={formState.errors}
+            setCvFile={setCvFile}
+            setMp4File={setMp4File}
+          />
+        ),
+      },
+    }
 
   const onSubmit = async (data: EducatorFormData) => {
     if (activeStep === 0) {
@@ -385,7 +389,11 @@ const Educator: React.FC = () => {
         const value = data[key]
         if (
           value &&
-          !(Array.isArray(value) && value.length === 1 && (value as unknown[])[0] === '')
+          !(
+            Array.isArray(value) &&
+            value.length === 1 &&
+            (value as unknown[])[0] === ''
+          )
         ) {
           if (name === 'cv') {
             if (cvFile) formData.append(name, cvFile)
@@ -401,9 +409,13 @@ const Educator: React.FC = () => {
           } else if (typeof value === 'object' && Array.isArray(value)) {
             // Check if all array items are objects with filled fields
             const allFilled = value.every((item) => {
-              if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
+              if (
+                typeof item === 'object' &&
+                item !== null &&
+                !Array.isArray(item)
+              ) {
                 return Object.values(item).every(
-                  (val) => val !== '' && val !== null && val !== undefined
+                  (val) => val !== '' && val !== null && val !== undefined,
                 )
               }
               return false
@@ -420,8 +432,8 @@ const Educator: React.FC = () => {
       formData.append('language', language?.value)
       const response = await registerTutor({
         data: formData,
-        onUploadProgress: (event: { loaded: number; total: number }) => {
-          const percent = Math.round((event.loaded * 100) / event.total)
+        onUploadProgress: (event: { loaded: number; total?: number }) => {
+          const percent = Math.round((event.loaded * 100) / (event.total || 1))
           setProgress(percent)
         },
       })

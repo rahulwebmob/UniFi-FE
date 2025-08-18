@@ -289,7 +289,9 @@ const TutorProfile = () => {
               color="secondary"
               startIcon={<Download size={16} />}
               sx={{ mt: 2, alignSelf: 'flex-start' }}
-              onClick={() => void downloadPdf(DownloadCv?.url)}
+              onClick={() =>
+                DownloadCv?.url && void downloadPdf(DownloadCv.url)
+              }
             >
               Download CV
             </Button>

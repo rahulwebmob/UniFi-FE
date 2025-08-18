@@ -34,7 +34,7 @@ const WebinarMetaData = () => {
     remove: removeResource,
   } = useFieldArray({
     control,
-    name: 'resources' as any,
+    name: 'resources' as never,
   })
 
   return (
@@ -65,7 +65,12 @@ const WebinarMetaData = () => {
             </Typography>
             <Button
               startIcon={<Plus size={16} />}
-              onClick={() => addResource({ file: '' } as { file: File | string; id?: string })}
+              onClick={() =>
+                addResource({ file: '' } as {
+                  file: File | string
+                  id?: string
+                })
+              }
               variant="outlined"
               disabled={resourceFields?.length > 4}
               color="primary"

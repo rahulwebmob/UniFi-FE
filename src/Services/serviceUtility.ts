@@ -2,10 +2,7 @@ import i18n from '../localization/i18n'
 import { signOut } from '../redux/reducers/user-slice'
 import { errorAlert, successAlert } from '../redux/reducers/app-slice'
 import type { Dispatch } from '@reduxjs/toolkit'
-import type {
-  ApiError,
-  QueryRejectedAction,
-} from '../types/service.types'
+import type { ApiError, QueryRejectedAction } from '../types/service.types'
 
 // Constants for status codes and error handling
 const NUMBER = { ZERO: 0, ONE: 1, FOUR_HUNDRED: 400, FOUR_HUNDRED_THREE: 403 }
@@ -21,7 +18,10 @@ const commonConstant = {
 
 export const onQueryStartedDefault = async (
   _id: unknown,
-  { dispatch, queryFulfilled }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
+  {
+    dispatch,
+    queryFulfilled,
+  }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
 ) => {
   try {
     await queryFulfilled
@@ -53,7 +53,10 @@ export const onQueryStartedDefault = async (
 
 export const onQueryStarted = async (
   _id: unknown,
-  { dispatch, queryFulfilled }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
+  {
+    dispatch,
+    queryFulfilled,
+  }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
 ) => {
   try {
     await queryFulfilled
@@ -94,12 +97,20 @@ export const onQueryStarted = async (
 }
 export const onMutationStartedDefault = async (
   _data: unknown,
-  { dispatch, queryFulfilled }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
+  {
+    dispatch,
+    queryFulfilled,
+  }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
 ) => {
   try {
     const res = await queryFulfilled
     // `onSuccess` side-effect
-    if (res?.data && typeof res.data === 'object' && 'message' in res.data && typeof res.data.message === 'string') {
+    if (
+      res?.data &&
+      typeof res.data === 'object' &&
+      'message' in res.data &&
+      typeof res.data.message === 'string'
+    ) {
       dispatch(successAlert({ message: res.data.message }))
     }
   } catch (err: unknown) {
@@ -126,7 +137,10 @@ export const onMutationStartedDefault = async (
 
 export const onMutationStarted = async (
   _id: unknown,
-  { dispatch, queryFulfilled }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
+  {
+    dispatch,
+    queryFulfilled,
+  }: { dispatch: Dispatch; queryFulfilled: Promise<{ data: unknown }> },
 ) => {
   try {
     await queryFulfilled

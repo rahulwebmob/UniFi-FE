@@ -8,6 +8,11 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { useMemo, useState, useEffect } from 'react'
 
 import type { CreateCourseFormData, DataObject } from '../../../../../types'
+import type {
+  CreateCourseRequest,
+  UpdateCourseRequest,
+  CourseMetaDataRequest,
+} from '../../../../../types/education.types'
 import {
   Box,
   Grid,
@@ -363,8 +368,42 @@ const CreateCourse = ({
 
     try {
       const response = currentCourseId
-        ? await updateCourse({ ...payload, courseId: currentCourseId })
-        : await createCourse(payload)
+        ? await updateCourse({
+            courseId: currentCourseId,
+            title: payload.title,
+            description: payload.description,
+            category: Array.isArray(payload.category)
+              ? payload.category
+              : payload.category
+                ? [payload.category]
+                : [],
+            level: payload.level,
+            price: payload.price,
+            isPaid: payload.isPaid,
+            thumbnail:
+              typeof payload.image === 'string' ? payload.image : undefined,
+            previewVideo:
+              typeof payload.video === 'string' ? payload.video : undefined,
+            isPublished: !isDraft,
+          } as UpdateCourseRequest)
+        : await createCourse({
+            title: payload.title || '',
+            description: payload.description || '',
+            category: Array.isArray(payload.category)
+              ? payload.category
+              : payload.category
+                ? [payload.category]
+                : [],
+            level:
+              (payload.level as 'beginner' | 'intermediate' | 'advanced') ||
+              'beginner',
+            price: payload.price,
+            isPaid: payload.isPaid || false,
+            thumbnail:
+              typeof payload.image === 'string' ? payload.image : undefined,
+            previewVideo:
+              typeof payload.video === 'string' ? payload.video : undefined,
+          } as CreateCourseRequest)
 
       if (!response?.error) {
         setInitialData((prev) => ({ ...prev, ...data }))
@@ -412,7 +451,9 @@ const CreateCourse = ({
     }
 
     try {
-      const response = await addCourseMetaData(formData)
+      const response = await addCourseMetaData(
+        formData as unknown as CourseMetaDataRequest,
+      )
 
       if (!response.error) {
         if (isNewFile(image, previousImage))
@@ -432,8 +473,8 @@ const CreateCourse = ({
   const handlePreview = async () => {
     if (isDraft) {
       await updateCourse({
-        status: 'draft',
-        courseId: currentCourseId,
+        isPublished: false,
+        courseId: currentCourseId || '',
       })
       setIsDraft(false)
     } else setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -442,14 +483,14 @@ const CreateCourse = ({
   const handlePublish = async () => {
     if (isDraft) {
       await updateCourse({
-        status: 'draft',
-        courseId: currentCourseId,
+        isPublished: false,
+        courseId: currentCourseId || '',
       })
       setIsDraft(false)
     } else {
       const response = await updateCourse({
-        status: 'published',
-        courseId: currentCourseId,
+        isPublished: true,
+        courseId: currentCourseId || '',
       })
       if (!response.error) void navigate('/educator/courses')
     }

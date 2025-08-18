@@ -51,6 +51,8 @@ interface WebinarTableData {
   data: WebinarData[]
   totalPages?: number
   count?: number
+  currentPage?: number
+  totalCount?: number
   [key: string]: unknown
 }
 
@@ -113,7 +115,14 @@ const AllWebinars = ({ page, setPage }: WebinarPaginationProps) => {
   const [selectedRow, setSelectedRow] = useState<WebinarData | null>(null)
 
   const { data: webinarData } = useGetAllWebinarQuery(
-    { page, searchTerm, pageSize: 10, ...(status ? { status } : {}) },
+    {
+      page,
+      search: searchTerm,
+      pageSize: 10,
+      ...(status
+        ? { status: status as 'scheduled' | 'live' | 'completed' | 'cancelled' }
+        : {}),
+    },
     { pollingInterval: 5000 },
   )
 
@@ -129,7 +138,7 @@ const AllWebinars = ({ page, setPage }: WebinarPaginationProps) => {
   }, 700)
 
   const handleDeleteWebinar = async (id: string) => {
-    await updateWebinar({ webinarId: id, isDeleted: true })
+    await updateWebinar({ webinarId: id })
     handleCloseMenu()
   }
 
@@ -216,7 +225,9 @@ const AllWebinars = ({ page, setPage }: WebinarPaginationProps) => {
       Cell: (tableProps: WebinarTableCellProps) => {
         const { cell } = tableProps
         const categories = cell.getValue() as string[] | undefined
-        const categoryText = Array.isArray(categories) ? categories.join(', ') : '-'
+        const categoryText = Array.isArray(categories)
+          ? categories.join(', ')
+          : '-'
         return (
           <Tooltip title={categoryText} arrow>
             <Typography
@@ -243,7 +254,7 @@ const AllWebinars = ({ page, setPage }: WebinarPaginationProps) => {
       Cell: (tableProps: WebinarTableCellProps) => {
         const { row } = tableProps
         const { webinarScheduledObj } = row.original
-        const joinDate = webinarScheduledObj?.join_date 
+        const joinDate = webinarScheduledObj?.join_date
           ? new Date(webinarScheduledObj.join_date).toLocaleString()
           : '-'
 
@@ -415,7 +426,9 @@ const AllWebinars = ({ page, setPage }: WebinarPaginationProps) => {
                 (
                 {
                   webinarCount?.data?.[
-                    ['allWebinarsCount', 'publishedWebinarsCount'][index]
+                    ['allWebinarsCount', 'publishedWebinarsCount'][
+                      index
+                    ] as keyof typeof webinarCount.data
                   ]
                 }
                 )
@@ -439,7 +452,7 @@ const AllWebinars = ({ page, setPage }: WebinarPaginationProps) => {
         <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
           <WebinarTable
             columns={columns}
-            data={webinarData || { data: [] }}
+            data={(webinarData as WebinarTableData) || { data: [] }}
             page={page}
             setPage={setPage}
           />
@@ -569,7 +582,9 @@ const PastWebinars = ({ page, setPage }: WebinarPaginationProps) => {
       Cell: (tableProps: WebinarTableCellProps) => {
         const { cell } = tableProps
         const categories = cell.getValue() as string[] | undefined
-        const categoryText = Array.isArray(categories) ? categories.join(', ') : '-'
+        const categoryText = Array.isArray(categories)
+          ? categories.join(', ')
+          : '-'
         return (
           <Tooltip title={categoryText} arrow>
             <Typography
@@ -652,7 +667,7 @@ const PastWebinars = ({ page, setPage }: WebinarPaginationProps) => {
     >
       <WebinarTable
         columns={columns}
-        data={data || { data: [] }}
+        data={(data as WebinarTableData) || { data: [] }}
         page={page}
         setPage={setPage}
       />

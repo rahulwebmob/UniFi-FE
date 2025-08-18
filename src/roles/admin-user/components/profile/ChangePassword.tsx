@@ -148,7 +148,7 @@ const ChangePassword = ({
       ) {
         const responseData = response.data as { token: string }
         localStorage.setItem('token', responseData.token)
-        
+
         // After successful password reset, logout the user
         setTimeout(() => {
           localStorage.removeItem('token')

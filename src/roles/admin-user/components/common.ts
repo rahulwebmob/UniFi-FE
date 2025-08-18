@@ -1,15 +1,13 @@
 import html2pdf from 'html2pdf.js'
 
 interface ApiResponse {
-  error: boolean
-  data: string
+  error?: boolean
+  data?: string
 }
 
 type RequestCallback = (params: {
   transactionId: string
-}) =>
-  | Promise<{ unwrap: () => Promise<ApiResponse> }>
-  | { unwrap: () => Promise<ApiResponse> }
+}) => Promise<{ unwrap: () => Promise<ApiResponse> }>
 
 const fetchImageAsBase64 = async (url: string) => {
   try {
@@ -47,14 +45,15 @@ export const handleGeneratePdf = async (
   requestCallback: RequestCallback,
   successCallback: () => void,
 ) => {
-  const response = await requestCallback({
+  const result = await requestCallback({
     transactionId: id,
   })
-  const responseData: ApiResponse = await response.unwrap()
 
-  if (!responseData.error) {
+  const response = await result.unwrap()
+
+  if (!response?.error && response?.data) {
     const div = document.createElement('div')
-    div.innerHTML = responseData.data
+    div.innerHTML = response.data
     await convertImagesToBase64(div)
 
     div.querySelectorAll('*').forEach((node) => {

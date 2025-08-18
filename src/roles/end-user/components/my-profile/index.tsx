@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import { useRef, useState, useEffect } from 'react'
-import { User, LogOut, Settings, CreditCard } from 'lucide-react'
+import { User, LogOut, Settings, CreditCard, Gift } from 'lucide-react'
 
 import {
   Box,
@@ -19,6 +19,7 @@ import {
 import EducationPayments from './education-payments'
 import PersonalInfo from './personal-info'
 import UserSettings from './user-settings'
+import Referrals from './referrals'
 import Logout from '../../../../shared/components/auth-wrapper/logout'
 
 interface ProfileRef {
@@ -59,6 +60,13 @@ const MyProfile = () => {
       name: t('application:PROFILE.EDUCATION_PAYMENTS'),
       icon: <CreditCard size={20} />,
       component: <EducationPayments />,
+      show: true,
+    },
+    {
+      key: 'REFERRALS',
+      name: 'Referrals',
+      icon: <Gift size={20} />,
+      component: <Referrals />,
       show: true,
     },
     {

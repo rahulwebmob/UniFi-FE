@@ -27,11 +27,16 @@ const Courses = () => {
   const { id } = useParams()
   const [page, setPage] = useState(1)
 
-  const { data: coursesDetails } = useGetAllCoursesDetailsQuery({
-    educatorId: id,
-    page,
-    pageSize: 10,
-  }) as { data: CoursesResponse | undefined }
+  const { data: coursesDetails } = useGetAllCoursesDetailsQuery(
+    {
+      educatorId: id || '',
+      page,
+      pageSize: 10,
+    },
+    {
+      skip: !id,
+    },
+  ) as { data: CoursesResponse | undefined }
 
   const coursesData: CourseDetail[] = coursesDetails?.data?.courses ?? []
 

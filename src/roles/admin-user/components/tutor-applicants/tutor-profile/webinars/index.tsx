@@ -4,31 +4,18 @@ import { useParams } from 'react-router-dom'
 import { Box, Chip, Divider, Tooltip, Typography } from '@mui/material'
 
 import { useGetWebinarDetailsQuery } from '../../../../../../services/admin'
-
-interface Webinar {
-  _id: string
-  thumbNail?: string
-  title?: string
-  description?: string
-  category?: string[]
-  price?: number
-  startDate?: string
-  startTime?: string
-  endTime?: string
-  totalEnrolled?: number
-}
-
-interface WebinarDetailsResponse {
-  webinars: Webinar[]
-}
+import type {
+  WebinarData,
+  EducatorProfileResponse,
+} from '../../../../../../types/education.types'
 
 const Webinars = () => {
   const { id } = useParams()
   const { data: webinarDetails } = useGetWebinarDetailsQuery({
-    educatorId: id,
-  }) as { data: WebinarDetailsResponse | undefined }
+    educatorId: id || '',
+  }) as { data: EducatorProfileResponse | undefined }
 
-  const webinarsData: Webinar[] = webinarDetails?.webinars ?? []
+  const webinarsData: WebinarData[] = webinarDetails?.data?.webinars ?? []
 
   const isTooltipVisible = (description: string | undefined) =>
     (description ?? '').split(/\s+/).length > 40
@@ -54,37 +41,25 @@ const Webinars = () => {
           }}
         >
           {webinarsData.map((webinar) => {
-            const localStartDate = webinar?.startDate
-              ? moment.utc(webinar.startDate).local()
+            const startDateTime = webinar?.startTime
+              ? moment.utc(webinar.startTime).local()
               : null
 
-            const formattedDate = localStartDate
-              ? localStartDate.format('MM/DD/YYYY')
+            const endDateTime = webinar?.endTime
+              ? moment.utc(webinar.endTime).local()
+              : null
+
+            const formattedDate = startDateTime
+              ? startDateTime.format('MM/DD/YYYY')
               : '-'
 
-            const formattedStartTime =
-              webinar?.startTime && localStartDate
-                ? moment
-                    .utc(
-                      `${localStartDate.format('YYYY-MM-DD')}T${
-                        webinar.startTime
-                      }`,
-                    )
-                    .local()
-                    .format('HH:mm')
-                : '-'
+            const formattedStartTime = startDateTime
+              ? startDateTime.format('HH:mm')
+              : '-'
 
-            const formattedEndTime =
-              webinar?.endTime && localStartDate
-                ? moment
-                    .utc(
-                      `${localStartDate.format('YYYY-MM-DD')}T${
-                        webinar.endTime
-                      }`,
-                    )
-                    .local()
-                    .format('HH:mm')
-                : '-'
+            const formattedEndTime = endDateTime
+              ? endDateTime.format('HH:mm')
+              : '-'
 
             return (
               <Box className="award" key={webinar?._id}>
@@ -95,7 +70,7 @@ const Webinars = () => {
                     height: '300px',
                   }}
                   component="img"
-                  src={webinar?.thumbNail ?? ''}
+                  src={webinar?.thumbnail ?? webinar?.thumbNail ?? ''}
                   alt="Description of the image"
                 />
                 <Typography component="p" display="block" my={1}>
@@ -142,7 +117,7 @@ const Webinars = () => {
                 </Box>
                 <Box display="flex" gap="3px" my={1}>
                   <Typography component="p">
-                    {webinar?.startDate
+                    {webinar?.startTime
                       ? `${formattedDate} at ${formattedStartTime} - ${formattedEndTime}`
                       : '-'}
                   </Typography>

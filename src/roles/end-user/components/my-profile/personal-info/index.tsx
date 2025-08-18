@@ -25,6 +25,7 @@ import { adminApi, useMyProfileMutation } from '../../../../../services/admin'
 import ChangePassword from '../../../../admin-user/components/profile/ChangePassword'
 
 import type { RootState } from '../../../../../redux/types'
+import type { UserProfileUpdateRequest } from '../../../../../types/api.types'
 
 interface PersonalInfoData {
   profileImage?: {
@@ -104,7 +105,7 @@ const PersonalInfo = () => {
   useEffect(() => {
     if (profileImage) {
       const imageUrl = generateImageUrl(
-        `${profileImage.folderName}/${profileImage.fileName}`
+        `${profileImage.folderName}/${profileImage.fileName}`,
       )
       setAvatar((prev) => ({ ...prev, image: imageUrl }))
     } else {
@@ -118,20 +119,37 @@ const PersonalInfo = () => {
   }, [firstName, lastName, setValue])
 
   const onSubmit = async (values: FormValues) => {
-    const formData = new FormData()
-    Object.keys(values).forEach((key) => {
-      const typedKey = key as keyof FormValues
-      if (values[typedKey] !== userData?.[key]) {
-        formData.append(key, values[typedKey])
-      }
-    })
     if (avatar.file) {
+      const formData = new FormData()
+      Object.keys(values).forEach((key) => {
+        const typedKey = key as keyof FormValues
+        if (values[typedKey] !== userData?.[key]) {
+          formData.append(key, values[typedKey])
+        }
+      })
       formData.append('profile', avatar.file)
-    }
 
-    const response = await editDetails(formData)
-    if (!response.error) {
-      dispatch(adminApi.util.invalidateTags(['Me']))
+      const response = await editDetails(
+        formData as unknown as UserProfileUpdateRequest,
+      )
+      if (!response.error) {
+        dispatch(adminApi.util.invalidateTags(['Me']))
+      }
+    } else {
+      const updateData: UserProfileUpdateRequest = {}
+      Object.keys(values).forEach((key) => {
+        const typedKey = key as keyof FormValues
+        if (values[typedKey] !== userData?.[key]) {
+          updateData[typedKey] = values[typedKey]
+        }
+      })
+
+      if (Object.keys(updateData).length > 0) {
+        const response = await editDetails(updateData)
+        if (!response.error) {
+          dispatch(adminApi.util.invalidateTags(['Me']))
+        }
+      }
     }
   }
 

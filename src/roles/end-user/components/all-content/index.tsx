@@ -23,7 +23,7 @@ const AllContent: React.FC = () => {
   const [contentType, setContentType] = useState('course')
   const [selectedCategory, setSelectedCategory] = useState('')
 
-  const { data } = useGetCategoryListQuery() as { data?: { data?: string[] } }
+  const { data } = useGetCategoryListQuery()
 
   const handleDebouceSearch = _.debounce((value: string) => {
     setPage(1)

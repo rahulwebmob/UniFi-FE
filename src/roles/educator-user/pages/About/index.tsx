@@ -16,7 +16,6 @@ import countries from '../../../../constants/countries'
 import RequiredFieldIndicator from '../../../../shared/components/ui-elements/required-field-indicator'
 import type { EducatorFormData } from '../../types/form-types'
 
-
 interface AboutProps {
   control: Control<EducatorFormData>
 }

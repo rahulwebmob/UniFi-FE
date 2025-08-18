@@ -40,7 +40,10 @@ import {
   useUpdateChapterMutation,
   useGetLessonsDetailsQuery,
 } from '../../../../../../services/admin'
-import type { ChapterData, LessonData } from '../../../../../../types/education.types'
+import type {
+  ChapterData,
+  LessonData,
+} from '../../../../../../types/education.types'
 
 interface SavedChaptersProps {
   courseId: string
@@ -149,13 +152,13 @@ const SavedChapters = ({ courseId }: SavedChaptersProps) => {
 
     setChapters(newChapters)
 
-    const replacedChapterIndex = dropIndex + (dropIndex > draggedIndex ? -1 : 1)
-    const replacedChapter = newChapters[replacedChapterIndex]
-
-    if (draggedChapter?._id && replacedChapter?._id) {
+    if (courseId) {
       void sortChapters({
-        firstDocId: draggedChapter._id,
-        secondDocId: replacedChapter._id,
+        courseId,
+        chapters: newChapters.map((chapter, index) => ({
+          chapterId: chapter._id,
+          order: index + 1,
+        })),
       })
     }
   }
@@ -525,13 +528,14 @@ const LessonsList = ({ courseId, chapterId }: LessonsListProps) => {
 
     setLessons(newLessons)
 
-    const replacedItemIndex = dropIndex + (dropIndex > draggedIndex ? -1 : 1)
-    const replacedItem = newLessons[replacedItemIndex]
-
-    if (draggedItem._id && replacedItem?._id) {
+    if (courseId && draggedItem.chapterId) {
       void sortLesson({
-        firstDocId: draggedItem._id,
-        secondDocId: replacedItem._id,
+        courseId,
+        chapterId: draggedItem.chapterId,
+        lessons: newLessons.map((lesson, index) => ({
+          lessonId: lesson._id || '',
+          order: index + 1,
+        })),
       })
     }
   }
@@ -552,10 +556,9 @@ const LessonsList = ({ courseId, chapterId }: LessonsListProps) => {
   const handleDeleteLesson = async (lessonId: string) => {
     setLocalLessonCount((prev) => prev - 1)
     await updateLesson({
-      courseId,
-      chapterId,
+      courseId: courseId || '',
+      chapterId: chapterId || '',
       lessonId,
-      isDeleted: true,
     })
     handleMenuClose()
   }

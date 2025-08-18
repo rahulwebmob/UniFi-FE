@@ -18,12 +18,17 @@ import type { RootState } from '../../../../redux/types'
 const Shapes = () => {
   const { t } = useTranslation('application')
   const canvasId = useSelector((state: RootState) => state.education.canvasId)
-  const { fillColor, strokeColor } = useSelector((state: RootState) => state.education)
-  
+  const { fillColor, strokeColor } = useSelector(
+    (state: RootState) => state.education,
+  )
+
   // Get fabric canvas instance
   const getFabricCanvas = () => {
     if (!canvasId) return null
-    return (window as unknown as { __fabric_canvas__?: fabric.Canvas }).__fabric_canvas__ || null
+    return (
+      (window as unknown as { __fabric_canvas__?: fabric.Canvas })
+        .__fabric_canvas__ || null
+    )
   }
 
   return (
@@ -36,7 +41,13 @@ const Shapes = () => {
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()
-            if (canvas) GenerateShape(canvas as unknown as fabric.Canvas, ShapeTypes.LINE, strokeColor, fillColor)
+            if (canvas)
+              GenerateShape(
+                canvas as unknown as fabric.Canvas,
+                ShapeTypes.LINE,
+                strokeColor,
+                fillColor,
+              )
           }}
         >
           <Minus size={24} />
@@ -50,7 +61,13 @@ const Shapes = () => {
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()
-            if (canvas) GenerateShape(canvas as unknown as fabric.Canvas, ShapeTypes.SQUARE, strokeColor, fillColor)
+            if (canvas)
+              GenerateShape(
+                canvas as unknown as fabric.Canvas,
+                ShapeTypes.SQUARE,
+                strokeColor,
+                fillColor,
+              )
           }}
         >
           <Square size={24} />
@@ -64,7 +81,13 @@ const Shapes = () => {
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()
-            if (canvas) GenerateShape(canvas as unknown as fabric.Canvas, ShapeTypes.RECTANGLE, strokeColor, fillColor)
+            if (canvas)
+              GenerateShape(
+                canvas as unknown as fabric.Canvas,
+                ShapeTypes.RECTANGLE,
+                strokeColor,
+                fillColor,
+              )
           }}
         >
           <RectangleHorizontal size={24} />
@@ -78,7 +101,13 @@ const Shapes = () => {
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()
-            if (canvas) GenerateShape(canvas as unknown as fabric.Canvas, ShapeTypes.TRIANGLE, strokeColor, fillColor)
+            if (canvas)
+              GenerateShape(
+                canvas as unknown as fabric.Canvas,
+                ShapeTypes.TRIANGLE,
+                strokeColor,
+                fillColor,
+              )
           }}
         >
           <Triangle size={24} />
@@ -92,7 +121,13 @@ const Shapes = () => {
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()
-            if (canvas) GenerateShape(canvas as unknown as fabric.Canvas, ShapeTypes.CIRCLE, strokeColor, fillColor)
+            if (canvas)
+              GenerateShape(
+                canvas as unknown as fabric.Canvas,
+                ShapeTypes.CIRCLE,
+                strokeColor,
+                fillColor,
+              )
           }}
         >
           <Circle size={24} />
@@ -106,7 +141,13 @@ const Shapes = () => {
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()
-            if (canvas) GenerateShape(canvas as unknown as fabric.Canvas, ShapeTypes.OVAL, strokeColor, fillColor)
+            if (canvas)
+              GenerateShape(
+                canvas as unknown as fabric.Canvas,
+                ShapeTypes.OVAL,
+                strokeColor,
+                fillColor,
+              )
           }}
         >
           <Circle size={24} />

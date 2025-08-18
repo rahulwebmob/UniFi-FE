@@ -76,12 +76,6 @@ interface ModalRef {
   closeModal: () => void
 }
 
-interface StatusPayload {
-  educatorIds: string[]
-  approval?: boolean
-  declinedReason?: string
-}
-
 // CellProps interface removed - not used
 
 // Helper functions
@@ -111,7 +105,12 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
   const { data: tutorData } = useGetEducationTutorApplicationQuery({
     page,
     pageSize: 10,
-    filter,
+    status: filter as
+      | 'pending'
+      | 'approved'
+      | 'declined'
+      | 'reconsidering'
+      | undefined,
     ...(search ? { search } : {}),
   }) as { data: TutorApiResponse | undefined }
 
@@ -133,34 +132,41 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
       (_, index) => rowSelection[index.toString()],
     )
     const AcceptedIds = filterData?.map((item) => item._id) ?? []
-    const payload: StatusPayload = {
-      educatorIds: AcceptedIds,
-      approval: true,
+
+    // Process each educator individually
+    for (const educatorId of AcceptedIds) {
+      await tutorStatus({
+        educatorId,
+        status: 'approved' as const,
+      })
     }
-    await tutorStatus(payload)
     setRowSelection({})
   }
 
   const handleDecline = async (reason: string) => {
-    const payload: StatusPayload = {
-      educatorIds: [],
-      approval: false,
-      declinedReason: reason,
-    }
     if (deleteUser) {
-      payload.educatorIds = [deleteUser]
+      await tutorStatus({
+        educatorId: deleteUser,
+        status: 'declined' as const,
+        comments: reason,
+      })
     } else {
       const filterData = tutorData?.data.filter(
         (_, index) => rowSelection[index.toString()],
       )
       const DeclinedIds = filterData?.map((item) => item._id) ?? []
-      payload.educatorIds = DeclinedIds
+
+      // Process each educator individually
+      for (const educatorId of DeclinedIds) {
+        await tutorStatus({
+          educatorId,
+          status: 'declined' as const,
+          comments: reason,
+        })
+      }
     }
     setRowSelection({})
-    const response = (await tutorStatus(payload)) as { error?: unknown }
-    if (!response.error) {
-      confirmationRef.current?.closeModal()
-    }
+    confirmationRef.current?.closeModal()
   }
 
   const openDeclineConfirmation = useCallback((tutor?: TutorData) => {
@@ -174,21 +180,19 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
 
   const handleAccept = useCallback(
     async (tutor: TutorData) => {
-      const payload: StatusPayload = {
-        educatorIds: [tutor._id],
-        approval: true,
-      }
-      await tutorStatus(payload)
+      await tutorStatus({
+        educatorId: tutor._id,
+        status: 'approved' as const,
+      })
     },
     [tutorStatus],
   )
 
   const handleCheckboxReconsider = useCallback(
     async (tutor: TutorData) => {
-      const payload = {
-        educatorIds: [tutor._id],
-      }
-      await reconsiderStatus(payload)
+      await reconsiderStatus({
+        educatorId: tutor._id,
+      })
     },
     [reconsiderStatus],
   )
@@ -198,10 +202,13 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
       (_, index) => rowSelection[index.toString()],
     )
     const selectedIds = filterData?.map((item) => item._id) ?? []
-    const payload = {
-      educatorIds: selectedIds,
+
+    // Process each educator individually
+    for (const educatorId of selectedIds) {
+      await reconsiderStatus({
+        educatorId,
+      })
     }
-    await reconsiderStatus(payload)
     setRowSelection({})
   }
 
@@ -621,7 +628,7 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
           {!type ? (
             <Tabs
               value={filter}
-              onChange={(e, newValue: string) => setFilter(newValue)}
+              onChange={(_, newValue: string) => setFilter(newValue)}
               sx={{
                 minHeight: 40,
                 '& .MuiTabs-indicator': {

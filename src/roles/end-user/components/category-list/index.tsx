@@ -15,17 +15,14 @@ const CategoryList = ({
   isPurchased,
   maxVisible = 2,
 }: CategoryListProps) => {
-  // If we have more chips than maxVisible, show one less to make room for "+N more"
   const hasMore = chips.length > maxVisible
   const visibleCount = hasMore ? maxVisible - 1 : chips.length
   const remainingCount = chips.length - visibleCount
 
-  // Style based on context - white text for overlay, bordered for regular
   const isOnImage = !isPurchased && containerWidth === undefined
 
   const chipStyle = isOnImage
     ? {
-        // Style for categories on image overlay with blur
         fontSize: '11px',
         fontWeight: 500,
         color: 'white',
@@ -39,7 +36,6 @@ const CategoryList = ({
         display: 'inline-block',
       }
     : {
-        // Original bordered style for purchased cards
         fontSize: '12px',
         fontWeight: 400,
         color: (theme: Theme) => theme.palette.text.secondary,
@@ -58,7 +54,7 @@ const CategoryList = ({
         display: 'flex',
         gap: 0.5,
         alignItems: 'center',
-        flexWrap: 'nowrap', // Force single row
+        flexWrap: 'nowrap',
         overflow: 'hidden',
       }}
     >

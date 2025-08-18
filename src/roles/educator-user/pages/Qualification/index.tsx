@@ -1,11 +1,7 @@
 import { Plus, Minus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { NumericFormat } from 'react-number-format'
-import {
-  Controller,
-  type Control,
-  useFieldArray,
-} from 'react-hook-form'
+import { Controller, type Control, useFieldArray } from 'react-hook-form'
 
 import {
   Box,
@@ -18,7 +14,6 @@ import {
 } from '@mui/material'
 
 import type { EducatorFormData } from '../../types/form-types'
-
 
 interface QualificationProps {
   control: Control<EducatorFormData>

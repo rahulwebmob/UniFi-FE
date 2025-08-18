@@ -1,10 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { XCircle, PlusCircle } from 'lucide-react'
-import {
-  Controller,
-  type Control,
-  useFieldArray,
-} from 'react-hook-form'
+import { Controller, type Control, useFieldArray } from 'react-hook-form'
 
 import {
   Box,
@@ -17,7 +13,6 @@ import {
 
 import RequiredFieldIndicator from '../../../../shared/components/ui-elements/required-field-indicator'
 import type { EducatorFormData } from '../../types/form-types'
-
 
 interface LinksProps {
   control: Control<EducatorFormData>

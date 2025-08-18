@@ -12,13 +12,15 @@ import {
 } from '../../../../redux/reducers/education-slice'
 
 interface ColorPickerProps {
-  type: typeof ColorTypes[keyof typeof ColorTypes]
+  type: (typeof ColorTypes)[keyof typeof ColorTypes]
 }
 
 const ColorPicker = ({ type }: ColorPickerProps) => {
   const colorInputRef = useRef<HTMLInputElement>(null)
   const dispatch = useDispatch()
-  const { fillColor, strokeColor } = useSelector((state: RootState) => state.education)
+  const { fillColor, strokeColor } = useSelector(
+    (state: RootState) => state.education,
+  )
 
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (type === ColorTypes.FILL_COLOR) {

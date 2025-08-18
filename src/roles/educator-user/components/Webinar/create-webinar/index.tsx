@@ -44,6 +44,8 @@ import {
 import type {
   WebinarFormData,
   CreateWebinarProps,
+  CreateWebinarRequest,
+  UpdateWebinarRequest,
 } from '../../../../../types/education.types'
 
 const CreateWebinar = ({
@@ -262,7 +264,8 @@ const CreateWebinar = ({
     isPaid: yup.bool(),
 
     price: yup.lazy((_, options) =>
-      (options.context as { isPaid?: boolean })?.isPaid || (options.parent as { isPaid?: boolean })?.isPaid
+      (options.context as { isPaid?: boolean })?.isPaid ||
+      (options.parent as { isPaid?: boolean })?.isPaid
         ? yup
             .number()
             .transform(transformNaNToNull)
@@ -361,7 +364,9 @@ const CreateWebinar = ({
   })
 
   const form = useForm<WebinarFormData>({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(
+      validationSchema,
+    ) as unknown as import('react-hook-form').Resolver<WebinarFormData>,
     defaultValues: {
       title: '',
       description: '',
@@ -475,8 +480,8 @@ const CreateWebinar = ({
 
     try {
       const response = isEdit
-        ? await updateWebinar(formData)
-        : await createWebinar(formData)
+        ? await updateWebinar(formData as unknown as UpdateWebinarRequest)
+        : await createWebinar(formData as unknown as CreateWebinarRequest)
 
       if (!response.error) {
         if (isEdit) setPreviewMode(true)
@@ -711,14 +716,17 @@ const CreateWebinar = ({
           void handleSubmit((data) => {
             const formData: WebinarFormData = {
               ...data,
+              title: data.title || '',
+              description: data.description || '',
+              scheduleType: data.scheduleType || '',
               category: data.category || [],
               isPaid: data.isPaid ?? false,
               image: data.image as File | string,
               resources:
-                data.resources?.map((resource) => ({
-                  file: resource.file as File | string,
+                data.resources?.map((resource: { file: File | string }) => ({
+                  file: resource.file,
                 })) || [],
-              days: (data as WebinarFormData).days?.map((day) => ({
+              days: data.days?.map((day) => ({
                 ...day,
                 startTime: day.startTime ?? undefined,
                 endTime: day.endTime ?? undefined,

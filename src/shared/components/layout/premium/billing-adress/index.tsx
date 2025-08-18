@@ -9,7 +9,6 @@ import {
   Box,
   Grid,
   Link,
-  Select,
   Button,
   Divider,
   MenuItem,
@@ -121,27 +120,7 @@ const BillingAddress: React.FC<BillingAddressProps> = ({
         void handleSubmit(onSubmit)()
       }}
     >
-      <Grid size={{ xs: 12 }}>
-        <Box p={2} pb={1} display="flex" alignItems="center">
-          <IconButton disableRipple>
-            <ArrowLeft
-              style={{ cursor: 'pointer', marginRight: 2 }}
-              onClick={() => setCurrentStep((prev) => prev - 1)}
-            />
-          </IconButton>
-          <Typography variant="h6">
-            {t('application:PREMIUM_MODAL.BILLING_ADDRESS')}
-          </Typography>
-        </Box>
-        <Divider
-          sx={{
-            my: 1,
-            borderColor: theme.palette.primary.main,
-          }}
-        />
-      </Grid>
-
-      <Box pl={2} pr={2}>
+      <Box p={3}>
         <Grid container spacing={1}>
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="p">
@@ -204,38 +183,34 @@ const BillingAddress: React.FC<BillingAddressProps> = ({
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <FormControl fullWidth error={!!errors.country}>
-                  <Select
-                    sx={{ color: 'text.secondary' }}
-                    size="small"
-                    displayEmpty
-                    renderValue={(selected) => {
-                      if (!selected) {
-                        return (
-                          <Typography component="p">
-                            {t('application:PREMIUM_MODAL.SELECT_COUNTRY')}
-                          </Typography>
-                        )
-                      }
-                      return selected
-                    }}
-                    {...field}
-                    MenuProps={{
+                <TextField
+                  {...field}
+                  select
+                  fullWidth
+                  size="small"
+                  placeholder={t('application:PREMIUM_MODAL.SELECT_COUNTRY')}
+                  variant="outlined"
+                  error={!!errors.country}
+                  helperText={errors.country?.message}
+                  SelectProps={{
+                    MenuProps: {
                       PaperProps: {
                         style: {
-                          height: '175px',
+                          maxHeight: 200,
                         },
                       },
-                    }}
-                  >
-                    {countries.map((item) => (
-                      <MenuItem key={item.value} value={item.value}>
-                        {item.html}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>{errors.country?.message}</FormHelperText>
-                </FormControl>
+                    },
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>{t('application:PREMIUM_MODAL.SELECT_COUNTRY')}</em>
+                  </MenuItem>
+                  {countries.map((item) => (
+                    <MenuItem key={item.value} value={item.value}>
+                      {item.label || item.html || item.value}
+                    </MenuItem>
+                  ))}
+                </TextField>
               )}
             />
           </Grid>
@@ -334,9 +309,9 @@ const BillingAddress: React.FC<BillingAddressProps> = ({
           </Grid>
         </Grid>
       </Box>
-      <Divider sx={{ mt: 2 }} />
       <Box
-        p={2}
+        px={3}
+        pb={3}
         display="flex"
         justifyContent="space-between"
         alignItems="center"
@@ -379,7 +354,14 @@ const BillingAddress: React.FC<BillingAddressProps> = ({
             {errors.isAgree?.message}
           </FormHelperText>
         </FormControl>
-        <Box display="flex" justifyContent="center" alignItems="center">
+        <Box display="flex" justifyContent="space-between" alignItems="center" gap={1}>
+          <Button
+            variant="outlined"
+            onClick={() => setCurrentStep((prev) => prev - 1)}
+            sx={{ borderRadius: '8px' }}
+          >
+            Back
+          </Button>
           <Button
             type="submit"
             variant="contained"

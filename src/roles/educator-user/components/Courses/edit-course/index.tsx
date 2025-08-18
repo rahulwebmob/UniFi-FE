@@ -31,8 +31,16 @@ const EditCourse = ({ currentStep }: EditCourseProps) => {
       subtitle: courseData.subtitle || '',
       description: courseData.description || '',
       category: courseData.category || [],
-      image: extractFilename(typeof courseData.thumbNail === 'object' ? courseData.thumbNail?.fileName : courseData.thumbNail),
-      video: extractFilename(typeof courseData.previewVideo === 'object' ? courseData.previewVideo?.fileName : courseData.previewVideo),
+      image: extractFilename(
+        typeof courseData.thumbNail === 'object'
+          ? courseData.thumbNail?.fileName || ''
+          : courseData.thumbNail || '',
+      ),
+      video: extractFilename(
+        typeof courseData.previewVideo === 'object'
+          ? courseData.previewVideo?.fileName || ''
+          : courseData.previewVideo || '',
+      ),
     }
   }, [data])
 

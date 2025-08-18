@@ -19,7 +19,6 @@ const PurchasedContent: React.FC = () => {
         borderRadius: 1,
       }}
     >
-      {/* Header Section */}
       <Box
         sx={{
           display: 'flex',
@@ -38,7 +37,6 @@ const PurchasedContent: React.FC = () => {
           Purchased content
         </Typography>
 
-        {/* Tab Buttons */}
         <ButtonGroup size="small" variant="contained">
           <Button
             onClick={() => setContentType('course')}

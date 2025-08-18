@@ -20,19 +20,21 @@ const WebinarAttachments = ({
 }: WebinarAttachmentsProps) => {
   const { t } = useTranslation('application')
   const { roomId: webinarId } = useParams()
-  
+
   // Use separate queries based on isHost
   const hostData = useGetWebinarAttachmentsQuery(
     { webinarId: webinarId || '' },
-    { skip: !webinarId || !isHost }
-  )
-  
-  const guestData = useGetAttachmentsListQuery(
-    { webinarId: webinarId || '' },
-    { skip: !webinarId || isHost }
+    { skip: !webinarId || !isHost },
   )
 
-  const handleDownloadAttachment = async (value: AttachmentFile | WebinarResource) => {
+  const guestData = useGetAttachmentsListQuery(
+    { webinarId: webinarId || '' },
+    { skip: !webinarId || isHost },
+  )
+
+  const handleDownloadAttachment = async (
+    value: AttachmentFile | WebinarResource,
+  ) => {
     const response = await fetch(value.url)
     const blob = await response.blob()
     const url = URL.createObjectURL(blob)
@@ -68,7 +70,7 @@ const WebinarAttachments = ({
           <X size={20} />
         </Box>
       </Box>
-      {!(isHost ? (hostData.data?.data?.length) : (guestData.data?.length)) ? (
+      {!(isHost ? hostData.data?.data?.length : guestData.data?.length) ? (
         <Box p={2}>
           <Typography component="p" color="text.secondary">
             {t('application:CONFERENCE.ATTACHMENTS.NO_ATTACHMENTS_AVAILABLE')}
@@ -102,22 +104,22 @@ const WebinarAttachments = ({
                     {fileName}
                   </Typography>
                 </Tooltip>
-              <Box
-                sx={{
-                  svg: {
-                    color: (theme) => theme.palette.primary.main,
-                    cursor: 'pointer',
-                  },
-                }}
-              >
-                <Download
-                  onClick={() => {
-                    void handleDownloadAttachment(item)
+                <Box
+                  sx={{
+                    svg: {
+                      color: (theme) => theme.palette.primary.main,
+                      cursor: 'pointer',
+                    },
                   }}
-                  size={20}
-                />
+                >
+                  <Download
+                    onClick={() => {
+                      void handleDownloadAttachment(item)
+                    }}
+                    size={20}
+                  />
+                </Box>
               </Box>
-            </Box>
             )
           })}
         </Box>

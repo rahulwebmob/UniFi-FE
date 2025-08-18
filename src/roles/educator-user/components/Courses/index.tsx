@@ -99,7 +99,7 @@ const Courses = () => {
   }
 
   const handleDeleteCourse = async (id: string) => {
-    await updateCourse({ courseId: id, isDeleted: true })
+    await updateCourse({ courseId: id })
     handleCloseMenu()
   }
 
@@ -433,7 +433,18 @@ const Courses = () => {
         >
           <MuiReactTable<CourseTableData>
             columns={columns}
-            rows={coursesData?.data?.courses || []}
+            rows={
+              coursesData?.data?.courses?.map((course) => ({
+                ...course,
+                thumbNail:
+                  typeof course.thumbNail === 'object'
+                    ? course.thumbNail?.fileName
+                    : course.thumbNail,
+                category: Array.isArray(course.category)
+                  ? course.category
+                  : [course.category || ''],
+              })) || []
+            }
             materialReactProps={tableOptions}
             localization={{}}
             returnTableInstance={false}

@@ -40,7 +40,9 @@ import {
 import type {
   AddLessonProps,
   DefaultValues,
-} from '../../../../../../../../types/education'
+  AddLessonRequest,
+  UpdateLessonRequest,
+} from '../../../../../../../../types/education.types'
 import type { ModalBoxHandle } from '../../../../../../../../shared/components/ui-elements/modal-box'
 
 interface LessonResponse {
@@ -55,6 +57,7 @@ interface LessonResponse {
 interface AwsUrlResponse {
   data?: {
     url?: string
+    fileKey?: string
   }
   error?: boolean
 }
@@ -151,6 +154,10 @@ const AddLesson = ({
     try {
       // Step 1: Get AWS URL for upload
       const res = await getAwsUrlForUpload({
+        fileName: resource?.name || '',
+        fileType: resource?.type || '',
+        fileSize: resource?.size || 0,
+        uploadType: 'video',
         courseId,
         chapterId: id,
         lessonId: lessonResponse.data.data._id,
@@ -178,6 +185,8 @@ const AddLesson = ({
         // Step 3: Notify backend of successful upload
         if (awsResponse.status === 200) {
           const result = await successForVideoUpload({
+            fileKey: (res as AwsUrlResponse)?.data?.fileKey || '',
+            uploadType: 'video',
             lessonId: lessonResponse.data.data._id,
             courseId,
             chapterId: id,
@@ -198,27 +207,49 @@ const AddLesson = ({
   }
 
   const handleAddLesson = async (newChapterId: string) => {
-    const form = new FormData()
-    form.append('courseId', courseId || '')
-    form.append('chapterId', newChapterId)
-    form.append('isFree', String(isCourseFree || formData.isFree))
-    form.append('title', formData.lessonTitle)
-
     const fileExtension = resource?.name?.split('.').pop()?.toLowerCase() || ''
 
-    if (resource) {
-      if (CHAPTER_CONFIG.VIDEO_EXTENSIONS.includes(fileExtension)) {
-        form.append('videoFileName', resource.name)
-      } else if (CHAPTER_CONFIG.DOCUMENT_EXTENSIONS.includes(fileExtension)) {
-        form.append('pdf', resource)
-      }
-    }
-
-    if (isEdit && lessonId) form.append('lessonId', lessonId)
-
     const id = isChapter ? newChapterId : chapterId
+    let response: { unwrap: () => Promise<unknown> }
 
-    const response = isEdit ? await updateLesson(form) : await addLesson(form)
+    if (isEdit && lessonId) {
+      const updateRequest: UpdateLessonRequest = {
+        courseId: courseId || '',
+        chapterId: newChapterId,
+        lessonId,
+        title: formData.lessonTitle,
+        isFree: isCourseFree || formData.isFree,
+        lessonType: resource
+          ? CHAPTER_CONFIG.VIDEO_EXTENSIONS.includes(fileExtension)
+            ? 'video'
+            : 'text'
+          : 'text',
+      }
+
+      if (resource && CHAPTER_CONFIG.VIDEO_EXTENSIONS.includes(fileExtension)) {
+        updateRequest.videoUrl = resource.name
+      }
+
+      response = await updateLesson(updateRequest)
+    } else {
+      const addRequest: AddLessonRequest = {
+        courseId: courseId || '',
+        chapterId: newChapterId,
+        title: formData.lessonTitle,
+        lessonType: resource
+          ? CHAPTER_CONFIG.VIDEO_EXTENSIONS.includes(fileExtension)
+            ? 'video'
+            : 'text'
+          : 'text',
+        isFree: isCourseFree || formData.isFree,
+      }
+
+      if (resource && CHAPTER_CONFIG.VIDEO_EXTENSIONS.includes(fileExtension)) {
+        addRequest.videoUrl = resource.name
+      }
+
+      response = await addLesson(addRequest)
+    }
     if (!response.error) {
       if (
         fileExtension &&
@@ -227,7 +258,7 @@ const AddLesson = ({
         uploadPrompt.current?.closeModal?.()
         void handleVideoUpload(
           response as LessonResponse,
-          id || '',
+          id || chapterId || '',
           fileExtension,
         )
       } else {
@@ -242,7 +273,7 @@ const AddLesson = ({
 
   const handleCreateChapter = async () => {
     const response = await addCourseChapter({
-      courseId,
+      courseId: courseId || '',
       title: newChapterTitle,
     })
     if (!response.error) {
