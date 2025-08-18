@@ -1,18 +1,11 @@
+import React, { useEffect, useMemo, useState } from 'react'
 import * as yup from 'yup'
-import { useDispatch } from 'react-redux'
-import { Check, Circle } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useForm, FormProvider } from 'react-hook-form'
-import { useMemo, useState, useEffect } from 'react'
-
-import type { CreateCourseFormData, DataObject } from '../../../../../types'
-import type {
-  CreateCourseRequest,
-  UpdateCourseRequest,
-  CourseMetaDataRequest,
-} from '../../../../../types/education.types'
+import { FormProvider, useForm } from 'react-hook-form'
+import { Check, Circle, CircleCheck, Loader2 } from 'lucide-react'
 import {
   Box,
   Grid,
@@ -23,33 +16,59 @@ import {
   StepLabel,
   Typography,
   StepContent,
-  CircularProgress,
 } from '@mui/material'
 
-import Chapter from './chapter'
-import MetaData from './meta-data'
-import BasicDetails from './basic-details'
-import PreviewCourse from '../preview-course'
-import { updateShowPrompt } from '../../../../../redux/reducers/education-slice'
-import {
-  isNewFile,
-  getUpdatedFields,
-  transformNaNToNull,
-} from '../../common/common'
 import {
   useCreateCourseMutation,
   useUpdateCourseMutation,
   useAddCourseMetaDataMutation,
 } from '../../../../../services/admin'
+import { updateShowPrompt } from '../../../../../redux/reducers/education-slice'
+import type { RootState } from '../../../../../redux/types'
+import BasicDetails from './basic-details'
+import MetaData from './meta-data'
+import Chapter from './chapter'
+import PreviewCourse from '../preview-course'
+import {
+  isNewFile,
+  getUpdatedFields,
+  transformNaNToNull,
+} from '../../common/common'
 
 interface StepIconProps {
   active?: boolean
   completed?: boolean
 }
 
-const StepIcon = ({ active, completed }: StepIconProps) => {
-  const theme = useTheme()
+interface StepConfig {
+  label: string
+  description: string
+  buttonLabel: string
+}
 
+interface CourseFormData {
+  title: string
+  subtitle: string
+  description: string
+  category: string[]
+  isPaid: boolean
+  price?: number | null
+  image?: File | string
+  video?: File | string
+}
+
+interface CreateCourseProps {
+  isEdit?: boolean
+  courseId?: string
+  isPreview?: boolean
+  isPublished?: boolean
+  currentStep?: number
+  defaultValues?: CourseFormData
+}
+
+const StepIcon: React.FC<StepIconProps> = ({ active = false, completed = false }) => {
+  const theme = useTheme()
+  
   if (completed) {
     return (
       <Box
@@ -61,12 +80,15 @@ const StepIcon = ({ active, completed }: StepIconProps) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          color: 'white',
         }}
       >
-        <Check size={18} color="white" strokeWidth={3} />
+        <Check size={18} />
       </Box>
     )
-  } else if (active) {
+  }
+  
+  if (active) {
     return (
       <Box
         sx={{
@@ -77,104 +99,101 @@ const StepIcon = ({ active, completed }: StepIconProps) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: `0 0 0 4px ${theme.palette.primary.main}20`,
+          color: 'white',
         }}
       >
-        <Circle size={8} color="white" fill="white" />
+        <CircleCheck size={20} />
       </Box>
     )
-  } else {
-    return (
-      <Box
-        sx={{
-          width: 32,
-          height: 32,
-          borderRadius: '50%',
-          border: `2px solid ${theme.palette.grey[300]}`,
-          backgroundColor: 'transparent',
-        }}
-      />
-    )
   }
+  
+  return (
+    <Box
+      sx={{
+        width: 32,
+        height: 32,
+        borderRadius: '50%',
+        border: `2px solid ${theme.palette.grey[400]}`,
+        backgroundColor: 'transparent',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Circle size={16} color={theme.palette.grey[400]} />
+    </Box>
+  )
 }
 
-interface StepConfig {
-  label: string
-  description: string
-  buttonLabel: string
-}
-
-const stepsConfig = (t: (key: string) => string): StepConfig[] => [
-  {
-    label: t('EDUCATOR.CREATE_COURSE.BASIC_DETAILS'),
-    description: t('EDUCATOR.CREATE_COURSE.BASIC_DETAILS_DESCRIPTION'),
-    buttonLabel: t('EDUCATOR.CREATE_COURSE.CONTINUE'),
-  },
-  {
-    label: t('EDUCATOR.CREATE_COURSE.SETUP_COURSE'),
-    description: t('EDUCATOR.CREATE_COURSE.SETUP_COURSE_DESCRIPTION'),
-    buttonLabel: t('EDUCATOR.CREATE_COURSE.CONTINUE'),
-  },
-  {
-    label: t('EDUCATOR.CREATE_COURSE.ADD_CHAPTERS'),
-    description: t('EDUCATOR.CREATE_COURSE.ADD_CHAPTERS_DESCRIPTION'),
-    buttonLabel: t('EDUCATOR.CREATE_COURSE.PREVIEW'),
-  },
-  {
-    label: t('EDUCATOR.CREATE_COURSE.PREVIEW_COURSE'),
-    description: t('EDUCATOR.CREATE_COURSE.PREVIEW_COURSE_DESCRIPTION'),
-    buttonLabel: t('EDUCATOR.CREATE_COURSE.PUBLISH'),
-  },
-]
-
-interface CreateCourseProps {
-  isEdit?: boolean
-  courseId?: string
-  isPreview?: boolean
-  isPublished?: boolean
-  currentStep?: number
-  defaultValues?: Record<string, unknown>
-}
-
-const CreateCourse = ({
+const CreateCourse: React.FC<CreateCourseProps> = ({
   isEdit = false,
-  courseId,
+  courseId = '',
   isPreview = false,
   isPublished = false,
   currentStep = 0,
-  defaultValues = {},
-}: CreateCourseProps) => {
+  defaultValues = {
+    title: '',
+    subtitle: '',
+    description: '',
+    category: [],
+    isPaid: true,
+    price: null,
+    image: '',
+    video: '',
+  },
+}) => {
   const theme = useTheme()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { t } = useTranslation('education')
+  const { direction } = useSelector((state: RootState) => state.app.language)
 
   const [isDraft, setIsDraft] = useState(false)
-  const [hasLesons] = useState({})
+  const [hasLessons, setHasLessons] = useState<Record<string, number>>({})
   const [previousVideo, setPreviousVideo] = useState<File | string | null>(null)
   const [previousImage, setPreviousImage] = useState<File | string | null>(null)
   const [activeStep, setActiveStep] = useState(currentStep)
-  const [initialData, setInitialData] = useState<DataObject>(
-    defaultValues as DataObject,
-  )
+  const [initialData, setInitialData] = useState(defaultValues)
   const [currentCourseId, setCurrentCourseId] = useState(courseId)
-  const [, setIsCourseFree] = useState(!defaultValues?.isPaid)
+  const [categories, setCategories] = useState(defaultValues?.category)
+  const [isCourseFree, setIsCourseFree] = useState(!defaultValues?.isPaid)
+  const isRTL = direction === 'rtl'
 
-  const [updateCourse, { isLoading: isUpdateLoading }] =
-    useUpdateCourseMutation()
-  const [createCourse, { isLoading: isCreateLoading }] =
-    useCreateCourseMutation()
-  const [addCourseMetaData, { isLoading: isMetaDataLoading }] =
-    useAddCourseMetaDataMutation()
+  const [updateCourse, { isLoading: isUpdateLoading }] = useUpdateCourseMutation()
+  const [createCourse, { isLoading: isCreateLoading }] = useCreateCourseMutation()
+  const [addCourseMetaData, { isLoading: isMetaDataLoading }] = useAddCourseMetaDataMutation()
 
-  const shouldNotPreview = useMemo(
-    () =>
+  const stepsConfig = (t: any): StepConfig[] => [
+    {
+      label: t('EDUCATOR.CREATE_COURSE.BASIC_DETAILS'),
+      description: t('EDUCATOR.CREATE_COURSE.BASIC_DETAILS_DESCRIPTION'),
+      buttonLabel: t('EDUCATOR.CREATE_COURSE.CONTINUE'),
+    },
+    {
+      label: t('EDUCATOR.CREATE_COURSE.SETUP_COURSE'),
+      description: t('EDUCATOR.CREATE_COURSE.SETUP_COURSE_DESCRIPTION'),
+      buttonLabel: t('EDUCATOR.CREATE_COURSE.CONTINUE'),
+    },
+    {
+      label: t('EDUCATOR.CREATE_COURSE.ADD_CHAPTERS'),
+      description: t('EDUCATOR.CREATE_COURSE.ADD_CHAPTERS_DESCRIPTION'),
+      buttonLabel: t('EDUCATOR.CREATE_COURSE.PREVIEW'),
+    },
+    {
+      label: t('EDUCATOR.CREATE_COURSE.PREVIEW_COURSE'),
+      description: t('EDUCATOR.CREATE_COURSE.PREVIEW_COURSE_DESCRIPTION'),
+      buttonLabel: t('EDUCATOR.CREATE_COURSE.PUBLISH'),
+    },
+  ]
+
+  const shouldNotPreview = useMemo(() => {
+    return (
       (isPublished && activeStep === stepsConfig(t).length - 1) ||
       (activeStep === stepsConfig(t).length - 2 &&
-        !Object.values(hasLesons).length &&
-        Object.values(hasLesons).every((count) => count)),
-    [hasLesons, activeStep, isPublished, t],
-  )
+        !Object.values(hasLessons).length &&
+        Object.values(hasLessons).every((count) => count))
+    )
+  }, [hasLessons, activeStep, isPublished, t])
 
   const isLoading = useMemo(
     () => isUpdateLoading || isCreateLoading || isMetaDataLoading,
@@ -188,52 +207,31 @@ const CreateCourse = ({
         .string()
         .trim()
         .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.TITLE_IS_REQUIRED'))
-        .max(
-          100,
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_100_CHARACTERS'),
-        ),
+        .max(100, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_100_CHARACTERS')),
       subtitle: yup
         .string()
         .trim()
         .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.SUBTITLE_IS_REQUIRED'))
-        .max(
-          150,
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_150_CHARACTERS'),
-        ),
+        .max(150, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_150_CHARACTERS')),
       description: yup
         .string()
         .trim()
-        .required(
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.DESCRIPTION_IS_REQUIRED'),
-        )
-        .max(
-          1000,
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_1000_CHARACTERS'),
-        ),
+        .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.DESCRIPTION_IS_REQUIRED'))
+        .max(1000, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_1000_CHARACTERS')),
       category: yup
         .array()
         .of(yup.string().trim())
         .min(1, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.AT_LEAST_ONE_CATEGORY'))
         .max(5, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_5_CATEGORIES')),
       isPaid: yup.bool(),
-      price: yup.lazy((_, schemaValues) =>
-        (schemaValues as { originalValue?: { isPaid?: boolean } })
-          ?.originalValue?.isPaid
+      price: yup.lazy((_, schemaValues: any) =>
+        schemaValues?.originalValue?.isPaid
           ? yup
               .number()
               .transform(transformNaNToNull)
-              .required(
-                t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_IS_REQUIRED'),
-              )
-              .positive(
-                t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_IS_REQUIRED'),
-              )
-              .max(
-                1000,
-                t(
-                  'EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_CANNOT_EXCEED_1000',
-                ),
-              )
+              .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_IS_REQUIRED'))
+              .positive(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_IS_REQUIRED'))
+              .max(1000, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_CANNOT_EXCEED_1000'))
           : yup.number().nullable().transform(transformNaNToNull),
       ),
     }),
@@ -244,35 +242,26 @@ const CreateCourse = ({
         .test(
           'file-type',
           t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.IMAGE_MUST_BE_A_JPG_JPEG_PNG'),
-          (value) => {
+          (value: any) => {
             if (!value || !(value instanceof File)) return true
             const allowedExtensions = ['jpg', 'jpeg', 'png']
-            const fileExtension =
-              value.name.split('.').pop()?.toLowerCase() || ''
-            return allowedExtensions.includes(fileExtension)
+            const fileExtension = value.name.split('.').pop()?.toLowerCase()
+            return allowedExtensions.includes(fileExtension || '')
           },
         )
         .test(
           'file-validation',
-          t(
-            'EDUCATOR.BASIC_DETAILS.VALIDATIONS.IMAGE_REQUIRED_AND_LESS_THAN_50MB',
-          ),
-          (value) => {
+          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.IMAGE_REQUIRED_AND_LESS_THAN_50MB'),
+          (value: any) => {
             const isFile = value instanceof File
-            if (
-              isEdit &&
-              !isFile &&
-              typeof value === 'string' &&
-              value.trim()
-            ) {
+            if (isEdit && !isFile && value?.trim?.()) {
               return true
             }
             if (isFile) {
               const fileSizeValid = value.size <= 50 * 1024 * 1024
               const allowedExtensions = ['jpg', 'jpeg', 'png']
-              const fileExtension =
-                value.name.split('.').pop()?.toLowerCase() || ''
-              const fileTypeValid = allowedExtensions.includes(fileExtension)
+              const fileExtension = value.name.split('.').pop()?.toLowerCase()
+              const fileTypeValid = allowedExtensions.includes(fileExtension || '')
               return fileSizeValid && fileTypeValid
             }
             return false
@@ -283,48 +272,38 @@ const CreateCourse = ({
         .test(
           'file-type',
           t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.VIDEO_FORMAT_MSG'),
-          (value) => {
+          (value: any) => {
             if (!value || !(value instanceof File)) return true
             const allowedExtensions = ['mp4', 'mov', 'webm', 'mkv']
-            const fileExtension =
-              value.name.split('.').pop()?.toLowerCase() || ''
-            return allowedExtensions.includes(fileExtension)
+            const fileExtension = value.name.split('.').pop()?.toLowerCase()
+            return allowedExtensions.includes(fileExtension || '')
           },
         )
         .test(
           'file-validation',
-          t(
-            'EDUCATOR.BASIC_DETAILS.VALIDATIONS.VIDEO_REQUIRED_AND_LESS_THAN_200MB',
-          ),
-          (value) => {
+          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.VIDEO_REQUIRED_AND_LESS_THAN_200MB'),
+          (value: any) => {
             const isFile = value instanceof File
-            if (
-              isEdit &&
-              !isFile &&
-              typeof value === 'string' &&
-              value.trim()
-            ) {
+            if (isEdit && !isFile && value?.trim?.()) {
               return true
             }
             if (isFile) {
               const fileSizeValid = value.size <= 200 * 1024 * 1024
               const allowedExtensions = ['mp4', 'mov', 'webm', 'mkv']
-              const fileExtension =
-                value.name.split('.').pop()?.toLowerCase() || ''
-              const fileTypeValid = allowedExtensions.includes(fileExtension)
+              const fileExtension = value.name.split('.').pop()?.toLowerCase()
+              const fileTypeValid = allowedExtensions.includes(fileExtension || '')
               return fileSizeValid && fileTypeValid
             }
             return false
           },
         ),
     }),
-
     // Schema for non-required steps
     yup.object({}),
     yup.object({}),
   ]
 
-  const form = useForm({
+  const form = useForm<CourseFormData>({
     resolver: yupResolver(validationSchemas[activeStep]),
     defaultValues,
   })
@@ -334,113 +313,59 @@ const CreateCourse = ({
   }, [form.formState.isDirty, dispatch])
 
   const handleBack = () => {
-    if (activeStep === 0) void navigate('/educator')
+    if (activeStep === 0) navigate('/educator')
     else setActiveStep((prev) => prev - 1)
   }
 
-  const handleBasicDetailsSubmit = async (data: CreateCourseFormData) => {
-    // checks if data is identical
+  const handleBasicDetailsSubmit = async (data: CourseFormData) => {
     setIsCourseFree(!data.isPaid)
-    const [updatedFields, isIdentical] = getUpdatedFields(data, initialData, [
-      'image',
-      'video',
-    ])
+    const [updatedFields, isIdentical] = getUpdatedFields(data, initialData, ['image', 'video'])
 
     if (isIdentical && !isDraft) {
       setActiveStep((prev) => prev + 1)
       return
     }
 
-    // payload
-    const payload: Partial<CreateCourseFormData> & { saveAsDraft?: boolean } = {
+    const payload: any = {
       ...updatedFields,
-      isPaid: data.isPaid,
-      saveAsDraft: isDraft,
       ...(!isDraft ? updatedFields : data),
+      saveAsDraft: isDraft,
+      isPaid: data.isPaid,
     }
 
-    // checks if course is free
-    if (!data.isPaid && 'price' in payload) {
-      const { price, ...payloadWithoutPrice } = payload
-      void price // Mark as used
-      Object.assign(payload, payloadWithoutPrice)
-    }
+    if (!data.isPaid) delete payload.price
 
     try {
-      const response = currentCourseId
-        ? await updateCourse({
-            courseId: currentCourseId,
-            title: payload.title,
-            description: payload.description,
-            category: Array.isArray(payload.category)
-              ? payload.category
-              : payload.category
-                ? [payload.category]
-                : [],
-            level: payload.level,
-            price: payload.price,
-            isPaid: payload.isPaid,
-            thumbnail:
-              typeof payload.image === 'string' ? payload.image : undefined,
-            previewVideo:
-              typeof payload.video === 'string' ? payload.video : undefined,
-            isPublished: !isDraft,
-          } as UpdateCourseRequest)
-        : await createCourse({
-            title: payload.title || '',
-            description: payload.description || '',
-            category: Array.isArray(payload.category)
-              ? payload.category
-              : payload.category
-                ? [payload.category]
-                : [],
-            level:
-              (payload.level as 'beginner' | 'intermediate' | 'advanced') ||
-              'beginner',
-            price: payload.price,
-            isPaid: payload.isPaid || false,
-            thumbnail:
-              typeof payload.image === 'string' ? payload.image : undefined,
-            previewVideo:
-              typeof payload.video === 'string' ? payload.video : undefined,
-          } as CreateCourseRequest)
+      const response: any = currentCourseId
+        ? await updateCourse({ ...payload, courseId: currentCourseId })
+        : await createCourse(payload)
 
       if (!response?.error) {
         setInitialData((prev) => ({ ...prev, ...data }))
-        if (
-          !currentCourseId &&
-          response?.data &&
-          typeof response.data === 'object' &&
-          response.data !== null &&
-          'data' in response.data &&
-          response.data.data &&
-          typeof response.data.data === 'object' &&
-          '_id' in (response.data.data as object)
-        ) {
-          setCurrentCourseId((response.data.data as { _id: string })._id)
-        }
+        if (!currentCourseId) setCurrentCourseId(response?.data?.data?._id)
         if (!isDraft) setActiveStep((prev) => prev + 1)
       }
 
       setIsDraft(false)
-    } catch {
-      // error
+    } catch (error) {
+      console.error('Error submitting basic details:', error)
     }
   }
 
-  const handleMetaData = async (data: CreateCourseFormData) => {
+  const handleMetaData = async (data: CourseFormData) => {
     const { image, video } = data
     const formData = new FormData()
-    formData.append('courseId', currentCourseId || '')
+    formData.append('courseId', currentCourseId)
     if (isDraft) formData.append('saveAsDraft', 'true')
 
-    if (isNewFile(image, previousImage)) {
+    if (image && isNewFile(image, previousImage)) {
       formData.append('image', image as File)
     }
 
-    if (isNewFile(video, previousVideo)) {
+    if (video && isNewFile(video, previousVideo)) {
       formData.append('video', video as File)
     }
+
     if (
       !isNewFile(image, previousImage) &&
       !isNewFile(video, previousVideo) &&
@@ -451,48 +376,45 @@ const CreateCourse = ({
     }
 
     try {
-      const response = await addCourseMetaData(
-        formData as unknown as CourseMetaDataRequest,
-      )
+      const response: any = await addCourseMetaData(formData)
 
       if (!response.error) {
-        if (isNewFile(image, previousImage))
-          setPreviousImage(image as File | string | null)
-        if (isNewFile(video, previousVideo))
-          setPreviousVideo(video as File | string | null)
+        if (image && isNewFile(image, previousImage)) setPreviousImage(image)
+        if (video && isNewFile(video, previousVideo)) setPreviousVideo(video)
 
         if (!isDraft) setActiveStep((prev) => prev + 1)
-
         setIsDraft(false)
       }
-    } catch {
-      // error
+    } catch (error) {
+      console.error('Error submitting metadata:', error)
     }
   }
 
   const handlePreview = async () => {
     if (isDraft) {
       await updateCourse({
-        isPublished: false,
-        courseId: currentCourseId || '',
+        status: 'draft',
+        courseId: currentCourseId,
       })
       setIsDraft(false)
-    } else setActiveStep((prevActiveStep) => prevActiveStep + 1)
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1)
+    }
   }
 
   const handlePublish = async () => {
     if (isDraft) {
       await updateCourse({
-        isPublished: false,
-        courseId: currentCourseId || '',
+        status: 'draft',
+        courseId: currentCourseId,
       })
       setIsDraft(false)
     } else {
-      const response = await updateCourse({
-        isPublished: true,
-        courseId: currentCourseId || '',
+      const response: any = await updateCourse({
+        status: 'published',
+        courseId: currentCourseId,
       })
-      if (!response.error) void navigate('/educator/courses')
+      if (!response.error) navigate('/educator/courses')
     }
   }
 
@@ -507,14 +429,13 @@ const CreateCourse = ({
       case 3:
         return <PreviewCourse />
       default:
-        return 'Unknown step'
+        return <Typography>Unknown step</Typography>
     }
   }
 
-  const onSubmit = async (data: Record<string, unknown>) => {
-    if (activeStep === 0)
-      await handleBasicDetailsSubmit(data as CreateCourseFormData)
-    if (activeStep === 1) await handleMetaData(data as CreateCourseFormData)
+  const onSubmit = async (data: CourseFormData) => {
+    if (activeStep === 0) await handleBasicDetailsSubmit(data)
+    if (activeStep === 1) await handleMetaData(data)
     if (activeStep === 2) await handlePreview()
     if (activeStep === 3) await handlePublish()
   }
@@ -526,38 +447,59 @@ const CreateCourse = ({
   }
 
   return (
-    <Box>
-      <FormProvider {...form}>
+    <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+      <FormProvider
+        {...form}
+        {...{
+          categories,
+          courseId: currentCourseId,
+          savedValues: defaultValues,
+          isCourseFree,
+          setHasLessons,
+          setCategories,
+        } as any}
+      >
         {activeStep !== 3 && (
-          <Box mb={3}>
-            <Typography variant="h4" sx={{ fontWeight: 600, mb: 0.5 }}>
+          <Box sx={{ mb: { xs: 3, md: 4 } }}>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontWeight: 700, 
+                mb: 1,
+                fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
+                color: theme.palette.text.primary,
+              }}
+            >
               {handleGetTitle()} {t('EDUCATOR.CREATE_COURSE.COURSE')}
             </Typography>
-            <Typography component="p" color="text.secondary">
+            <Typography 
+              variant="body1" 
+              sx={{
+                color: theme.palette.text.secondary,
+                fontSize: { xs: '0.875rem', md: '1rem' },
+              }}
+            >
               {t('EDUCATOR.CREATE_COURSE.DESCRIPTION')}
             </Typography>
           </Box>
         )}
 
-        <Grid container spacing={3}>
+        <Grid container spacing={{ xs: 2, md: 3 }}>
           {/* Stepper Section */}
           {activeStep !== 3 && (
             <Grid
+              item
               size={{ xs: 12, md: 3 }}
-              sx={{
-                position: { xs: 'relative', md: 'sticky' },
-                top: { xs: 0, md: 20 },
-                height: 'fit-content',
-                mb: { xs: 3, md: 0 },
-              }}
             >
               <Box
                 sx={{
-                  backgroundColor: 'background.light',
-                  borderRadius: { xs: '8px', md: '12px' },
+                  background: theme.palette.background.paper,
+                  borderRadius: { xs: 2, md: 3 },
                   p: { xs: 2, md: 3 },
-                  border: `1px solid ${theme.palette.grey[200]}`,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                  border: `1px solid ${theme.palette.divider}`,
+                  boxShadow: theme.shadows[1],
+                  position: { md: 'sticky' },
+                  top: { md: 24 },
                 }}
               >
                 <Stepper
@@ -565,20 +507,25 @@ const CreateCourse = ({
                   orientation="vertical"
                   sx={{
                     '& .MuiStepContent-root': {
-                      borderLeft: `2px solid ${theme.palette.grey[200]}`,
-                      borderRight: '0',
-                      marginLeft: '16px',
-                      paddingLeft: '20px',
+                      borderLeft: isRTL
+                        ? '0'
+                        : `2px solid ${theme.palette.divider}`,
+                      borderRight: isRTL
+                        ? `2px solid ${theme.palette.divider}`
+                        : '0',
+                      marginRight: isRTL ? '21px' : '0',
+                      marginLeft: isRTL ? '0' : '21px',
+                      paddingLeft: { xs: 2, md: 3 },
+                      paddingRight: isRTL ? { xs: 2, md: 3 } : 0,
                     },
                     '& .MuiStepConnector-root': {
-                      marginLeft: '16px',
+                      marginLeft: isRTL ? '0' : '16px',
+                      marginRight: isRTL ? '16px' : '0',
                     },
                     '& .MuiStepConnector-line': {
-                      borderLeft: `2px solid ${theme.palette.grey[200]}`,
-                      minHeight: '20px',
-                    },
-                    '& .Mui-completed .MuiStepConnector-line': {
-                      borderLeftColor: theme.palette.success.main,
+                      borderColor: theme.palette.divider,
+                      borderLeftWidth: isRTL ? '0' : '2px',
+                      borderRightWidth: isRTL ? '2px' : '0',
                     },
                   }}
                 >
@@ -587,29 +534,36 @@ const CreateCourse = ({
                       <StepLabel
                         StepIconComponent={StepIcon}
                         sx={{
+                          textAlign: isRTL ? 'right' : 'left',
                           '& .MuiStepLabel-label': {
                             fontWeight: 500,
-                            fontSize: { xs: '0.85rem', sm: '0.95rem' },
+                            fontSize: { xs: '0.875rem', md: '1rem' },
                             '&.Mui-active': {
-                              fontWeight: 600,
                               color: theme.palette.primary.main,
+                              fontWeight: 600,
                             },
                             '&.Mui-completed': {
-                              fontWeight: 500,
                               color: theme.palette.success.main,
+                              fontWeight: 600,
                             },
                           },
                         }}
                       >
                         {step.label}
                       </StepLabel>
-                      <StepContent>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
+                      <StepContent
+                        sx={{
+                          textAlign: isRTL ? 'end' : 'left',
+                          mt: 1,
+                          mb: 2,
+                        }}
+                      >
+                        <Typography 
+                          variant="body2" 
                           sx={{
-                            mt: 0.5,
-                            display: { xs: 'none', sm: 'block' },
+                            color: theme.palette.text.secondary,
+                            fontSize: { xs: '0.75rem', md: '0.813rem' },
+                            lineHeight: 1.6,
                           }}
                         >
                           {step.description}
@@ -621,72 +575,85 @@ const CreateCourse = ({
               </Box>
             </Grid>
           )}
+
           {/* Form Section */}
-          <Grid size={{ xs: 12, md: activeStep !== 3 ? 9 : 12 }}>
-            <Box
-              sx={{
-                backgroundColor: 'background.light',
-                borderRadius: activeStep !== 3 ? '12px' : 0,
-                p: activeStep !== 3 ? 3 : 0,
-                border:
-                  activeStep !== 3
-                    ? `1px solid ${theme.palette.grey[200]}`
-                    : 'none',
+          <Grid item size={{ xs: 12, md: activeStep !== 3 ? 9 : 12 }}>
+            <Box 
+              sx={{ 
+                background: theme.palette.background.paper,
+                borderRadius: { xs: 2, md: 3 },
+                p: { xs: 2, sm: 3, md: 4 },
+                border: `1px solid ${theme.palette.divider}`,
+                boxShadow: theme.shadows[1],
+                minHeight: { xs: 400, md: 500 },
               }}
             >
-              <form
-                onSubmit={(e) => {
-                  void form.handleSubmit((data) => {
-                    void onSubmit(data)
-                  })(e)
-                }}
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)}>
                 {renderStepContent(activeStep)}
                 <Box
                   sx={{
                     display: 'flex',
-                    flexWrap: 'wrap',
+                    flexDirection: { xs: 'column', sm: 'row' },
                     justifyContent: 'space-between',
-                    mt: 3,
-                    pt: 3,
-                    borderTop:
-                      activeStep !== 3
-                        ? `1px solid ${theme.palette.grey[200]}`
-                        : 'none',
+                    alignItems: { xs: 'stretch', sm: 'center' },
+                    mt: { xs: 3, md: 4 },
+                    pt: { xs: 2, md: 3 },
+                    borderTop: `1px solid ${theme.palette.divider}`,
                     gap: 2,
                   }}
                 >
                   {!isPreview && (
                     <Button
                       variant="outlined"
-                      disabled={isLoading}
-                      onClick={handleBack}
-                      sx={{
+                      color="inherit"
+                      fullWidth={theme.breakpoints.down('sm') ? true : false}
+                      sx={{ 
                         textTransform: 'none',
-                        borderColor: theme.palette.grey[300],
-                        color: 'text.primary',
+                        fontWeight: 500,
+                        borderColor: theme.palette.divider,
+                        px: { xs: 2, md: 3 },
+                        py: { xs: 1, md: 1.25 },
+                        fontSize: { xs: '0.875rem', md: '1rem' },
+                        borderRadius: 2,
+                        minWidth: { sm: 120 },
                         '&:hover': {
-                          borderColor: theme.palette.grey[400],
-                          backgroundColor: theme.palette.grey[50],
+                          borderColor: theme.palette.text.secondary,
+                          backgroundColor: theme.palette.action.hover,
                         },
                       }}
+                      disabled={isLoading}
+                      onClick={handleBack}
                     >
                       {activeStep === 0
                         ? t('EDUCATOR.CREATE_COURSE.BACK_TO_DASHBOARD')
                         : t('EDUCATOR.CREATE_COURSE.BACK')}
                     </Button>
                   )}
-                  <Box display="flex" gap={2}>
+                  <Box 
+                    display="flex" 
+                    gap={2}
+                    flexDirection={{ xs: 'column', sm: 'row' }}
+                    width={{ xs: '100%', sm: 'auto' }}
+                  >
                     {!isPublished && (
                       <Button
                         type="submit"
                         variant="outlined"
-                        onClick={() => {
-                          setIsDraft(true)
-                        }}
+                        color="primary"
+                        onClick={() => setIsDraft(true)}
                         disabled={isLoading}
+                        fullWidth={theme.breakpoints.down('sm') ? true : false}
                         sx={{
                           textTransform: 'none',
+                          fontWeight: 500,
+                          px: { xs: 2, md: 3 },
+                          py: { xs: 1, md: 1.25 },
+                          fontSize: { xs: '0.875rem', md: '1rem' },
+                          borderRadius: 2,
+                          minWidth: { sm: 140 },
+                          '&:hover': {
+                            backgroundColor: theme.palette.action.hover,
+                          },
                         }}
                       >
                         {t('EDUCATOR.CREATE_COURSE.SAVE_AS_DRAFT')}
@@ -697,23 +664,25 @@ const CreateCourse = ({
                         variant="contained"
                         type="submit"
                         disabled={isLoading}
-                        startIcon={
-                          isLoading && (
-                            <CircularProgress
-                              size={16}
-                              sx={{ color: 'inherit' }}
-                            />
-                          )
-                        }
+                        fullWidth={theme.breakpoints.down('sm') ? true : false}
+                        startIcon={isLoading && <Loader2 className="animate-spin" size={20} />}
                         sx={{
                           textTransform: 'none',
-                          minWidth: 120,
+                          fontWeight: 600,
+                          px: { xs: 3, md: 4 },
+                          py: { xs: 1, md: 1.25 },
+                          fontSize: { xs: '0.875rem', md: '1rem' },
+                          borderRadius: 2,
+                          minWidth: { sm: 140 },
+                          boxShadow: theme.shadows[2],
+                          '&:hover': {
+                            boxShadow: theme.shadows[4],
+                          },
                         }}
                       >
                         {isLoading
                           ? t('EDUCATOR.CREATE_COURSE.SUBMITTING')
-                          : (stepsConfig(t)?.[activeStep]?.buttonLabel ??
-                            t('EDUCATOR.CREATE_COURSE.CONTINUE'))}
+                          : stepsConfig(t)?.[activeStep]?.buttonLabel}
                       </Button>
                     )}
                   </Box>

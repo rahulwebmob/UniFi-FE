@@ -105,20 +105,19 @@ const Lessons: React.FC = () => {
     const { chapterId, lessonId } = (location.state as LocationState) ?? {}
 
     if (chapterId && lessonId && courseData?.data?.chapters) {
-      const chapter = (
-        courseData.data.chapters as unknown as LessonsChapter[]
-      ).find((ch: LessonsChapter) => ch._id === chapterId)
+      const chapter = courseData.data.chapters.find(
+        (ch) => ch._id === chapterId,
+      )
       const lessonIndex =
-        chapter?.lessonList?.findIndex(
-          (lesson: Lesson) => lesson._id === lessonId,
-        ) ?? -1
+        chapter?.lessonList?.findIndex((lesson) => lesson._id === lessonId) ??
+        -1
 
       if (lessonIndex !== -1) {
         setSelectedVideo({ courseId: id ?? '', chapterId, lessonId })
         setSelectedVideoIndex(
-          (courseData.data.chapters as unknown as LessonsChapter[])
-            .flatMap((ch: LessonsChapter) => ch.lessonList || [])
-            .filter((lesson): lesson is Lesson => lesson !== undefined)
+          courseData.data.chapters
+            .flatMap((ch) => ch.lessonList || [])
+            .filter((lesson) => lesson !== undefined)
             .findIndex((lesson) => lesson._id === lessonId),
         )
       }
@@ -144,9 +143,9 @@ const Lessons: React.FC = () => {
     if (!courseData?.data?.chapters) return
 
     const maxIndex =
-      (courseData.data.chapters as unknown as LessonsChapter[])
-        .flatMap((ch: LessonsChapter) => ch.lessonList || [])
-        .filter((lesson): lesson is Lesson => lesson !== undefined).length - 1
+      courseData.data.chapters
+        .flatMap((ch) => ch.lessonList || [])
+        .filter((lesson) => lesson !== undefined).length - 1
     let newIndex = selectedVideoIndex
 
     if (direction === 'next' && selectedVideoIndex < maxIndex) {
@@ -155,9 +154,9 @@ const Lessons: React.FC = () => {
       newIndex = selectedVideoIndex - 1
     }
 
-    const allLessons = (courseData.data.chapters as unknown as LessonsChapter[])
-      .flatMap((ch: LessonsChapter) => ch.lessonList || [])
-      .filter((lesson): lesson is Lesson => lesson !== undefined)
+    const allLessons = courseData.data.chapters
+      .flatMap((ch) => ch.lessonList || [])
+      .filter((lesson) => lesson !== undefined)
     const newLesson = allLessons[newIndex]
 
     if (newLesson && newLesson._id) {
@@ -171,22 +170,22 @@ const Lessons: React.FC = () => {
   }
 
   const totalLessons =
-    (courseData?.data?.chapters as unknown as LessonsChapter[] | undefined)
-      ?.flatMap((ch: LessonsChapter) => ch.lessonList || [])
-      .filter((lesson): lesson is Lesson => lesson !== undefined).length || 0
+    courseData?.data?.chapters
+      ?.flatMap((ch) => ch.lessonList || [])
+      .filter((lesson) => lesson !== undefined).length || 0
 
-  const getCurrentLesson = (): Lesson | null => {
+  const getCurrentLesson = () => {
     if (!courseData?.data?.chapters || !selectedVideo) return null
-    const allLessons = (courseData.data.chapters as unknown as LessonsChapter[])
-      .flatMap((ch: LessonsChapter) => ch.lessonList || [])
-      .filter((lesson): lesson is Lesson => lesson !== undefined)
+    const allLessons = courseData.data.chapters
+      .flatMap((ch) => ch.lessonList || [])
+      .filter((lesson) => lesson !== undefined)
     return allLessons[selectedVideoIndex] || null
   }
 
   const getCurrentChapter = () => {
     if (!courseData?.data?.chapters || !selectedVideo) return null
-    return (courseData.data.chapters as unknown as LessonsChapter[]).find(
-      (ch: LessonsChapter) => ch._id === selectedVideo.chapterId,
+    return courseData.data.chapters.find(
+      (ch) => ch._id === selectedVideo.chapterId,
     )
   }
 
@@ -549,183 +548,172 @@ const Lessons: React.FC = () => {
                       </AccordionSummary>
 
                       <AccordionDetails sx={{ p: 0 }}>
-                        {chapter.lessonList?.map(
-                          (lesson: Lesson, lessonIndex: number) => {
-                            const isSelected =
-                              lesson._id === selectedVideo?.lessonId
-                            const isLocked =
-                              !lesson?.isFree &&
-                              !courseData?.data?.isCourseBought
+                        {chapter.lessonList?.map((lesson, lessonIndex) => {
+                          const isSelected =
+                            lesson._id === selectedVideo?.lessonId
+                          const isLocked =
+                            !lesson?.isFree && !courseData?.data?.isCourseBought
 
-                            return (
-                              <Box
-                                key={lesson._id}
-                                sx={{
-                                  px: 2,
-                                  py: 1.5,
-                                  cursor: isLocked ? 'not-allowed' : 'pointer',
-                                  borderLeft: isSelected
-                                    ? `3px solid ${theme.palette.primary.main}`
-                                    : '3px solid transparent',
-                                  background: isSelected
-                                    ? alpha(theme.palette.primary.main, 0.08)
-                                    : 'white',
-                                  transition: 'all 0.2s',
-                                  opacity: isLocked ? 0.5 : 1,
-                                  '&:hover': {
-                                    background: isLocked
-                                      ? 'white'
-                                      : isSelected
-                                        ? alpha(theme.palette.primary.main, 0.1)
-                                        : alpha(
-                                            theme.palette.primary.main,
-                                            0.04,
-                                          ),
-                                  },
-                                  borderBottom:
-                                    lessonIndex <
-                                    (chapter.lessonList?.length ?? 0) - 1
-                                      ? `1px solid ${alpha(theme.palette.grey[200], 0.5)}`
-                                      : 'none',
-                                }}
-                                onClick={() => {
-                                  if (!isLocked) {
-                                    setSelectedVideo({
-                                      courseId: id ?? '',
-                                      chapterId: chapter._id ?? '',
-                                      lessonId: lesson._id ?? '',
-                                    })
-                                    setSelectedVideoIndex(
-                                      (
-                                        courseData?.data
-                                          ?.chapters as unknown as
-                                          | LessonsChapter[]
-                                          | undefined
-                                      )
-                                        ?.flatMap(
-                                          (ch: LessonsChapter) =>
-                                            ch.lessonList || [],
-                                        )
-                                        .filter(
-                                          (l): l is Lesson => l !== undefined,
-                                        )
-                                        .findIndex(
-                                          (l: Lesson) => l._id === lesson._id,
-                                        ) ?? 0,
+                          return (
+                            <Box
+                              key={lesson._id}
+                              sx={{
+                                px: 2,
+                                py: 1.5,
+                                cursor: isLocked ? 'not-allowed' : 'pointer',
+                                borderLeft: isSelected
+                                  ? `3px solid ${theme.palette.primary.main}`
+                                  : '3px solid transparent',
+                                background: isSelected
+                                  ? alpha(theme.palette.primary.main, 0.08)
+                                  : 'white',
+                                transition: 'all 0.2s',
+                                opacity: isLocked ? 0.5 : 1,
+                                '&:hover': {
+                                  background: isLocked
+                                    ? 'white'
+                                    : isSelected
+                                      ? alpha(theme.palette.primary.main, 0.1)
+                                      : alpha(theme.palette.primary.main, 0.04),
+                                },
+                                borderBottom:
+                                  lessonIndex <
+                                  (chapter.lessonList?.length ?? 0) - 1
+                                    ? `1px solid ${alpha(theme.palette.grey[200], 0.5)}`
+                                    : 'none',
+                              }}
+                              onClick={() => {
+                                if (!isLocked) {
+                                  setSelectedVideo({
+                                    courseId: id ?? '',
+                                    chapterId: chapter._id ?? '',
+                                    lessonId: lesson._id ?? '',
+                                  })
+                                  setSelectedVideoIndex(
+                                    (
+                                      courseData?.data?.chapters as unknown as
+                                        | LessonsChapter[]
+                                        | undefined
                                     )
-                                  }
-                                }}
-                              >
+                                      ?.flatMap(
+                                        (ch: LessonsChapter) =>
+                                          ch.lessonList || [],
+                                      )
+                                      .filter(
+                                        (l): l is Lesson => l !== undefined,
+                                      )
+                                      .findIndex(
+                                        (l: Lesson) => l._id === lesson._id,
+                                      ) ?? 0,
+                                  )
+                                }
+                              }}
+                            >
+                              <Box display="flex" alignItems="center" gap={1.5}>
                                 <Box
-                                  display="flex"
-                                  alignItems="center"
-                                  gap={1.5}
+                                  sx={{
+                                    width: 36,
+                                    height: 36,
+                                    borderRadius: '50%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    background: isSelected
+                                      ? theme.palette.primary.main
+                                      : lesson?.lessonType === 'video'
+                                        ? alpha(theme.palette.info.main, 0.1)
+                                        : alpha(
+                                            theme.palette.warning.main,
+                                            0.1,
+                                          ),
+                                    color: isSelected
+                                      ? 'white'
+                                      : lesson?.lessonType === 'video'
+                                        ? theme.palette.info.main
+                                        : theme.palette.warning.main,
+                                    transition: 'all 0.2s',
+                                  }}
                                 >
-                                  <Box
-                                    sx={{
-                                      width: 36,
-                                      height: 36,
-                                      borderRadius: '50%',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      background: isSelected
-                                        ? theme.palette.primary.main
-                                        : lesson?.lessonType === 'video'
-                                          ? alpha(theme.palette.info.main, 0.1)
-                                          : alpha(
-                                              theme.palette.warning.main,
-                                              0.1,
-                                            ),
-                                      color: isSelected
-                                        ? 'white'
-                                        : lesson?.lessonType === 'video'
-                                          ? theme.palette.info.main
-                                          : theme.palette.warning.main,
-                                      transition: 'all 0.2s',
-                                    }}
-                                  >
-                                    {isLocked ? (
-                                      <Lock size={16} />
-                                    ) : lesson?.lessonType === 'video' ? (
-                                      <Video size={16} />
-                                    ) : (
-                                      <FileText size={16} />
-                                    )}
-                                  </Box>
-
-                                  <Box flex={1}>
-                                    <Typography
-                                      variant="body2"
-                                      sx={{
-                                        fontWeight: isSelected ? 600 : 500,
-                                        color: isSelected
-                                          ? theme.palette.primary.main
-                                          : theme.palette.text.primary,
-                                        mb: 0.5,
-                                      }}
-                                    >
-                                      {lesson?.title}
-                                    </Typography>
-                                    <Box
-                                      display="flex"
-                                      alignItems="center"
-                                      gap={1}
-                                    >
-                                      {typeof lesson?.durationInSeconds ===
-                                        'number' && (
-                                        <Box
-                                          display="flex"
-                                          alignItems="center"
-                                          gap={0.5}
-                                        >
-                                          <Clock
-                                            size={12}
-                                            color={theme.palette.text.secondary}
-                                          />
-                                          <Typography
-                                            variant="caption"
-                                            color="text.secondary"
-                                          >
-                                            {handleFormatSeconds(
-                                              lesson.durationInSeconds as number,
-                                            )}
-                                          </Typography>
-                                        </Box>
-                                      )}
-                                      {lesson?.isFree === true &&
-                                        !courseData?.data?.isCourseBought && (
-                                          <Chip
-                                            label="Free"
-                                            size="small"
-                                            sx={{
-                                              height: 16,
-                                              fontSize: '0.65rem',
-                                              background: alpha(
-                                                theme.palette.success.main,
-                                                0.1,
-                                              ),
-                                              color: theme.palette.success.main,
-                                              '& .MuiChip-label': {
-                                                px: 1,
-                                              },
-                                            }}
-                                          />
-                                        )}
-                                    </Box>
-                                  </Box>
-
-                                  {isSelected && (
-                                    <PlayCircle
-                                      size={18}
-                                      color={theme.palette.primary.main}
-                                    />
+                                  {isLocked ? (
+                                    <Lock size={16} />
+                                  ) : lesson?.lessonType === 'video' ? (
+                                    <Video size={16} />
+                                  ) : (
+                                    <FileText size={16} />
                                   )}
                                 </Box>
+
+                                <Box flex={1}>
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      fontWeight: isSelected ? 600 : 500,
+                                      color: isSelected
+                                        ? theme.palette.primary.main
+                                        : theme.palette.text.primary,
+                                      mb: 0.5,
+                                    }}
+                                  >
+                                    {lesson?.title}
+                                  </Typography>
+                                  <Box
+                                    display="flex"
+                                    alignItems="center"
+                                    gap={1}
+                                  >
+                                    {typeof lesson?.durationInSeconds ===
+                                      'number' && (
+                                      <Box
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={0.5}
+                                      >
+                                        <Clock
+                                          size={12}
+                                          color={theme.palette.text.secondary}
+                                        />
+                                        <Typography
+                                          variant="caption"
+                                          color="text.secondary"
+                                        >
+                                          {handleFormatSeconds(
+                                            lesson.durationInSeconds as number,
+                                          )}
+                                        </Typography>
+                                      </Box>
+                                    )}
+                                    {lesson?.isFree === true &&
+                                      !courseData?.data?.isCourseBought && (
+                                        <Chip
+                                          label="Free"
+                                          size="small"
+                                          sx={{
+                                            height: 16,
+                                            fontSize: '0.65rem',
+                                            background: alpha(
+                                              theme.palette.success.main,
+                                              0.1,
+                                            ),
+                                            color: theme.palette.success.main,
+                                            '& .MuiChip-label': {
+                                              px: 1,
+                                            },
+                                          }}
+                                        />
+                                      )}
+                                  </Box>
+                                </Box>
+
+                                {isSelected && (
+                                  <PlayCircle
+                                    size={18}
+                                    color={theme.palette.primary.main}
+                                  />
+                                )}
                               </Box>
-                            )
-                          },
-                        )}
+                            </Box>
+                          )
+                        })}
                       </AccordionDetails>
                     </Accordion>
                   ))}

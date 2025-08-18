@@ -1,6 +1,5 @@
 import React from 'react'
 import * as yup from 'yup'
-import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -12,7 +11,6 @@ import {
   Divider,
   TextField,
   Typography,
-  IconButton,
   InputAdornment,
 } from '@mui/material'
 

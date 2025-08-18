@@ -22,32 +22,19 @@ import {
 import { useGetApprovedTutorQuery } from '../../../../services/admin'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 
-interface Expertise {
-  category: string
-}
-
-interface ApprovedBy {
-  firstName: string
-  lastName: string
-}
-
 interface TutorData {
   _id: string
-  userId: string
   firstName: string
   lastName: string
   email: string
-  expertise?: Expertise[]
+  expertise?: Array<{ category: string }>
   lastLoginAt?: string
   approvedDate?: string
-  approvedBy?: ApprovedBy
-}
-
-interface ApprovedTutorResponse {
-  data: TutorData[]
-  totalPages?: number
-  count?: number
-  [key: string]: unknown
+  approvedBy?: {
+    _id?: string
+    firstName: string
+    lastName: string
+  }
 }
 
 const ApprovedTtutors: React.FC = () => {
@@ -61,7 +48,7 @@ const ApprovedTtutors: React.FC = () => {
     page,
     pageSize: 10,
     search,
-  }) as { data: ApprovedTutorResponse | undefined }
+  })
 
   const debouncedSearch = debounce((value: string) => {
     setPage(1)
@@ -167,7 +154,7 @@ const ApprovedTtutors: React.FC = () => {
   const table = useMaterialReactTable({
     columns,
     data: ApprovedTutor?.data ?? [],
-    getRowId: (row: TutorData) => row.userId,
+    getRowId: (row: TutorData) => row._id,
     onRowSelectionChange: setRowSelection,
     state: { rowSelection },
     enablePagination: false,
@@ -230,7 +217,7 @@ const ApprovedTtutors: React.FC = () => {
 
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
         <PaginationComponent
-          data={ApprovedTutor || { totalPages: 0 }}
+          data={ApprovedTutor}
           page={page}
           setPage={setPage}
           disabled={false}

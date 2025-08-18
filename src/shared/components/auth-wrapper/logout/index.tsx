@@ -61,18 +61,18 @@ const Logout: React.FC<LogoutProps> = ({ component, type }) => {
     }
   }
 
-  const handleLanguageChange = (): void => {
+  const handleLanguageChange = () => {
     const item: keyof typeof LANGUAGES = 'ENGLISH'
     const lang: Language = LANGUAGES[item]
     dispatch(updateLanguage({ ...lang, value: item }))
   }
 
-  const handleLogout = async (): Promise<void> => {
+  const handleLogout = async () => {
     try {
       const logout = getLogoutFunction()
       const response = await logout({})
 
-      if (response && 'data' in response && !response.error) {
+      if (response?.data) {
         dispatch(signOut())
         handleLanguageChange()
         await navigate('/')
@@ -88,7 +88,7 @@ const Logout: React.FC<LogoutProps> = ({ component, type }) => {
     logoutRef.current?.openModal()
   }
 
-  const handleCloseModal = (): void => {
+  const handleCloseModal = () => {
     logoutRef.current?.closeModal()
   }
 
@@ -129,7 +129,7 @@ const Logout: React.FC<LogoutProps> = ({ component, type }) => {
             color="error"
             sx={{ fontWeight: 600, textTransform: 'capitalize' }}
             onClick={() => {
-              void handleLogout()
+              handleLogout()
             }}
           >
             {isLoading ? 'Logging out...' : t('application:PROFILE.LOGOUT')}

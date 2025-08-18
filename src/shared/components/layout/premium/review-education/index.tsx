@@ -6,6 +6,7 @@ import { Box, Button, Divider, useTheme, Typography } from '@mui/material'
 
 import { educationApi } from '../../../../../services/education'
 import { useBuyPremiumSubscriptionMutation } from '../../../../../services/admin'
+import type { BuyPremiumSubscriptionRequest } from '@/services/admin.type'
 
 interface TransactionInfo {
   cardHolderName?: string
@@ -17,9 +18,11 @@ interface TransactionInfo {
 
 interface PurchaseDetail {
   _id: string
-  name: string
   price: number
-  purchaseType: string
+  scheduledDate?: string
+  thumbNail?: string
+  title?: string
+  purchaseType: 'COURSE' | 'WEBINAR'
 }
 
 interface ReviewEducationProps {
@@ -51,17 +54,12 @@ const ReviewEducation = ({
   )
 
   const handlePayment = async () => {
-    console.log('Purchase Details:', purchaseDetails)
-    console.log('Purchase Type:', purchaseDetails?.purchaseType)
-
-    const purchaseType = purchaseDetails?.purchaseType || 'PREMIUM'
-    const basePayload: Record<string, unknown> = {
+    const purchaseType = purchaseDetails?.purchaseType
+    const basePayload: BuyPremiumSubscriptionRequest = {
       planId: purchaseDetails?._id || '',
       ...transactionInfo,
       subscriptionType: purchaseType,
     }
-
-    console.log('Payload being sent:', basePayload)
 
     if (purchaseType === 'COURSE') {
       basePayload.courseId = purchaseDetails?._id

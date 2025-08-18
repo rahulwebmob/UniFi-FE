@@ -4,30 +4,20 @@ import { useParams } from 'react-router-dom'
 import { Box, Typography } from '@mui/material'
 
 import { useViewTutorDetailQuery } from '../../../../../../services/admin'
-import type {
-  Education,
-  Certification,
-} from '../../../../../../types/education'
-
-interface TutorDetailsResponse {
-  data?: {
-    tutorDetails?: {
-      education?: Education[]
-      certifications?: Certification[]
-    }
-  }
-}
 
 const Achievements = () => {
   const { id } = useParams()
-  const { data: tutorDetails } = useViewTutorDetailQuery({
-    educatorId: id,
-  }) as { data: TutorDetailsResponse | undefined }
+  const { data: tutorDetails } = useViewTutorDetailQuery(
+    {
+      educatorId: id || '',
+    },
+    {
+      skip: !id,
+    },
+  )
 
-  const educationData: Education[] =
-    tutorDetails?.data?.tutorDetails?.education ?? []
-  const certificationData: Certification[] =
-    tutorDetails?.data?.tutorDetails?.certifications ?? []
+  const educationData = tutorDetails?.data?.education ?? []
+  const certificationData = tutorDetails?.data?.certifications ?? []
 
   return (
     <Box>
@@ -61,11 +51,7 @@ const Achievements = () => {
                   </Typography>
                 </Box>
               </Box>
-              <Box>
-                <Typography variant="body1" color="text.secondary" mt={2}>
-                  {education.year ?? '-'}
-                </Typography>
-              </Box>
+              <Box></Box>
             </Box>
           ))}
         </Box>
@@ -105,11 +91,6 @@ const Achievements = () => {
                       {certificate.organization ?? '-'}
                     </Typography>
                   </Box>
-                </Box>
-                <Box>
-                  <Typography variant="body1" color="text.secondary" mt={2}>
-                    {certificate.year ?? '-'}
-                  </Typography>
                 </Box>
               </Box>
             ))}

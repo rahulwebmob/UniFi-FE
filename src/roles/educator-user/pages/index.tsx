@@ -319,10 +319,6 @@ const Educator: React.FC = () => {
   const { t } = useTranslation('education')
   const { language } = useSelector((state: RootState) => state.app)
 
-  // Responsive breakpoints - same as auth-wrapper
-  // const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-  // const isTablet = useMediaQuery(theme.breakpoints.down('md'))
-  // const isDesktop = useMediaQuery(theme.breakpoints.up('lg'))
 
   const [mp4, setMp4File] = useState<File | null>(null)
   const [cvFile, setCvFile] = useState<File | null>(null)
@@ -387,49 +383,79 @@ const Educator: React.FC = () => {
       Object.keys(data).forEach((name) => {
         const key = name as keyof EducatorFormData
         const value = data[key]
-        if (
-          value &&
-          !(
-            Array.isArray(value) &&
-            value.length === 1 &&
-            (value as unknown[])[0] === ''
+        
+        // Skip null, undefined, or empty values
+        if (value === null || value === undefined || value === '') {
+          return
+        }
+        
+        // Handle file fields
+        if (name === 'cv') {
+          if (cvFile) formData.append(name, cvFile)
+        } else if (name === 'video') {
+          if (mp4) formData.append(name, mp4)
+        } 
+        // Handle special array fields
+        else if (name === 'otherProfileUrls') {
+          const nonEmptyLinks = (value as { link?: string }[]).filter(
+            (urlObject) => urlObject.link && urlObject.link.trim() !== '',
           )
-        ) {
-          if (name === 'cv') {
-            if (cvFile) formData.append(name, cvFile)
-          } else if (name === 'video') {
-            if (mp4) formData.append(name, mp4)
-          } else if (name === 'otherProfileUrls') {
-            const nonEmptyLinks = (value as { link?: string }[]).filter(
-              (urlObject) => urlObject.link,
-            )
-            if (nonEmptyLinks.length) {
-              formData.append(name, JSON.stringify(nonEmptyLinks))
-            }
-          } else if (typeof value === 'object' && Array.isArray(value)) {
-            // Check if all array items are objects with filled fields
-            const allFilled = value.every((item) => {
-              if (
-                typeof item === 'object' &&
-                item !== null &&
-                !Array.isArray(item)
-              ) {
-                return Object.values(item).every(
-                  (val) => val !== '' && val !== null && val !== undefined,
-                )
-              }
-              return false
-            })
-            if (allFilled) {
-              formData.append(name, JSON.stringify(value))
-            }
-          } else if (typeof value === 'object' && value !== null) {
-            formData.append(name, String(value))
+          if (nonEmptyLinks.length > 0) {
+            formData.append(name, JSON.stringify(nonEmptyLinks))
+          }
+        } 
+        // Handle expertise array
+        else if (name === 'expertise') {
+          const nonEmptyExpertise = (value as { category?: string }[]).filter(
+            (item) => item.category && item.category.trim() !== '',
+          )
+          if (nonEmptyExpertise.length > 0) {
+            formData.append(name, JSON.stringify(nonEmptyExpertise))
           }
         }
-        return null
+        // Handle education array
+        else if (name === 'education') {
+          const nonEmptyEducation = (value as { degree?: string; field?: string }[]).filter(
+            (item) => (item.degree && item.degree.trim() !== '') || (item.field && item.field.trim() !== ''),
+          )
+          if (nonEmptyEducation.length > 0) {
+            formData.append(name, JSON.stringify(nonEmptyEducation))
+          }
+        }
+        // Handle certifications array
+        else if (name === 'certifications') {
+          const nonEmptyCerts = (value as { name?: string; organization?: string }[]).filter(
+            (item) => (item.name && item.name.trim() !== '') || (item.organization && item.organization.trim() !== ''),
+          )
+          if (nonEmptyCerts.length > 0) {
+            formData.append(name, JSON.stringify(nonEmptyCerts))
+          }
+        }
+        // Handle other arrays
+        else if (Array.isArray(value)) {
+          const filteredArray = value.filter((item) => {
+            if (typeof item === 'object' && item !== null) {
+              // Check if at least one property has a value
+              return Object.values(item).some(
+                (val) => val !== '' && val !== null && val !== undefined,
+              )
+            }
+            return item !== '' && item !== null && item !== undefined
+          })
+          if (filteredArray.length > 0) {
+            formData.append(name, JSON.stringify(filteredArray))
+          }
+        }
+        // Handle regular string/number values
+        else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+          formData.append(name, String(value))
+        }
+        // Handle other objects (should not stringify to [object Object])
+        else if (typeof value === 'object' && value !== null) {
+          formData.append(name, JSON.stringify(value))
+        }
       })
-      formData.append('language', language?.value)
+      formData.append('language', language?.value || 'ENGLISH')
       const response = await registerTutor({
         data: formData,
         onUploadProgress: (event: { loaded: number; total?: number }) => {
@@ -450,7 +476,6 @@ const Educator: React.FC = () => {
     setCurrentStep((prev) => prev - 1)
   }
 
-  // Render header - same structure as auth-wrapper login
   const renderHeader = () => (
     <Box display="flex" alignItems="center">
       <Box
@@ -491,7 +516,6 @@ const Educator: React.FC = () => {
     </Box>
   )
 
-  // Show ThankYou component if form is successfully submitted
   if (showThankYou) {
     return <ThankYou text={thankYouText} />
   }

@@ -107,11 +107,11 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
   const handleDecline = async (reason: string) => {
     if (deleteUser) {
       const response = await tutorStatus({
-        educatorId: deleteUser,
-        status: 'declined' as const,
-        comments: reason,
+        educatorIds: [deleteUser],
+        approval: false,
+        declinedReason: reason,
       })
-      if ('data' in response || !('error' in response)) {
+      if (response?.data) {
         confirmationRef.current?.closeModal()
         onClose()
       }
@@ -120,10 +120,10 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
 
   const handleAccept = async (id: string) => {
     const response = await tutorStatus({
-      educatorId: id,
-      status: 'approved' as const,
+      educatorIds: [id],
+      approval: true,
     })
-    if ('data' in response || !('error' in response)) {
+    if (response?.data) {
       onClose()
     }
   }
@@ -132,7 +132,7 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
     const response = await tutorDelete({
       educatorId: id,
     })
-    if ('data' in response || !('error' in response)) {
+    if (response?.data) {
       onClose()
     }
   }
@@ -141,7 +141,7 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
     const response = await reconsiderStatus({
       educatorId: id,
     })
-    if ('data' in response || !('error' in response)) {
+    if (response?.data) {
       onClose()
     }
   }
@@ -290,13 +290,13 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                   </Typography>
                   <Box display="flex" gap={1} flexWrap="wrap">
                     {tutorDetails?.expertise.map(
-                      (expertise: { _id: string; category: string }) => (
+                      (expertise: { category: string }, index: number) => (
                         <Chip
-                          label={expertise.category as string}
+                          key={index}
+                          label={expertise.category}
                           color="primary"
                           variant="outlined"
                           size="small"
-                          key={expertise._id as string}
                           sx={{
                             borderRadius: '8px',
                             fontWeight: 500,
@@ -460,22 +460,19 @@ const TutorDetail = ({ tutor, onClose, filter }: TutorDetailProps) => {
                 >
                   Profiles on other sites
                 </Typography>
-                {tutorDetails?.otherProfileUrls?.length ? (
+                {!!tutorDetails?.otherProfileUrls?.length &&
                   tutorDetails?.otherProfileUrls.map(
-                    (url: { link: string }, idx: number) => (
+                    (url, idx) => (
                       <Link
-                        key={url.link}
-                        href={url.link}
+                        key={idx}
+                        href={url}
                         target="_blank"
                         rel="noopener"
                         color="inherit"
                       >
                         view {idx + 1}
                       </Link>
-                    ),
-                  )
-                ) : (
-                  <Typography variant="body2">-</Typography>
+                  ),
                 )}
               </Box>
             </Box>

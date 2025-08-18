@@ -1,29 +1,19 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import {
+  MaterialReactTable,
+  type MRT_ColumnDef,
+  useMaterialReactTable,
+} from 'material-react-table'
 
-import { Box, Button, Divider, Tooltip, Typography } from '@mui/material'
+import { Box, Chip, Typography, useTheme } from '@mui/material'
 
 import { useGetAllCoursesDetailsQuery } from '../../../../../../services/admin'
+import type { TutorCourseDetail } from '../../../../../../services/admin.type'
 import PaginationComponent from '../../../../../../shared/components/ui-elements/pagination-component'
 
-interface CourseDetail {
-  _id: string
-  thumbNail: string
-  title: string
-  description: string
-  category: string[]
-  price: number
-  totalPurchased: number
-}
-
-interface CoursesResponse {
-  data?: {
-    courses: CourseDetail[]
-    totalPages?: number
-  }
-}
-
 const Courses = () => {
+  const theme = useTheme()
   const { id } = useParams()
   const [page, setPage] = useState(1)
 
@@ -31,114 +21,217 @@ const Courses = () => {
     {
       educatorId: id || '',
       page,
-      pageSize: 10,
+      limit: 10,
     },
     {
       skip: !id,
     },
-  ) as { data: CoursesResponse | undefined }
+  )
 
-  const coursesData: CourseDetail[] = coursesDetails?.data?.courses ?? []
+  const coursesData = coursesDetails?.data?.courses ?? []
+
+  const columns = useMemo<MRT_ColumnDef<TutorCourseDetail>[]>(
+    () => [
+      {
+        accessorKey: 'thumbNail',
+        header: 'Thumbnail',
+        size: 100,
+        Cell: ({ cell }) => {
+          const thumbnail = cell.getValue<string>()
+          return thumbnail ? (
+            <Box
+              component="img"
+              src={thumbnail}
+              alt="Course thumbnail"
+              sx={{
+                width: 80,
+                height: 60,
+                objectFit: 'cover',
+                borderRadius: '8px',
+              }}
+            />
+          ) : (
+            <Box
+              sx={{
+                width: 80,
+                height: 60,
+                backgroundColor: theme.palette.grey[200],
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Typography variant="caption" color="text.secondary">
+                No Image
+              </Typography>
+            </Box>
+          )
+        },
+      },
+      {
+        accessorKey: 'title',
+        header: 'Title',
+        size: 200,
+        Cell: ({ cell }) => (
+          <Typography sx={{ fontWeight: 500 }}>
+            {cell.getValue<string>() || '-'}
+          </Typography>
+        ),
+      },
+      {
+        accessorKey: 'description',
+        header: 'Description',
+        size: 250,
+        Cell: ({ cell }) => {
+          const description = cell.getValue<string>()
+          return (
+            <Typography
+              variant="body2"
+              sx={{
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+              title={description}
+            >
+              {description || '-'}
+            </Typography>
+          )
+        },
+      },
+      {
+        accessorKey: 'category',
+        header: 'Categories',
+        size: 200,
+        Cell: ({ cell }) => {
+          const categories = cell.getValue<string[]>()
+          return categories?.length ? (
+            <Box display="flex" gap={0.5} flexWrap="wrap">
+              {categories.map((category) => (
+                <Chip
+                  key={category}
+                  label={category}
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                  sx={{
+                    borderRadius: '6px',
+                    fontSize: '0.75rem',
+                  }}
+                />
+              ))}
+            </Box>
+          ) : (
+            <Typography variant="body2">-</Typography>
+          )
+        },
+      },
+      {
+        accessorKey: 'price',
+        header: 'Price',
+        size: 100,
+        Cell: ({ cell }) => {
+          const price = cell.getValue<number>()
+          return (
+            <Typography
+              sx={{
+                fontWeight: 600,
+                color: theme.palette.success.main,
+              }}
+            >
+              ${price || 0}
+            </Typography>
+          )
+        },
+      },
+      {
+        accessorKey: 'totalPurchased',
+        header: 'Purchases',
+        size: 120,
+        Cell: ({ cell }) => {
+          const purchased = cell.getValue<number>()
+          return (
+            <Typography variant="body2">
+              {purchased || 0} {purchased === 1 ? 'purchase' : 'purchases'}
+            </Typography>
+          )
+        },
+      },
+    ],
+    [theme],
+  )
+
+  const table = useMaterialReactTable({
+    columns,
+    data: coursesData,
+    getRowId: (row) => row._id,
+    enablePagination: false,
+    enableTopToolbar: false,
+    enableBottomToolbar: false,
+    enableColumnActions: false,
+    enableColumnFilters: false,
+    enableSorting: false,
+    enableDensityToggle: false,
+    enableFullScreenToggle: false,
+    enableGlobalFilter: false,
+    enableHiding: false,
+    enableRowSelection: false,
+    muiTableProps: {
+      sx: {
+        tableLayout: 'fixed',
+      },
+    },
+    muiTableBodyCellProps: {
+      sx: {
+        borderBottom: '1px solid',
+        borderColor: theme.palette.divider,
+      },
+    },
+  })
 
   return (
     <Box>
-      <Typography component="p" mt={2} mb={1} display="block">
+      <Typography
+        variant="h6"
+        sx={{
+          fontWeight: 600,
+          mb: 2,
+          color: theme.palette.text.primary,
+        }}
+      >
         Courses
       </Typography>
-      {coursesData.length ? (
+
+      {coursesData.length > 0 ? (
+        <>
+          <MaterialReactTable table={table} />
+          {coursesDetails?.data && (
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+              <PaginationComponent
+                data={coursesDetails.data}
+                page={page}
+                setPage={setPage}
+              />
+            </Box>
+          )}
+        </>
+      ) : (
         <Box
-          display="flex"
-          gap="10px"
-          flexWrap="wrap"
           sx={{
-            '& .award': {
-              background: (theme) => theme.palette.primary.light,
-              p: 2,
-              borderRadius: '12px',
-              width: '335px',
-            },
+            p: 4,
+            textAlign: 'center',
+            backgroundColor: theme.palette.background.paper,
+            borderRadius: '8px',
+            border: `1px solid ${theme.palette.divider}`,
           }}
         >
-          {coursesData.map((coursesDetail) => (
-            <Box className="award" key={coursesDetail._id}>
-              <Box
-                component="img"
-                src={coursesDetail.thumbNail}
-                alt="Description of the image"
-                sx={{ width: '100%', height: '180px', objectFit: 'cover' }}
-              />
-              <Typography component="p" display="block" my={1}>
-                {coursesDetail.title}
-              </Typography>
-              <Tooltip title={coursesDetail.description} arrow>
-                <Typography
-                  component="p"
-                  color="text.secondary"
-                  sx={{
-                    display: '-webkit-box',
-                    WebkitLineClamp: 3,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    wordWrap: 'break-word',
-                  }}
-                  mb={2}
-                >
-                  {coursesDetail.description}
-                </Typography>
-              </Tooltip>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                my={1}
-                gap="2px"
-                flexWrap="wrap"
-              >
-                {coursesDetail.category?.map((category) => (
-                  <Button
-                    key={category}
-                    size="small"
-                    variant="outlined"
-                    color="secondary"
-                  >
-                    {category}
-                  </Button>
-                ))}
-                <Typography component="p" color="primary.main">
-                  at ${coursesDetail.price}
-                </Typography>
-              </Box>
-              <Divider
-                sx={{
-                  my: 1,
-                  borderColor: (theme) => theme.palette.grey[300],
-                }}
-              />
-              <Box display="flex" justifyContent="space-between" mt={1}>
-                <Typography
-                  variant="body1"
-                  component="i"
-                  color="text.secondary"
-                >
-                  {coursesDetail.totalPurchased}{' '}
-                  {coursesDetail.totalPurchased > 1 ? 'purchases' : 'purchase'}
-                </Typography>
-              </Box>
-            </Box>
-          ))}
+          <Typography variant="body1" color="text.secondary">
+            No courses available
+          </Typography>
         </Box>
-      ) : (
-        <Typography variant="body1" color="text.secondary" mt={2}>
-          No courses available.
-        </Typography>
-      )}
-
-      {coursesData.length > 0 && (
-        <PaginationComponent
-          data={coursesDetails?.data}
-          page={page}
-          setPage={setPage}
-        />
       )}
     </Box>
   )

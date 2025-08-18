@@ -44,26 +44,16 @@ import {
   useGetEducationTutorApplicationQuery,
 } from '../../../../services/admin'
 
-// Interface definitions
-interface Expertise {
-  category: string
-  [key: string]: unknown
-}
-
 interface TutorData {
   _id: string
   firstName?: string
   lastName?: string
   email?: string
-  expertise?: Expertise[]
+  expertise?: Array<{ category: string }>
   userId?: string
   declinedReason?: string
-  [key: string]: unknown
-}
-
-interface TutorApiResponse {
-  data: TutorData[]
-  count?: number
+  createdAt?: string
+  status?: string
   [key: string]: unknown
 }
 
@@ -76,9 +66,6 @@ interface ModalRef {
   closeModal: () => void
 }
 
-// CellProps interface removed - not used
-
-// Helper functions
 const HELPER = {
   getDateFormatWithoutTime: (date: string | Date | null | undefined) => {
     if (!date) return ''
@@ -98,21 +85,16 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
   const [viewTutorData, setViewTutorData] = useState<TutorData | null>(null)
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState('ALL')
+  const [filter, setFilter] = useState<'ALL' | 'DECLINED'>('ALL')
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
   const [deleteUser, setDeleteUser] = useState<string | undefined>()
 
   const { data: tutorData } = useGetEducationTutorApplicationQuery({
     page,
     pageSize: 10,
-    status: filter as
-      | 'pending'
-      | 'approved'
-      | 'declined'
-      | 'reconsidering'
-      | undefined,
+    filter,
     ...(search ? { search } : {}),
-  }) as { data: TutorApiResponse | undefined }
+  })
 
   const [tutorStatus] = useApproveEducatorStatusMutation()
   const [reconsiderStatus, { isLoading }] = useReconsiderStatusMutation()
@@ -128,16 +110,14 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
   }, [])
 
   const handleCheckboxAccept = async () => {
-    const filterData = tutorData?.data.filter(
-      (_, index) => rowSelection[index.toString()],
+    const selectedIds = Object.keys(rowSelection).filter(
+      (key) => rowSelection[key],
     )
-    const AcceptedIds = filterData?.map((item) => item._id) ?? []
 
-    // Process each educator individually
-    for (const educatorId of AcceptedIds) {
+    if (selectedIds.length > 0) {
       await tutorStatus({
-        educatorId,
-        status: 'approved' as const,
+        educatorIds: selectedIds,
+        approval: true,
       })
     }
     setRowSelection({})
@@ -146,22 +126,20 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
   const handleDecline = async (reason: string) => {
     if (deleteUser) {
       await tutorStatus({
-        educatorId: deleteUser,
-        status: 'declined' as const,
-        comments: reason,
+        educatorIds: [deleteUser],
+        approval: false,
+        declinedReason: reason,
       })
     } else {
-      const filterData = tutorData?.data.filter(
-        (_, index) => rowSelection[index.toString()],
+      const selectedIds = Object.keys(rowSelection).filter(
+        (key) => rowSelection[key],
       )
-      const DeclinedIds = filterData?.map((item) => item._id) ?? []
 
-      // Process each educator individually
-      for (const educatorId of DeclinedIds) {
+      if (selectedIds.length > 0) {
         await tutorStatus({
-          educatorId,
-          status: 'declined' as const,
-          comments: reason,
+          educatorIds: selectedIds,
+          approval: false,
+          declinedReason: reason,
         })
       }
     }
@@ -181,8 +159,8 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
   const handleAccept = useCallback(
     async (tutor: TutorData) => {
       await tutorStatus({
-        educatorId: tutor._id,
-        status: 'approved' as const,
+        educatorIds: [tutor._id],
+        approval: true,
       })
     },
     [tutorStatus],
@@ -198,12 +176,10 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
   )
 
   const handleBulkReconsider = async () => {
-    const filterData = tutorData?.data.filter(
-      (_, index) => rowSelection[index.toString()],
+    const selectedIds = Object.keys(rowSelection).filter(
+      (key) => rowSelection[key]
     )
-    const selectedIds = filterData?.map((item) => item._id) ?? []
 
-    // Process each educator individually
     for (const educatorId of selectedIds) {
       await reconsiderStatus({
         educatorId,
@@ -628,7 +604,9 @@ const TutorApplicants = ({ type }: TutorApplicantsProps) => {
           {!type ? (
             <Tabs
               value={filter}
-              onChange={(_, newValue: string) => setFilter(newValue)}
+              onChange={(_, newValue) =>
+                setFilter(newValue as 'ALL' | 'DECLINED')
+              }
               sx={{
                 minHeight: 40,
                 '& .MuiTabs-indicator': {

@@ -132,7 +132,11 @@ const ChangePassword = ({
     if (isUserAdmin) {
       response = await updateAdminPassword({ ...values, update: 'password' })
     } else if (!isResetPassword) {
-      response = await resetUserPassword({ ...values, update: 'password' })
+      response = await resetUserPassword({
+        newPassword: values.password,
+        currentPassword: values.currentPassword,
+        confirmPassword: values.confirmPassword,
+      })
       if (isPasswordMissing) dispatch(updateUser({ isPasswordMissing: false }))
     }
     if (!response?.error) {

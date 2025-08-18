@@ -87,7 +87,7 @@ function useGoogleLogin(options: UseGoogleLoginOptions) {
 
     if (window.google?.accounts?.oauth2) {
       const client = window.google.accounts.oauth2.initTokenClient({
-        client_id: 123,
+        client_id: '1075571822700-qgpstiaffn0o2b5n4r8eku6rfifmorrb.apps.googleusercontent.com',
         scope: 'openid profile email',
         callback: (response: TokenResponse) => {
           if (response.error) {

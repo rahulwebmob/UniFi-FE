@@ -1,55 +1,40 @@
+import React, { useRef } from 'react'
+import ModalBox from '../../../../../../../shared/components/ui-elements/modal-box'
+import { Box, Button, IconButton, Typography } from '@mui/material'
 import { X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useRef, useEffect } from 'react'
 
-import { Box, Button, IconButton, Typography } from '@mui/material'
+interface DeleteModalProps {
+  handleDelete: () => void
+  message?: string
+  isDisabled?: boolean
+}
 
-import ModalBox from '../../../../../../../shared/components/ui-elements/modal-box'
-import type { DeleteModalProps } from '../../../../../../../types/education'
+interface ModalBoxHandle {
+  openModal: () => void
+  closeModal: () => void
+}
 
-const DeleteModal = ({
-  handleDelete,
-  message,
-  isDisabled,
-  forceOpen,
-  onClose,
-}: DeleteModalProps) => {
+const DeleteModal: React.FC<DeleteModalProps> = ({ 
+  handleDelete, 
+  message = '', 
+  isDisabled = false 
+}) => {
   const { t } = useTranslation('education')
-  const deleteRef = useRef<{
-    openModal: () => void
-    closeModal: () => void
-  } | null>(null)
-
-  useEffect(() => {
-    if (forceOpen && deleteRef.current) {
-      deleteRef.current.openModal()
-    }
-  }, [forceOpen])
-
-  const handleClose = () => {
-    deleteRef.current?.closeModal()
-    if (onClose) onClose()
-  }
-
-  const handleConfirm = () => {
-    handleDelete()
-    handleClose()
-  }
-
+  const deleteRef = useRef<ModalBoxHandle>(null)
+  
   return (
     <>
-      {!forceOpen && (
-        <IconButton
-          color="error"
-          disabled={isDisabled}
-          onClick={() => deleteRef.current?.openModal()}
-        >
-          <X size={20} />
-        </IconButton>
-      )}
-      <ModalBox ref={deleteRef} onCloseModal={onClose}>
+      <IconButton
+        color="error"
+        disabled={isDisabled}
+        onClick={() => deleteRef.current?.openModal()}
+      >
+        <X size={20} />
+      </IconButton>
+      <ModalBox ref={deleteRef}>
         <Box p={2}>
-          <Typography component="p" mb={3} maxWidth={350}>
+          <Typography variant="body1" mb={3} maxWidth={350}>
             {t('EDUCATOR.DELETE_MODAL.CONFIRM_DELETE_MSG', {
               message,
             })}
@@ -63,7 +48,10 @@ const DeleteModal = ({
             }}
           >
             <Button
-              onClick={handleConfirm}
+              onClick={() => {
+                handleDelete()
+                deleteRef.current?.closeModal()
+              }}
               size="small"
               variant="contained"
               color="secondary"
@@ -74,7 +62,7 @@ const DeleteModal = ({
               size="small"
               variant="contained"
               color="error"
-              onClick={handleClose}
+              onClick={() => deleteRef.current?.closeModal()}
             >
               {t('EDUCATOR.DELETE_MODAL.CANCEL')}
             </Button>

@@ -21,10 +21,20 @@ const CourseDetails: React.FC = () => {
   )
   const courseData = data?.data
 
-  const purchaseDetails = useMemo(() => ({
-    ...courseData,
-    purchaseType: 'COURSE'
-  }), [courseData])
+  const purchaseDetails = useMemo(
+    () =>
+      courseData
+        ? {
+            _id: courseData._id || '',
+            price: courseData.price || 0,
+            scheduledDate: undefined,
+            thumbNail: courseData.thumbNail,
+            title: courseData.title,
+            purchaseType: 'COURSE' as const,
+          }
+        : null,
+    [courseData],
+  )
 
   const handleOpenPremiumModal = () => {
     subscriptionRef.current?.openModal()
@@ -43,11 +53,9 @@ const CourseDetails: React.FC = () => {
           handleOpenPremiumModal={handleOpenPremiumModal}
         />
       )}
-      <PremiumModal
-        ref={subscriptionRef}
-        purchaseDetails={purchaseDetails}
-        isEducation
-      />
+      {!!purchaseDetails && (
+        <PremiumModal ref={subscriptionRef} purchaseDetails={purchaseDetails} />
+      )}
     </ApiResponseWrapper>
   )
 }

@@ -16,12 +16,13 @@ import BillingAddress from './billing-adress'
 import ReviewEducation from './review-education'
 import ModalBox from '../../ui-elements/modal-box'
 
-interface PurchaseDetails {
+interface PurchaseDetail {
   _id: string
-  name: string
   price: number
-  purchaseType: string
-  displayName: string
+  scheduledDate?: string
+  thumbNail?: string
+  title?: string
+  purchaseType: 'COURSE' | 'WEBINAR'
 }
 
 interface PremiumModalRef {
@@ -30,7 +31,7 @@ interface PremiumModalRef {
 }
 
 interface PremiumModalProps {
-  purchaseDetails: PurchaseDetails
+  purchaseDetails: PurchaseDetail
 }
 
 const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
@@ -99,10 +100,10 @@ const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
         case 2:
           return (
             <ReviewEducation
-              setCurrentStep={setCurrentStep}
-              transactionInfo={subscriptionFormData}
               closeModal={closeModal}
+              setCurrentStep={setCurrentStep}
               purchaseDetails={purchaseDetails}
+              transactionInfo={subscriptionFormData}
             />
           )
         default:
@@ -130,9 +131,9 @@ const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {purchaseDetails?.purchaseType === 'COURSE'
-                ? `Purchase access to ${purchaseDetails?.displayName || 'this course'}`
+                ? `Purchase access to ${purchaseDetails?.title || 'this course'}`
                 : purchaseDetails?.purchaseType === 'WEBINAR'
-                  ? `Register for ${purchaseDetails?.displayName || 'this webinar'}`
+                  ? `Register for ${purchaseDetails?.title || 'this webinar'}`
                   : 'Subscribe to premium plan'}
             </Typography>
           </Box>
@@ -148,7 +149,7 @@ const PremiumModal = forwardRef<PremiumModalRef, PremiumModalProps>(
             }}
           >
             <Stepper activeStep={currentStep} alternativeLabel>
-              {steps.map((step, index) => (
+              {steps.map((step) => (
                 <Step key={step.label}>
                   <StepLabel
                     StepIconComponent={(props) => (

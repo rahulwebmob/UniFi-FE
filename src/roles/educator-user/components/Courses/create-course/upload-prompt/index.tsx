@@ -1,19 +1,17 @@
-// React import removed - JSX transform handles it
-import { Video } from 'lucide-react'
+import React from 'react'
+import { Box, Typography, LinearProgress } from '@mui/material'
+import { VideoIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-
-import { Box, Paper, Typography, LinearProgress } from '@mui/material'
 
 interface UploadPromptProps {
   progress: number
 }
 
-const UploadPrompt = ({ progress }: UploadPromptProps) => {
+const UploadPrompt: React.FC<UploadPromptProps> = ({ progress }) => {
   const { t } = useTranslation('education')
 
   return (
-    <Paper
-      elevation={3}
+    <Box
       sx={{
         p: 1,
         display: 'flex',
@@ -22,7 +20,7 @@ const UploadPrompt = ({ progress }: UploadPromptProps) => {
         borderRadius: '10px',
       }}
     >
-      <Video size={50} />
+      <VideoIcon size={50} />
 
       <Box sx={{ flex: 1 }}>
         <Typography
@@ -68,7 +66,7 @@ const UploadPrompt = ({ progress }: UploadPromptProps) => {
           </Typography>
         </Box>
       </Box>
-    </Paper>
+    </Box>
   )
 }
 

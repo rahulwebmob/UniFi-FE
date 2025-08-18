@@ -1,77 +1,66 @@
-import { Plus, Edit2 } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
-import { useRef, useEffect } from 'react'
-
-import { Box, Button, useTheme, IconButton } from '@mui/material'
-
-import AddLesson from './add-lesson'
+import React, { useRef } from 'react'
+import { Typography, Box, IconButton } from '@mui/material'
+import { Edit, Plus } from 'lucide-react'
 import ModalBox from '../../../../../../../shared/components/ui-elements/modal-box'
-import type {
-  AddLessonProps,
-  ModalBoxHandle,
-} from '../../../../../../../types/education.types'
+import { useTranslation } from 'react-i18next'
+import AddLesson from './add-lesson'
 
-interface AddLessonsModalProps extends Omit<AddLessonProps, 'handleClose'> {
-  onClose: () => void
-  openModal?: boolean
+interface AddLessonsModalProps {
+  chapterId: string
+  courseId: string
+  isEdit: boolean
+  defaultValues?: {
+    lessonTitle: string
+    resource: string
+    isFree?: boolean
+  }
+  lessonId?: string
 }
 
-const AddLessonsModal = ({
+interface ModalBoxHandle {
+  openModal: () => void
+  closeModal: () => void
+}
+
+const AddLessonsModal: React.FC<AddLessonsModalProps> = ({
   chapterId,
   courseId,
   isEdit,
-  defaultValues,
-  lessonId,
-  onClose,
-  openModal = false,
-}: AddLessonsModalProps) => {
-  const theme = useTheme()
+  defaultValues = {
+    lessonTitle: '',
+    resource: '',
+    isFree: false,
+  },
+  lessonId = '',
+}) => {
   const { t } = useTranslation('education')
-  const lessionRef = useRef<ModalBoxHandle | null>(null)
-
-  useEffect(() => {
-    if (openModal && lessionRef.current) {
-      lessionRef.current.openModal()
-    }
-  }, [openModal])
+  const lessionRef = useRef<ModalBoxHandle>(null)
 
   return (
     <>
       {isEdit ? (
-        <IconButton
-          size="small"
-          onClick={() => lessionRef.current?.openModal()}
-          sx={{
-            color: theme.palette.primary.main,
-            '&:hover': {
-              backgroundColor: theme.palette.primary.main + '10',
-            },
-          }}
-        >
-          <Edit2 size={16} />
+        <IconButton color="primary" onClick={() => lessionRef.current?.openModal()}>
+          <Edit size={20} />
         </IconButton>
       ) : (
         <Box display="flex" justifyContent="flex-end">
-          <Button
+          <Typography
             onClick={() => lessionRef.current?.openModal()}
-            startIcon={<Plus size={16} />}
-            variant="outlined"
-            size="small"
-            sx={{
-              textTransform: 'none',
-              borderColor: theme.palette.primary.main,
-              color: theme.palette.primary.main,
-              '&:hover': {
-                backgroundColor: theme.palette.primary.main + '08',
-                borderColor: theme.palette.primary.main,
-              },
+            variant="body1"
+            color="primary"
+            mt={1}
+            sx={{ 
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5
             }}
           >
-            {t('EDUCATOR.SAVED_CHAPTERS.ADD_MORE_LESSON')}
-          </Button>
+            <Plus size={20} /> {t('EDUCATOR.SAVED_CHAPTERS.ADD_MORE_LESSON')}
+          </Typography>
         </Box>
       )}
-      <ModalBox ref={lessionRef} size="md" onCloseModal={onClose}>
+      <ModalBox ref={lessionRef} size="sm">
         <AddLesson
           chapterId={chapterId}
           courseId={courseId}

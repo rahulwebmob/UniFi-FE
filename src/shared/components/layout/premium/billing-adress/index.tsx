@@ -1,6 +1,5 @@
 import React from 'react'
 import * as yup from 'yup'
-import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -10,14 +9,12 @@ import {
   Grid,
   Link,
   Button,
-  Divider,
   MenuItem,
   useTheme,
   Checkbox,
   TextField,
   Typography,
   RadioGroup,
-  IconButton,
   FormControl,
   FormHelperText,
   FormControlLabel,
@@ -207,7 +204,7 @@ const BillingAddress: React.FC<BillingAddressProps> = ({
                   </MenuItem>
                   {countries.map((item) => (
                     <MenuItem key={item.value} value={item.value}>
-                      {item.label || item.html || item.value}
+                      {item.value}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -334,7 +331,7 @@ const BillingAddress: React.FC<BillingAddressProps> = ({
                       {t('application:PREMIUM_MODAL.TERMS_AGREEMENT-1')}&nbsp;
                       <Link
                         underline="hover"
-                        href="https://www.quasarmarkets.com/terms-and-conditions/"
+                        href=""
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
@@ -354,7 +351,12 @@ const BillingAddress: React.FC<BillingAddressProps> = ({
             {errors.isAgree?.message}
           </FormHelperText>
         </FormControl>
-        <Box display="flex" justifyContent="space-between" alignItems="center" gap={1}>
+        <Box
+          gap={1}
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+        >
           <Button
             variant="outlined"
             onClick={() => setCurrentStep((prev) => prev - 1)}

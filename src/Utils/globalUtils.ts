@@ -72,6 +72,72 @@ const exportToCSV = (
   window.URL.revokeObjectURL(url)
 }
 
+interface Html2PdfOptions {
+  filename?: string
+  margin?: number | [number, number, number, number]
+  scale?: number
+  orientation?: 'portrait' | 'landscape'
+  onSuccess?: () => void
+  onError?: (error: unknown) => void
+}
+
+const convertHtmlToPdf = async (
+  htmlContent: string,
+  options: Html2PdfOptions = {},
+): Promise<void> => {
+  const {
+    filename = 'document.pdf',
+    margin = 10,
+    scale = 2,
+    orientation = 'portrait',
+    onSuccess,
+    onError,
+  } = options
+
+  try {
+    // Create a temporary div to hold the HTML content
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = htmlContent
+
+    // Dynamically import html2pdf.js
+    const html2pdf = (await import('html2pdf.js')).default
+
+    // Generate and save the PDF
+    await html2pdf()
+      .from(tempDiv)
+      .set({
+        margin,
+        filename,
+        html2canvas: { scale },
+        jsPDF: { orientation },
+      })
+      .save()
+
+    // Call success callback if provided
+    onSuccess?.()
+  } catch (error) {
+    console.error('Error converting HTML to PDF:', error)
+    // Call error callback if provided
+    onError?.(error)
+  }
+}
+
+const generateInvoicePdf = async (
+  htmlContent: string,
+  invoiceId: string,
+  onSuccess?: () => void,
+  onError?: (error: unknown) => void,
+): Promise<void> => {
+  await convertHtmlToPdf(htmlContent, {
+    filename: `Invoice_${invoiceId}.pdf`,
+    margin: 10,
+    scale: 2,
+    orientation: 'portrait',
+    onSuccess,
+    onError,
+  })
+}
+
 export {
   getCookie,
   getLogoCdn,
@@ -83,6 +149,8 @@ export {
   generateImageUrl,
   generateUniqueId,
   handleDateAndTime,
+  convertHtmlToPdf,
+  generateInvoicePdf,
   scriptForFreeSignUp,
   getImageWebsiteCdnUrl,
   getLocaleByLanguageCode,

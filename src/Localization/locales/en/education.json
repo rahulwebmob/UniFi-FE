@@ -328,7 +328,7 @@
     }
   },
   "REGISTER_EDUCATOR": {
-    "THANK_YOU_TEXT": "Thank you for submitting your response. Our team will review your request and respond within the next 72 hours. Please be patient while you wait.",
+    "THANK_YOU_TEXT": "Thank you for submitting your response. Our team will review your request.",
     "VALIDATION": {
       "NAME_REQUIRED": "Name is required",
       "LAST_NAME_REQUIRED": "Last Name is required",

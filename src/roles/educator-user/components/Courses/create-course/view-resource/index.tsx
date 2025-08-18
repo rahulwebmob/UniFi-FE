@@ -1,43 +1,48 @@
+import React, { useRef, useState, useMemo } from 'react'
+import { Box, Button } from '@mui/material'
+import { useSelector } from 'react-redux'
+import { VideoIcon, FileText, Lock } from 'lucide-react'
+import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
+import { useDownloadResourceMutation } from '../../../../../../services/admin'
+import ContentPreview from '../../../../../../shared/components/layout/Course/content-preview'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Lock, Video, FileText } from 'lucide-react'
-import { useRef, useMemo, useState } from 'react'
+import type { RootState } from '../../../../../../redux/types'
 
-import { Box, Button } from '@mui/material'
-
-import { useDownloadResourceMutation } from '../../../../../../services/admin'
-import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
-import ContentPreview from '../../../../../../shared/components/layout/Course/content-preview'
+interface LessonDetail {
+  _id: string
+  courseId: string
+  chapterId: string
+  lessonType?: string
+  isFree?: boolean
+  isCourseBought?: boolean
+  status?: string
+  [key: string]: unknown
+}
 
 interface ViewResourceProps {
-  lessonDetail?: {
-    lessonType?: string
-    isFree?: boolean
-    isCourseBought?: boolean
-    resourceUrl?: string
-    _id?: string
-    courseId?: string
-    chapterId?: string
-    url?: string
-    status?: string
-  }
+  lessonDetail: LessonDetail
   isEdit?: boolean
   handleOpenPremiumModal?: () => void
 }
 
-const ViewResource = ({
-  lessonDetail,
-  isEdit,
-  handleOpenPremiumModal,
-}: ViewResourceProps) => {
-  const videoRef = useRef<{
-    openModal: () => void
-    closeModal: () => void
-  } | null>(null)
+interface ModalBoxHandle {
+  openModal: () => void
+  closeModal: () => void
+}
+
+const ViewResource: React.FC<ViewResourceProps> = ({ 
+  lessonDetail, 
+  isEdit = true, 
+  handleOpenPremiumModal = () => {} 
+}) => {
+  const videoRef = useRef<ModalBoxHandle>(null)
   const navigate = useNavigate()
   const { t } = useTranslation('education')
+  const { direction } = useSelector((state: RootState) => state.app.language)
   const [resourceUrl, setResourceUrl] = useState('')
   const [downloadResource] = useDownloadResourceMutation()
+  const isRTL = direction === 'rtl'
 
   const isPdf = useMemo(
     () => lessonDetail?.lessonType === 'pdf',
@@ -51,30 +56,22 @@ const ViewResource = ({
   const handleViewResource = async () => {
     try {
       const response = await downloadResource({
-        resourceKey: lessonDetail?.resourceUrl || '',
         lessonId: lessonDetail?._id,
+        courseId: lessonDetail?.courseId,
+        chapterId: lessonDetail?.chapterId,
       })
 
-      if (
-        response?.data &&
-        typeof response.data === 'object' &&
-        response.data !== null &&
-        !Array.isArray(response.data) &&
-        'url' in response.data &&
-        typeof (response.data as { url: unknown }).url === 'string'
-      ) {
-        if (videoRef.current) {
-          videoRef.current.openModal()
-        }
-        setResourceUrl(String((response.data as { url: unknown }).url))
+      if ('data' in response && response?.data?.url) {
+        videoRef.current?.openModal()
+        setResourceUrl(response.data.url)
       }
-    } catch {
-      // error
+    } catch (error) {
+      console.error('Error downloading resource:', error)
     }
   }
 
   const handleRedirectLesson = () => {
-    void navigate(`/dashboard/course/${lessonDetail?.courseId}/lessons`, {
+    navigate(`/dashboard/course/${lessonDetail?.courseId}/lessons`, {
       state: {
         chapterId: lessonDetail?.chapterId,
         lessonId: lessonDetail?._id,
@@ -88,35 +85,15 @@ const ViewResource = ({
         <Button
           size="small"
           variant="outlined"
-          startIcon={isPdf ? <FileText size={16} /> : <Video size={16} />}
+          startIcon={isPdf ? <FileText size={16} /> : <VideoIcon size={16} />}
           onClick={isEdit ? handleViewResource : handleRedirectLesson}
           color={isPdf ? 'secondary' : 'primary'}
           disabled={lessonDetail?.status !== 'completed'}
           sx={{
-            gap: '4px',
-            minWidth: '130px',
+            gap: isRTL ? '10px' : '0',
+            width: '130px',
             background: 'none',
-            borderColor: (theme) =>
-              isPdf ? theme.palette.text.secondary : theme.palette.primary.main,
-            color: (theme) =>
-              isPdf ? theme.palette.text.primary : theme.palette.primary.main,
             borderRadius: '8px',
-            textTransform: 'none',
-            fontWeight: 500,
-            '& .MuiButton-startIcon': {
-              marginRight: '6px',
-              '& svg': {
-                fontSize: '18px',
-              },
-            },
-            '&:hover': {
-              borderColor: (theme) =>
-                isPdf ? theme.palette.text.primary : theme.palette.primary.dark,
-              backgroundColor: (theme) =>
-                isPdf
-                  ? 'rgba(0, 0, 0, 0.04)'
-                  : theme.palette.primary.light + '15',
-            },
           }}
         >
           {isPdf
@@ -133,17 +110,7 @@ const ViewResource = ({
           variant="outlined"
           startIcon={<Lock size={16} />}
           onClick={handleOpenPremiumModal}
-          sx={{
-            minWidth: '130px',
-            textTransform: 'none',
-            fontWeight: 500,
-            '& .MuiButton-startIcon': {
-              marginRight: '6px',
-              '& svg': {
-                fontSize: '18px',
-              },
-            },
-          }}
+          sx={{ width: '130px' }}
           color="warning"
         >
           {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.VIEW_RESOURCE.LOCK')}

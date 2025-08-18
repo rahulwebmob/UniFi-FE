@@ -1,24 +1,27 @@
-import { useTranslation } from 'react-i18next'
-import { NumericFormat } from 'react-number-format'
-import { Controller, useFormContext } from 'react-hook-form'
-
+import React from 'react'
 import {
   Box,
   Grid,
-  Button,
-  useTheme,
   TextField,
   Typography,
-  ButtonGroup,
   FormControl,
+  Button,
+  ButtonGroup,
 } from '@mui/material'
-
+import { useTranslation } from 'react-i18next'
+import { Controller, useFormContext } from 'react-hook-form'
+import { NumericFormat } from 'react-number-format'
+import { useSelector } from 'react-redux'
 import CharacterCount from '../../../character-count'
 import AddCategory from '../../../Webinar/create-webinar/add-category'
+import type { RootState } from '../../../../../../redux/types'
 
-const BasicDetails = () => {
-  const theme = useTheme()
+const BasicDetails: React.FC = () => {
   const { t } = useTranslation('education')
+  const { direction } = useSelector((state: RootState) => state.app.language)
+  const isRTL = direction === 'rtl'
+  const borderRadiusValue = isRTL ? '0' : '4px'
+  const borderRadiusInverse = isRTL ? '4px' : '0'
 
   const {
     watch,
@@ -28,29 +31,20 @@ const BasicDetails = () => {
 
   return (
     <Box>
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
-        {t('EDUCATOR.CREATE_COURSE.BASIC_DETAILS')}
-      </Typography>
-      <Box>
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12 }}>
+      <Box mt={2}>
+        <Grid container spacing={1}>
+          <Grid size={12}>
             <FormControl fullWidth>
-              <Box display="flex" alignItems="center" mb={1}>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {t('EDUCATOR.BASIC_DETAILS.COURSE_TITLE')}
-                  <Typography
-                    color="error.main"
-                    component="span"
-                    sx={{ ml: 0.5 }}
-                  >
-                    *
-                  </Typography>
-                </Typography>
+              <Typography variant="body1" mb={0.5}>
+                {t('EDUCATOR.BASIC_DETAILS.COURSE_TITLE')}{' '}
+                <Typography variant="body1" color="error.main" component="span">
+                  *
+                </Typography>{' '}
                 <CharacterCount
                   maxLength={100}
-                  currentLength={watch('title')?.trim()?.length ?? 0}
+                  currentLength={watch('title')?.trim?.()?.length || 0}
                 />
-              </Box>
+              </Typography>
               <Controller
                 name="title"
                 control={control}
@@ -58,49 +52,31 @@ const BasicDetails = () => {
                   <TextField
                     {...field}
                     placeholder={t('EDUCATOR.BASIC_DETAILS.TITLE_PLACEHOLDER')}
+                    size="small"
                     error={!!errors.title}
-                    helperText={
-                      errors.title?.message
-                        ? String(errors.title.message)
-                        : undefined
-                    }
+                    helperText={errors.title?.message as string}
                     fullWidth
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '8px',
-                      },
-                    }}
                   />
                 )}
               />
 
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ mt: 1, display: 'block' }}
-              >
+              <Typography variant="body1" mb={0.5} color="text.secondary">
                 {t('EDUCATOR.BASIC_DETAILS.IMAGE_DESCRIPTION')}
               </Typography>
             </FormControl>
           </Grid>
-          <Grid size={{ xs: 12 }}>
+          <Grid size={12}>
             <FormControl fullWidth>
-              <Box display="flex" alignItems="center" mb={1}>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {t('EDUCATOR.BASIC_DETAILS.COURSE_SUBTITLE')}
-                  <Typography
-                    color="error.main"
-                    component="span"
-                    sx={{ ml: 0.5 }}
-                  >
-                    *
-                  </Typography>
-                </Typography>
+              <Typography variant="body1" mb={0.5}>
+                {t('EDUCATOR.BASIC_DETAILS.COURSE_SUBTITLE')}{' '}
+                <Typography variant="body1" color="error.main" component="span">
+                  *
+                </Typography>{' '}
                 <CharacterCount
                   maxLength={150}
-                  currentLength={watch('subtitle')?.trim()?.length ?? 0}
+                  currentLength={watch('subtitle')?.trim?.()?.length || 0}
                 />
-              </Box>
+              </Typography>
               <Controller
                 name="subtitle"
                 control={control}
@@ -112,35 +88,25 @@ const BasicDetails = () => {
                     )}
                     size="small"
                     error={!!errors.subtitle}
-                    helperText={
-                      errors.subtitle?.message
-                        ? String(errors.subtitle.message)
-                        : undefined
-                    }
+                    helperText={errors.subtitle?.message as string}
                     fullWidth
                   />
                 )}
               />
             </FormControl>
           </Grid>
-          <Grid size={{ xs: 12 }}>
+          <Grid size={12}>
             <FormControl fullWidth>
-              <Box display="flex" alignItems="center" mb={1}>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {t('EDUCATOR.BASIC_DETAILS.COURSE_DESCRIPTION')}
-                  <Typography
-                    color="error.main"
-                    component="span"
-                    sx={{ ml: 0.5 }}
-                  >
-                    *
-                  </Typography>
-                </Typography>
+              <Typography variant="body1" mb={0.5}>
+                {t('EDUCATOR.BASIC_DETAILS.COURSE_DESCRIPTION')}{' '}
+                <Typography variant="body1" color="error.main" component="span">
+                  *
+                </Typography>{' '}
                 <CharacterCount
                   maxLength={1000}
-                  currentLength={watch('description')?.trim()?.length ?? 0}
+                  currentLength={watch('description')?.trim?.()?.length || 0}
                 />
-              </Box>
+              </Typography>
               <Controller
                 name="description"
                 control={control}
@@ -151,77 +117,50 @@ const BasicDetails = () => {
                       'EDUCATOR.BASIC_DETAILS.CATEGORY_DESCRIPTION',
                     )}
                     multiline
-                    rows={4}
+                    rows={5}
                     variant="outlined"
                     fullWidth
                     error={!!errors.description}
-                    helperText={
-                      errors.description?.message
-                        ? String(errors.description.message)
-                        : undefined
-                    }
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '8px',
-                      },
-                    }}
+                    helperText={errors.description?.message as string}
                   />
                 )}
               />
             </FormControl>
           </Grid>
-          <Grid size={{ xs: 12 }}>
-            <FormControl fullWidth>
-              <Box mb={1}>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {t('EDUCATOR.BASIC_DETAILS.ADD_CATEGORY')}
-                  <Typography
-                    color="error.main"
-                    component="span"
-                    sx={{ ml: 0.5 }}
-                  >
-                    *
-                  </Typography>
-                </Typography>
-              </Box>
-              <AddCategory />
-            </FormControl>
+          <Grid
+            size={12}
+            sx={{
+              '& .MuiChip-root': {
+                border: '1px solid',
+              },
+            }}
+          >
+            <AddCategory />
           </Grid>
-          <Grid size={{ xs: 12 }}>
+          <Grid size={12}>
             <FormControl fullWidth>
-              <Box>
-                <Typography variant="body1" sx={{ fontWeight: 500, mb: 1 }}>
-                  {t('EDUCATOR.BASIC_DETAILS.PRICING_TYPE')}
+              <Box display="flex" alignItems="center" gap="10px" mt={1}>
+                <Typography variant="body1" mb={0.5} fontWeight={600}>
+                  {t('EDUCATOR.BASIC_DETAILS.PRICING')} :
                 </Typography>
                 <Controller
                   name="isPaid"
                   control={control}
-                  defaultValue="free"
+                  defaultValue={false}
                   rules={{
                     required: t(
                       'EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICING_TYPE_REQUIRED',
                     ),
                   }}
                   render={({ field: { onChange, value } }) => (
-                    <ButtonGroup
-                      sx={{
-                        '& .MuiButton-root:not(:last-child)': {
-                          borderRight: 'none',
-                        },
-                      }}
-                    >
+                    <ButtonGroup color="secondary" variant="contained">
                       <Button
-                        variant="outlined"
                         sx={{
-                          backgroundColor: !value
-                            ? 'primary.main'
-                            : 'transparent',
-                          color: !value ? 'white' : 'text.secondary',
-                          borderColor: theme.palette.grey[300],
-                          '&:hover': {
-                            backgroundColor: !value
-                              ? 'primary.dark'
-                              : 'action.hover',
+                          '&:first-of-type': {
+                            borderTopRightRadius: borderRadiusInverse,
+                            borderBottomRightRadius: borderRadiusInverse,
+                            borderTopLeftRadius: borderRadiusValue,
+                            borderBottomLeftRadius: borderRadiusValue,
                           },
                         }}
                         onClick={() => onChange(false)}
@@ -229,17 +168,12 @@ const BasicDetails = () => {
                         {t('EDUCATOR.COMMON_KEYS.FREE')}
                       </Button>
                       <Button
-                        variant="outlined"
                         sx={{
-                          backgroundColor: value
-                            ? 'primary.main'
-                            : 'transparent',
-                          color: value ? 'white' : 'text.secondary',
-                          borderColor: theme.palette.grey[300],
-                          '&:hover': {
-                            backgroundColor: value
-                              ? 'primary.dark'
-                              : 'action.hover',
+                          '&:last-of-type': {
+                            borderTopRightRadius: borderRadiusValue,
+                            borderBottomRightRadius: borderRadiusValue,
+                            borderTopLeftRadius: borderRadiusInverse,
+                            borderBottomLeftRadius: borderRadiusInverse,
                           },
                         }}
                         onClick={() => onChange(true)}
@@ -253,10 +187,10 @@ const BasicDetails = () => {
             </FormControl>
           </Grid>
           {watch('isPaid') && (
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid size={6}>
               <FormControl fullWidth>
-                <Typography variant="body1" sx={{ fontWeight: 500, mb: 1 }}>
-                  {t('EDUCATOR.BASIC_DETAILS.ADD_PRICE')}
+                <Typography variant="body1" mb={0.5} fontWeight={600}>
+                  {t('EDUCATOR.BASIC_DETAILS.ADD_PRICE')} :
                 </Typography>
                 <Controller
                   name="price"
@@ -271,16 +205,12 @@ const BasicDetails = () => {
                       {...field}
                       customInput={TextField}
                       placeholder="$ 0.00"
+                      size="small"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
                       decimalScale={2}
                       fixedDecimalScale
                       allowNegative={false}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: '8px',
-                        },
-                      }}
                     />
                   )}
                 />
@@ -292,4 +222,5 @@ const BasicDetails = () => {
     </Box>
   )
 }
+
 export default BasicDetails

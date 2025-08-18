@@ -11,32 +11,12 @@ import {
 import { Box, Chip, alpha, Button, useTheme, Typography } from '@mui/material'
 
 import { successAlert } from '../../../../redux/reducers/app-slice'
+import { generateInvoicePdf } from '../../../../utils/globalUtils'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import {
   useGetEducationAdminInvoiceQuery,
   useLazyDownloadAdminInvoiceQuery,
 } from '../../../../services/admin'
-
-interface InvoiceUser {
-  email?: string
-  lastName?: string
-  firstName?: string
-}
-
-interface InvoiceItem {
-  _id: string
-  amount: number
-  createdAt: string
-  moduleType: string
-  userId: InvoiceUser
-  educatorId: InvoiceUser
-}
-
-interface InvoiceData {
-  data: InvoiceItem[]
-  totalPages?: number
-  [key: string]: unknown
-}
 
 interface ProcessedInvoice {
   _id: string
@@ -57,13 +37,11 @@ const EducationInvoice: React.FC = () => {
   const { t } = useTranslation('application')
 
   const [downloadAdminInvoice] = useLazyDownloadAdminInvoiceQuery()
-  const { data } = useGetEducationAdminInvoiceQuery({ page, pageSize: 10 }) as {
-    data: InvoiceData | undefined
-  }
+  const { data } = useGetEducationAdminInvoiceQuery({ page, pageSize: 10 })
 
-  const columnsList = useMemo<ProcessedInvoice[] | undefined>(
+  const columnsList = useMemo(
     () =>
-      data?.data.map((item) => ({
+      data?.data?.data?.map((item) => ({
         _id: item._id,
         amount: item.amount,
         createdAt: item.createdAt,
@@ -74,7 +52,7 @@ const EducationInvoice: React.FC = () => {
         educatorEmail: item.educatorId?.email,
         userId: item._id,
       })),
-    [data?.data],
+    [data?.data?.data],
   )
 
   const handleSuccessAlert = useCallback(() => {
@@ -192,30 +170,23 @@ const EducationInvoice: React.FC = () => {
                 void (async () => {
                   try {
                     const result = downloadAdminInvoice({
-                      invoiceId: row.original._id,
+                      transactionId: row.original._id,
                     })
                     if ('unwrap' in result) {
                       const response = await result.unwrap()
                       if (response.data) {
-                        const div = document.createElement('div')
-                        div.innerHTML = String(response.data || '')
-                        const html2pdf = (await import('html2pdf.js')).default
-                        html2pdf()
-                          .from(div)
-                          .set({
-                            margin: 10,
-                            filename: `Invoice_${row.original._id}.pdf`,
-                            html2canvas: { scale: 2 },
-                            jsPDF: { orientation: 'portrait' },
-                          })
-                          .save()
-                          .then(() => {
-                            handleSuccessAlert()
-                          })
+                        await generateInvoicePdf(
+                          response.data,
+                          row.original._id,
+                          handleSuccessAlert,
+                          (error) => {
+                            console.error('Error generating PDF:', error)
+                          },
+                        )
                       }
                     }
                   } catch (error) {
-                    console.error('Error generating PDF:', error)
+                    console.error('Error downloading invoice:', error)
                   }
                 })()
               }}
@@ -278,7 +249,7 @@ const EducationInvoice: React.FC = () => {
 
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
         <PaginationComponent
-          data={data || { totalPages: 0 }}
+          data={data?.data ? { count: data.data.count, totalPages: Math.ceil(data.data.count / 10) } : undefined}
           page={page}
           setPage={setPage}
           disabled={false}

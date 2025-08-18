@@ -29,8 +29,14 @@ const LIST_TYPE_OPTIONS = [
 
 const TutorProfile = () => {
   const { id } = useParams()
-  const { data: tutorDetails } = useViewTutorDetailQuery({ educatorId: id })
-  const { data: DownloadCv } = useDownloadCVQuery({ educatorId: id })
+  const { data: tutorDetails } = useViewTutorDetailQuery(
+    { educatorId: id || '' },
+    { skip: !id }
+  )
+  const { data: DownloadCv } = useDownloadCVQuery(
+    { educatorId: id || '' },
+    { skip: !id }
+  )
 
   const [listType, setListType] = useState('IS')
   const selectedComponent = LIST_TYPE_OPTIONS.find(
@@ -121,7 +127,7 @@ const TutorProfile = () => {
             </Tooltip>
           </Box>
 
-          {!!tutorDetails?.data?.expertise.length && (
+          {!!tutorDetails?.data?.expertise?.length && (
             <Box>
               <Typography
                 variant="body2"
@@ -131,10 +137,10 @@ const TutorProfile = () => {
                 Expertise
               </Typography>
               <Box display="flex" gap={1} flexWrap="wrap">
-                {tutorDetails?.data?.expertise.map(
-                  (expertise: { _id: string; category: string }) => (
+                {tutorDetails?.data?.expertise?.map(
+                  (expertise, index) => (
                     <Chip
-                      key={expertise._id}
+                      key={index}
                       label={expertise.category}
                       variant="outlined"
                       size="small"
@@ -264,13 +270,13 @@ const TutorProfile = () => {
               <Box display="flex" flexDirection="column" gap={0.5}>
                 {tutorDetails?.data?.otherProfileUrls?.length ? (
                   tutorDetails?.data?.otherProfileUrls.map(
-                    (url: { link: string }, index: number) => (
+                    (url, index) => (
                       <Typography
-                        key={url?.link}
+                        key={index}
                         sx={{ cursor: 'pointer', textDecoration: 'underline' }}
                         color="primary"
                         variant="body1"
-                        onClick={() => window.open(url?.link, '_blank')}
+                        onClick={() => window.open(url, '_blank')}
                       >
                         View {index + 1}
                       </Typography>
