@@ -16,11 +16,20 @@ import { useRegisterEducatorMutation } from '../../../services/uploadProgress'
 import { transformNaNToNull } from '../components/common/common'
 import ThankYou from '../components/ThankYou'
 
-import About from './About'
-import { urlRegexPatterns } from './constant/constant'
-import Document from './Document'
-import Links from './Links'
-import Qualification from './Qualification'
+import About from './about'
+import Document from './document'
+import Links from './links'
+import Qualification from './qualification'
+
+const urlRegexPatterns = {
+  linkedIn: /^https:\/\/(www\.)?linkedin\.com\/(in|pub|company)\/[A-Za-z0-9-]+\/?$/,
+  twitter: /^https:\/\/(www\.)?x\.com\/[A-Za-z0-9_]{1,15}\/?$/,
+  website: /^https:\/\/([A-Za-z0-9-]+\.)*[A-Za-z0-9-]+\.[A-Za-z]{2,}(?::\d{1,5})?(\/\S*)?$/,
+  youtube:
+    /^https:\/\/(www\.)?(youtube\.com|youtu\.be)\/(?:(?:watch\?v=|embed\/|v\/)|@[\w-]+)?([A-Za-z0-9_-]{11})(\S*)?$/,
+  facebookUrl:
+    /^https:\/\/(www\.)?facebook\.com\/(?:people\/[A-Za-z0-9-.]+\/\d+|profile\.php\?id=\d+|[A-Za-z0-9.]{5,})\/?$/,
+}
 
 const TEXT = (t) => t('education:REGISTER_EDUCATOR.THANK_YOU_TEXT')
 

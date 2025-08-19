@@ -13,7 +13,7 @@ const validationSchema = Yup.object().shape({
   url: Yup.string().required('URL is required'),
 })
 
-const InviteTutorForm = ({ onClose }) => {
+const InviiteApplicant = ({ onClose }) => {
   const {
     control,
     formState: { errors },
@@ -208,8 +208,8 @@ const InviteTutorForm = ({ onClose }) => {
   )
 }
 
-InviteTutorForm.propTypes = {
+InviiteApplicant.propTypes = {
   onClose: PropTypes.func.isRequired,
 }
 
-export default InviteTutorForm
+export default InviiteApplicant

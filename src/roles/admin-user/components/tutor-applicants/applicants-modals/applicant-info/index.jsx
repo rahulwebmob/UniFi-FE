@@ -14,9 +14,9 @@ import {
 } from '../../../../../../services/admin'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
 import { downloadPdf } from '../../common'
-import DeclineConfirmation from '../decline-confirmation'
+import DeclineConfirmation from '../decline-applicant'
 
-const TutorDetail = ({ tutor, onClose, filter }) => {
+const ApplicantInfo = ({ tutor, onClose, filter }) => {
   const navigate = useNavigate()
   const [videoUrl, setVideoUrl] = useState(null)
   const [deleteUser, setDeleteUser] = useState()
@@ -462,7 +462,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
   )
 }
 
-TutorDetail.propTypes = {
+ApplicantInfo.propTypes = {
   tutor: PropTypes.shape({
     _id: PropTypes.string,
   }),
@@ -470,7 +470,7 @@ TutorDetail.propTypes = {
   filter: PropTypes.string,
 }
 
-export default TutorDetail
+export default ApplicantInfo
 
 const VideoPlayer = ({ videoUrl }) => (
   <Box sx={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>

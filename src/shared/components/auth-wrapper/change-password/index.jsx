@@ -338,7 +338,7 @@ const ChangePassword = ({
           </FormControl>
         </Box>
         <Button
-          size="small"
+          size="medium"
           type="submit"
           variant="contained"
           color="primary"

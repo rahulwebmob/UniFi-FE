@@ -49,7 +49,7 @@ const Header = () => {
             variant="h6"
             sx={{
               fontWeight: 700,
-              letterSpacing: '0.5px',
+              letterSpacing: 3.84,
               fontSize: { xs: '16px', sm: '18px' },
               color: 'text.primary',
             }}

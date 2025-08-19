@@ -2,7 +2,7 @@ import { Box, Button, TextField, FormLabel, Typography, FormHelperText } from '@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
-const DeclineConfirmation = ({ onDelete, onClose }) => {
+const DeclineApplicant = ({ onDelete, onClose }) => {
   const [declinationReason, setDeclinationReason] = useState(null)
   const [showError, setShowError] = useState(false)
 
@@ -54,9 +54,9 @@ const DeclineConfirmation = ({ onDelete, onClose }) => {
   )
 }
 
-DeclineConfirmation.propTypes = {
+DeclineApplicant.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 }
 
-export default DeclineConfirmation
+export default DeclineApplicant

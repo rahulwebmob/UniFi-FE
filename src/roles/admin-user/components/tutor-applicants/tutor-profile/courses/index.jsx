@@ -1,152 +1,10 @@
 import { Box, Chip, Typography, useTheme } from '@mui/material'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
-import PropTypes from 'prop-types'
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { useGetAllCoursesDetailsQuery } from '../../../../../../services/admin'
 import PaginationComponent from '../../../../../../shared/components/ui-elements/pagination-component'
-
-// Extracted Cell components
-const ThumbnailCell = ({ cell, theme }) => {
-  const thumbnail = cell.getValue()
-  return thumbnail ? (
-    <Box
-      component="img"
-      src={thumbnail}
-      alt="Course thumbnail"
-      sx={{
-        width: 80,
-        height: 60,
-        objectFit: 'cover',
-        borderRadius: '8px',
-      }}
-    />
-  ) : (
-    <Box
-      sx={{
-        width: 80,
-        height: 60,
-        backgroundColor: theme.palette.grey[200],
-        borderRadius: '8px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Typography variant="caption" color="text.secondary">
-        No Image
-      </Typography>
-    </Box>
-  )
-}
-
-ThumbnailCell.propTypes = {
-  cell: PropTypes.shape({
-    getValue: PropTypes.func.isRequired,
-  }).isRequired,
-  theme: PropTypes.object.isRequired,
-}
-
-const TitleCell = ({ cell }) => (
-  <Typography sx={{ fontWeight: 500 }}>{cell.getValue() || '-'}</Typography>
-)
-
-TitleCell.propTypes = {
-  cell: PropTypes.shape({
-    getValue: PropTypes.func.isRequired,
-  }).isRequired,
-}
-
-const DescriptionCell = ({ cell }) => {
-  const description = cell.getValue()
-  return (
-    <Typography
-      variant="body2"
-      sx={{
-        display: '-webkit-box',
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: 'vertical',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-      }}
-      title={description}
-    >
-      {description || '-'}
-    </Typography>
-  )
-}
-
-DescriptionCell.propTypes = {
-  cell: PropTypes.shape({
-    getValue: PropTypes.func.isRequired,
-  }).isRequired,
-}
-
-const CategoryCell = ({ cell }) => {
-  const categories = cell.getValue()
-  return categories?.length ? (
-    <Box display="flex" gap={0.5} flexWrap="wrap">
-      {categories.map((category) => (
-        <Chip
-          key={category}
-          label={category}
-          size="small"
-          variant="outlined"
-          color="primary"
-          sx={{
-            borderRadius: '6px',
-            fontSize: '0.75rem',
-          }}
-        />
-      ))}
-    </Box>
-  ) : (
-    <Typography variant="body2">-</Typography>
-  )
-}
-
-CategoryCell.propTypes = {
-  cell: PropTypes.shape({
-    getValue: PropTypes.func.isRequired,
-  }).isRequired,
-}
-
-const PriceCell = ({ cell, theme }) => {
-  const price = cell.getValue()
-  return (
-    <Typography
-      sx={{
-        fontWeight: 600,
-        color: theme.palette.success.main,
-      }}
-    >
-      ${price || 0}
-    </Typography>
-  )
-}
-
-PriceCell.propTypes = {
-  cell: PropTypes.shape({
-    getValue: PropTypes.func.isRequired,
-  }).isRequired,
-  theme: PropTypes.object.isRequired,
-}
-
-const PurchasesCell = ({ cell }) => {
-  const purchased = cell.getValue()
-  return (
-    <Typography variant="body2">
-      {purchased || 0} {purchased === 1 ? 'purchase' : 'purchases'}
-    </Typography>
-  )
-}
-
-PurchasesCell.propTypes = {
-  cell: PropTypes.shape({
-    getValue: PropTypes.func.isRequired,
-  }).isRequired,
-}
 
 const Courses = () => {
   const theme = useTheme()
@@ -166,56 +24,144 @@ const Courses = () => {
 
   const coursesData = coursesDetails?.data?.courses ?? []
 
-  const renderThumbnailCell = useCallback(
-    ({ cell }) => <ThumbnailCell cell={cell} theme={theme} />,
-    [theme],
-  )
-
-  const renderPriceCell = useCallback(
-    ({ cell }) => <PriceCell cell={cell} theme={theme} />,
-    [theme],
-  )
-
   const columns = useMemo(
     () => [
       {
         accessorKey: 'thumbNail',
         header: 'Thumbnail',
         size: 100,
-        Cell: renderThumbnailCell,
+        Cell: (tableProps) => {
+          const { cell } = tableProps
+          const theme = useTheme()
+          const thumbnail = cell.getValue()
+          return thumbnail ? (
+            <Box
+              component="img"
+              src={thumbnail}
+              alt="Course thumbnail"
+              sx={{
+                width: 80,
+                height: 60,
+                objectFit: 'cover',
+                borderRadius: '8px',
+              }}
+            />
+          ) : (
+            <Box
+              sx={{
+                width: 80,
+                height: 60,
+                backgroundColor: theme.palette.grey[200],
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Typography variant="caption" color="text.secondary">
+                No Image
+              </Typography>
+            </Box>
+          )
+        },
       },
       {
         accessorKey: 'title',
         header: 'Title',
         size: 200,
-        Cell: TitleCell,
+        Cell: (tableProps) => {
+          const { cell } = tableProps
+          return <Typography sx={{ fontWeight: 500 }}>{cell.getValue() || '-'}</Typography>
+        },
       },
       {
         accessorKey: 'description',
         header: 'Description',
         size: 250,
-        Cell: DescriptionCell,
+        Cell: (tableProps) => {
+          const { cell } = tableProps
+          const description = cell.getValue()
+          return (
+            <Typography
+              variant="body2"
+              sx={{
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+              title={description}
+            >
+              {description || '-'}
+            </Typography>
+          )
+        },
       },
       {
         accessorKey: 'category',
         header: 'Categories',
         size: 200,
-        Cell: CategoryCell,
+        Cell: (tableProps) => {
+          const { cell } = tableProps
+          const categories = cell.getValue()
+          return categories?.length ? (
+            <Box display="flex" gap={0.5} flexWrap="wrap">
+              {categories.map((category) => (
+                <Chip
+                  key={category}
+                  label={category}
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                  sx={{
+                    borderRadius: '6px',
+                    fontSize: '0.75rem',
+                  }}
+                />
+              ))}
+            </Box>
+          ) : (
+            <Typography variant="body2">-</Typography>
+          )
+        },
       },
       {
         accessorKey: 'price',
         header: 'Price',
         size: 100,
-        Cell: renderPriceCell,
+        Cell: (tableProps) => {
+          const { cell } = tableProps
+          const theme = useTheme()
+          const price = cell.getValue()
+          return (
+            <Typography
+              sx={{
+                fontWeight: 600,
+                color: theme.palette.success.main,
+              }}
+            >
+              ${price || 0}
+            </Typography>
+          )
+        },
       },
       {
         accessorKey: 'totalPurchased',
         header: 'Purchases',
         size: 120,
-        Cell: PurchasesCell,
+        Cell: (tableProps) => {
+          const { cell } = tableProps
+          const purchases = cell.getValue()
+          return (
+            <Typography variant="body2">
+              {purchases || 0} {purchases === 1 ? 'purchase' : 'purchases'}
+            </Typography>
+          )
+        },
       },
     ],
-    [renderThumbnailCell, renderPriceCell],
+    [],
   )
 
   const table = useMaterialReactTable({

@@ -20,8 +20,8 @@ import * as yup from 'yup'
 
 import { errorAlert } from '../../../../../redux/reducers/app-slice'
 import { adminApi, useMyProfileMutation } from '../../../../../services/admin'
+import ChangePassword from '../../../../../shared/components/auth-wrapper/change-password'
 import { generateImageUrl } from '../../../../../utils/globalUtils'
-import ChangePassword from '../../../../admin-user/components/profile/ChangePassword'
 
 const PersonalInfo = () => {
   const theme = useTheme()
@@ -334,24 +334,7 @@ const PersonalInfo = () => {
             </FormControl>
           </Box>
 
-          <Button
-            size="medium"
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{
-              mt: 3,
-              textTransform: 'none',
-              fontWeight: 600,
-              px: 4,
-              py: 1,
-              borderRadius: '8px',
-              boxShadow: 'none',
-              '&:hover': {
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-              },
-            }}
-          >
+          <Button size="medium" type="submit" variant="contained" color="primary" sx={{ mt: 1 }}>
             {t('application:MISCELLANEOUS.SAVE')}
           </Button>
         </Box>

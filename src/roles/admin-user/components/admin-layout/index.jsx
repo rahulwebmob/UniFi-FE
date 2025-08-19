@@ -31,12 +31,12 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import MainLogo from '../../../../assets/logo.svg'
 import LogoutWrapper from '../../../../shared/components/auth-wrapper/logout'
 import CustomSvgIcon from '../../../../shared/components/custom-svg-icon'
-import AdminProfileSettings from '../profile-settings'
+import AdminProfileSettings from '../admin-settings'
 
 const DRAWER_WIDTH = 280
 const DRAWER_WIDTH_COLLAPSED = 85
 
-const ModernAdminLayout = () => {
+const AdminLayout = () => {
   const theme = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
@@ -554,4 +554,4 @@ const ModernAdminLayout = () => {
   )
 }
 
-export default ModernAdminLayout
+export default AdminLayout

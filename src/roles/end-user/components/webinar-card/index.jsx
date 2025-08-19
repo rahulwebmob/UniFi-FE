@@ -543,7 +543,6 @@ const WebinarCard = ({ webinar, isPurchased }) => {
               sx={{
                 fontSize: '0.65rem',
                 color: (thm) => thm.palette.text.secondary,
-                mb: 1,
                 opacity: 0.7,
               }}
             >
@@ -580,19 +579,6 @@ const WebinarCard = ({ webinar, isPurchased }) => {
                 variant="contained"
                 size="small"
                 fullWidth={!webinar.isPaid}
-                sx={{
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  fontSize: '0.75rem',
-                  px: 2,
-                  py: 0.6,
-                  borderRadius: '6px',
-                  minWidth: 'auto',
-                  backgroundColor: (theme) => theme.palette.error.main,
-                  '&:hover': {
-                    backgroundColor: (theme) => theme.palette.error.dark,
-                  },
-                }}
                 onClick={(e) => {
                   e.stopPropagation()
                   handleJoinWebinar()
@@ -605,21 +591,6 @@ const WebinarCard = ({ webinar, isPurchased }) => {
                 variant="contained"
                 size="small"
                 fullWidth={!webinar.isPaid}
-                sx={{
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  fontSize: '0.75rem',
-                  px: 2,
-                  py: 0.6,
-                  borderRadius: '6px',
-                  minWidth: 'auto',
-                  backgroundColor: (thm) =>
-                    webinar.isPaid ? thm.palette.primary.main : thm.palette.success.main,
-                  '&:hover': {
-                    backgroundColor: (thm) =>
-                      webinar.isPaid ? thm.palette.primary.dark : thm.palette.success.dark,
-                  },
-                }}
                 onClick={(e) => {
                   e.stopPropagation()
                   handleCardClick()

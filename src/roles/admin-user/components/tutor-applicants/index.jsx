@@ -17,7 +17,7 @@ import { debounce } from 'lodash'
 import { Eye, Search, XCircle, PlusCircle, CheckCircle, MoreVertical } from 'lucide-react'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import PropTypes from 'prop-types'
-import React, { useRef, useMemo, useState, useCallback } from 'react'
+import React, { useRef, useMemo, useState } from 'react'
 
 import {
   useReconsiderStatusMutation,
@@ -29,9 +29,9 @@ import PaginationComponent from '../../../../shared/components/ui-elements/pagin
 import ApprovedTtutors from '../approved-tutors'
 
 import { APPLICANTS_TAB, APPLICANTS_FILTER } from './constant'
-import DeclineConfirmation from './modal-forms/decline-confirmation'
-import InviteTutorForm from './modal-forms/invite-tutor-form'
-import TutorDetailModal from './modal-forms/tutor-detail'
+import TutorDetailModal from './applicants-modals/applicant-info'
+import DeclineConfirmation from './applicants-modals/decline-applicant'
+import InviteTutorForm from './applicants-modals/invite-applicant'
 
 const HELPER = {
   getDateFormatWithoutTime: (date) => {
@@ -46,285 +46,6 @@ const HELPER = {
     }
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
   },
-}
-
-// Extracted Cell components
-const NameCell = ({ row }) => {
-  const { original } = row
-  const firstName = original.firstName ?? ''
-  const lastName = original.lastName ?? ''
-  return <Typography>{firstName || lastName ? `${firstName} ${lastName}`.trim() : '-'}</Typography>
-}
-
-NameCell.propTypes = {
-  row: PropTypes.shape({
-    original: PropTypes.shape({
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-    }).isRequired,
-  }).isRequired,
-}
-
-const EmailCell = ({ cell }) => <Typography>{cell.getValue() || '-'}</Typography>
-
-EmailCell.propTypes = {
-  cell: PropTypes.shape({
-    getValue: PropTypes.func.isRequired,
-  }).isRequired,
-}
-
-const ExpertiseCell = ({ row }) => {
-  const { original } = row
-  return (
-    <Typography>
-      {original.expertise?.length
-        ? original.expertise.map((item) => item.category).join(', ')
-        : '-'}
-    </Typography>
-  )
-}
-
-ExpertiseCell.propTypes = {
-  row: PropTypes.shape({
-    original: PropTypes.shape({
-      expertise: PropTypes.arrayOf(
-        PropTypes.shape({
-          category: PropTypes.string,
-        }),
-      ),
-    }).isRequired,
-  }).isRequired,
-}
-
-const ApplicationCell = ({ row, onViewButton, onAccept, onDecline }) => {
-  const { original } = row
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <Button
-        variant="outlined"
-        size="small"
-        startIcon={<Eye size={16} />}
-        onClick={() => onViewButton(original)}
-        sx={{
-          textTransform: 'none',
-          borderRadius: '8px',
-          fontWeight: 600,
-        }}
-      >
-        View
-      </Button>
-      <Button
-        variant="contained"
-        size="small"
-        startIcon={<CheckCircle size={16} />}
-        onClick={() => void onAccept(original)}
-        sx={{
-          textTransform: 'none',
-          borderRadius: '8px',
-          fontWeight: 600,
-        }}
-      >
-        Accept
-      </Button>
-      <Button
-        variant="outlined"
-        size="small"
-        color="error"
-        startIcon={<XCircle size={16} />}
-        onClick={() => onDecline(original)}
-        sx={{
-          textTransform: 'none',
-          borderRadius: '8px',
-          fontWeight: 600,
-        }}
-      >
-        Decline
-      </Button>
-    </Box>
-  )
-}
-
-ApplicationCell.propTypes = {
-  row: PropTypes.shape({
-    original: PropTypes.object.isRequired,
-  }).isRequired,
-  onViewButton: PropTypes.func.isRequired,
-  onAccept: PropTypes.func.isRequired,
-  onDecline: PropTypes.func.isRequired,
-}
-
-const ActionCell = ({ row, onAccept, onDecline }) => {
-  const { original } = row
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const open = Boolean(anchorEl)
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
-
-  const handleApprove = () => {
-    void onAccept(original)
-    handleClose()
-  }
-
-  const handleReject = () => {
-    void onDecline(original)
-    handleClose()
-  }
-
-  return (
-    <Box>
-      <IconButton
-        aria-label="more"
-        aria-controls={open ? 'long-menu' : undefined}
-        aria-expanded={open ? 'true' : undefined}
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
-        <MoreVertical size={18} />
-      </IconButton>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      >
-        <MenuItem onClick={handleApprove}>
-          <ListItemIcon>
-            <CheckCircle size={18} />
-          </ListItemIcon>
-          <ListItemText>Approve</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleReject}>
-          <ListItemIcon>
-            <XCircle size={18} />
-          </ListItemIcon>
-          <ListItemText>Decline</ListItemText>
-        </MenuItem>
-      </Menu>
-    </Box>
-  )
-}
-
-ActionCell.propTypes = {
-  row: PropTypes.shape({
-    original: PropTypes.object.isRequired,
-  }).isRequired,
-  onAccept: PropTypes.func.isRequired,
-  onDecline: PropTypes.func.isRequired,
-}
-
-const ViewButtonCell = ({ row, onViewButton }) => {
-  const { original } = row
-  return (
-    <Button
-      variant="outlined"
-      size="small"
-      startIcon={<Eye size={16} />}
-      onClick={() => onViewButton(original)}
-      sx={{
-        textTransform: 'none',
-        borderRadius: 1,
-      }}
-    >
-      View
-    </Button>
-  )
-}
-
-ViewButtonCell.propTypes = {
-  row: PropTypes.shape({
-    original: PropTypes.object.isRequired,
-  }).isRequired,
-  onViewButton: PropTypes.func.isRequired,
-}
-
-const ReconsiderCell = ({ row, onReconsider, isLoading }) => {
-  const { original } = row
-  return (
-    <Button
-      variant="contained"
-      color="secondary"
-      disabled={isLoading}
-      onClick={() => {
-        void onReconsider(original)
-      }}
-    >
-      Reconsider
-    </Button>
-  )
-}
-
-ReconsiderCell.propTypes = {
-  row: PropTypes.shape({
-    original: PropTypes.object.isRequired,
-  }).isRequired,
-  onReconsider: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool,
-}
-
-// Wrapper components to avoid defining components during render
-const ApplicationCellWrapper = ({
-  row,
-  handleViewButton,
-  handleAccept,
-  openDeclineConfirmation,
-}) => (
-  <ApplicationCell
-    row={row}
-    onViewButton={handleViewButton}
-    onAccept={handleAccept}
-    onDecline={openDeclineConfirmation}
-  />
-)
-
-ApplicationCellWrapper.propTypes = {
-  row: PropTypes.shape({
-    original: PropTypes.object.isRequired,
-  }).isRequired,
-  handleViewButton: PropTypes.func.isRequired,
-  handleAccept: PropTypes.func.isRequired,
-  openDeclineConfirmation: PropTypes.func.isRequired,
-}
-
-const ActionCellWrapper = ({ row, handleAccept, openDeclineConfirmation }) => (
-  <ActionCell row={row} onAccept={handleAccept} onDecline={openDeclineConfirmation} />
-)
-
-ActionCellWrapper.propTypes = {
-  row: PropTypes.shape({
-    original: PropTypes.object.isRequired,
-  }).isRequired,
-  handleAccept: PropTypes.func.isRequired,
-  openDeclineConfirmation: PropTypes.func.isRequired,
-}
-
-const ViewButtonCellWrapper = ({ row, handleViewButton }) => (
-  <ViewButtonCell row={row} onViewButton={handleViewButton} />
-)
-
-ViewButtonCellWrapper.propTypes = {
-  row: PropTypes.shape({
-    original: PropTypes.object.isRequired,
-  }).isRequired,
-  handleViewButton: PropTypes.func.isRequired,
-}
-
-const ReconsiderCellWrapper = ({ row, handleCheckboxReconsider, isLoading }) => (
-  <ReconsiderCell row={row} onReconsider={handleCheckboxReconsider} isLoading={isLoading} />
-)
-
-ReconsiderCellWrapper.propTypes = {
-  row: PropTypes.shape({
-    original: PropTypes.object.isRequired,
-  }).isRequired,
-  handleCheckboxReconsider: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool,
 }
 
 const TutorApplicants = ({ type }) => {
@@ -354,10 +75,10 @@ const TutorApplicants = ({ type }) => {
     setSearch(value)
   }, 700)
 
-  const handleViewButton = useCallback((tutor) => {
+  const handleViewButton = (tutor) => {
     setViewTutorData(tutor)
     viewModalRef.current?.openModal()
-  }, [])
+  }
 
   const handleCheckboxAccept = async () => {
     const selectedIds = Object.keys(rowSelection).filter((key) => rowSelection[key])
@@ -393,33 +114,27 @@ const TutorApplicants = ({ type }) => {
     confirmationRef.current?.closeModal()
   }
 
-  const openDeclineConfirmation = useCallback((tutor) => {
+  const openDeclineConfirmation = (tutor) => {
     confirmationRef.current?.openModal()
     if (tutor) {
       setDeleteUser(tutor._id)
     } else {
       setDeleteUser(undefined)
     }
-  }, [])
+  }
 
-  const handleAccept = useCallback(
-    async (tutor) => {
-      await tutorStatus({
-        educatorIds: [tutor._id],
-        approval: true,
-      })
-    },
-    [tutorStatus],
-  )
+  const handleAccept = async (tutor) => {
+    await tutorStatus({
+      educatorIds: [tutor._id],
+      approval: true,
+    })
+  }
 
-  const handleCheckboxReconsider = useCallback(
-    async (tutor) => {
-      await reconsiderStatus({
-        educatorId: tutor._id,
-      })
-    },
-    [reconsiderStatus],
-  )
+  const handleCheckboxReconsider = async (tutor) => {
+    await reconsiderStatus({
+      educatorId: tutor._id,
+    })
+  }
 
   const handleBulkReconsider = async () => {
     const selectedIds = Object.keys(rowSelection).filter((key) => rowSelection[key])
@@ -432,46 +147,6 @@ const TutorApplicants = ({ type }) => {
     setRowSelection({})
   }
 
-  // Cell renderer functions that use the wrapper components
-  const renderApplicationCell = useCallback(
-    ({ row }) => (
-      <ApplicationCellWrapper
-        row={row}
-        handleViewButton={handleViewButton}
-        handleAccept={handleAccept}
-        openDeclineConfirmation={openDeclineConfirmation}
-      />
-    ),
-    [handleViewButton, handleAccept, openDeclineConfirmation],
-  )
-
-  const renderActionCell = useCallback(
-    ({ row }) => (
-      <ActionCellWrapper
-        row={row}
-        handleAccept={handleAccept}
-        openDeclineConfirmation={openDeclineConfirmation}
-      />
-    ),
-    [handleAccept, openDeclineConfirmation],
-  )
-
-  const renderViewButtonCell = useCallback(
-    ({ row }) => <ViewButtonCellWrapper row={row} handleViewButton={handleViewButton} />,
-    [handleViewButton],
-  )
-
-  const renderReconsiderCell = useCallback(
-    ({ row }) => (
-      <ReconsiderCellWrapper
-        row={row}
-        handleCheckboxReconsider={handleCheckboxReconsider}
-        isLoading={isLoading}
-      />
-    ),
-    [handleCheckboxReconsider, isLoading],
-  )
-
   const columns = useMemo(() => {
     switch (filter) {
       case APPLICANTS_FILTER.ALL:
@@ -479,28 +154,128 @@ const TutorApplicants = ({ type }) => {
           {
             accessorKey: 'firstName',
             header: 'Name',
-            Cell: NameCell,
+            Cell: (tableProps) => {
+              const { row } = tableProps
+              const { original } = row
+              const firstName = original.firstName ?? ''
+              const lastName = original.lastName ?? ''
+              return (
+                <Typography>
+                  {firstName || lastName ? `${firstName} ${lastName}`.trim() : '-'}
+                </Typography>
+              )
+            },
           },
           {
             accessorKey: 'email',
             header: 'Email Address',
-            Cell: EmailCell,
+            Cell: (tableProps) => {
+              const { cell } = tableProps
+              return <Typography>{cell.getValue() || '-'}</Typography>
+            },
           },
           {
             accessorKey: 'expertise',
             header: 'Expertise',
-            Cell: ExpertiseCell,
+            Cell: (tableProps) => {
+              const { row } = tableProps
+              const { original } = row
+              return (
+                <Typography>
+                  {original.expertise?.length
+                    ? original.expertise.map((item) => item.category).join(', ')
+                    : '-'}
+                </Typography>
+              )
+            },
           },
           {
             accessorKey: 'application',
             header: 'Application',
-            Cell: renderApplicationCell,
+            Cell: (tableProps) => {
+              const { row, table } = tableProps
+              const { original } = row
+              const handleViewButton = table.options.meta?.handleViewButton
+              return (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<Eye size={16} />}
+                  onClick={() => handleViewButton(original)}
+                  sx={{
+                    textTransform: 'none',
+                    borderRadius: 1,
+                  }}
+                >
+                  View
+                </Button>
+              )
+            },
             enableSorting: false,
           },
           {
             accessorKey: 'action',
             header: 'Action',
-            Cell: renderActionCell,
+            Cell: (tableProps) => {
+              const { row, table } = tableProps
+              const { original } = row
+              const handleAccept = table.options.meta?.handleAccept
+              const openDeclineConfirmation = table.options.meta?.openDeclineConfirmation
+              const [anchorEl, setAnchorEl] = React.useState(null)
+              const open = Boolean(anchorEl)
+
+              const handleClick = (event) => {
+                setAnchorEl(event.currentTarget)
+              }
+
+              const handleClose = () => {
+                setAnchorEl(null)
+              }
+
+              const handleApprove = () => {
+                void handleAccept(original)
+                handleClose()
+              }
+
+              const handleReject = () => {
+                void openDeclineConfirmation(original)
+                handleClose()
+              }
+
+              return (
+                <Box>
+                  <IconButton
+                    aria-label="more"
+                    aria-controls={open ? 'long-menu' : undefined}
+                    aria-expanded={open ? 'true' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleClick}
+                  >
+                    <MoreVertical size={18} />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                  >
+                    <MenuItem onClick={handleApprove}>
+                      <ListItemIcon>
+                        <CheckCircle size={18} />
+                      </ListItemIcon>
+                      <ListItemText>Approve</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={handleReject}>
+                      <ListItemIcon>
+                        <XCircle size={18} />
+                      </ListItemIcon>
+                      <ListItemText>Decline</ListItemText>
+                    </MenuItem>
+                  </Menu>
+                </Box>
+              )
+            },
             enableSorting: false,
           },
         ]
@@ -510,33 +285,94 @@ const TutorApplicants = ({ type }) => {
           {
             accessorKey: 'firstName',
             header: 'Name',
-            Cell: NameCell,
+            Cell: (tableProps) => {
+              const { row } = tableProps
+              const { original } = row
+              const firstName = original.firstName ?? ''
+              const lastName = original.lastName ?? ''
+              return (
+                <Typography>
+                  {firstName || lastName ? `${firstName} ${lastName}`.trim() : '-'}
+                </Typography>
+              )
+            },
           },
           {
             accessorKey: 'email',
             header: 'Email Address',
-            Cell: EmailCell,
+            Cell: (tableProps) => {
+              const { cell } = tableProps
+              return <Typography>{cell.getValue() || '-'}</Typography>
+            },
           },
           {
             accessorKey: 'expertise',
             header: 'Expertise',
-            Cell: ExpertiseCell,
+            Cell: (tableProps) => {
+              const { row } = tableProps
+              const { original } = row
+              return (
+                <Typography>
+                  {original.expertise?.length
+                    ? original.expertise.map((item) => item.category).join(', ')
+                    : '-'}
+                </Typography>
+              )
+            },
           },
           {
             accessorKey: 'application',
             header: 'Application',
-            Cell: renderViewButtonCell,
+            Cell: (tableProps) => {
+              const { row, table } = tableProps
+              const { original } = row
+              const handleViewButton = table.options.meta?.handleViewButton
+              return (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<Eye size={16} />}
+                  onClick={() => handleViewButton(original)}
+                  sx={{
+                    textTransform: 'none',
+                    borderRadius: 1,
+                  }}
+                >
+                  View
+                </Button>
+              )
+            },
             enableSorting: false,
           },
           {
             accessorKey: 'declinedReason',
             header: 'Declined Reason',
-            Cell: EmailCell,
+            Cell: (tableProps) => {
+              const { cell } = tableProps
+              return <Typography>{cell.getValue() || '-'}</Typography>
+            },
           },
           {
             accessorKey: 'action',
             header: 'Action',
-            Cell: renderReconsiderCell,
+            Cell: (tableProps) => {
+              const { row, table } = tableProps
+              const { original } = row
+              const handleCheckboxReconsider = table.options.meta?.handleCheckboxReconsider
+              const isLoading = table.options.meta?.isLoading
+              return (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disabled={isLoading}
+                  onClick={() => {
+                    void handleCheckboxReconsider(original)
+                  }}
+                >
+                  Reconsider
+                </Button>
+              )
+            },
             enableSorting: false,
           },
         ]
@@ -544,7 +380,7 @@ const TutorApplicants = ({ type }) => {
       default:
         return []
     }
-  }, [filter, renderApplicationCell, renderActionCell, renderViewButtonCell, renderReconsiderCell])
+  }, [filter])
 
   const table = useMaterialReactTable({
     columns,
@@ -563,6 +399,13 @@ const TutorApplicants = ({ type }) => {
     enableFullScreenToggle: false,
     enableGlobalFilter: false,
     enableHiding: false,
+    meta: {
+      handleViewButton,
+      handleAccept,
+      openDeclineConfirmation,
+      handleCheckboxReconsider,
+      isLoading,
+    },
   })
 
   const renderActionButtons = () => {

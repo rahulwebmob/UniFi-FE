@@ -107,7 +107,7 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
   ) : (
     <GridContainer>
       {list.map((item) => (
-        <WebinarCard key={item._id} webinar={item} isPurchased />
+        <WebinarCard key={item._id} webinar={item} isPurchased={false} />
       ))}
     </GridContainer>
   )

@@ -13,7 +13,7 @@ import {
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import { generateInvoicePdf } from '../../../../utils/globalUtils'
 
-const EducationInvoice = () => {
+const ContentInvoice = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
   const [page, setPage] = useState(1)
@@ -239,4 +239,4 @@ const EducationInvoice = () => {
   )
 }
 
-export default EducationInvoice
+export default ContentInvoice

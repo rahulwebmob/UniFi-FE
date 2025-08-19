@@ -11,7 +11,7 @@ import {
   useMediaQuery,
 } from '@mui/material'
 import { User, LogOut, Settings, CreditCard, Gift } from 'lucide-react'
-import { useRef, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 
@@ -24,23 +24,13 @@ import UserSettings from './user-settings'
 
 const MyProfile = () => {
   const theme = useTheme()
-  const profileRef = useRef(null)
   const { t } = useTranslation('application')
   const location = useLocation()
   const matches = useMediaQuery(theme.breakpoints.down('sm'))
   const [value, setValue] = useState(0)
-  const [showPrompt, setShowPrompt] = useState(false)
 
   const handleChange = (newValue) => {
-    if (showPrompt) {
-      if (window.confirm(t('application:NAVIGATION.BROWSER_PROMPT')) === true) {
-        setShowPrompt(false)
-        profileRef.current?.handleExecute()
-        setValue(newValue)
-      }
-    } else {
-      setValue(newValue)
-    }
+    setValue(newValue)
   }
 
   const tabComponents = [

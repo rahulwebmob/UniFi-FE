@@ -24,9 +24,9 @@ import * as yup from 'yup'
 
 import { signIn } from '../../../../redux/reducers/user-slice'
 import { useEditAdminProfileMutation } from '../../../../services/onboarding'
-import ChangePassword from '../profile/ChangePassword'
+import ChangePassword from '../../../../shared/components/auth-wrapper/change-password'
 
-const AdminProfileSettings = ({ open, onClose, userData }) => {
+const AdminSettings = ({ open, onClose, userData }) => {
   const theme = useTheme()
   const { t } = useTranslation('application')
   const dispatch = useDispatch()
@@ -112,6 +112,7 @@ const AdminProfileSettings = ({ open, onClose, userData }) => {
       >
         <Typography
           variant="h5"
+          component="span"
           sx={{
             fontWeight: 600,
             color: theme.palette.text.primary,
@@ -218,24 +219,7 @@ const AdminProfileSettings = ({ open, onClose, userData }) => {
               </FormControl>
             </Box>
 
-            <Button
-              size="medium"
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{
-                mt: 3,
-                textTransform: 'none',
-                fontWeight: 600,
-                px: 4,
-                py: 1,
-                borderRadius: '8px',
-                boxShadow: 'none',
-                '&:hover': {
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                },
-              }}
-            >
+            <Button size="medium" type="submit" variant="contained" color="primary">
               {t('application:MISCELLANEOUS.SAVE')}
             </Button>
           </Box>
@@ -268,7 +252,7 @@ const AdminProfileSettings = ({ open, onClose, userData }) => {
   )
 }
 
-AdminProfileSettings.propTypes = {
+AdminSettings.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   userData: PropTypes.shape({
@@ -278,4 +262,4 @@ AdminProfileSettings.propTypes = {
   }),
 }
 
-export default AdminProfileSettings
+export default AdminSettings

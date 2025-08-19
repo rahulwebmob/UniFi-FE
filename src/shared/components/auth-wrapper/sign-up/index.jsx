@@ -56,7 +56,6 @@ const SignUp = ({ setIsLoginPage }) => {
         .trim()
         .required('Please confirm password')
         .oneOf([yup.ref('password')], 'Passwords do not match'),
-      termsOfUsage: yup.string().required('Please select usage type'),
     }),
   )
 
@@ -74,7 +73,6 @@ const SignUp = ({ setIsLoginPage }) => {
       email: '',
       password: '',
       confirmPassword: '',
-      termsOfUsage: '',
     },
   })
 
