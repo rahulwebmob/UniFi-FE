@@ -4,7 +4,9 @@ import { ENV } from '../utils/env'
 
 const socketUrl = `${ENV.BASE_URL}`
 
-let chatSocket = null
+const socketState = {
+  chatSocket: null,
+}
 
 const defaultSocketSettings = {
   transports: ['websocket', 'polling'],
@@ -13,7 +15,7 @@ const defaultSocketSettings = {
 }
 
 const chatConnection = (token) => {
-  chatSocket = io(`${socketUrl}/chat`, {
+  socketState.chatSocket = io(`${socketUrl}/chat`, {
     path: '/chat-api/socket/',
     auth: {
       token,
@@ -29,15 +31,17 @@ const chatConnection = (token) => {
 }
 
 const disconnectChatSocket = (removeListener) => {
-  if (chatSocket) {
-    chatSocket.disconnect()
-    chatSocket.close()
+  if (socketState.chatSocket) {
+    socketState.chatSocket.disconnect()
+    socketState.chatSocket.close()
     if (removeListener) {
-      chatSocket.removeAllListeners()
+      socketState.chatSocket.removeAllListeners()
     }
-    chatSocket = null
+    socketState.chatSocket = null
   }
 }
+
+const getChatSocket = () => socketState.chatSocket
 
 const disconnectAllSockets = (removeListener) => {
   disconnectChatSocket(removeListener)
@@ -48,4 +52,4 @@ const initializeSocket = (...args) => {
   console.warn('initializeSocket is deprecated', args)
 }
 
-export { chatSocket, chatConnection, disconnectAllSockets, initializeSocket }
+export { getChatSocket, chatConnection, disconnectAllSockets, initializeSocket }

@@ -1,4 +1,5 @@
 import { Box, useTheme } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
@@ -151,6 +152,14 @@ const AuthWrapper = ({ type = '' }) => {
       </Box>
     </Box>
   )
+}
+
+AuthWrapper.propTypes = {
+  type: PropTypes.string,
+}
+
+AuthWrapper.defaultProps = {
+  type: '',
 }
 
 export default AuthWrapper

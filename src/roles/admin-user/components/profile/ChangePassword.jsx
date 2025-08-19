@@ -10,6 +10,7 @@ import {
   InputAdornment,
 } from '@mui/material'
 import { Eye, EyeOff } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -182,62 +183,60 @@ const ChangePassword = ({
               />
             </FormControl>
           ) : (
-            <>
-              {!isPasswordMissing && (
-                <FormControl fullWidth>
-                  <Typography
-                    sx={{
-                      mb: 0.5,
-                      fontWeight: 500,
-                      color: (theme) => theme.palette.text.secondary,
-                    }}
-                  >
-                    {t('application:PROFILE.CURRENT_PASSWORD')}
-                    <Typography variant="body1" color="error.main" component="span">
-                      *
-                    </Typography>
+            !isPasswordMissing && (
+              <FormControl fullWidth>
+                <Typography
+                  sx={{
+                    mb: 0.5,
+                    fontWeight: 500,
+                    color: (theme) => theme.palette.text.secondary,
+                  }}
+                >
+                  {t('application:PROFILE.CURRENT_PASSWORD')}
+                  <Typography variant="body1" color="error.main" component="span">
+                    *
                   </Typography>
-                  <Controller
-                    name="currentPassword"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        placeholder={t('application:PROFILE.ENTERYOUR_CURRENTPASSWORD')}
-                        variant="outlined"
-                        type={showPassword.currentPassword ? 'text' : 'password'}
-                        fullWidth
-                        size="small"
-                        {...field}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end" id="currentPassword">
-                              <IconButton
-                                className="custom-icon-button"
-                                onClick={() =>
-                                  setShowPassword({
-                                    ...showPassword,
-                                    currentPassword: !showPassword.currentPassword,
-                                  })
-                                }
-                              >
-                                {showPassword.currentPassword ? (
-                                  <Eye size={18} />
-                                ) : (
-                                  <EyeOff size={18} />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                        error={!!errors.currentPassword}
-                        helperText={errors.currentPassword?.message}
-                        autoComplete="current-password"
-                      />
-                    )}
-                  />
-                </FormControl>
-              )}
-            </>
+                </Typography>
+                <Controller
+                  name="currentPassword"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      placeholder={t('application:PROFILE.ENTERYOUR_CURRENTPASSWORD')}
+                      variant="outlined"
+                      type={showPassword.currentPassword ? 'text' : 'password'}
+                      fullWidth
+                      size="small"
+                      {...field}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end" id="currentPassword">
+                            <IconButton
+                              className="custom-icon-button"
+                              onClick={() =>
+                                setShowPassword({
+                                  ...showPassword,
+                                  currentPassword: !showPassword.currentPassword,
+                                })
+                              }
+                            >
+                              {showPassword.currentPassword ? (
+                                <Eye size={18} />
+                              ) : (
+                                <EyeOff size={18} />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      error={!!errors.currentPassword}
+                      helperText={errors.currentPassword?.message}
+                      autoComplete="current-password"
+                    />
+                  )}
+                />
+              </FormControl>
+            )
           )}
           <Box>
             <FormControl fullWidth>
@@ -353,6 +352,15 @@ const ChangePassword = ({
       </form>
     </Box>
   )
+}
+
+ChangePassword.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  userEmail: PropTypes.string,
+  headerName: PropTypes.string,
+  isUserAdmin: PropTypes.bool,
+  resetPassword: PropTypes.func,
+  isResetPassword: PropTypes.bool,
 }
 
 export default ChangePassword

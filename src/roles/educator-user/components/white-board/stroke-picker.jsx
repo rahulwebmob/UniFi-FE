@@ -1,4 +1,5 @@
 import { Box, Select, Tooltip, MenuItem, FormControl } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -66,6 +67,12 @@ const StrokePicker = ({ setFunc, options, type }) => {
       </FormControl>
     </Box>
   )
+}
+
+StrokePicker.propTypes = {
+  setFunc: PropTypes.func.isRequired,
+  options: PropTypes.array.isRequired,
+  type: PropTypes.string.isRequired,
 }
 
 export default StrokePicker

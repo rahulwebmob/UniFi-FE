@@ -16,4 +16,6 @@ const Chapter = () => {
   )
 }
 
+Chapter.propTypes = {}
+
 export default Chapter

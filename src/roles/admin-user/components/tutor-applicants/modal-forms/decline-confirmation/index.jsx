@@ -1,4 +1,5 @@
 import { Box, Button, TextField, FormLabel, Typography, FormHelperText } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
 const DeclineConfirmation = ({ onDelete, onClose }) => {
@@ -51,6 +52,11 @@ const DeclineConfirmation = ({ onDelete, onClose }) => {
       </Box>
     </Box>
   )
+}
+
+DeclineConfirmation.propTypes = {
+  onDelete: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 }
 
 export default DeclineConfirmation

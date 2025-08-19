@@ -1,4 +1,5 @@
 import { Box, Card, Avatar, Button, Typography, CardContent } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
 const EducationPremium = ({ mediaDetails, setCurrentStep, subscriptionDetails }) => {
@@ -76,6 +77,24 @@ const EducationPremium = ({ mediaDetails, setCurrentStep, subscriptionDetails })
       </Card>
     </Box>
   )
+}
+
+EducationPremium.propTypes = {
+  mediaDetails: PropTypes.shape({
+    coverImage: PropTypes.string,
+    educatorDetails: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+    }),
+  }),
+  setCurrentStep: PropTypes.func,
+  subscriptionDetails: PropTypes.arrayOf(
+    PropTypes.shape({
+      displayName: PropTypes.string,
+      description: PropTypes.string,
+      price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    }),
+  ),
 }
 
 export default EducationPremium

@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Grid, Button, TextField, Typography } from '@mui/material'
 import { ArrowLeft } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 
@@ -127,6 +128,15 @@ const ForgetPassword = ({ type, setShowForgetPassword }) => {
       </Box>
     </Box>
   )
+}
+
+ForgetPassword.propTypes = {
+  type: PropTypes.string,
+  setShowForgetPassword: PropTypes.func.isRequired,
+}
+
+ForgetPassword.defaultProps = {
+  type: '',
 }
 
 export default ForgetPassword

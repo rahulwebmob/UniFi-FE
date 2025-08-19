@@ -11,6 +11,7 @@ import {
 import MuiAppBar from '@mui/material/AppBar'
 import { styled } from '@mui/material/styles'
 import { Menu, LogOut } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -59,7 +60,7 @@ const AdminHeader = ({ open, position, handleDrawerOpen }) => {
           edge="start"
           sx={{
             marginRight: 5,
-            ...(open && { display: 'none' }),
+            display: open ? 'none' : 'block',
           }}
         >
           <Menu />
@@ -104,6 +105,12 @@ const AdminHeader = ({ open, position, handleDrawerOpen }) => {
       </Toolbar>
     </AppBar>
   )
+}
+
+AdminHeader.propTypes = {
+  open: PropTypes.bool.isRequired,
+  position: PropTypes.string.isRequired,
+  handleDrawerOpen: PropTypes.func.isRequired,
 }
 
 export default AdminHeader

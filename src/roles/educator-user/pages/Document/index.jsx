@@ -8,6 +8,7 @@ import {
   InputAdornment,
 } from '@mui/material'
 import { CloudUpload } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -155,6 +156,13 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
       </FormControl>
     </Box>
   )
+}
+
+Document.propTypes = {
+  control: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+  setCvFile: PropTypes.func.isRequired,
+  setMp4File: PropTypes.func.isRequired,
 }
 
 export default Document

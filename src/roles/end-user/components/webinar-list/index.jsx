@@ -1,4 +1,5 @@
 import { Box } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -88,32 +89,41 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
     )
   }
 
-  return (
-    <>
-      {isLoading ? (
-        <GridContainer>
-          <ContentSkeleton isPurchased={false} />
-        </GridContainer>
-      ) : !list.length ? (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '300px',
-          }}
-        >
-          <NoDataFound />
-        </Box>
-      ) : (
-        <GridContainer>
-          {list.map((item) => (
-            <WebinarCard key={item._id} webinar={item} isPurchased />
-          ))}
-        </GridContainer>
-      )}
-    </>
+  return isLoading ? (
+    <GridContainer>
+      <ContentSkeleton isPurchased={false} />
+    </GridContainer>
+  ) : !list.length ? (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '300px',
+      }}
+    >
+      <NoDataFound />
+    </Box>
+  ) : (
+    <GridContainer>
+      {list.map((item) => (
+        <WebinarCard key={item._id} webinar={item} isPurchased />
+      ))}
+    </GridContainer>
   )
+}
+
+WebinarList.propTypes = {
+  page: PropTypes.number.isRequired,
+  searchTerm: PropTypes.string,
+  isPurchased: PropTypes.bool,
+  selectedCategory: PropTypes.string,
+}
+
+WebinarList.defaultProps = {
+  searchTerm: '',
+  isPurchased: false,
+  selectedCategory: '',
 }
 
 export default WebinarList

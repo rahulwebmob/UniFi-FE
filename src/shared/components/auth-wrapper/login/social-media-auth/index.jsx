@@ -1,4 +1,5 @@
 import { Box, Button, Divider, useTheme, useMediaQuery } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -209,6 +210,11 @@ const SocialMediaAuth = ({ isOAuthLoading, setIsOAuthLoading }) => {
       </Box>
     </>
   )
+}
+
+SocialMediaAuth.propTypes = {
+  isOAuthLoading: PropTypes.bool.isRequired,
+  setIsOAuthLoading: PropTypes.func.isRequired,
 }
 
 export default SocialMediaAuth

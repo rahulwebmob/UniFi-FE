@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Button, TextField, Typography } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
 import * as Yup from 'yup'
 
@@ -205,6 +206,10 @@ const InviteTutorForm = ({ onClose }) => {
       </Box>
     </Box>
   )
+}
+
+InviteTutorForm.propTypes = {
+  onClose: PropTypes.func.isRequired,
 }
 
 export default InviteTutorForm

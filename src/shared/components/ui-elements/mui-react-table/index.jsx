@@ -1,4 +1,5 @@
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
 import { MaterialReactTableDefaults } from '../../../../theme/foundations/components'
@@ -56,6 +57,14 @@ const MuiReactTable = ({
   }
 
   return <MaterialReactTable table={getTableInstance} />
+}
+
+MuiReactTable.propTypes = {
+  columns: PropTypes.array.isRequired,
+  rows: PropTypes.array.isRequired,
+  localization: PropTypes.object,
+  materialReactProps: PropTypes.object,
+  returnTableInstance: PropTypes.bool,
 }
 
 export default MuiReactTable

@@ -13,6 +13,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { parse, format, isAfter, isBefore } from 'date-fns'
 import moment from 'moment-timezone'
+import PropTypes from 'prop-types'
 import { useMemo, useState, useEffect } from 'react'
 import { useForm, Controller, FormProvider } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -700,6 +701,18 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
       </Box>
     </FormProvider>
   )
+}
+
+CreateWebinar.propTypes = {
+  isEdit: PropTypes.bool,
+  isPreview: PropTypes.bool,
+  isPublished: PropTypes.bool,
+  savedDetails: PropTypes.shape({
+    resources: PropTypes.array,
+  }),
+  defaultValues: PropTypes.shape({
+    scheduleType: PropTypes.string,
+  }),
 }
 
 export default CreateWebinar

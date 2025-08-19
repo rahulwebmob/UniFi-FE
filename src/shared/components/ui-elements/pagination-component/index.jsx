@@ -1,4 +1,5 @@
 import { Pagination } from '@mui/material'
+import PropTypes from 'prop-types'
 
 const PaginationComponent = ({
   data,
@@ -28,6 +29,17 @@ const PaginationComponent = ({
       sx={customStyle}
     />
   )
+}
+
+PaginationComponent.propTypes = {
+  data: PropTypes.shape({
+    count: PropTypes.number,
+  }),
+  page: PropTypes.number.isRequired,
+  setPage: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  customStyle: PropTypes.object,
+  scrollToTop: PropTypes.func,
 }
 
 export default PaginationComponent

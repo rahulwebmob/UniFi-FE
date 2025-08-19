@@ -95,7 +95,7 @@ export default [
       // React Rules
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
-      'react/prop-types': 'off',
+      'react/prop-types': 'error',
       'react/jsx-boolean-value': ['error', 'never'],
       'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
       'react/jsx-fragments': ['error', 'syntax'],
@@ -106,7 +106,7 @@ export default [
       'react/no-children-prop': 'error',
       'react/no-danger': 'warn',
       'react/no-deprecated': 'error',
-      'react/no-unstable-nested-components': 'error',
+      'react/no-unstable-nested-components': ['error', { allowAsProps: true }],
       'react/self-closing-comp': 'error',
       'react/void-dom-elements-no-children': 'error',
       'react/function-component-definition': [

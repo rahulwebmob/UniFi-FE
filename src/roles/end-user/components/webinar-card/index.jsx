@@ -1,6 +1,7 @@
 import { Box, Card, Button, Avatar, Typography, CardContent } from '@mui/material'
 import { format } from 'date-fns'
 import { Clock, Calendar, ArrowRight } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
@@ -636,6 +637,34 @@ const WebinarCard = ({ webinar, isPurchased }) => {
       </Box>
     </Card>
   )
+}
+
+WebinarCard.propTypes = {
+  webinar: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    thumbNail: PropTypes.string,
+    category: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    isPaid: PropTypes.bool,
+    price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    totalEnrolled: PropTypes.number,
+    isWebinarBought: PropTypes.bool,
+    webinarScheduledObj: PropTypes.shape({
+      can_join: PropTypes.bool,
+      join_date: PropTypes.string,
+    }),
+    educatorDetail: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      profilePic: PropTypes.string,
+    }),
+  }).isRequired,
+  isPurchased: PropTypes.bool,
+}
+
+WebinarCard.defaultProps = {
+  isPurchased: false,
 }
 
 export default WebinarCard

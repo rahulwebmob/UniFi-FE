@@ -7,6 +7,7 @@ import {
   FormControl,
   FormHelperText,
 } from '@mui/material'
+import PropTypes from 'prop-types'
 import { Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -160,6 +161,10 @@ const About = ({ control }) => {
       </Grid>
     </Box>
   )
+}
+
+About.propTypes = {
+  control: PropTypes.object.isRequired,
 }
 
 export default About

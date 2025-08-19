@@ -1,5 +1,6 @@
 import { Box, Button, useTheme, Typography } from '@mui/material'
 import { Mail, ArrowLeft } from 'lucide-react'
+import PropTypes from 'prop-types'
 
 import MainLogo from '../../../../assets/logo.svg'
 import { useResendEmailMutation } from '../../../../services/admin'
@@ -124,6 +125,11 @@ const ResendEmail = ({ setResendEmail, email }) => {
       </Box>
     </Box>
   )
+}
+
+ResendEmail.propTypes = {
+  setResendEmail: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired,
 }
 
 export default ResendEmail

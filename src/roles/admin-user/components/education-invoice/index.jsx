@@ -53,11 +53,8 @@ const EducationInvoice = () => {
         header: 'Purchased By',
         Cell: (tableProps) => {
           const { row } = tableProps
-          return (
-            <Typography component="span">{`${row.original.firstName ?? '-'} ${
-              row.original.lastName ?? '-'
-            }`}</Typography>
-          )
+          const { firstName, lastName } = row.original
+          return <Typography>{`${firstName || ''} ${lastName || ''}`.trim() || '-'}</Typography>
         },
       },
       {
@@ -65,7 +62,7 @@ const EducationInvoice = () => {
         header: 'User Email',
         Cell: (tableProps) => {
           const { cell } = tableProps
-          return <Typography component="span">{String(cell.getValue() ?? '-')}</Typography>
+          return <Typography>{cell.getValue() || '-'}</Typography>
         },
       },
       {
@@ -73,7 +70,7 @@ const EducationInvoice = () => {
         header: 'Educator Email',
         Cell: (tableProps) => {
           const { cell } = tableProps
-          return <Typography component="span">{String(cell.getValue() ?? '-')}</Typography>
+          return <Typography>{cell.getValue() || '-'}</Typography>
         },
       },
       {
@@ -81,6 +78,7 @@ const EducationInvoice = () => {
         header: 'Purchase Type',
         Cell: (tableProps) => {
           const { cell } = tableProps
+          const theme = useTheme()
           const moduleType = cell.getValue()
           return moduleType ? (
             <Chip
@@ -104,6 +102,7 @@ const EducationInvoice = () => {
         header: 'Purchase Amount',
         Cell: (tableProps) => {
           const { cell } = tableProps
+          const theme = useTheme()
           const amount = cell.getValue()
           return (
             <Typography
@@ -131,7 +130,9 @@ const EducationInvoice = () => {
         accessorKey: 'action',
         header: 'Action',
         Cell: (tableProps) => {
-          const { row } = tableProps
+          const { row, table } = tableProps
+          const downloadAdminInvoice = table.options.meta?.downloadAdminInvoice
+          const handleSuccessAlert = table.options.meta?.handleSuccessAlert
           return (
             <Button
               variant="contained"
@@ -174,12 +175,7 @@ const EducationInvoice = () => {
         enableSorting: false,
       },
     ],
-    [
-      downloadAdminInvoice,
-      handleSuccessAlert,
-      theme.palette.primary.main,
-      theme.palette.success.main,
-    ],
+    [],
   )
 
   const table = useMaterialReactTable({
@@ -196,6 +192,10 @@ const EducationInvoice = () => {
     enableFullScreenToggle: false,
     enableGlobalFilter: false,
     enableHiding: false,
+    meta: {
+      downloadAdminInvoice,
+      handleSuccessAlert,
+    },
   })
 
   return (

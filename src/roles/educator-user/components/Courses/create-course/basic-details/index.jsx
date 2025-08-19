@@ -2,17 +2,14 @@ import { Box, Grid, TextField, Typography, FormControl, Button, ButtonGroup } fr
 import { Controller, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { NumericFormat } from 'react-number-format'
-import { useSelector } from 'react-redux'
 
 import CharacterCount from '../../../character-count'
 import AddCategory from '../../../Webinar/create-webinar/add-category'
 
 const BasicDetails = () => {
   const { t } = useTranslation('education')
-  const { direction } = useSelector((state) => state.app.language)
-  const isRTL = direction === 'rtl'
-  const borderRadiusValue = isRTL ? '0' : '4px'
-  const borderRadiusInverse = isRTL ? '4px' : '0'
+  const borderRadiusValue = '4px'
+  const borderRadiusInverse = '0'
 
   const {
     watch,
@@ -137,7 +134,7 @@ const BasicDetails = () => {
                   rules={{
                     required: t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICING_TYPE_REQUIRED'),
                   }}
-                  render={({ field: { onChange, value } }) => (
+                  render={({ field: { onChange } }) => (
                     <ButtonGroup color="secondary" variant="contained">
                       <Button
                         sx={{
@@ -205,5 +202,7 @@ const BasicDetails = () => {
     </Box>
   )
 }
+
+BasicDetails.propTypes = {}
 
 export default BasicDetails

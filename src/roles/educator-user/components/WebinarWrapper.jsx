@@ -1,11 +1,12 @@
 import { Device } from 'mediasoup-client'
+import PropTypes from 'prop-types'
 import { useRef, useMemo, useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { successAlert } from '../../../redux/reducers/app-slice'
 import { setLoading } from '../../../redux/reducers/education-slice'
-import { chatSocket, chatConnection } from '../../../services/sockets'
+import { getChatSocket, chatConnection } from '../../../services/sockets'
 
 import {
   mergeData,
@@ -83,8 +84,8 @@ const WebinarWrapper = ({ isHost = false }) => {
       return
     }
     if (response?.status === 'Joined Room Successfully') {
-      if (chatSocket) {
-        chatSocket.disconnect()
+      if (getChatSocket()) {
+        getChatSocket().disconnect()
       }
       const token = localStorage.getItem('token')
       if (token) {
@@ -599,6 +600,10 @@ const WebinarWrapper = ({ isHost = false }) => {
       }}
     />
   )
+}
+
+WebinarWrapper.propTypes = {
+  isHost: PropTypes.bool,
 }
 
 export default WebinarWrapper

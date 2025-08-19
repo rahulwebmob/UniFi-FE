@@ -1,5 +1,6 @@
 import { Box, alpha, useTheme, IconButton } from '@mui/material'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useRef, useState, useEffect } from 'react'
 
 const MuiCarousel = ({ children }) => {
@@ -126,6 +127,10 @@ const MuiCarousel = ({ children }) => {
       )}
     </Box>
   )
+}
+
+MuiCarousel.propTypes = {
+  children: PropTypes.node.isRequired,
 }
 
 export default MuiCarousel

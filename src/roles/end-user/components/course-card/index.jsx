@@ -1,5 +1,6 @@
 import { Box, Card, Button, Avatar, useTheme, Typography, CardContent } from '@mui/material'
 import { ArrowRight } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 
 import CategoryList from '../category-list'
@@ -359,6 +360,28 @@ const CourseCard = ({ course, isPurchased }) => {
       </Box>
     </Card>
   )
+}
+
+CourseCard.propTypes = {
+  course: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    thumbNail: PropTypes.string,
+    category: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    isPaid: PropTypes.bool,
+    price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    totalPurchased: PropTypes.number,
+    educatorId: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+    }),
+  }).isRequired,
+  isPurchased: PropTypes.bool,
+}
+
+CourseCard.defaultProps = {
+  isPurchased: false,
 }
 
 export default CourseCard

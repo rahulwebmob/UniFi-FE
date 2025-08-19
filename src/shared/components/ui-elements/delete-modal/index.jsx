@@ -1,4 +1,5 @@
 import { Box, Button, useTheme, Typography } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
 const DeleteModal = ({
@@ -38,6 +39,14 @@ const DeleteModal = ({
       </Box>
     </Box>
   )
+}
+
+DeleteModal.propTypes = {
+  selectedValue: PropTypes.string,
+  submit: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  isSubmitting: PropTypes.bool,
+  deleteText: PropTypes.string,
 }
 
 export default DeleteModal

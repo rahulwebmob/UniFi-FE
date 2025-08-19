@@ -14,6 +14,7 @@ import {
   FormHelperText,
   FormControlLabel,
 } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
@@ -327,6 +328,22 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
       </Box>
     </form>
   )
+}
+
+BillingAddress.propTypes = {
+  subscriptionFormData: PropTypes.shape({
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    email: PropTypes.string,
+    phoneNumber: PropTypes.string,
+    country: PropTypes.string,
+    state: PropTypes.string,
+    city: PropTypes.string,
+    zip: PropTypes.string,
+    address: PropTypes.string,
+  }),
+  setSubscriptionFormData: PropTypes.func,
+  setCurrentStep: PropTypes.func,
 }
 
 export default BillingAddress

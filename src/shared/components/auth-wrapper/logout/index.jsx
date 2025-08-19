@@ -1,4 +1,5 @@
 import { Box, Button, Typography } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
@@ -42,6 +43,15 @@ const Logout = ({ component, type }) => {
     dispatch(updateLanguage({ ...lang, value: item }))
   }
 
+  const handleCloseModal = () => {
+    logoutRef.current?.closeModal()
+  }
+
+  const handleOpenModal = (event) => {
+    event?.preventDefault()
+    logoutRef.current?.openModal()
+  }
+
   const handleLogout = async () => {
     try {
       const logout = getLogoutFunction()
@@ -56,15 +66,6 @@ const Logout = ({ component, type }) => {
     } catch {
       //
     }
-  }
-
-  const handleOpenModal = (event) => {
-    event?.preventDefault()
-    logoutRef.current?.openModal()
-  }
-
-  const handleCloseModal = () => {
-    logoutRef.current?.closeModal()
   }
 
   return (
@@ -112,5 +113,15 @@ const Logout = ({ component, type }) => {
 }
 
 const LogoutWrapper = Logout
+
+Logout.propTypes = {
+  component: PropTypes.element,
+  type: PropTypes.string,
+}
+
+Logout.defaultProps = {
+  component: null,
+  type: 'user',
+}
 
 export default LogoutWrapper

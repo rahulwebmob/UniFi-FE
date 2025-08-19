@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -110,6 +111,26 @@ const PreviewWebinar = ({ webinarData, isTdSkip }) => {
       }}
     />
   )
+}
+
+PreviewWebinar.propTypes = {
+  webinarData: PropTypes.shape({
+    _id: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    scheduleType: PropTypes.string,
+    startDate: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
+    startTime: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
+    endTime: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
+    days: PropTypes.array,
+    image: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    price: PropTypes.number,
+    educatorId: PropTypes.object,
+    category: PropTypes.array,
+    isPaid: PropTypes.bool,
+    resources: PropTypes.array,
+  }).isRequired,
+  isTdSkip: PropTypes.bool,
 }
 
 export default PreviewWebinar

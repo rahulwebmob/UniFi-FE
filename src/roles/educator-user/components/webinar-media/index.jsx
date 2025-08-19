@@ -1,5 +1,6 @@
 import { Box, useTheme } from '@mui/material'
 import { Volume2 } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useRef, useState } from 'react'
 
 import { styles } from '../styles'
@@ -88,6 +89,12 @@ const WebinarMedia = ({ stream, mediaType = 'video', isMirror = false }) => {
       <track kind="captions" />
     </video>
   )
+}
+
+WebinarMedia.propTypes = {
+  stream: PropTypes.object,
+  mediaType: PropTypes.oneOf(['video', 'audio']),
+  isMirror: PropTypes.bool,
 }
 
 export default WebinarMedia

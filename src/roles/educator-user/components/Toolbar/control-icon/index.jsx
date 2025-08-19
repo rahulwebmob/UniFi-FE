@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material'
+import PropTypes from 'prop-types'
 
 import { ControlButton } from '../../styles'
 
@@ -50,5 +51,14 @@ const ControlIcon = ({ icon, label, onClick, disabled, isActive = false, isRecor
     </Typography>
   </ControlButton>
 )
+
+ControlIcon.propTypes = {
+  icon: PropTypes.node.isRequired,
+  label: PropTypes.string.isRequired,
+  onClick: PropTypes.func,
+  disabled: PropTypes.bool,
+  isActive: PropTypes.bool,
+  isRecording: PropTypes.bool,
+}
 
 export default ControlIcon

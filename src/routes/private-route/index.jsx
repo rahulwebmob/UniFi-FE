@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, useLocation } from 'react-router-dom'
 
@@ -56,6 +57,11 @@ const PrivateRoute = ({ children, module }) => {
   }
 
   return children
+}
+
+PrivateRoute.propTypes = {
+  children: PropTypes.node,
+  module: PropTypes.string,
 }
 
 export default PrivateRoute

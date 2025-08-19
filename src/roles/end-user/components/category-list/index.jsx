@@ -1,4 +1,5 @@
 import { Box, Tooltip } from '@mui/material'
+import PropTypes from 'prop-types'
 
 const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) => {
   const hasMore = chips.length > maxVisible
@@ -68,6 +69,19 @@ const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) =>
       )}
     </Box>
   )
+}
+
+CategoryList.propTypes = {
+  chips: PropTypes.arrayOf(PropTypes.string).isRequired,
+  containerWidth: PropTypes.number,
+  isPurchased: PropTypes.bool,
+  maxVisible: PropTypes.number,
+}
+
+CategoryList.defaultProps = {
+  containerWidth: undefined,
+  isPurchased: false,
+  maxVisible: 2,
 }
 
 export default CategoryList

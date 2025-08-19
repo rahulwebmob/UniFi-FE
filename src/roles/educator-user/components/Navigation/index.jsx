@@ -34,6 +34,8 @@ const Navigation = () => {
 
   const handleChange = (path) => {
     if (location.pathname.includes('educator-room')) {
+      // TODO: Replace with proper modal dialog
+      // eslint-disable-next-line no-alert
       const userConfirmed = window.confirm('Are you sure you want to leave the webinar ?')
       if (userConfirmed) {
         void navigate(path)
@@ -97,5 +99,7 @@ const Navigation = () => {
     </Box>
   )
 }
+
+Navigation.propTypes = {}
 
 export default Navigation

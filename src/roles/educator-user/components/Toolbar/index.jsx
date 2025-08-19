@@ -12,6 +12,7 @@ import {
   Paperclip,
   MessageCircle,
 } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -273,6 +274,21 @@ const Toolbar = ({
       )}
     </ControlsContainer>
   )
+}
+
+Toolbar.propTypes = {
+  isHost: PropTypes.bool.isRequired,
+  audioStream: PropTypes.object,
+  mediaStatus: PropTypes.shape({
+    isAudio: PropTypes.bool,
+    isVideo: PropTypes.bool,
+    isScreen: PropTypes.bool,
+  }).isRequired,
+  handleRaiseHand: PropTypes.func.isRequired,
+  handleEndWebinar: PropTypes.func.isRequired,
+  handleTurnedMicOn: PropTypes.func.isRequired,
+  handleTurnedVideoOn: PropTypes.func.isRequired,
+  handleTurnedScreenShare: PropTypes.func.isRequired,
 }
 
 export default Toolbar

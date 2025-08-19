@@ -1,5 +1,6 @@
 import { Box, InputBase } from '@mui/material'
 import { Paintbrush } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -41,6 +42,10 @@ const ColorPicker = ({ type }) => {
       />
     </Box>
   )
+}
+
+ColorPicker.propTypes = {
+  type: PropTypes.string.isRequired,
 }
 
 export default ColorPicker

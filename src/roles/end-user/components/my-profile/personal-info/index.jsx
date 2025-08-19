@@ -31,8 +31,6 @@ const PersonalInfo = () => {
   const userData = userState.user
   const { profileImage, firstName, lastName } = userData ?? {}
 
-  console.log(profileImage, firstName, lastName)
-
   const [avatar, setAvatar] = useState({ file: null, image: null })
   const matches = useMediaQuery(theme.breakpoints.down('sm'))
   const [editDetails] = useMyProfileMutation()

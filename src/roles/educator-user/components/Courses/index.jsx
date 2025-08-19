@@ -28,7 +28,6 @@ import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-t
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 
 const Courses = () => {
-  const theme = useTheme()
   const { t } = useTranslation('education')
   const navigate = useNavigate()
 
@@ -65,7 +64,7 @@ const Courses = () => {
     setSearchTerm(value)
   }, 700)
 
-  const handleStatusColor = (value) => {
+  const _handleStatusColor = (value) => {
     switch (value) {
       case 'published':
         return 'success'
@@ -74,6 +73,11 @@ const Courses = () => {
       default:
         return 'primary'
     }
+  }
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null)
+    setSelectedRow(null)
   }
 
   const handleDeleteCourse = async (id) => {
@@ -86,64 +90,64 @@ const Courses = () => {
     setSelectedRow(row)
   }
 
-  const handleCloseMenu = () => {
-    setAnchorEl(null)
-    setSelectedRow(null)
-  }
-
   const columns = [
     {
       accessorKey: 'title',
       header: t('EDUCATOR.COURSES.COURSE_NAME'),
       size: 300,
-      Cell: ({ row, cell }) => (
-        <Box display="flex" gap={2} alignItems="center">
-          {row.original.thumbNail ? (
-            <Box
-              component="img"
-              width="40px"
-              height="40px"
-              borderRadius="8px"
-              src={row.original.thumbNail}
-              sx={{ objectFit: 'cover', flexShrink: 0 }}
-            />
-          ) : (
-            <Box
-              sx={{
-                width: '40px',
-                height: '40px',
-                padding: '8px',
-                borderRadius: '8px',
-                backgroundColor: theme.palette.grey[100],
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-              }}
-            >
-              <BookOpen size={20} color={theme.palette.grey[400]} />
-            </Box>
-          )}
-          <Tooltip title={String(cell.getValue() || '-')} arrow>
-            <Typography
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                maxWidth: '240px',
-              }}
-            >
-              {String(cell.getValue() || '-')}
-            </Typography>
-          </Tooltip>
-        </Box>
-      ),
+      Cell: (tableProps) => {
+        const { row, cell } = tableProps
+        const theme = useTheme()
+        return (
+          <Box display="flex" gap={2} alignItems="center">
+            {row.original.thumbNail ? (
+              <Box
+                component="img"
+                width="40px"
+                height="40px"
+                borderRadius="8px"
+                src={row.original.thumbNail}
+                sx={{ objectFit: 'cover', flexShrink: 0 }}
+              />
+            ) : (
+              <Box
+                sx={{
+                  width: '40px',
+                  height: '40px',
+                  padding: '8px',
+                  borderRadius: '8px',
+                  backgroundColor: theme.palette.grey[100],
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <BookOpen size={20} color={theme.palette.grey[400]} />
+              </Box>
+            )}
+            <Tooltip title={String(cell.getValue() || '-')} arrow>
+              <Typography
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '240px',
+                }}
+              >
+                {String(cell.getValue() || '-')}
+              </Typography>
+            </Tooltip>
+          </Box>
+        )
+      },
     },
 
     {
       accessorKey: 'category',
       header: t('EDUCATOR.COURSES.EXPERTISE'),
-      Cell: ({ cell }) => {
+      Cell: (tableProps) => {
+        const { cell } = tableProps
         const categories = cell.getValue()
         return (
           <Tooltip title={Array.isArray(categories) ? categories.join(', ') : '-'} arrow>
@@ -168,23 +172,40 @@ const Courses = () => {
     {
       accessorKey: 'createdAt',
       header: t('EDUCATOR.COURSES.CREATED_ON'),
-      Cell: ({ cell }) => (
-        <Typography style={{ whiteSpace: 'pre-line' }}>
-          {cell.getValue() ? new Date(String(cell.getValue())).toLocaleString() : '-'}
-        </Typography>
-      ),
+      Cell: (tableProps) => {
+        const { cell } = tableProps
+        return (
+          <Typography style={{ whiteSpace: 'pre-line' }}>
+            {cell.getValue() ? new Date(String(cell.getValue())).toLocaleString() : '-'}
+          </Typography>
+        )
+      },
     },
     {
       accessorKey: 'totalPurchased',
       header: t('EDUCATOR.COURSES.TOTAL_PURCHASED'),
-      Cell: ({ cell }) => <Typography>{String(cell.getValue() || '-')}</Typography>,
+      Cell: (tableProps) => {
+        const { cell } = tableProps
+        return <Typography>{String(cell.getValue() || '-')}</Typography>
+      },
     },
     {
       accessorKey: 'status',
       header: t('EDUCATOR.COURSES.STATUS'),
       size: 120,
-      Cell: ({ cell }) => {
+      Cell: (tableProps) => {
+        const { cell } = tableProps
         const courseStatus = String(cell.getValue() || '')
+        const handleStatusColor = (value) => {
+          switch (value) {
+            case 'published':
+              return 'success'
+            case 'draft':
+              return 'warning'
+            default:
+              return 'primary'
+          }
+        }
         return (
           <Chip
             label={courseStatus || '-'}
@@ -203,38 +224,46 @@ const Courses = () => {
       accessorKey: 'view',
       header: t('EDUCATOR.COURSES.VIEW_COURSE'),
       size: 140,
-      Cell: ({ row }) => (
-        <Button
-          size="small"
-          variant="contained"
-          endIcon={<ArrowRight size={16} />}
-          onClick={() => {
-            void navigate('/educator/preview-course', {
-              state: { courseId: row?.original?._id, isPreview: true },
-            })
-          }}
-          disabled={row?.original?.status === 'draft'}
-          sx={{
-            textTransform: 'none',
-            width: 150,
-          }}
-        >
-          View Course
-        </Button>
-      ),
+      Cell: (tableProps) => {
+        const { row } = tableProps
+        const navigate = useNavigate()
+        return (
+          <Button
+            size="small"
+            variant="contained"
+            endIcon={<ArrowRight size={16} />}
+            onClick={() => {
+              void navigate('/educator/preview-course', {
+                state: { courseId: row?.original?._id, isPreview: true },
+              })
+            }}
+            disabled={row?.original?.status === 'draft'}
+            sx={{
+              textTransform: 'none',
+              width: 150,
+            }}
+          >
+            View Course
+          </Button>
+        )
+      },
       enableSorting: false,
     },
     {
       accessorKey: 'action',
       header: t('EDUCATOR.COURSES.ACTION'),
       size: 80,
-      Cell: ({ row }) => (
-        <Box display="flex" justifyContent="center">
-          <IconButton size="small" onClick={(e) => handleOpenMenu(e, row.original)}>
-            <MoreVertical size={18} />
-          </IconButton>
-        </Box>
-      ),
+      Cell: (tableProps) => {
+        const { row, table } = tableProps
+        const handleOpenMenu = table.options.meta?.handleOpenMenu
+        return (
+          <Box display="flex" justifyContent="center">
+            <IconButton size="small" onClick={(e) => handleOpenMenu(e, row.original)}>
+              <MoreVertical size={18} />
+            </IconButton>
+          </Box>
+        )
+      },
       enableSorting: false,
     },
   ]
@@ -249,6 +278,9 @@ const Courses = () => {
         height: '100%',
         maxHeight: '100%',
       },
+    },
+    meta: {
+      handleOpenMenu,
     },
   }
 
@@ -445,5 +477,7 @@ const Courses = () => {
     </Box>
   )
 }
+
+Courses.propTypes = {}
 
 export default Courses

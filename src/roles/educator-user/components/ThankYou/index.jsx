@@ -1,5 +1,6 @@
 import { Box, Paper, Button, Typography } from '@mui/material'
 import { CheckCircle } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
@@ -109,6 +110,10 @@ const ThankYou = ({ text }) => {
       </Paper>
     </Box>
   )
+}
+
+ThankYou.propTypes = {
+  text: PropTypes.string,
 }
 
 export default ThankYou

@@ -8,11 +8,15 @@ import {
   useMediaQuery,
 } from '@mui/material'
 import { X } from 'lucide-react'
+import PropTypes from 'prop-types'
 import React, { useState, forwardRef, useImperativeHandle } from 'react'
 
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />)
 
 Transition.displayName = 'TransitionComponent'
+Transition.propTypes = {
+  children: PropTypes.element,
+}
 
 const ModalBox = forwardRef(
   (
@@ -129,5 +133,16 @@ const ModalBox = forwardRef(
 )
 
 ModalBox.displayName = 'ModalBox'
+
+ModalBox.propTypes = {
+  modalStyle: PropTypes.object,
+  children: PropTypes.node,
+  title: PropTypes.string,
+  size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+  onCloseModal: PropTypes.func,
+  noWidth: PropTypes.bool,
+  fullScreen: PropTypes.bool,
+  disablePadding: PropTypes.bool,
+}
 
 export default ModalBox

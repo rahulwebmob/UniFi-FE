@@ -1,5 +1,6 @@
 import { Box, Avatar, Typography } from '@mui/material'
 import { User as UserIcon } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -135,6 +136,21 @@ const Learning = ({
       </VideoPlaceholder>
     </Box>
   )
+}
+
+Learning.propTypes = {
+  isHost: PropTypes.bool,
+  mediaStatus: PropTypes.shape({
+    isVideo: PropTypes.bool,
+    isScreen: PropTypes.bool,
+  }),
+  usersInRoom: PropTypes.array,
+  remoteStream: PropTypes.shape({
+    producer: PropTypes.object,
+    firstName: PropTypes.string,
+  }),
+  localVideoStream: PropTypes.object,
+  localScreenStream: PropTypes.object,
 }
 
 export default Learning

@@ -1,4 +1,5 @@
 import { Box, useTheme, Typography } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
 import NoDataIcon from '../../../assets/svgicons/no-data.svg?react'
@@ -46,4 +47,16 @@ const NoDataFound = ({ title, description, isTable = false }) => {
     </Box>
   )
 }
+NoDataFound.propTypes = {
+  title: PropTypes.string,
+  description: PropTypes.string,
+  isTable: PropTypes.bool,
+}
+
+NoDataFound.defaultProps = {
+  title: undefined,
+  description: undefined,
+  isTable: false,
+}
+
 export default NoDataFound

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
@@ -42,6 +43,10 @@ const EditCourse = ({ currentStep = 0 }) => {
       />
     </ApiMiddleware>
   )
+}
+
+EditCourse.propTypes = {
+  currentStep: PropTypes.number,
 }
 
 export default EditCourse

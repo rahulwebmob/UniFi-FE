@@ -1,5 +1,6 @@
 import { Box, Paper, Button, Typography, IconButton } from '@mui/material'
 import { Cast, Circle, XCircle } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
 const RecordingPopup = ({ handleOnClose, handleToggleRecording }) => {
@@ -67,6 +68,11 @@ const RecordingPopup = ({ handleOnClose, handleToggleRecording }) => {
       </IconButton>
     </Paper>
   )
+}
+
+RecordingPopup.propTypes = {
+  handleOnClose: PropTypes.func.isRequired,
+  handleToggleRecording: PropTypes.func.isRequired,
 }
 
 export default RecordingPopup

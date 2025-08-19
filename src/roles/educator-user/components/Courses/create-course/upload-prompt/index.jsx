@@ -1,5 +1,6 @@
 import { Box, Typography, LinearProgress } from '@mui/material'
 import { VideoIcon } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
 const UploadPrompt = ({ progress }) => {
@@ -63,6 +64,10 @@ const UploadPrompt = ({ progress }) => {
       </Box>
     </Box>
   )
+}
+
+UploadPrompt.propTypes = {
+  progress: PropTypes.number.isRequired,
 }
 
 export default UploadPrompt

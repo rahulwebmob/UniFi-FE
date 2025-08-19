@@ -15,6 +15,7 @@ import {
 } from '@mui/material'
 import { format } from 'date-fns'
 import { Info, User, Clock, Users, Video, MapPin, Calendar, DollarSign } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
@@ -505,6 +506,37 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
       </Container>
     </Box>
   )
+}
+
+WebinarContent.propTypes = {
+  webinarData: PropTypes.shape({
+    _id: PropTypes.string,
+    title: PropTypes.string,
+    subtitle: PropTypes.string,
+    description: PropTypes.string,
+    instructor: PropTypes.object,
+    category: PropTypes.array,
+    thumbnail: PropTypes.string,
+    thumbNail: PropTypes.string,
+    scheduleType: PropTypes.string,
+    startTime: PropTypes.string,
+    endTime: PropTypes.string,
+    duration: PropTypes.number,
+    location: PropTypes.string,
+    maxAttendees: PropTypes.number,
+    days: PropTypes.array,
+    isPaid: PropTypes.bool,
+    price: PropTypes.number,
+    resources: PropTypes.array,
+    keyTakeaways: PropTypes.array,
+    isWebinarBought: PropTypes.bool,
+    webinarScheduledObj: PropTypes.shape({
+      can_join: PropTypes.bool,
+      join_date: PropTypes.string,
+    }),
+  }),
+  isEdit: PropTypes.bool,
+  handleOpenPremiumModal: PropTypes.func,
 }
 
 export default WebinarContent

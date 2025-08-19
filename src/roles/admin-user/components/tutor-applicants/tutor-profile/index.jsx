@@ -18,8 +18,8 @@ const LIST_TYPE_OPTIONS = [
 
 const TutorProfile = () => {
   const { id } = useParams()
-  const { data: tutorDetails } = useViewTutorDetailQuery({ educatorId: id || '' }, { skip: !id })
-  const { data: DownloadCv } = useDownloadCVQuery({ educatorId: id || '' }, { skip: !id })
+  const { data: tutorDetails } = useViewTutorDetailQuery({ educatorId: id }, { skip: !id })
+  const { data: DownloadCv } = useDownloadCVQuery({ educatorId: id }, { skip: !id })
 
   const [listType, setListType] = useState('IS')
   const selectedComponent = LIST_TYPE_OPTIONS.find((item) => item.value === listType)?.component
@@ -109,9 +109,9 @@ const TutorProfile = () => {
                 Expertise
               </Typography>
               <Box display="flex" gap={1} flexWrap="wrap">
-                {tutorDetails?.data?.expertise?.map((expertise, index) => (
+                {tutorDetails?.data?.expertise?.map((expertise) => (
                   <Chip
-                    key={index}
+                    key={expertise._id || expertise.category}
                     label={expertise.category}
                     variant="outlined"
                     size="small"
@@ -219,7 +219,7 @@ const TutorProfile = () => {
                 {tutorDetails?.data?.otherProfileUrls?.length ? (
                   tutorDetails?.data?.otherProfileUrls.map((url, index) => (
                     <Typography
-                      key={index}
+                      key={url}
                       sx={{ cursor: 'pointer', textDecoration: 'underline' }}
                       color="primary"
                       variant="body1"
@@ -310,5 +310,8 @@ const TutorProfile = () => {
     </Box>
   )
 }
+
+// No props to validate for this component
+TutorProfile.propTypes = {}
 
 export default TutorProfile

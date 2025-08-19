@@ -150,4 +150,6 @@ const UserSettings = forwardRef((_, userSettingsRef) => {
   )
 })
 
+UserSettings.displayName = 'UserSettings'
+
 export default UserSettings

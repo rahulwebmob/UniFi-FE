@@ -38,7 +38,10 @@ const Achievements = () => {
           }}
         >
           {educationData.map((education, index) => (
-            <Box key={`${education.degree}-${index}`} className="course">
+            <Box
+              key={education._id || `education-${education.degree}-${education.field}-${index}`}
+              className="course"
+            >
               <Box display="flex">
                 <Beaker size={48} />
                 <Box ml={1}>
@@ -77,7 +80,13 @@ const Achievements = () => {
             }}
           >
             {certificationData.map((certificate, index) => (
-              <Box key={`${certificate.name}-${index}`} className="course">
+              <Box
+                key={
+                  certificate._id ||
+                  `certificate-${certificate.name}-${certificate.organization}-${index}`
+                }
+                className="course"
+              >
                 <Box display="flex">
                   <Beaker size={48} />
                   <Box ml={1}>
@@ -99,5 +108,8 @@ const Achievements = () => {
     </Box>
   )
 }
+
+// No props to validate for this component
+Achievements.propTypes = {}
 
 export default Achievements

@@ -15,6 +15,7 @@ import {
   useMediaQuery,
 } from '@mui/material'
 import { X } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -265,6 +266,16 @@ const AdminProfileSettings = ({ open, onClose, userData }) => {
       </DialogContent>
     </Dialog>
   )
+}
+
+AdminProfileSettings.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  userData: PropTypes.shape({
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    email: PropTypes.string,
+  }),
 }
 
 export default AdminProfileSettings

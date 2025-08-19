@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Grid, Button, TextField, IconButton, Typography, InputAdornment } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { Eye, EyeOff } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -321,6 +322,10 @@ const SignUp = ({ setIsLoginPage }) => {
       </Box>
     </Box>
   )
+}
+
+SignUp.propTypes = {
+  setIsLoginPage: PropTypes.func.isRequired,
 }
 
 export default SignUp

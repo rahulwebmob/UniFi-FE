@@ -1,5 +1,6 @@
 import { Box, Avatar, Typography } from '@mui/material'
 import { User } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useMemo } from 'react'
 
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
@@ -21,6 +22,10 @@ const PeerCarouselItem = ({ label }) => (
     </Typography>
   </CarouselItem>
 )
+
+PeerCarouselItem.propTypes = {
+  label: PropTypes.string.isRequired,
+}
 
 const Peers = ({ usersInRoom, isHost }) => {
   const filteredUsers = useMemo(
@@ -47,6 +52,11 @@ const Peers = ({ usersInRoom, isHost }) => {
       </Box>
     </Box>
   )
+}
+
+Peers.propTypes = {
+  usersInRoom: PropTypes.array.isRequired,
+  isHost: PropTypes.bool.isRequired,
 }
 
 export default Peers

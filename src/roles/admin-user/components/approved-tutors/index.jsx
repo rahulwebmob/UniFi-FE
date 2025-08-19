@@ -2,11 +2,108 @@ import { Box, alpha, Button, useTheme, InputBase, Typography } from '@mui/materi
 import { debounce } from 'lodash'
 import { User, Search } from 'lucide-react'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
-import { useMemo, useState } from 'react'
+import PropTypes from 'prop-types'
+import { useMemo, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useGetApprovedTutorQuery } from '../../../../services/admin'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
+
+// Extracted Cell components to fix react/no-unstable-nested-components
+const NameCell = ({ row }) => (
+  <Typography component="span">{`${row.original.firstName} ${row.original.lastName}`}</Typography>
+)
+
+NameCell.propTypes = {
+  row: PropTypes.shape({
+    original: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+    }).isRequired,
+  }).isRequired,
+}
+
+const ExpertiseCell = ({ row }) => {
+  const { original } = row
+  return (
+    <Typography>
+      {original.expertise?.length
+        ? original.expertise.map((item) => item.category).join(', ')
+        : '-'}
+    </Typography>
+  )
+}
+
+ExpertiseCell.propTypes = {
+  row: PropTypes.shape({
+    original: PropTypes.shape({
+      expertise: PropTypes.arrayOf(
+        PropTypes.shape({
+          category: PropTypes.string.isRequired,
+        }),
+      ),
+    }).isRequired,
+  }).isRequired,
+}
+
+const DateCell = ({ cell }) => {
+  const value = cell.getValue()
+  return <Typography component="span">{value ? new Date(value).toLocaleString() : '-'}</Typography>
+}
+
+DateCell.propTypes = {
+  cell: PropTypes.shape({
+    getValue: PropTypes.func.isRequired,
+  }).isRequired,
+}
+
+const ApprovedByCell = ({ row }) => {
+  const { original } = row
+  const firstName = original.approvedBy?.firstName ?? ''
+  const lastName = original.approvedBy?.lastName ?? ''
+  return <Typography>{firstName && lastName ? `${firstName} ${lastName}` : '-'}</Typography>
+}
+
+ApprovedByCell.propTypes = {
+  row: PropTypes.shape({
+    original: PropTypes.shape({
+      approvedBy: PropTypes.shape({
+        firstName: PropTypes.string,
+        lastName: PropTypes.string,
+      }),
+    }).isRequired,
+  }).isRequired,
+}
+
+const ActionCell = ({ row, navigate }) => {
+  const tutorId = row.original._id
+  return (
+    <Box>
+      <Button
+        variant="contained"
+        size="small"
+        startIcon={<User size={16} />}
+        onClick={() => void navigate(`/admin/approved-tutors/${tutorId}`)}
+        sx={{
+          textTransform: 'none',
+          borderRadius: '8px',
+          fontWeight: 600,
+        }}
+      >
+        View Profile
+      </Button>
+    </Box>
+  )
+}
+
+ActionCell.propTypes = {
+  row: PropTypes.shape({
+    original: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+  navigate: PropTypes.func.isRequired,
+}
 
 const ApprovedTtutors = () => {
   const theme = useTheme()
@@ -26,94 +123,47 @@ const ApprovedTtutors = () => {
     setSearch(value)
   }, 700)
 
+  const renderActionCell = useCallback(
+    ({ row }) => <ActionCell row={row} navigate={navigate} />,
+    [navigate],
+  )
+
   const columns = useMemo(
     () => [
       {
         accessorKey: 'firstName',
         header: 'Name',
-        Cell: ({ row }) => (
-          <Typography component="span">
-            {`${row.original.firstName} ${row.original.lastName}`}
-          </Typography>
-        ),
+        Cell: NameCell,
       },
       { accessorKey: 'email', header: 'Email Address' },
       {
         accessorKey: 'expertise',
         header: 'Expertise',
-        Cell: ({ row }) => {
-          const { original } = row
-          return (
-            <Typography>
-              {original.expertise?.length
-                ? original.expertise.map((item) => item.category).join(', ')
-                : '-'}
-            </Typography>
-          )
-        },
+        Cell: ExpertiseCell,
       },
       {
         accessorKey: 'lastLoginAt',
         header: 'Last Active',
-        Cell: ({ cell }) => {
-          const value = cell.getValue()
-          return (
-            <Typography component="span">
-              {value ? new Date(value).toLocaleString() : '-'}
-            </Typography>
-          )
-        },
+        Cell: DateCell,
       },
       {
         accessorKey: 'approvedDate',
         header: 'Approved On',
-        Cell: ({ cell }) => {
-          const value = cell.getValue()
-          return (
-            <Typography component="span">
-              {value ? new Date(value).toLocaleString() : '-'}
-            </Typography>
-          )
-        },
+        Cell: DateCell,
       },
       {
         accessorKey: 'approvedBy',
         header: 'Approved By',
-        Cell: ({ row }) => {
-          const { original } = row
-          const firstName = original.approvedBy?.firstName ?? ''
-          const lastName = original.approvedBy?.lastName ?? ''
-          return <Typography>{firstName && lastName ? `${firstName} ${lastName}` : '-'}</Typography>
-        },
+        Cell: ApprovedByCell,
       },
-
       {
         accessorKey: 'action',
         header: 'Action',
-        Cell: ({ row }) => {
-          const tutorId = row.original._id
-          return (
-            <Box>
-              <Button
-                variant="contained"
-                size="small"
-                startIcon={<User size={16} />}
-                onClick={() => void navigate(`/admin/approved-tutors/${tutorId}`)}
-                sx={{
-                  textTransform: 'none',
-                  borderRadius: '8px',
-                  fontWeight: 600,
-                }}
-              >
-                View Profile
-              </Button>
-            </Box>
-          )
-        },
+        Cell: renderActionCell,
         enableSorting: false,
       },
     ],
-    [navigate],
+    [renderActionCell],
   )
 
   const table = useMaterialReactTable({

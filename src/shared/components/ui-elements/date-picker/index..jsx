@@ -8,6 +8,7 @@ import { enUS } from 'date-fns/locale/en-US'
 import { es } from 'date-fns/locale/es'
 import { fr } from 'date-fns/locale/fr'
 import { ja } from 'date-fns/locale/ja'
+import PropTypes from 'prop-types'
 import { forwardRef } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -59,5 +60,11 @@ const DatePicker = forwardRef((props, ref) => {
     </Box>
   )
 })
+
+DatePicker.displayName = 'DatePicker'
+
+DatePicker.propTypes = {
+  readOnly: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+}
 
 export default DatePicker

@@ -14,6 +14,7 @@ import {
   AccordionDetails,
 } from '@mui/material'
 import { VideoIcon, FileText, ChevronDown } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -454,6 +455,40 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
       </ModalBox>
     </Box>
   )
+}
+
+ContentView.propTypes = {
+  courseData: PropTypes.shape({
+    _id: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    thumbNail: PropTypes.string,
+    previewVideo: PropTypes.string,
+    price: PropTypes.number,
+    isPaid: PropTypes.bool,
+    isCourseBought: PropTypes.bool,
+    totalChaptersCount: PropTypes.number,
+    totalLessonsCount: PropTypes.number,
+    totalDurationOfCourse: PropTypes.number,
+    chapters: PropTypes.arrayOf(
+      PropTypes.shape({
+        _id: PropTypes.string,
+        title: PropTypes.string,
+        totalLessons: PropTypes.number,
+        totalDuration: PropTypes.number,
+        lessonList: PropTypes.arrayOf(
+          PropTypes.shape({
+            _id: PropTypes.string,
+            title: PropTypes.string,
+            lessonType: PropTypes.string,
+            durationInSeconds: PropTypes.number,
+          }),
+        ),
+      }),
+    ),
+  }),
+  isEdit: PropTypes.bool,
+  handleOpenPremiumModal: PropTypes.func,
 }
 
 export default ContentView

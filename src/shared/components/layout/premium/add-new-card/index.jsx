@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Grid, Button, Divider, TextField, Typography, InputAdornment } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
@@ -221,6 +222,17 @@ const AddNewCard = ({ subscriptionFormData, setSubscriptionFormData, setCurrentS
       </form>
     </Box>
   )
+}
+
+AddNewCard.propTypes = {
+  subscriptionFormData: PropTypes.shape({
+    cardNumber: PropTypes.string,
+    expDate: PropTypes.string,
+    cardCode: PropTypes.string,
+    nameOnCard: PropTypes.string,
+  }).isRequired,
+  setSubscriptionFormData: PropTypes.func.isRequired,
+  setCurrentStep: PropTypes.func.isRequired,
 }
 
 export default AddNewCard

@@ -23,7 +23,7 @@ const combinedReducers = combineReducers({
 const rootReducer = (state, action) => {
   if (action.type === signOut.type) {
     disconnectAllSockets(true)
-    state = undefined
+    return combinedReducers(undefined, action)
   }
   return combinedReducers(state, action)
 }

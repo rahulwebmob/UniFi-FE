@@ -11,6 +11,7 @@ import {
 } from '@mui/material'
 import { TimePicker } from '@mui/x-date-pickers'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import PropTypes from 'prop-types'
 import { Controller, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -389,6 +390,19 @@ const WebinarSchedule = ({
       )}
     </>
   )
+}
+
+WebinarSchedule.propTypes = {
+  isEdit: PropTypes.bool,
+  scheduleType: PropTypes.string,
+  setScheduleType: PropTypes.func,
+  defaultValues: PropTypes.shape({
+    days: PropTypes.arrayOf(
+      PropTypes.shape({
+        day: PropTypes.string,
+      }),
+    ),
+  }),
 }
 
 export default WebinarSchedule

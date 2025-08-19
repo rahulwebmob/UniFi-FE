@@ -31,7 +31,9 @@ const Webinars = () => {
         accessorKey: 'thumbnail',
         header: 'Thumbnail',
         size: 100,
-        Cell: ({ row }) => {
+        Cell: (tableProps) => {
+          const { row } = tableProps
+          const theme = useTheme()
           const thumbnail = row.original.thumbnail || row.original.thumbNail
           return thumbnail ? (
             <Box
@@ -68,15 +70,17 @@ const Webinars = () => {
         accessorKey: 'title',
         header: 'Title',
         size: 200,
-        Cell: ({ cell }) => (
-          <Typography sx={{ fontWeight: 500 }}>{cell.getValue() || '-'}</Typography>
-        ),
+        Cell: (tableProps) => {
+          const { cell } = tableProps
+          return <Typography sx={{ fontWeight: 500 }}>{cell.getValue() || '-'}</Typography>
+        },
       },
       {
         accessorKey: 'description',
         header: 'Description',
         size: 250,
-        Cell: ({ cell }) => {
+        Cell: (tableProps) => {
+          const { cell } = tableProps
           const description = cell.getValue()
           return (
             <Typography
@@ -99,7 +103,8 @@ const Webinars = () => {
         accessorKey: 'category',
         header: 'Categories',
         size: 200,
-        Cell: ({ cell }) => {
+        Cell: (tableProps) => {
+          const { cell } = tableProps
           const categories = cell.getValue()
           return categories?.length ? (
             <Box display="flex" gap={0.5} flexWrap="wrap">
@@ -126,7 +131,8 @@ const Webinars = () => {
         accessorKey: 'startDate',
         header: 'Schedule',
         size: 180,
-        Cell: ({ row }) => {
+        Cell: (tableProps) => {
+          const { row } = tableProps
           const { startDate, startTime, endTime } = row.original
 
           if (!startDate) {
@@ -152,7 +158,9 @@ const Webinars = () => {
         accessorKey: 'price',
         header: 'Price',
         size: 100,
-        Cell: ({ cell }) => {
+        Cell: (tableProps) => {
+          const { cell } = tableProps
+          const theme = useTheme()
           const price = cell.getValue()
           return (
             <Typography
@@ -170,7 +178,8 @@ const Webinars = () => {
         accessorKey: 'totalEnrolled',
         header: 'Enrollments',
         size: 120,
-        Cell: ({ cell }) => {
+        Cell: (tableProps) => {
+          const { cell } = tableProps
           const enrolled = cell.getValue()
           return (
             <Typography variant="body2">
@@ -183,7 +192,8 @@ const Webinars = () => {
         accessorKey: 'status',
         header: 'Status',
         size: 100,
-        Cell: ({ cell }) => {
+        Cell: (tableProps) => {
+          const { cell } = tableProps
           const status = cell.getValue()
           const getStatusColor = () => {
             switch (status?.toLowerCase()) {
@@ -214,7 +224,7 @@ const Webinars = () => {
         },
       },
     ],
-    [theme],
+    [],
   )
 
   const table = useMaterialReactTable({
@@ -292,5 +302,8 @@ const Webinars = () => {
     </Box>
   )
 }
+
+// No props to validate for this component
+Webinars.propTypes = {}
 
 export default Webinars

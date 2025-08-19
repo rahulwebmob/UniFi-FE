@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 import Loading from '../loading'
 import LoadingIssue from '../loading-error'
 import NoDataFound from '../no-data-found'
@@ -18,7 +20,22 @@ const ApiMiddleware = ({ children, error, isData, isLoading, text, description }
     return <NoDataFound title={text} description={description} />
   }
 
-  return <>{children}</>
+  return children
+}
+
+ApiMiddleware.propTypes = {
+  children: PropTypes.node.isRequired,
+  error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  isData: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  text: PropTypes.string,
+  description: PropTypes.string,
+}
+
+ApiMiddleware.defaultProps = {
+  error: null,
+  text: undefined,
+  description: undefined,
 }
 
 export default ApiMiddleware

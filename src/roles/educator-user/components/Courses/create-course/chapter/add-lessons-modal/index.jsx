@@ -1,5 +1,6 @@
 import { Typography, Box, IconButton } from '@mui/material'
 import { Edit, Plus } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -57,6 +58,18 @@ const AddLessonsModal = ({
       </ModalBox>
     </>
   )
+}
+
+AddLessonsModal.propTypes = {
+  chapterId: PropTypes.string,
+  courseId: PropTypes.string,
+  isEdit: PropTypes.bool,
+  defaultValues: PropTypes.shape({
+    lessonTitle: PropTypes.string,
+    resource: PropTypes.string,
+    isFree: PropTypes.bool,
+  }),
+  lessonId: PropTypes.string,
 }
 
 export default AddLessonsModal

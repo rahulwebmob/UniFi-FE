@@ -11,9 +11,11 @@ import {
   CircularProgress,
   FormControlLabel,
   Tooltip,
+  useTheme,
 } from '@mui/material'
 import axios from 'axios'
 import { Upload, Save, RotateCcw } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -46,6 +48,7 @@ const AddLesson = ({
   },
 }) => {
   const { t } = useTranslation('education')
+  const theme = useTheme()
   const dispatch = useDispatch()
   const fileInputRef = useRef(null)
   const uploadPrompt = useRef(null)
@@ -548,6 +551,20 @@ const AddLesson = ({
   }
 
   return renderForm()
+}
+
+AddLesson.propTypes = {
+  isEdit: PropTypes.bool,
+  lessonId: PropTypes.string,
+  courseId: PropTypes.string,
+  isChapter: PropTypes.bool,
+  chapterId: PropTypes.string,
+  handleClose: PropTypes.func,
+  defaultValues: PropTypes.shape({
+    lessonTitle: PropTypes.string,
+    resource: PropTypes.string,
+    isFree: PropTypes.bool,
+  }),
 }
 
 export default AddLesson

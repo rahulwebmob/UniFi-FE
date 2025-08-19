@@ -1,5 +1,6 @@
 import { Box, ListItem, ListItemIcon, ListItemText, ListItemButton } from '@mui/material'
 import { FileText, DollarSign, CheckSquare } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 
 import useWindowOpen from '../../../../hooks/useWindowOpen'
@@ -80,6 +81,10 @@ const Navbar = ({ open }) => {
       ))}
     </NavbarContainer>
   )
+}
+
+Navbar.propTypes = {
+  open: PropTypes.bool.isRequired,
 }
 
 export default Navbar

@@ -11,10 +11,11 @@ import {
   StepContent,
 } from '@mui/material'
 import { Check, Circle, CircleCheck, Loader2 } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
@@ -90,6 +91,11 @@ const StepIcon = ({ active = false, completed = false }) => {
   )
 }
 
+StepIcon.propTypes = {
+  active: PropTypes.bool,
+  completed: PropTypes.bool,
+}
+
 const CreateCourse = ({
   isEdit = false,
   courseId = '',
@@ -111,18 +117,16 @@ const CreateCourse = ({
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { t } = useTranslation('education')
-  const { direction } = useSelector((state) => state.app.language)
 
   const [isDraft, setIsDraft] = useState(false)
   const [hasLessons, setHasLessons] = useState({})
-  const [previousVideo, setPreviousVideo] = (useState < File) | string | (null > null)
-  const [previousImage, setPreviousImage] = (useState < File) | string | (null > null)
+  const [previousVideo, setPreviousVideo] = useState(null)
+  const [previousImage, setPreviousImage] = useState(null)
   const [activeStep, setActiveStep] = useState(currentStep)
   const [initialData, setInitialData] = useState(defaultValues)
   const [currentCourseId, setCurrentCourseId] = useState(courseId)
   const [categories, setCategories] = useState(defaultValues?.category)
   const [isCourseFree, setIsCourseFree] = useState(!defaultValues?.isPaid)
-  const isRTL = direction === 'rtl'
 
   const [updateCourse, { isLoading: isUpdateLoading }] = useUpdateCourseMutation()
   const [createCourse, { isLoading: isCreateLoading }] = useCreateCourseMutation()
@@ -496,21 +500,21 @@ const CreateCourse = ({
                   orientation="vertical"
                   sx={{
                     '& .MuiStepContent-root': {
-                      borderLeft: isRTL ? '0' : `2px solid ${theme.palette.divider}`,
-                      borderRight: isRTL ? `2px solid ${theme.palette.divider}` : '0',
-                      marginRight: isRTL ? '21px' : '0',
-                      marginLeft: isRTL ? '0' : '21px',
+                      borderLeft: `2px solid ${theme.palette.divider}`,
+                      borderRight: '0',
+                      marginRight: '0',
+                      marginLeft: '21px',
                       paddingLeft: { xs: 2, md: 3 },
-                      paddingRight: isRTL ? { xs: 2, md: 3 } : 0,
+                      paddingRight: 0,
                     },
                     '& .MuiStepConnector-root': {
-                      marginLeft: isRTL ? '0' : '16px',
-                      marginRight: isRTL ? '16px' : '0',
+                      marginLeft: '16px',
+                      marginRight: '0',
                     },
                     '& .MuiStepConnector-line': {
                       borderColor: theme.palette.divider,
-                      borderLeftWidth: isRTL ? '0' : '2px',
-                      borderRightWidth: isRTL ? '2px' : '0',
+                      borderLeftWidth: '2px',
+                      borderRightWidth: '0',
                     },
                   }}
                 >
@@ -519,7 +523,7 @@ const CreateCourse = ({
                       <StepLabel
                         StepIconComponent={StepIcon}
                         sx={{
-                          textAlign: isRTL ? 'right' : 'left',
+                          textAlign: 'left',
                           '& .MuiStepLabel-label': {
                             fontWeight: 500,
                             fontSize: { xs: '0.875rem', md: '1rem' },
@@ -538,7 +542,7 @@ const CreateCourse = ({
                       </StepLabel>
                       <StepContent
                         sx={{
-                          textAlign: isRTL ? 'end' : 'left',
+                          textAlign: 'left',
                           mt: 1,
                           mb: 2,
                         }}
@@ -679,6 +683,24 @@ const CreateCourse = ({
       </FormProvider>
     </Box>
   )
+}
+
+CreateCourse.propTypes = {
+  isEdit: PropTypes.bool,
+  courseId: PropTypes.string,
+  isPreview: PropTypes.bool,
+  isPublished: PropTypes.bool,
+  currentStep: PropTypes.number,
+  defaultValues: PropTypes.shape({
+    title: PropTypes.string,
+    subtitle: PropTypes.string,
+    description: PropTypes.string,
+    category: PropTypes.array,
+    isPaid: PropTypes.bool,
+    price: PropTypes.number,
+    image: PropTypes.string,
+    video: PropTypes.string,
+  }),
 }
 
 export default CreateCourse

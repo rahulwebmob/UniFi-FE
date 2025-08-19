@@ -1,5 +1,6 @@
 import { Box, Button, styled, useTheme, Typography } from '@mui/material'
 import { AlertTriangle } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useRouteError } from 'react-router-dom'
 
@@ -47,6 +48,10 @@ const ErrorPage = ({ module }) => {
       </Box>
     </ResetPasswordBox>
   )
+}
+
+ErrorPage.propTypes = {
+  module: PropTypes.string,
 }
 
 export default ErrorPage

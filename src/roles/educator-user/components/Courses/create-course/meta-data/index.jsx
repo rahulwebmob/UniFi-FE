@@ -198,4 +198,6 @@ const MetaData = () => {
   )
 }
 
+MetaData.propTypes = {}
+
 export default MetaData

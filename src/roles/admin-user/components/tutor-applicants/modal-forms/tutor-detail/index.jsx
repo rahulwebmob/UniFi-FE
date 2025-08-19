@@ -1,5 +1,6 @@
 import { Box, Grid, Chip, Link, Avatar, Button, Divider, Typography } from '@mui/material'
 import { Play, Download } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -250,9 +251,9 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
                     Expertise
                   </Typography>
                   <Box display="flex" gap={1} flexWrap="wrap">
-                    {tutorDetails?.expertise.map((expertise, index) => (
+                    {tutorDetails?.expertise.map((expertise) => (
                       <Chip
-                        key={index}
+                        key={expertise._id || expertise.category}
                         label={expertise.category}
                         color="primary"
                         variant="outlined"
@@ -378,7 +379,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
                 </Typography>
                 {!!tutorDetails?.otherProfileUrls?.length &&
                   tutorDetails?.otherProfileUrls.map((url, idx) => (
-                    <Link key={idx} href={url} target="_blank" rel="noopener" color="inherit">
+                    <Link key={url} href={url} target="_blank" rel="noopener" color="inherit">
                       view {idx + 1}
                     </Link>
                   ))}
@@ -461,6 +462,14 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
   )
 }
 
+TutorDetail.propTypes = {
+  tutor: PropTypes.shape({
+    _id: PropTypes.string,
+  }),
+  onClose: PropTypes.func.isRequired,
+  filter: PropTypes.string,
+}
+
 export default TutorDetail
 
 const VideoPlayer = ({ videoUrl }) => (
@@ -482,3 +491,7 @@ const VideoPlayer = ({ videoUrl }) => (
     </Box>
   </Box>
 )
+
+VideoPlayer.propTypes = {
+  videoUrl: PropTypes.string.isRequired,
+}

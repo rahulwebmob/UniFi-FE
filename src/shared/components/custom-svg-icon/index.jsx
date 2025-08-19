@@ -1,4 +1,5 @@
 import { SvgIcon } from '@mui/material'
+import PropTypes from 'prop-types'
 
 const CustomSvgIcon = ({ icon, ...props }) => {
   const renderIcon = () => {
@@ -272,6 +273,10 @@ const CustomSvgIcon = ({ icon, ...props }) => {
       {renderIcon()}
     </SvgIcon>
   )
+}
+
+CustomSvgIcon.propTypes = {
+  icon: PropTypes.string.isRequired,
 }
 
 export default CustomSvgIcon

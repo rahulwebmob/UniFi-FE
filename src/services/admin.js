@@ -123,6 +123,22 @@ export const adminApi = createApi({
       invalidatesTags: ['UserProfile'],
       onQueryStarted: onMutationStartedDefault,
     }),
+    generateReferralLink: builder.mutation({
+      query: () => ({
+        url: '/user-api/user-actions/generate-referral-link',
+        method: 'PUT',
+      }),
+      invalidatesTags: ['UserProfile'],
+      onQueryStarted: onMutationStartedDefault,
+    }),
+    getReferralLink: builder.query({
+      query: () => ({
+        url: '/user-api/user-actions/get-referral-link',
+        method: 'GET',
+      }),
+      providesTags: ['UserProfile'],
+      onQueryStarted: onQueryStartedDefault,
+    }),
 
     // admin-panel educator section
     getEducationTutorApplication: builder.query({
@@ -559,6 +575,8 @@ export const {
   useResetPasswordMutation,
   useResendEmailMutation,
   useMyProfileMutation,
+  useGenerateReferralLinkMutation,
+  useGetReferralLinkQuery,
   // education:Tutor Application
   useGetEducationTutorApplicationQuery,
   // education:Approved Tutor

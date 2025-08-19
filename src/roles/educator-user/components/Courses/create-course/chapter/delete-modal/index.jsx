@@ -1,5 +1,6 @@
 import { Box, Button, IconButton, Typography } from '@mui/material'
 import { X } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -7,7 +8,7 @@ import ModalBox from '../../../../../../../shared/components/ui-elements/modal-b
 
 const DeleteModal = ({ handleDelete, message = '', isDisabled = false }) => {
   const { t } = useTranslation('education')
-  const deleteRef = useRef < ModalBoxHandle > null
+  const deleteRef = useRef(null)
 
   return (
     <>
@@ -57,6 +58,12 @@ const DeleteModal = ({ handleDelete, message = '', isDisabled = false }) => {
       </ModalBox>
     </>
   )
+}
+
+DeleteModal.propTypes = {
+  handleDelete: PropTypes.func.isRequired,
+  message: PropTypes.string,
+  isDisabled: PropTypes.bool,
 }
 
 export default DeleteModal

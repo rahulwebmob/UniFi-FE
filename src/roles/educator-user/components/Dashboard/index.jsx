@@ -4,7 +4,7 @@ import { useRef, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { chatSocket, initializeSocket } from '../../../../services/sockets'
+import { getChatSocket, initializeSocket } from '../../../../services/sockets'
 
 const Dashboard = () => {
   const setTimeoutId = useRef(null)
@@ -25,15 +25,15 @@ const Dashboard = () => {
   }, [])
 
   useEffect(() => {
-    chatSocket?.on('connect', () => {
+    getChatSocket()?.on('connect', () => {
       if (setTimeoutId.current) {
         window.clearTimeout(setTimeoutId.current)
       }
     })
-    chatSocket?.on('disconnect', () => {
+    getChatSocket()?.on('disconnect', () => {
       socketReconnection()
     })
-    chatSocket?.on('connect_error', () => {
+    getChatSocket()?.on('connect_error', () => {
       socketReconnection()
     })
 
@@ -162,5 +162,7 @@ const Dashboard = () => {
     </Box>
   )
 }
+
+Dashboard.propTypes = {}
 
 export default Dashboard

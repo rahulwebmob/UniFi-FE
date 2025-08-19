@@ -9,31 +9,45 @@ import {
   IconButton,
   InputAdornment,
 } from '@mui/material'
-import { Copy, RefreshCw } from 'lucide-react'
+import { Copy, RefreshCw, Check } from 'lucide-react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { successAlert, errorAlert } from '../../../../../redux/reducers/app-slice'
+import {
+  useGetReferralLinkQuery,
+  useGenerateReferralLinkMutation,
+} from '../../../../../services/admin'
 
 const Referrals = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
-  const [referralLink, setReferralLink] = useState('https://unifi.com/ref/USER123456')
+  const [showCopySuccess, setShowCopySuccess] = useState(false)
+
+  const { data: referralData, isLoading, refetch } = useGetReferralLinkQuery()
+  const [generateReferralLink] = useGenerateReferralLinkMutation()
+
+  const referralLink = referralData?.data || ''
 
   const handleCopyReferralLink = async () => {
     try {
       await navigator.clipboard.writeText(referralLink)
-      dispatch(successAlert({ message: 'Referral link copied to clipboard!' }))
-    } catch (error) {
-      dispatch(errorAlert({ message: 'Failed to copy referral link' }))
+      setShowCopySuccess(true)
+      setTimeout(() => {
+        setShowCopySuccess(false)
+      }, 5000)
+    } catch {
+      //
     }
   }
 
-  const handleGenerateNewReferral = () => {
-    // Generate a new referral link
-    const newCode = `https://unifi.com/ref/${Math.random().toString(36).substring(2, 8).toUpperCase()}`
-    setReferralLink(newCode)
-    dispatch(successAlert({ message: 'New referral link generated!' }))
+  const handleGenerateNewReferral = async () => {
+    try {
+      await generateReferralLink().unwrap()
+      // Refetch to get the updated referral link
+      await refetch()
+    } catch {
+      //
+    }
   }
 
   return (
@@ -84,35 +98,57 @@ const Referrals = () => {
             alignItems: { xs: 'stretch', sm: 'flex-start' },
           }}
         >
-          <TextField
-            value={referralLink}
-            disabled
-            fullWidth
-            size="small"
-            sx={{
-              maxWidth: { xs: '100%', sm: '450px' },
-            }}
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleCopyReferralLink} edge="end">
-                      <Copy size={20} />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
+          {!referralLink && !isLoading ? (
+            <Button
+              variant="contained"
+              size="medium"
+              onClick={handleGenerateNewReferral}
+              startIcon={<RefreshCw size={18} />}
+              disabled={isLoading}
+            >
+              Generate Referral Link
+            </Button>
+          ) : (
+            <>
+              <TextField
+                value={isLoading ? 'Loading...' : referralLink}
+                disabled
+                fullWidth
+                size="small"
+                sx={{
+                  maxWidth: { xs: '100%', sm: '450px' },
+                }}
+                slotProps={{
+                  input: {
+                    endAdornment: referralLink && (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={handleCopyReferralLink}
+                          edge="end"
+                          disabled={isLoading || !referralLink}
+                          sx={{
+                            color: showCopySuccess ? 'success.main' : 'inherit',
+                          }}
+                        >
+                          {showCopySuccess ? <Check size={20} /> : <Copy size={20} />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
 
-          <Button
-            variant="outlined"
-            size="medium"
-            onClick={handleGenerateNewReferral}
-            startIcon={<RefreshCw size={18} />}
-          >
-            Generate New Link
-          </Button>
+              <Button
+                variant="outlined"
+                size="medium"
+                onClick={handleGenerateNewReferral}
+                startIcon={<RefreshCw size={18} />}
+                disabled={isLoading}
+              >
+                Generate New Link
+              </Button>
+            </>
+          )}
         </Box>
       </Box>
 
@@ -205,3 +241,5 @@ const Referrals = () => {
 }
 
 export default Referrals
+
+Referrals.propTypes = {}

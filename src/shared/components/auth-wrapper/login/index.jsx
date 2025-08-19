@@ -10,6 +10,7 @@ import {
   InputAdornment,
 } from '@mui/material'
 import { Eye, EyeOff } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
@@ -323,6 +324,15 @@ const Login = ({ type = '', setIsLoginPage }) => {
   }
 
   return <>{renderContent()}</>
+}
+
+Login.propTypes = {
+  type: PropTypes.string,
+  setIsLoginPage: PropTypes.func.isRequired,
+}
+
+Login.defaultProps = {
+  type: '',
 }
 
 export default Login

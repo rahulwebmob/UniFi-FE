@@ -1,5 +1,6 @@
 import { Box, Slide, Stack, Snackbar, Typography } from '@mui/material'
 import { X, XCircle, CheckCircle } from 'lucide-react'
+import PropTypes from 'prop-types'
 import React, { memo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -17,6 +18,12 @@ const CustomTransition = React.forwardRef((props, ref) => (
     }}
   />
 ))
+
+CustomTransition.displayName = 'CustomTransition'
+
+CustomTransition.propTypes = {
+  in: PropTypes.bool,
+}
 
 const GenericAlert = ({ alert }) => {
   const dispatch = useDispatch()
@@ -123,6 +130,14 @@ const GenericAlert = ({ alert }) => {
   )
 }
 
+GenericAlert.propTypes = {
+  alert: PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    severity: PropTypes.oneOf(['success', 'error']).isRequired,
+    message: PropTypes.string.isRequired,
+  }).isRequired,
+}
+
 const FloatingAlerts = memo(() => {
   const alerts = useSelector((state) => state.app.alerts)
 
@@ -156,5 +171,7 @@ const FloatingAlerts = memo(() => {
     </Stack>
   )
 })
+
+FloatingAlerts.displayName = 'FloatingAlerts'
 
 export default FloatingAlerts

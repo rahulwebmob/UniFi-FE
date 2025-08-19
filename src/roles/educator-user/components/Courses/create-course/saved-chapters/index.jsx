@@ -10,6 +10,7 @@ import {
   useTheme,
 } from '@mui/material'
 import { ChevronDown, ChevronUp, Edit } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -305,6 +306,10 @@ const SavedChapters = ({ courseId }) => {
   )
 }
 
+SavedChapters.propTypes = {
+  courseId: PropTypes.string,
+}
+
 const LessonsList = ({ courseId, chapterId }) => {
   const { t } = useTranslation('education')
   const theme = useTheme()
@@ -455,6 +460,11 @@ const LessonsList = ({ courseId, chapterId }) => {
       </Box>
     </Box>
   )
+}
+
+LessonsList.propTypes = {
+  courseId: PropTypes.string.isRequired,
+  chapterId: PropTypes.string.isRequired,
 }
 
 export default SavedChapters

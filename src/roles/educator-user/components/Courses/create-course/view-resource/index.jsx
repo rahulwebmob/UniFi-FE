@@ -1,8 +1,8 @@
 import { Box, Button } from '@mui/material'
 import { VideoIcon, FileText, Lock } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useRef, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { useDownloadResourceMutation } from '../../../../../../services/admin'
@@ -13,10 +13,8 @@ const ViewResource = ({ lessonDetail, isEdit = true, handleOpenPremiumModal = ()
   const videoRef = useRef(null)
   const navigate = useNavigate()
   const { t } = useTranslation('education')
-  const { direction } = useSelector((state) => state.app.language)
   const [resourceUrl, setResourceUrl] = useState('')
   const [downloadResource] = useDownloadResourceMutation()
-  const isRTL = direction === 'rtl'
 
   const isPdf = useMemo(() => lessonDetail?.lessonType === 'pdf', [lessonDetail])
   const isFreeOrPurchased = useMemo(
@@ -61,7 +59,7 @@ const ViewResource = ({ lessonDetail, isEdit = true, handleOpenPremiumModal = ()
           color={isPdf ? 'secondary' : 'primary'}
           disabled={lessonDetail?.status !== 'completed'}
           sx={{
-            gap: isRTL ? '10px' : '0',
+            gap: '0',
             width: '130px',
             background: 'none',
             borderRadius: '8px',
@@ -95,6 +93,20 @@ const ViewResource = ({ lessonDetail, isEdit = true, handleOpenPremiumModal = ()
       </ModalBox>
     </>
   )
+}
+
+ViewResource.propTypes = {
+  lessonDetail: PropTypes.shape({
+    _id: PropTypes.string,
+    courseId: PropTypes.string,
+    chapterId: PropTypes.string,
+    lessonType: PropTypes.string,
+    isFree: PropTypes.bool,
+    isCourseBought: PropTypes.bool,
+    status: PropTypes.string,
+  }),
+  isEdit: PropTypes.bool,
+  handleOpenPremiumModal: PropTypes.func,
 }
 
 export default ViewResource

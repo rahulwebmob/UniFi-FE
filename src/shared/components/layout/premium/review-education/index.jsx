@@ -1,4 +1,5 @@
 import { Box, Button, Divider, useTheme, Typography } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
@@ -172,6 +173,27 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
       </Box>
     </Box>
   )
+}
+
+ReviewEducation.propTypes = {
+  transactionInfo: PropTypes.shape({
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    country: PropTypes.string,
+    state: PropTypes.string,
+    city: PropTypes.string,
+    address: PropTypes.string,
+  }),
+  setCurrentStep: PropTypes.func,
+  closeModal: PropTypes.func,
+  purchaseDetails: PropTypes.shape({
+    purchaseType: PropTypes.string,
+    title: PropTypes.string,
+    _id: PropTypes.string,
+    scheduledDate: PropTypes.string,
+    thumbNail: PropTypes.string,
+    price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }),
 }
 
 export default ReviewEducation

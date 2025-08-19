@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Step, Button, Stepper, useTheme, StepLabel, Typography } from '@mui/material'
 import { User, Check, Link2, FileText, GraduationCap } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -25,6 +26,7 @@ const TEXT = (t) => t('education:REGISTER_EDUCATOR.THANK_YOU_TEXT')
 
 const stepIcons = [User, GraduationCap, Link2, FileText]
 
+// Extracted StepIcon component
 const StepIcon = ({ active = false, completed = false, stepIndex = 0 }) => {
   const theme = useTheme()
   const IconComponent = stepIcons[stepIndex] || User
@@ -61,6 +63,21 @@ const StepIcon = ({ active = false, completed = false, stepIndex = 0 }) => {
       {completed ? <Check size={20} /> : <IconComponent size={20} />}
     </Box>
   )
+}
+
+StepIcon.propTypes = {
+  active: PropTypes.bool,
+  completed: PropTypes.bool,
+  stepIndex: PropTypes.number,
+}
+
+// Wrapper function to avoid nested components
+const createStepIconWrapper = (activeStep, index) => {
+  const StepIconWrapper = () => (
+    <StepIcon active={activeStep === index} completed={activeStep > index} stepIndex={index} />
+  )
+  StepIconWrapper.displayName = 'StepIconWrapper'
+  return StepIconWrapper
 }
 
 const validationSchema = (t) => [
@@ -579,13 +596,7 @@ const Educator = () => {
                     <Step key={step.name}>
                       <StepLabel
                         slots={{
-                          stepIcon: () => (
-                            <StepIcon
-                              active={activeStep === index}
-                              completed={activeStep > index}
-                              stepIndex={index}
-                            />
-                          ),
+                          stepIcon: createStepIconWrapper(activeStep, index),
                         }}
                       >
                         {step.name}

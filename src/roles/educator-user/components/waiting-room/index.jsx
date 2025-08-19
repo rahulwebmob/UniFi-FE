@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from '@mui/material'
 import Lottie from 'lottie-react'
+import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -63,6 +64,10 @@ const WaitingRoom = ({ handleInit }) => {
       </Box>
     </Box>
   )
+}
+
+WaitingRoom.propTypes = {
+  handleInit: PropTypes.func.isRequired,
 }
 
 export default WaitingRoom

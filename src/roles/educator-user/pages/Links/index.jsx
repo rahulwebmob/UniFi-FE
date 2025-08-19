@@ -1,5 +1,6 @@
 import { Box, Grid, TextField, IconButton, Typography, FormControl } from '@mui/material'
 import { XCircle, PlusCircle } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { Controller, useFieldArray } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -142,6 +143,10 @@ const Links = ({ control }) => {
       </Grid>
     </Box>
   )
+}
+
+Links.propTypes = {
+  control: PropTypes.object.isRequired,
 }
 
 export default Links

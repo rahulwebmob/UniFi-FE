@@ -22,4 +22,6 @@ const PreviewCourse = () => {
   )
 }
 
+PreviewCourse.propTypes = {}
+
 export default PreviewCourse

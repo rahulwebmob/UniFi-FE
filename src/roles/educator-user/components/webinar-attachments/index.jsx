@@ -1,5 +1,6 @@
 import { Box, Tooltip, Typography } from '@mui/material'
 import { X, File, Download } from 'lucide-react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
@@ -108,6 +109,11 @@ const WebinarAttachments = ({ handleOnClose, isHost }) => {
       )}
     </Box>
   )
+}
+
+WebinarAttachments.propTypes = {
+  handleOnClose: PropTypes.func.isRequired,
+  isHost: PropTypes.bool.isRequired,
 }
 
 export default WebinarAttachments
