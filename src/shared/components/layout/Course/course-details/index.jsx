@@ -1,7 +1,7 @@
 import { useRef, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 
-import ContentView from '../../../../../roles/educator-user/components/Courses/content-view'
+import ContentView from '../../../../../roles/educator/components/Courses/content-view'
 import { useGetParticularCourseQuery } from '../../../../../services/education'
 import ApiResponseWrapper from '../../../api-middleware'
 import PremiumModal from '../../premium'

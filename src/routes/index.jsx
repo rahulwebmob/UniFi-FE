@@ -1,30 +1,30 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-// import Users from '../../../roles/admin-user/components/users'
-// import WebinarWrapper from '../../../roles/educator-user/components/WebinarWrapper'
-import AdminTemplate from '../roles/admin-user/components/admin-layout'
-import AdminLogin from '../roles/admin-user/components/admin-login'
+// import Users from '../../../roles/admin/components/users'
+// import WebinarWrapper from '../../../roles/educator/components/WebinarWrapper'
+import AdminTemplate from '../roles/admin/components/admin-layout'
+import Invoices from '../roles/admin/pages/admin-invoices'
+import AdminLogin from '../roles/admin/pages/admin-login'
 // import EducatorLogin from '../educator-login/EducatorLogin'
-import EducationInvoice from '../roles/admin-user/components/content-invoice'
-import TutorApplicants from '../roles/admin-user/components/tutor-applicants'
-import TutorProfile from '../roles/admin-user/components/tutor-applicants/tutor-profile'
-import Courses from '../roles/educator-user/components/Courses'
-import CreateCourse from '../roles/educator-user/components/Courses/create-course'
-import EditCourse from '../roles/educator-user/components/Courses/edit-course'
-import EducatorDashboard from '../roles/educator-user/components/Dashboard'
-import EducatorLogin from '../roles/educator-user/components/educator-login'
-import EducatorTemplate from '../roles/educator-user/components/educator-template'
-import PaymentHistory from '../roles/educator-user/components/payment-history'
-import Webinar from '../roles/educator-user/components/Webinar'
-import CreateWebinar from '../roles/educator-user/components/Webinar/create-webinar'
-import EditWebinar from '../roles/educator-user/components/Webinar/edit-webinar'
-import WebinarDetails from '../roles/educator-user/components/webinar-details'
-import WebinarWrapper from '../roles/educator-user/components/WebinarWrapper'
-import Educator from '../roles/educator-user/pages'
-import DashboardLayout from '../roles/end-user/components/dashboard-layout'
-import Education from '../roles/end-user/components/education-landing'
-import MyProfile from '../roles/end-user/components/my-profile'
+import Tutors from '../roles/admin/pages/tutors'
+import TutorProfile from '../roles/admin/pages/tutor-profile'
+import Courses from '../roles/educator/components/Courses'
+import CreateCourse from '../roles/educator/components/Courses/create-course'
+import EditCourse from '../roles/educator/components/Courses/edit-course'
+import EducatorDashboard from '../roles/educator/components/Dashboard'
+import EducatorLogin from '../roles/educator/components/educator-login'
+import EducatorTemplate from '../roles/educator/components/educator-template'
+import PaymentHistory from '../roles/educator/components/payment-history'
+import Webinar from '../roles/educator/components/Webinar'
+import CreateWebinar from '../roles/educator/components/Webinar/create-webinar'
+import EditWebinar from '../roles/educator/components/Webinar/edit-webinar'
+import WebinarDetails from '../roles/educator/components/webinar-details'
+import WebinarWrapper from '../roles/educator/components/WebinarWrapper'
+import UserLayout from '../roles/user/components/user-layout'
+import UserDashboard from '../roles/user/pages/user-dashboard'
+import UserSettings from '../roles/user/pages/user-settings'
 import AuthWrapper from '../shared/components/auth-wrapper'
+import Educator from '../shared/components/auth-wrapper/educator-onboarding'
 import ErrorPage from '../shared/components/error-page'
 import CourseDetails from '../shared/components/layout/Course/course-details'
 import Lessons from '../shared/components/layout/Course/Lessons'
@@ -62,13 +62,13 @@ const Routes = createBrowserRouter([
     errorElement: <ErrorPage module="user" />,
     element: (
       <PrivateRoute module="user">
-        <DashboardLayout />
+        <UserLayout />
       </PrivateRoute>
     ),
     children: [
       {
         index: true,
-        element: <Education />,
+        element: <UserDashboard />,
       },
       {
         path: 'webinar/:id/webinar-details',
@@ -94,11 +94,11 @@ const Routes = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <TutorApplicants />,
+        element: <Tutors />,
       },
       {
         path: 'approved-tutors',
-        element: <TutorApplicants type="Approved" />,
+        element: <Tutors type="Approved" />,
       },
       {
         path: 'approved-tutors/:id',
@@ -106,11 +106,11 @@ const Routes = createBrowserRouter([
       },
       {
         path: 'tutor-applicants',
-        element: <TutorApplicants />,
+        element: <Tutors />,
       },
       {
         path: 'invoices',
-        element: <EducationInvoice />,
+        element: <Invoices />,
       },
     ],
   },
@@ -173,13 +173,13 @@ const Routes = createBrowserRouter([
     errorElement: <ErrorPage module="user" />,
     element: (
       <PrivateRoute module="user">
-        <DashboardLayout />
+        <UserLayout />
       </PrivateRoute>
     ),
     children: [
       {
         path: 'profile/:userId',
-        element: <MyProfile />,
+        element: <UserSettings />,
       },
     ],
   },
