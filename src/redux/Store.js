@@ -1,14 +1,15 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 
-import AlertReducer from '../redux/reducers/app-slice'
-import EducationReducer from '../redux/reducers/education-slice'
-import UserSliceReducer, { signOut } from '../redux/reducers/user-slice'
 import { adminApi } from '../services/admin'
 import { educationApi } from '../services/education'
 import { onboardingApi } from '../services/onboarding'
 import { disconnectAllSockets } from '../services/sockets'
 import { uploadApi } from '../services/uploadProgress'
+
+import AlertReducer from './reducers/app-slice'
+import EducationReducer from './reducers/education-slice'
+import UserSliceReducer, { signOut } from './reducers/user-slice'
 
 const combinedReducers = combineReducers({
   user: UserSliceReducer,
@@ -28,7 +29,7 @@ const rootReducer = (state, action) => {
   return combinedReducers(state, action)
 }
 
-const Store = configureStore({
+const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -40,6 +41,6 @@ const Store = configureStore({
       .concat(uploadApi.middleware),
 })
 
-setupListeners(Store.dispatch)
+setupListeners(store.dispatch)
 
-export default Store
+export default store

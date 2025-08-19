@@ -11,7 +11,6 @@ import {
 } from '@mui/material'
 import { Copy, RefreshCw, Check } from 'lucide-react'
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
 
 import {
   useGetReferralLinkQuery,
@@ -20,7 +19,6 @@ import {
 
 const Referrals = () => {
   const theme = useTheme()
-  const dispatch = useDispatch()
   const [showCopySuccess, setShowCopySuccess] = useState(false)
 
   const { data: referralData, isLoading, refetch } = useGetReferralLinkQuery()

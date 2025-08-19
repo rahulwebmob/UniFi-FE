@@ -5,7 +5,7 @@ import { Eye, EyeOff } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import * as yup from 'yup'
 
 import MainLogo from '../../../../assets/logo.svg'
@@ -15,12 +15,15 @@ import SocialMediaAuth from '../login/social-media-auth'
 const SignUp = ({ setIsLoginPage }) => {
   const theme = useTheme()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const [showPassword, setShowPassword] = useState(false)
   const [isOAuthLoading, setIsOAuthLoading] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const [signUp, { isLoading }] = useSignUpMutation()
+
+  const referredBy = searchParams.get('referredBy')
 
   const schemaResolver = yupResolver(
     yup.object().shape({
@@ -76,7 +79,7 @@ const SignUp = ({ setIsLoginPage }) => {
   })
 
   const onSubmit = async (values) => {
-    const formData = { ...values }
+    const formData = referredBy ? { ...values, referredBy } : { ...values }
 
     const response = await signUp(formData)
 

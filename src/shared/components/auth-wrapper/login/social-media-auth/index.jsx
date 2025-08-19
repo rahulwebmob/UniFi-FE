@@ -1,7 +1,7 @@
 import { Box, Button, Divider, useTheme, useMediaQuery } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import FacebookIcon from '../../../../../assets/social-icons/facebook.svg'
 import GoogleIcon from '../../../../../assets/social-icons/google.svg'
@@ -18,10 +18,13 @@ import { SOCIAL_AUTH } from './constant'
 const SocialMediaAuth = ({ isOAuthLoading, setIsOAuthLoading }) => {
   const theme = useTheme()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   const [socialbtn, setSocialBtn] = useState(null)
   const [oAuthLogin, { isLoading }] = useOAuthLoginMutation()
+
+  const referredBy = searchParams.get('referredBy')
 
   useEffect(() => {
     setIsOAuthLoading(isLoading || !!socialbtn)
@@ -29,7 +32,8 @@ const SocialMediaAuth = ({ isOAuthLoading, setIsOAuthLoading }) => {
 
   const handleLogin = async (values) => {
     try {
-      const response = await oAuthLogin(values).unwrap()
+      const loginData = referredBy ? { ...values, referredBy } : values
+      const response = await oAuthLogin(loginData).unwrap()
 
       if (response?.token) {
         localStorage.setItem('token', response.token)
