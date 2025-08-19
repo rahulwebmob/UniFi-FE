@@ -22,8 +22,9 @@ function useFbLogin({ onSuccess, onError }) {
     }
     scriptTag.onerror = () => {
       setIsScriptLoaded(false)
-      if (onErrorRef.current)
+      if (onErrorRef.current) {
         onErrorRef.current({ error: 'Failed to load Facebook SDK' })
+      }
     }
 
     document.body.appendChild(scriptTag)
@@ -36,7 +37,9 @@ function useFbLogin({ onSuccess, onError }) {
   }, [])
 
   useEffect(() => {
-    if (!isScriptLoaded) return
+    if (!isScriptLoaded) {
+      return
+    }
     if (window.FB) {
       window.FB.init({
         appId: '1182224963594912',
@@ -49,16 +52,21 @@ function useFbLogin({ onSuccess, onError }) {
 
   const handleFbLogin = (config = {}) => {
     if (!isScriptLoaded || !window.FB) {
-      if (onErrorRef.current)
+      if (onErrorRef.current) {
         onErrorRef.current({ error: 'Facebook SDK not loaded' })
+      }
       return
     }
 
     window.FB.login(
       (response) => {
         if (response.status === 'connected') {
-          if (onSuccessRef.current) onSuccessRef.current(response)
-        } else if (onErrorRef.current) onErrorRef.current(response)
+          if (onSuccessRef.current) {
+            onSuccessRef.current(response)
+          }
+        } else if (onErrorRef.current) {
+          onErrorRef.current(response)
+        }
       },
       { scope: 'public_profile,email', ...config },
     )

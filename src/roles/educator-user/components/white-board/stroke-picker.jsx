@@ -1,20 +1,12 @@
-import React from 'react'
+import { Box, Select, Tooltip, MenuItem, FormControl } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { Box, Select, Tooltip, MenuItem, FormControl } from '@mui/material'
-
 import { SizeType } from './constants'
 
-const StrokePicker = ({
-  setFunc,
-  options,
-  type,
-}) => {
+const StrokePicker = ({ setFunc, options, type }) => {
   const { t } = useTranslation('application')
-  const { fontSize, strokeWidth, eraserWidth } = useSelector(
-    (state) => state.education,
-  )
+  const { fontSize, strokeWidth, eraserWidth } = useSelector((state) => state.education)
 
   const handleChange = (event) => {
     const selectedSize = parseInt(String(event.target.value), 10)

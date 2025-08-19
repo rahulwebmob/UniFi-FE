@@ -1,16 +1,15 @@
-import { Outlet } from 'react-router-dom'
+import { Box, useTheme } from '@mui/material'
 import { useRef, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Outlet } from 'react-router-dom'
 
-import { Box, useTheme } from '@mui/material'
-
+import LANGUAGES from '../../../../constants/languages'
+import { updateLanguage } from '../../../../redux/reducers/app-slice'
+import { loggedIn } from '../../../../redux/reducers/user-slice'
+import { useLoggedUserQuery } from '../../../../services/admin'
+import ScrollToTop from '../../../../shared/components/scroll-to-top'
 import Footer from '../footer'
 import TopNavigation from '../top-navigation'
-import LANGUAGES from '../../../../constants/languages'
-import { useLoggedUserQuery } from '../../../../services/admin'
-import { loggedIn } from '../../../../redux/reducers/user-slice'
-import { updateLanguage } from '../../../../redux/reducers/app-slice'
-import ScrollToTop from '../../../../shared/components/scroll-to-top'
 
 const DashboardLayout = () => {
   const dispatch = useDispatch()
@@ -36,7 +35,7 @@ const DashboardLayout = () => {
     if (loggedUser) {
       dispatch(
         loggedIn({
-          loggedUser: loggedUser,
+          loggedUser,
         }),
       )
     }

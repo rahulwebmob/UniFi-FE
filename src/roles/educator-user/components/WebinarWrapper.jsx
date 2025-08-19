@@ -1,15 +1,12 @@
 import { Device } from 'mediasoup-client'
+import { useRef, useMemo, useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useRef, useMemo, useState, useEffect, useCallback } from 'react'
 
-import Toolbar from './Toolbar'
-import Learning from './Learning'
-import WaitingRoom from './waiting-room'
-import { WebinarContainer } from './styles'
 import { successAlert } from '../../../redux/reducers/app-slice'
 import { setLoading } from '../../../redux/reducers/education-slice'
 import { chatSocket, chatConnection } from '../../../services/sockets'
+
 import {
   mergeData,
   stopStream,
@@ -18,6 +15,10 @@ import {
   WebSocketEventType,
   createWebinarSocket,
 } from './common/common'
+import Learning from './Learning'
+import { WebinarContainer } from './styles'
+import Toolbar from './Toolbar'
+import WaitingRoom from './waiting-room'
 
 const WebinarWrapper = ({ isHost = false }) => {
   const { roomId } = useParams()
@@ -51,7 +52,9 @@ const WebinarWrapper = ({ isHost = false }) => {
   const sendRequest = useCallback(
     (type, data) =>
       new Promise((resolve, reject) => {
-        if (!socketRef.current) return
+        if (!socketRef.current) {
+          return
+        }
         socketRef.current.emit(type, data, (...args) => {
           const [response, err] = args
           if (err) {
@@ -65,7 +68,9 @@ const WebinarWrapper = ({ isHost = false }) => {
   )
 
   const joinRoom = useCallback(async () => {
-    if (!selfUser) return
+    if (!selfUser) {
+      return
+    }
 
     const response = await sendRequest(WebSocketEventType.JOIN_ROOM, {
       roomId,
@@ -73,16 +78,18 @@ const WebinarWrapper = ({ isHost = false }) => {
     })
 
     if (response?.status === false) {
-      dispatch(
-        successAlert({ message: response.message || 'Error joining room' }),
-      )
+      dispatch(successAlert({ message: response.message || 'Error joining room' }))
       void navigate('/dashboard')
       return
     }
     if (response?.status === 'Joined Room Successfully') {
-      if (chatSocket) chatSocket.disconnect()
+      if (chatSocket) {
+        chatSocket.disconnect()
+      }
       const token = localStorage.getItem('token')
-      if (token) void chatConnection(token)
+      if (token) {
+        void chatConnection(token)
+      }
     }
   }, [roomId, selfUser, dispatch, navigate, sendRequest])
 
@@ -101,17 +108,12 @@ const WebinarWrapper = ({ isHost = false }) => {
       await device.load({ routerRtpCapabilities: rtp })
       deviceRef.current = device
     } else {
-      console.error(
-        "Couldn't load device. Check socket or existing active device",
-      )
+      console.error("Couldn't load device. Check socket or existing active device")
     }
   }, [])
 
   const getRouterRTPCapabilties = useCallback(async () => {
-    const rtp = await sendRequest(
-      WebSocketEventType.GET_ROUTER_RTP_CAPABILITIES,
-      { roomId },
-    )
+    const rtp = await sendRequest(WebSocketEventType.GET_ROUTER_RTP_CAPABILITIES, { roomId })
     if (!rtp) {
       console.error("Couldn't get RTP for device")
     } else {
@@ -120,21 +122,22 @@ const WebinarWrapper = ({ isHost = false }) => {
   }, [roomId, sendRequest, loadDevice])
 
   const createConsumerTransport = useCallback(async () => {
-    if (consumerRef.current) return
+    if (consumerRef.current) {
+      return
+    }
     try {
-      const response = await sendRequest(
-        WebSocketEventType.CREATE_WEBRTC_TRANSPORT,
-        {
-          forceTcp: false,
-          roomId,
-        },
-      )
-      if (!response?.params) throw new Error('No Transport created')
+      const response = await sendRequest(WebSocketEventType.CREATE_WEBRTC_TRANSPORT, {
+        forceTcp: false,
+        roomId,
+      })
+      if (!response?.params) {
+        throw new Error('No Transport created')
+      }
 
-      if (!deviceRef.current || !socketRef.current) return
-      consumerRef.current = deviceRef.current.createRecvTransport(
-        response.params,
-      )
+      if (!deviceRef.current || !socketRef.current) {
+        return
+      }
+      consumerRef.current = deviceRef.current.createRecvTransport(response.params)
       consumerRef.current.on('connect', async ({ dtlsParameters }, cb, eb) => {
         void sendRequest(WebSocketEventType.CONNECT_TRANSPORT, {
           transport_id: consumerRef.current.id,
@@ -145,7 +148,9 @@ const WebinarWrapper = ({ isHost = false }) => {
           .catch(eb)
       })
       consumerRef.current.on('connectionstatechange', (state) => {
-        if (state === 'disconnected') consumerRef.current.close()
+        if (state === 'disconnected') {
+          consumerRef.current.close()
+        }
       })
     } catch (error) {
       console.error('Error creating consumer transport:', error)
@@ -154,14 +159,11 @@ const WebinarWrapper = ({ isHost = false }) => {
 
   const createProducerTransport = useCallback(async () => {
     if (deviceRef.current && socketRef.current) {
-      const resp = await sendRequest(
-        WebSocketEventType.CREATE_WEBRTC_TRANSPORT,
-        {
-          roomId,
-          forceTcp: false,
-          rtpCapabilities: deviceRef.current.rtpCapabilities,
-        },
-      )
+      const resp = await sendRequest(WebSocketEventType.CREATE_WEBRTC_TRANSPORT, {
+        roomId,
+        forceTcp: false,
+        rtpCapabilities: deviceRef.current.rtpCapabilities,
+      })
       producerRef.current = deviceRef.current.createSendTransport(resp.params)
 
       if (producerRef.current) {
@@ -174,24 +176,21 @@ const WebinarWrapper = ({ isHost = false }) => {
             .then(cb)
             .catch(eb)
         })
-        producerRef.current.on(
-          'produce',
-          async ({ kind, rtpParameters, appData }, cb, eb) => {
-            try {
-              const response = await sendRequest(WebSocketEventType.PRODUCE, {
-                kind,
-                roomId,
-                rtpParameters,
-                variant: appData.variant,
-                producerTransportId: producerRef.current?.id,
-              })
-              const producerId = response.producerId || ''
-              cb({ id: producerId })
-            } catch (error) {
-              eb(new Error(String(error)))
-            }
-          },
-        )
+        producerRef.current.on('produce', async ({ kind, rtpParameters, appData }, cb, eb) => {
+          try {
+            const response = await sendRequest(WebSocketEventType.PRODUCE, {
+              kind,
+              roomId,
+              rtpParameters,
+              variant: appData.variant,
+              producerTransportId: producerRef.current?.id,
+            })
+            const producerId = response.producerId || ''
+            cb({ id: producerId })
+          } catch (error) {
+            eb(new Error(String(error)))
+          }
+        })
         return true
       }
     }
@@ -221,14 +220,11 @@ const WebinarWrapper = ({ isHost = false }) => {
   ])
 
   const userJoined = useCallback(({ user: newUser }) => {
-    setUsersInRoom((prev) =>
-      prev.some((u) => u._id === newUser._id) ? prev : [...prev, newUser],
-    )
+    setUsersInRoom((prev) => (prev.some((u) => u._id === newUser._id) ? prev : [...prev, newUser]))
   }, [])
 
   const closeProducer = useCallback(
-    (producerId) =>
-      sendRequest(WebSocketEventType.CLOSE_PRODUCER, { producerId, roomId }),
+    (producerId) => sendRequest(WebSocketEventType.CLOSE_PRODUCER, { producerId, roomId }),
     [roomId, sendRequest],
   )
 
@@ -264,7 +260,9 @@ const WebinarWrapper = ({ isHost = false }) => {
 
   const getConsumerStream = useCallback(
     async (producerId) => {
-      if (!deviceRef.current || !consumerRef.current) return null
+      if (!deviceRef.current || !consumerRef.current) {
+        return null
+      }
       const { rtpCapabilities } = deviceRef.current
       const data = await sendRequest(WebSocketEventType.CONSUME, {
         roomId,
@@ -307,12 +305,20 @@ const WebinarWrapper = ({ isHost = false }) => {
 
   const consume = useCallback(
     async (producerId) => {
-      if (remoteStreamsMap[producerId]) return
-      if (!producers.some((p) => p.producerId === producerId)) return
+      if (remoteStreamsMap[producerId]) {
+        return
+      }
+      if (!producers.some((p) => p.producerId === producerId)) {
+        return
+      }
 
       const data = await getConsumerStream(producerId)
-      if (!data) return
-      if (!producers.some((p) => p.producerId === data.producerId)) return
+      if (!data) {
+        return
+      }
+      if (!producers.some((p) => p.producerId === data.producerId)) {
+        return
+      }
 
       setRemoteStreamsMap((prev) => ({ ...prev, [data.producerId]: data }))
     },
@@ -320,9 +326,7 @@ const WebinarWrapper = ({ isHost = false }) => {
   )
 
   const userLeft = useCallback(({ user: leavingUser }) => {
-    setUsersInRoom((prev) =>
-      prev.filter((peer) => peer._id !== leavingUser._id),
-    )
+    setUsersInRoom((prev) => prev.filter((peer) => peer._id !== leavingUser._id))
     if (leavingUser.role === 'educator') {
       setProducers([])
       setRemoteStreamsMap({})
@@ -334,9 +338,7 @@ const WebinarWrapper = ({ isHost = false }) => {
   }, [])
 
   const closedProducers = useCallback(({ producerId }) => {
-    setProducers((prev) =>
-      prev.filter((prod) => prod.producerId !== producerId),
-    )
+    setProducers((prev) => prev.filter((prod) => prod.producerId !== producerId))
     setRemoteStreamsMap((prev) => {
       const updated = { ...prev }
       delete updated[producerId]
@@ -364,22 +366,32 @@ const WebinarWrapper = ({ isHost = false }) => {
     ({ event, args }) => {
       switch (event) {
         case WebSocketEventType.USER_JOINED:
-          if ('user' in args) userJoined(args)
+          if ('user' in args) {
+            userJoined(args)
+          }
           break
         case WebSocketEventType.USER_LEFT:
-          if ('user' in args) userLeft(args)
+          if ('user' in args) {
+            userLeft(args)
+          }
           break
         case WebSocketEventType.NEW_PRODUCERS:
-          if (Array.isArray(args)) newProducers(args)
+          if (Array.isArray(args)) {
+            newProducers(args)
+          }
           break
         case WebSocketEventType.PRODUCER_CLOSED:
-          if ('producerId' in args) closedProducers(args)
+          if ('producerId' in args) {
+            closedProducers(args)
+          }
           break
         case WebSocketEventType.CALL_ENDED:
           handleIncEndWebByHost()
           break
         case WebSocketEventType.HANDS_UP:
-          if ('data' in args) handleIncRaisedHand(args)
+          if ('data' in args) {
+            handleIncRaisedHand(args)
+          }
           break
         default:
           break
@@ -399,7 +411,9 @@ const WebinarWrapper = ({ isHost = false }) => {
     const socket = createWebinarSocket()
     socket.on('connect', () => {
       socketRef.current = socket
-      if (isHost) void handleInit()
+      if (isHost) {
+        void handleInit()
+      }
       socket.onAny((...params) => {
         const [event, args] = params
         routeIncommingEvents({ event, args })
@@ -416,7 +430,9 @@ const WebinarWrapper = ({ isHost = false }) => {
         cleanup()
         setLocalVideoStream(null)
         setRemoteStreamsMap({})
-      } else window.location.reload()
+      } else {
+        window.location.reload()
+      }
     })
 
     return () => {
@@ -428,7 +444,9 @@ const WebinarWrapper = ({ isHost = false }) => {
 
   useEffect(() => {
     producers.forEach((prod) => {
-      if (!remoteStreamsMap[prod.producerId]) void consume(prod.producerId)
+      if (!remoteStreamsMap[prod.producerId]) {
+        void consume(prod.producerId)
+      }
     })
   }, [producers, remoteStreamsMap, consume])
 

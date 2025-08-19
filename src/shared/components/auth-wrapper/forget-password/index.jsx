@@ -1,31 +1,23 @@
-import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Box, Grid, Button, TextField, Typography } from '@mui/material'
 import { ArrowLeft } from 'lucide-react'
 import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-
-import { Box, Grid, Button, TextField, Typography } from '@mui/material'
+import * as yup from 'yup'
 
 import MainLogo from '../../../../assets/logo.svg'
-import { useAdminForgetPasswordMutation } from '../../../../services/onboarding'
 import {
   useForgetPasswordMutation,
   useEducatorForgetPasswordMutation,
 } from '../../../../services/admin'
+import { useAdminForgetPasswordMutation } from '../../../../services/onboarding'
 
-const ForgetPassword = ({
-  type,
-  setShowForgetPassword,
-}) => {
+const ForgetPassword = ({ type, setShowForgetPassword }) => {
   const [updateForgetPassword] = useForgetPasswordMutation()
   const [adminForgetPassword] = useAdminForgetPasswordMutation()
   const [educatorForgetPassword] = useEducatorForgetPasswordMutation()
 
   const schema = yup.object().shape({
-    email: yup
-      .string()
-      .email('Enter a valid email')
-      .trim()
-      .required('Email is required*'),
+    email: yup.string().email('Enter a valid email').trim().required('Email is required*'),
   })
 
   const {
@@ -62,18 +54,8 @@ const ForgetPassword = ({
       }}
     >
       <Box display="flex" alignItems="center" position="relative">
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          width="100%"
-        >
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            sx={{ mb: 1 }}
-          >
+        <Box display="flex" flexDirection="column" justifyContent="center" width="100%">
+          <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 1 }}>
             <img src={MainLogo} alt="Logo" style={{ width: 80, height: 80 }} />
           </Box>
           <Typography
@@ -94,8 +76,7 @@ const ForgetPassword = ({
             mb={3}
             sx={{ opacity: 0.8 }}
           >
-            Enter your email address and we&apos;ll send you a link to get back
-            into your account.
+            Enter your email address and we&apos;ll send you a link to get back into your account.
           </Typography>
         </Box>
       </Box>
@@ -129,13 +110,7 @@ const ForgetPassword = ({
           />
         </Grid>
 
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          fullWidth
-          sx={{ mb: 2 }}
-        >
+        <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mb: 2 }}>
           Send Reset Link
         </Button>
       </form>

@@ -1,10 +1,10 @@
 import { useRef, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 
-import WebinarContent from '../Webinar/webinar-content'
-import PremiumModal from '../../../../shared/components/layout/premium'
-import ApiResponseWrapper from '../../../../shared/components/api-middleware'
 import { useGetParticularWebinarDetailQuery } from '../../../../services/education'
+import ApiResponseWrapper from '../../../../shared/components/api-middleware'
+import PremiumModal from '../../../../shared/components/layout/premium'
+import WebinarContent from '../Webinar/webinar-content'
 
 const WebinarDetails = () => {
   const { id } = useParams()
@@ -83,11 +83,7 @@ const WebinarDetails = () => {
   }, [data])
 
   return (
-    <ApiResponseWrapper
-      error={error}
-      isLoading={isLoading}
-      isData={!!data?.data}
-    >
+    <ApiResponseWrapper error={error} isLoading={isLoading} isData={!!data?.data}>
       <WebinarContent
         isEdit={false}
         webinarData={handleCourseData}

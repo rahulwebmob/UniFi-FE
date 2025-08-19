@@ -1,11 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import * as yup from 'yup'
-import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { FormProvider, useForm } from 'react-hook-form'
-import { Check, Circle, CircleCheck, Loader2 } from 'lucide-react'
 import {
   Box,
   Grid,
@@ -17,22 +10,26 @@ import {
   Typography,
   StepContent,
 } from '@mui/material'
+import { Check, Circle, CircleCheck, Loader2 } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import * as yup from 'yup'
 
+import { updateShowPrompt } from '../../../../../redux/reducers/education-slice'
 import {
   useCreateCourseMutation,
   useUpdateCourseMutation,
   useAddCourseMetaDataMutation,
 } from '../../../../../services/admin'
-import { updateShowPrompt } from '../../../../../redux/reducers/education-slice'
-import BasicDetails from './basic-details'
-import MetaData from './meta-data'
-import Chapter from './chapter'
+import { isNewFile, getUpdatedFields, transformNaNToNull } from '../../common/common'
 import PreviewCourse from '../preview-course'
-import {
-  isNewFile,
-  getUpdatedFields,
-  transformNaNToNull,
-} from '../../common/common'
+
+import BasicDetails from './basic-details'
+import Chapter from './chapter'
+import MetaData from './meta-data'
 
 const StepIcon = ({ active = false, completed = false }) => {
   const theme = useTheme()
@@ -118,10 +115,8 @@ const CreateCourse = ({
 
   const [isDraft, setIsDraft] = useState(false)
   const [hasLessons, setHasLessons] = useState({})
-  const [previousVideo, setPreviousVideo] =
-    (useState < File) | string | (null > null)
-  const [previousImage, setPreviousImage] =
-    (useState < File) | string | (null > null)
+  const [previousVideo, setPreviousVideo] = (useState < File) | string | (null > null)
+  const [previousImage, setPreviousImage] = (useState < File) | string | (null > null)
   const [activeStep, setActiveStep] = useState(currentStep)
   const [initialData, setInitialData] = useState(defaultValues)
   const [currentCourseId, setCurrentCourseId] = useState(courseId)
@@ -129,12 +124,9 @@ const CreateCourse = ({
   const [isCourseFree, setIsCourseFree] = useState(!defaultValues?.isPaid)
   const isRTL = direction === 'rtl'
 
-  const [updateCourse, { isLoading: isUpdateLoading }] =
-    useUpdateCourseMutation()
-  const [createCourse, { isLoading: isCreateLoading }] =
-    useCreateCourseMutation()
-  const [addCourseMetaData, { isLoading: isMetaDataLoading }] =
-    useAddCourseMetaDataMutation()
+  const [updateCourse, { isLoading: isUpdateLoading }] = useUpdateCourseMutation()
+  const [createCourse, { isLoading: isCreateLoading }] = useCreateCourseMutation()
+  const [addCourseMetaData, { isLoading: isMetaDataLoading }] = useAddCourseMetaDataMutation()
 
   const stepsConfig = (t) => [
     {
@@ -159,14 +151,14 @@ const CreateCourse = ({
     },
   ]
 
-  const shouldNotPreview = useMemo(() => {
-    return (
+  const shouldNotPreview = useMemo(
+    () =>
       (isPublished && activeStep === stepsConfig(t).length - 1) ||
       (activeStep === stepsConfig(t).length - 2 &&
         !Object.values(hasLessons).length &&
-        Object.values(hasLessons).every((count) => count))
-    )
-  }, [hasLessons, activeStep, isPublished, t])
+        Object.values(hasLessons).every((count) => count)),
+    [hasLessons, activeStep, isPublished, t],
+  )
 
   const isLoading = useMemo(
     () => isUpdateLoading || isCreateLoading || isMetaDataLoading,
@@ -180,28 +172,17 @@ const CreateCourse = ({
         .string()
         .trim()
         .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.TITLE_IS_REQUIRED'))
-        .max(
-          100,
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_100_CHARACTERS'),
-        ),
+        .max(100, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_100_CHARACTERS')),
       subtitle: yup
         .string()
         .trim()
         .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.SUBTITLE_IS_REQUIRED'))
-        .max(
-          150,
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_150_CHARACTERS'),
-        ),
+        .max(150, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_150_CHARACTERS')),
       description: yup
         .string()
         .trim()
-        .required(
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.DESCRIPTION_IS_REQUIRED'),
-        )
-        .max(
-          1000,
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_1000_CHARACTERS'),
-        ),
+        .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.DESCRIPTION_IS_REQUIRED'))
+        .max(1000, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_1000_CHARACTERS')),
       category: yup
         .array()
         .of(yup.string().trim())
@@ -213,18 +194,9 @@ const CreateCourse = ({
           ? yup
               .number()
               .transform(transformNaNToNull)
-              .required(
-                t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_IS_REQUIRED'),
-              )
-              .positive(
-                t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_IS_REQUIRED'),
-              )
-              .max(
-                1000,
-                t(
-                  'EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_CANNOT_EXCEED_1000',
-                ),
-              )
+              .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_IS_REQUIRED'))
+              .positive(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_IS_REQUIRED'))
+              .max(1000, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_CANNOT_EXCEED_1000'))
           : yup.number().nullable().transform(transformNaNToNull),
       ),
     }),
@@ -236,7 +208,9 @@ const CreateCourse = ({
           'file-type',
           t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.IMAGE_MUST_BE_A_JPG_JPEG_PNG'),
           (value) => {
-            if (!value || !(value instanceof File)) return true
+            if (!value || !(value instanceof File)) {
+              return true
+            }
             const allowedExtensions = ['jpg', 'jpeg', 'png']
             const fileExtension = value.name.split('.').pop()?.toLowerCase()
             return allowedExtensions.includes(fileExtension || '')
@@ -244,9 +218,7 @@ const CreateCourse = ({
         )
         .test(
           'file-validation',
-          t(
-            'EDUCATOR.BASIC_DETAILS.VALIDATIONS.IMAGE_REQUIRED_AND_LESS_THAN_50MB',
-          ),
+          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.IMAGE_REQUIRED_AND_LESS_THAN_50MB'),
           (value) => {
             const isFile = value instanceof File
             if (isEdit && !isFile && value?.trim?.()) {
@@ -256,9 +228,7 @@ const CreateCourse = ({
               const fileSizeValid = value.size <= 50 * 1024 * 1024
               const allowedExtensions = ['jpg', 'jpeg', 'png']
               const fileExtension = value.name.split('.').pop()?.toLowerCase()
-              const fileTypeValid = allowedExtensions.includes(
-                fileExtension || '',
-              )
+              const fileTypeValid = allowedExtensions.includes(fileExtension || '')
               return fileSizeValid && fileTypeValid
             }
             return false
@@ -266,21 +236,17 @@ const CreateCourse = ({
         ),
       video: yup
         .mixed()
-        .test(
-          'file-type',
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.VIDEO_FORMAT_MSG'),
-          (value) => {
-            if (!value || !(value instanceof File)) return true
-            const allowedExtensions = ['mp4', 'mov', 'webm', 'mkv']
-            const fileExtension = value.name.split('.').pop()?.toLowerCase()
-            return allowedExtensions.includes(fileExtension || '')
-          },
-        )
+        .test('file-type', t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.VIDEO_FORMAT_MSG'), (value) => {
+          if (!value || !(value instanceof File)) {
+            return true
+          }
+          const allowedExtensions = ['mp4', 'mov', 'webm', 'mkv']
+          const fileExtension = value.name.split('.').pop()?.toLowerCase()
+          return allowedExtensions.includes(fileExtension || '')
+        })
         .test(
           'file-validation',
-          t(
-            'EDUCATOR.BASIC_DETAILS.VALIDATIONS.VIDEO_REQUIRED_AND_LESS_THAN_200MB',
-          ),
+          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.VIDEO_REQUIRED_AND_LESS_THAN_200MB'),
           (value) => {
             const isFile = value instanceof File
             if (isEdit && !isFile && value?.trim?.()) {
@@ -290,9 +256,7 @@ const CreateCourse = ({
               const fileSizeValid = value.size <= 200 * 1024 * 1024
               const allowedExtensions = ['mp4', 'mov', 'webm', 'mkv']
               const fileExtension = value.name.split('.').pop()?.toLowerCase()
-              const fileTypeValid = allowedExtensions.includes(
-                fileExtension || '',
-              )
+              const fileTypeValid = allowedExtensions.includes(fileExtension || '')
               return fileSizeValid && fileTypeValid
             }
             return false
@@ -314,16 +278,16 @@ const CreateCourse = ({
   }, [form.formState.isDirty, dispatch])
 
   const handleBack = () => {
-    if (activeStep === 0) navigate('/educator')
-    else setActiveStep((prev) => prev - 1)
+    if (activeStep === 0) {
+      navigate('/educator')
+    } else {
+      setActiveStep((prev) => prev - 1)
+    }
   }
 
   const handleBasicDetailsSubmit = async (data) => {
     setIsCourseFree(!data.isPaid)
-    const [updatedFields, isIdentical] = getUpdatedFields(data, initialData, [
-      'image',
-      'video',
-    ])
+    const [updatedFields, isIdentical] = getUpdatedFields(data, initialData, ['image', 'video'])
 
     if (isIdentical && !isDraft) {
       setActiveStep((prev) => prev + 1)
@@ -337,7 +301,9 @@ const CreateCourse = ({
       isPaid: data.isPaid,
     }
 
-    if (!data.isPaid) delete payload.price
+    if (!data.isPaid) {
+      delete payload.price
+    }
 
     try {
       const response = currentCourseId
@@ -346,8 +312,12 @@ const CreateCourse = ({
 
       if (!response?.error) {
         setInitialData((prev) => ({ ...prev, ...data }))
-        if (!currentCourseId) setCurrentCourseId(response?.data?.data?._id)
-        if (!isDraft) setActiveStep((prev) => prev + 1)
+        if (!currentCourseId) {
+          setCurrentCourseId(response?.data?.data?._id)
+        }
+        if (!isDraft) {
+          setActiveStep((prev) => prev + 1)
+        }
       }
 
       setIsDraft(false)
@@ -360,7 +330,9 @@ const CreateCourse = ({
     const { image, video } = data
     const formData = new FormData()
     formData.append('courseId', currentCourseId)
-    if (isDraft) formData.append('saveAsDraft', 'true')
+    if (isDraft) {
+      formData.append('saveAsDraft', 'true')
+    }
 
     if (image && isNewFile(image, previousImage)) {
       formData.append('image', image)
@@ -370,11 +342,7 @@ const CreateCourse = ({
       formData.append('video', video)
     }
 
-    if (
-      !isNewFile(image, previousImage) &&
-      !isNewFile(video, previousVideo) &&
-      !isDraft
-    ) {
+    if (!isNewFile(image, previousImage) && !isNewFile(video, previousVideo) && !isDraft) {
       setActiveStep((prev) => prev + 1)
       return
     }
@@ -383,10 +351,16 @@ const CreateCourse = ({
       const response = await addCourseMetaData(formData)
 
       if (!response.error) {
-        if (image && isNewFile(image, previousImage)) setPreviousImage(image)
-        if (video && isNewFile(video, previousVideo)) setPreviousVideo(video)
+        if (image && isNewFile(image, previousImage)) {
+          setPreviousImage(image)
+        }
+        if (video && isNewFile(video, previousVideo)) {
+          setPreviousVideo(video)
+        }
 
-        if (!isDraft) setActiveStep((prev) => prev + 1)
+        if (!isDraft) {
+          setActiveStep((prev) => prev + 1)
+        }
         setIsDraft(false)
       }
     } catch (error) {
@@ -418,7 +392,9 @@ const CreateCourse = ({
         status: 'published',
         courseId: currentCourseId,
       })
-      if (!response.error) navigate('/educator/courses')
+      if (!response.error) {
+        navigate('/educator/courses')
+      }
     }
   }
 
@@ -438,15 +414,27 @@ const CreateCourse = ({
   }
 
   const onSubmit = async (data) => {
-    if (activeStep === 0) await handleBasicDetailsSubmit(data)
-    if (activeStep === 1) await handleMetaData(data)
-    if (activeStep === 2) await handlePreview()
-    if (activeStep === 3) await handlePublish()
+    if (activeStep === 0) {
+      await handleBasicDetailsSubmit(data)
+    }
+    if (activeStep === 1) {
+      await handleMetaData(data)
+    }
+    if (activeStep === 2) {
+      await handlePreview()
+    }
+    if (activeStep === 3) {
+      await handlePublish()
+    }
   }
 
   const handleGetTitle = () => {
-    if (isPreview) return t('EDUCATOR.CREATE_COURSE.PREVIEW')
-    if (isEdit) return t('EDUCATOR.CREATE_COURSE.EDIT')
+    if (isPreview) {
+      return t('EDUCATOR.CREATE_COURSE.PREVIEW')
+    }
+    if (isEdit) {
+      return t('EDUCATOR.CREATE_COURSE.EDIT')
+    }
     return t('EDUCATOR.CREATE_COURSE.CREATE')
   }
 
@@ -508,12 +496,8 @@ const CreateCourse = ({
                   orientation="vertical"
                   sx={{
                     '& .MuiStepContent-root': {
-                      borderLeft: isRTL
-                        ? '0'
-                        : `2px solid ${theme.palette.divider}`,
-                      borderRight: isRTL
-                        ? `2px solid ${theme.palette.divider}`
-                        : '0',
+                      borderLeft: isRTL ? '0' : `2px solid ${theme.palette.divider}`,
+                      borderRight: isRTL ? `2px solid ${theme.palette.divider}` : '0',
                       marginRight: isRTL ? '21px' : '0',
                       marginLeft: isRTL ? '0' : '21px',
                       paddingLeft: { xs: 2, md: 3 },
@@ -666,11 +650,7 @@ const CreateCourse = ({
                         type="submit"
                         disabled={isLoading}
                         fullWidth={theme.breakpoints.down('sm') ? true : false}
-                        startIcon={
-                          isLoading && (
-                            <Loader2 className="animate-spin" size={20} />
-                          )
-                        }
+                        startIcon={isLoading && <Loader2 className="animate-spin" size={20} />}
                         sx={{
                           textTransform: 'none',
                           fontWeight: 600,

@@ -1,7 +1,6 @@
-import React from 'react'
+import { Typography, Box, Grid, FormControl, useTheme } from '@mui/material'
 import { ImageIcon, VideoIcon } from 'lucide-react'
 import { Controller, useFormContext } from 'react-hook-form'
-import { Typography, Box, Grid, FormControl, useTheme } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
 const MetaData = () => {
@@ -65,7 +64,9 @@ const MetaData = () => {
                     }}
                     onChange={(event) => {
                       const file = event.target.files?.[0]
-                      if (file) onChange(file)
+                      if (file) {
+                        onChange(file)
+                      }
                     }}
                   />
                   <ImageIcon size={40} color={theme.palette.primary.main} />
@@ -154,7 +155,9 @@ const MetaData = () => {
                     }}
                     onChange={(event) => {
                       const file = event.target.files?.[0]
-                      if (file) onChange(file)
+                      if (file) {
+                        onChange(file)
+                      }
                     }}
                   />
                   <VideoIcon size={40} color={theme.palette.primary.main} />

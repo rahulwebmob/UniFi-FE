@@ -1,18 +1,14 @@
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import { FileDown, DollarSign } from 'lucide-react'
-
 import { Box, Chip, Button, useTheme, Typography } from '@mui/material'
+import { FileDown, DollarSign } from 'lucide-react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 
-import { exportToCSV } from '../../../../utils/globalUtils'
 import { successAlert } from '../../../../redux/reducers/app-slice'
+import { useGetPaymentHistoryQuery, useLazyGenerateInvoiceQuery } from '../../../../services/admin'
 import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
-import {
-  useGetPaymentHistoryQuery,
-  useLazyGenerateInvoiceQuery,
-} from '../../../../services/admin'
+import { exportToCSV } from '../../../../utils/globalUtils'
 
 const PaymentHistory = () => {
   const theme = useTheme()
@@ -43,101 +39,91 @@ const PaymentHistory = () => {
       accessorKey: 'transactionId',
       header: t('education:EDUCATOR.PAYMENT_HISTORY.ID'),
       size: 150,
-      Cell: ({ cell }) => {
-        return (
-          <Chip
-            label={cell.getValue() ? `#${cell.getValue()}` : '-'}
-            size="small"
-            sx={{
-              backgroundColor: theme.palette.grey[100],
-              fontWeight: 600,
-            }}
-          />
-        )
-      },
+      Cell: ({ cell }) => (
+        <Chip
+          label={cell.getValue() ? `#${cell.getValue()}` : '-'}
+          size="small"
+          sx={{
+            backgroundColor: theme.palette.grey[100],
+            fontWeight: 600,
+          }}
+        />
+      ),
     },
     {
       accessorKey: 'createdAt',
       header: t('education:EDUCATOR.PAYMENT_HISTORY.PAYMENT_ON'),
-      Cell: ({ cell }) => {
-        return (
-          <Typography style={{ whiteSpace: 'pre-line' }}>
-            {cell.getValue()
-              ? new Date(String(cell.getValue())).toLocaleString()
-              : '-'}
-          </Typography>
-        )
-      },
+      Cell: ({ cell }) => (
+        <Typography style={{ whiteSpace: 'pre-line' }}>
+          {cell.getValue() ? new Date(String(cell.getValue())).toLocaleString() : '-'}
+        </Typography>
+      ),
     },
     {
       accessorKey: 'amount',
       header: t('education:EDUCATOR.PAYMENT_HISTORY.AMOUNT'),
       size: 120,
-      Cell: ({ cell }) => {
-        return (
-          <Box display="flex" alignItems="center" gap={1}>
-            <DollarSign size={16} color={theme.palette.success.main} />
-            <Typography
-              sx={{
-                fontWeight: 600,
-                color: theme.palette.success.main,
-              }}
-            >
-              {String(cell.getValue() || '-')}
-            </Typography>
-          </Box>
-        )
-      },
+      Cell: ({ cell }) => (
+        <Box display="flex" alignItems="center" gap={1}>
+          <DollarSign size={16} color={theme.palette.success.main} />
+          <Typography
+            sx={{
+              fontWeight: 600,
+              color: theme.palette.success.main,
+            }}
+          >
+            {String(cell.getValue() || '-')}
+          </Typography>
+        </Box>
+      ),
     },
     {
       accessorKey: 'view',
       header: t('education:EDUCATOR.PAYMENT_HISTORY.DOWNLOAD'),
       size: 140,
-      Cell: ({ row }) => {
-        return (
-          <Button
-            size="small"
-            variant="contained"
-            startIcon={<FileDown size={16} />}
-            onClick={() => {
-              void (async () => {
-                try {
-                  const result = generateInvoice({
-                    transactionId: row.original._id || '',
-                  })
-                  if ('unwrap' in result) {
-                    const response = await result.unwrap()
-                    if (response.data) {
-                      const div = document.createElement('div')
-                      div.innerHTML = String(response.data || '')
-                      const html2pdf = (await import('html2pdf.js')).default
-                      html2pdf()
-                        .from(div)
-                        .set({
-                          margin: 10,
-                          filename: `Invoice_${row.original._id}.pdf`,
-                          html2canvas: { scale: 2 },
-                          jsPDF: { orientation: 'portrait' },
-                        })
-                        .save()
-                        .then(() => {
-                          handleSuccessAlert()
-                        })
-                    }
+      Cell: ({ row }) => (
+        <Button
+          size="small"
+          variant="contained"
+          startIcon={<FileDown size={16} />}
+          onClick={() => {
+            void (async () => {
+              try {
+                const result = generateInvoice({
+                  transactionId: row.original._id || '',
+                })
+                if ('unwrap' in result) {
+                  const response = await result.unwrap()
+                  if (response.data) {
+                    const div = document.createElement('div')
+                    div.innerHTML = String(response.data || '')
+                    const html2pdf = (await import('html2pdf.js')).default
+                    html2pdf()
+                      .from(div)
+                      .set({
+                        margin: 10,
+                        filename: `Invoice_${row.original._id}.pdf`,
+                        html2canvas: { scale: 2 },
+                        jsPDF: { orientation: 'portrait' },
+                      })
+                      .save()
+                      .then(() => {
+                        handleSuccessAlert()
+                      })
                   }
-                } catch (error) {
-                  console.error('Error generating PDF:', error)
                 }
-              })()
-            }}
-            sx={{
-              textTransform: 'none',
-            }}
-          >
-            Download
-          </Button>
-        )
-      },
+              } catch (error) {
+                console.error('Error generating PDF:', error)
+              }
+            })()
+          }}
+          sx={{
+            textTransform: 'none',
+          }}
+        >
+          Download
+        </Button>
+      ),
       enableSorting: false,
     },
   ]
@@ -212,20 +198,10 @@ const PaymentHistory = () => {
             minHeight: 0,
           }}
         >
-          <MuiReactTable
-            columns={columns}
-            rows={data || []}
-            materialReactProps={tableOptions}
-          />
+          <MuiReactTable columns={columns} rows={data || []} materialReactProps={tableOptions} />
         </Box>
         <Box mt={2} textAlign="center" sx={{ flexShrink: 0 }}>
-          {!!data?.length && (
-            <PaginationComponent
-              page={page}
-              data={{ data: data }}
-              setPage={setPage}
-            />
-          )}
+          {!!data?.length && <PaginationComponent page={page} data={{ data }} setPage={setPage} />}
         </Box>
       </Box>
     </Box>

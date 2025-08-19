@@ -1,15 +1,14 @@
 import './App.css'
 
+import CssBaseline from '@mui/material/CssBaseline'
+import { ThemeProvider } from '@mui/material/styles'
 import { I18nextProvider } from 'react-i18next'
 import { RouterProvider } from 'react-router-dom'
 
-import CssBaseline from '@mui/material/CssBaseline'
-import { ThemeProvider } from '@mui/material/styles'
-
-import Routes from '../routes'
-import { theme } from '../theme'
 import i18n from '../localization/i18n'
+import Routes from '../routes'
 import FloatingAlerts from '../shared/components/ui-elements/alerts'
+import { theme } from '../theme'
 
 const App = () => (
   <ThemeProvider theme={theme}>

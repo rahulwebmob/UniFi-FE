@@ -1,12 +1,11 @@
-import millify from 'millify'
-import Cookies from 'js-cookie'
 import { ja, de, fr, pt, it, enUS, arSA } from 'date-fns/locale'
+import Cookies from 'js-cookie'
+import millify from 'millify'
 
-import { ENV } from '../validation/env'
 import i18n from '../../../localization/i18n'
+import { ENV } from '../validation/env'
 
-export const iff = (condition, then, otherwise) =>
-  condition ? then : otherwise
+export const iff = (condition, then, otherwise) => (condition ? then : otherwise)
 
 const millifyNumbers = (value, precision = 2) =>
   millify(value, {
@@ -19,9 +18,7 @@ export const readLangCookie = () => Cookies.get('languagePreference')
 export const clearLangCookie = () => Cookies.remove('languagePreference')
 
 export const handleGetInitials = (data) => {
-  const firstInitial = data.firstName
-    ? data.firstName.charAt(0).toUpperCase()
-    : ''
+  const firstInitial = data.firstName ? data.firstName.charAt(0).toUpperCase() : ''
   const lastInitial = data.lastName ? data.lastName.charAt(0).toUpperCase() : ''
   return `${firstInitial}${lastInitial}`
 }
@@ -48,10 +45,7 @@ const handleDateAndTime = (timestamp) => {
       calendar: 'gregory',
     }),
   }
-  const formattedDate = localDate.toLocaleString(
-    language === 'jp' ? 'ja-JP' : language,
-    options,
-  )
+  const formattedDate = localDate.toLocaleString(language === 'jp' ? 'ja-JP' : language, options)
   return formattedDate
 }
 
@@ -133,7 +127,7 @@ const generateImageUrl = (folderName, fileName) => {
 }
 
 const convertCoordinatesToDirection = (latitude, longitude) => {
-  if (latitude == null || longitude == null) {
+  if (latitude === null || longitude === null) {
     return { latitude: '', longitude: '' }
   }
   const directionNorthSouth = latitude >= 0 ? 'N' : 'S'
@@ -144,23 +138,19 @@ const convertCoordinatesToDirection = (latitude, longitude) => {
 }
 
 const escapeCSVValue = (value) => {
-  if (value === null || value === undefined) return ''
+  if (value === null || value === undefined) {
+    return ''
+  }
   const escapedValue = `${value}`.replace(/"/g, '""')
-  return escapedValue.includes(',') ||
-    escapedValue.includes('\n') ||
-    escapedValue.includes('"')
+  return escapedValue.includes(',') || escapedValue.includes('\n') || escapedValue.includes('"')
     ? `"${escapedValue}"`
     : escapedValue
 }
 
 const exportToCSV = (fileName, columns, rows) => {
-  const csvHeader = `${columns
-    .map((col) => escapeCSVValue(col.header))
-    .join(',')}\n`
+  const csvHeader = `${columns.map((col) => escapeCSVValue(col.header)).join(',')}\n`
   const csvRows = rows
-    .map((row) =>
-      columns.map((col) => escapeCSVValue(row[col.accessorKey])).join(','),
-    )
+    .map((row) => columns.map((col) => escapeCSVValue(row[col.accessorKey])).join(','))
     .join('\n')
 
   const csvContent = csvHeader + csvRows

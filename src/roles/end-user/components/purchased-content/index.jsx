@@ -1,6 +1,5 @@
-import { useState } from 'react'
-
 import { Box, Button, Typography, ButtonGroup } from '@mui/material'
+import { useState } from 'react'
 
 import CourseList from '../course-list'
 import WebinarList from '../webinar-list'

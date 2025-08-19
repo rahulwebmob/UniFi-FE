@@ -1,14 +1,9 @@
-import { useTranslation } from 'react-i18next'
-
 import { Box, useTheme, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 import NoDataIcon from '../../../assets/svgicons/no-data.svg?react'
 
-const NoDataFound = ({
-  title,
-  description,
-  isTable = false,
-}) => {
+const NoDataFound = ({ title, description, isTable = false }) => {
   const theme = useTheme()
   const { t } = useTranslation('application')
 

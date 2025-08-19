@@ -1,14 +1,13 @@
-import { useTranslation } from 'react-i18next'
-import { useState, useEffect } from 'react'
-
 import { Box } from '@mui/material'
+import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
+import { useGetAllWebinarsQuery } from '../../../../services/education'
+import NoDataFound from '../../../../shared/components/no-data-found'
+import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
+import ContentSkeleton from '../content-skeleton'
 import { GridContainer } from '../style'
 import WebinarCard from '../webinar-card'
-import ContentSkeleton from '../content-skeleton'
-import NoDataFound from '../../../../shared/components/no-data-found'
-import { useGetAllWebinarsQuery } from '../../../../services/education'
-import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
 
 const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
   const { t } = useTranslation('education')
@@ -32,9 +31,7 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
     if (isSuccess && !isFetching) {
       if (data?.data?.webinars?.length) {
         setList((prev) =>
-          page === 1
-            ? (data.data?.webinars ?? [])
-            : [...prev, ...(data.data?.webinars ?? [])],
+          page === 1 ? (data.data?.webinars ?? []) : [...prev, ...(data.data?.webinars ?? [])],
         )
         setCount(data.data?.count ?? 0)
       } else {
@@ -52,7 +49,7 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
     // }
   }, [count, list])
 
-  if (isPurchased)
+  if (isPurchased) {
     return (
       <MuiCarousel>
         {isLoading ? (
@@ -84,15 +81,12 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
               },
             }}
           >
-            <NoDataFound
-              description={t(
-                'EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_WEBINAR',
-              )}
-            />
+            <NoDataFound description={t('EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_WEBINAR')} />
           </Box>
         )}
       </MuiCarousel>
     )
+  }
 
   return (
     <>

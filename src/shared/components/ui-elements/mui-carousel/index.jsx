@@ -1,7 +1,6 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import React, { useRef, useState, useEffect } from 'react'
-
 import { Box, alpha, useTheme, IconButton } from '@mui/material'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useRef, useState, useEffect } from 'react'
 
 const MuiCarousel = ({ children }) => {
   const scrollRef = useRef(null)
@@ -29,9 +28,7 @@ const MuiCarousel = ({ children }) => {
       const scrollAmount = 400
       const currentScroll = scrollRef.current.scrollLeft
       const targetScroll =
-        direction === 'left'
-          ? currentScroll - scrollAmount
-          : currentScroll + scrollAmount
+        direction === 'left' ? currentScroll - scrollAmount : currentScroll + scrollAmount
 
       scrollRef.current.scrollTo({
         left: targetScroll,

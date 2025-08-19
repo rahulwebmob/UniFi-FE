@@ -1,17 +1,8 @@
-import React from 'react'
+import { Box, Card, Button, Avatar, Typography, CardContent } from '@mui/material'
 import { format } from 'date-fns'
+import { Clock, Calendar, ArrowRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { Clock, Calendar, ArrowRight } from 'lucide-react'
-
-import {
-  Box,
-  Card,
-  Button,
-  Avatar,
-  Typography,
-  CardContent,
-} from '@mui/material'
 
 import CategoryList from '../category-list'
 
@@ -199,8 +190,7 @@ const WebinarCard = ({ webinar, isPurchased }) => {
                   color: (thm) => thm.palette.text.secondary,
                 }}
               >
-                {webinar.educatorDetail.firstName}{' '}
-                {webinar.educatorDetail.lastName}
+                {webinar.educatorDetail.firstName} {webinar.educatorDetail.lastName}
               </Typography>
             </Box>
           )}
@@ -215,20 +205,11 @@ const WebinarCard = ({ webinar, isPurchased }) => {
                 mb: 0.75,
               }}
             >
-              <Calendar
-                size={12}
-                style={{ color: 'var(--mui-palette-text-secondary)' }}
-              />
+              <Calendar size={12} style={{ color: 'var(--mui-palette-text-secondary)' }} />
               <Typography sx={{ fontSize: '0.7rem', color: 'text.secondary' }}>
-                {format(
-                  new Date(webinar.webinarScheduledObj.join_date),
-                  'MMM dd, yyyy',
-                )}
+                {format(new Date(webinar.webinarScheduledObj.join_date), 'MMM dd, yyyy')}
                 {' at '}
-                {format(
-                  new Date(webinar.webinarScheduledObj.join_date),
-                  'h:mm a',
-                )}
+                {format(new Date(webinar.webinarScheduledObj.join_date), 'h:mm a')}
               </Typography>
             </Box>
           )}
@@ -454,8 +435,7 @@ const WebinarCard = ({ webinar, isPurchased }) => {
                 pr: 0.5,
               }}
             >
-              {webinar.educatorDetail.firstName}{' '}
-              {webinar.educatorDetail.lastName}
+              {webinar.educatorDetail.firstName} {webinar.educatorDetail.lastName}
             </Typography>
           </Box>
         )}
@@ -470,11 +450,7 @@ const WebinarCard = ({ webinar, isPurchased }) => {
               right: 8,
             }}
           >
-            <CategoryList
-              chips={categoryArray}
-              isPurchased={false}
-              maxVisible={3}
-            />
+            <CategoryList chips={categoryArray} isPurchased={false} maxVisible={3} />
           </Box>
         )}
       </Box>
@@ -541,27 +517,15 @@ const WebinarCard = ({ webinar, isPurchased }) => {
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Calendar
-                size={14}
-                style={{ color: 'var(--mui-palette-text-secondary)' }}
-              />
+              <Calendar size={14} style={{ color: 'var(--mui-palette-text-secondary)' }} />
               <Typography sx={{ fontSize: '0.75rem', fontWeight: 500 }}>
-                {format(
-                  new Date(webinar.webinarScheduledObj.join_date),
-                  'MMM dd, yyyy',
-                )}
+                {format(new Date(webinar.webinarScheduledObj.join_date), 'MMM dd, yyyy')}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Clock
-                size={14}
-                style={{ color: 'var(--mui-palette-text-secondary)' }}
-              />
+              <Clock size={14} style={{ color: 'var(--mui-palette-text-secondary)' }} />
               <Typography sx={{ fontSize: '0.75rem', fontWeight: 500 }}>
-                {format(
-                  new Date(webinar.webinarScheduledObj.join_date),
-                  'h:mm a',
-                )}
+                {format(new Date(webinar.webinarScheduledObj.join_date), 'h:mm a')}
               </Typography>
             </Box>
           </Box>
@@ -582,8 +546,7 @@ const WebinarCard = ({ webinar, isPurchased }) => {
                 opacity: 0.7,
               }}
             >
-              {webinar.totalEnrolled}{' '}
-              {t('EDUCATION_DASHBOARD.MAIN_PAGE.ENROLLED')}
+              {webinar.totalEnrolled} {t('EDUCATION_DASHBOARD.MAIN_PAGE.ENROLLED')}
             </Typography>
           )}
 
@@ -650,14 +613,10 @@ const WebinarCard = ({ webinar, isPurchased }) => {
                   borderRadius: '6px',
                   minWidth: 'auto',
                   backgroundColor: (thm) =>
-                    webinar.isPaid
-                      ? thm.palette.primary.main
-                      : thm.palette.success.main,
+                    webinar.isPaid ? thm.palette.primary.main : thm.palette.success.main,
                   '&:hover': {
                     backgroundColor: (thm) =>
-                      webinar.isPaid
-                        ? thm.palette.primary.dark
-                        : thm.palette.success.dark,
+                      webinar.isPaid ? thm.palette.primary.dark : thm.palette.success.dark,
                   },
                 }}
                 onClick={(e) => {

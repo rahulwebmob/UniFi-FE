@@ -1,16 +1,10 @@
-import { NavLink } from 'react-router-dom'
+import { Box, ListItem, ListItemIcon, ListItemText, ListItemButton } from '@mui/material'
 import { FileText, DollarSign, CheckSquare } from 'lucide-react'
+import { NavLink } from 'react-router-dom'
 
-import {
-  Box,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemButton,
-} from '@mui/material'
+import useWindowOpen from '../../../../hooks/useWindowOpen'
 
 import { NavbarContainer } from './style'
-import useWindowOpen from '../../../../hooks/useWindowOpen'
 
 const Navbar = ({ open }) => {
   const openWindowFunction = useWindowOpen()
@@ -73,10 +67,7 @@ const Navbar = ({ open }) => {
           >
             {eachItem.icon}
           </ListItemIcon>
-          <ListItemText
-            primary={eachItem.label}
-            sx={{ opacity: open ? 1 : 0 }}
-          />
+          <ListItemText primary={eachItem.label} sx={{ opacity: open ? 1 : 0 }} />
         </ListItemButton>
       </ListItem>
     )

@@ -1,7 +1,6 @@
+import { Box, Button, useTheme, Typography } from '@mui/material'
 import { t } from 'i18next'
 import { useNavigate } from 'react-router-dom'
-
-import { Box, Button, useTheme, Typography } from '@mui/material'
 
 import PageNotFoundLogo from '../../../assets/svgicons/page-not-found.svg?react'
 
@@ -25,7 +24,7 @@ const PageNotFound = () => {
       <Box
         sx={{
           '& .device-bg': {
-            fill: theme.palette.primary.main + '40',
+            fill: `${theme.palette.primary.main}40`,
           },
           '& .dot-dark, & .bar-dark, & .circle-dark': {
             fill: theme.palette.primary.light,

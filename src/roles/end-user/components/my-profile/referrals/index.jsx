@@ -1,7 +1,3 @@
-import { useState } from 'react'
-import { Copy, RefreshCw } from 'lucide-react'
-import { useDispatch } from 'react-redux'
-
 import {
   Box,
   Grid,
@@ -13,18 +9,16 @@ import {
   IconButton,
   InputAdornment,
 } from '@mui/material'
+import { Copy, RefreshCw } from 'lucide-react'
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
-import {
-  successAlert,
-  errorAlert,
-} from '../../../../../redux/reducers/app-slice'
+import { successAlert, errorAlert } from '../../../../../redux/reducers/app-slice'
 
 const Referrals = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
-  const [referralLink, setReferralLink] = useState(
-    'https://unifi.com/ref/USER123456',
-  )
+  const [referralLink, setReferralLink] = useState('https://unifi.com/ref/USER123456')
 
   const handleCopyReferralLink = async () => {
     try {
@@ -62,8 +56,8 @@ const Referrals = () => {
             color: theme.palette.text.secondary,
           }}
         >
-          Share your referral link with friends and earn rewards when they sign
-          up and make their first purchase.
+          Share your referral link with friends and earn rewards when they sign up and make their
+          first purchase.
         </Typography>
       </Box>
 
@@ -144,7 +138,7 @@ const Referrals = () => {
                   width: 32,
                   height: 32,
                   borderRadius: '50%',
-                  backgroundColor: theme.palette.primary.light + '30',
+                  backgroundColor: `${theme.palette.primary.light}30`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -161,10 +155,7 @@ const Referrals = () => {
                 </Typography>
               </Box>
               <Box>
-                <Typography
-                  variant="subtitle2"
-                  sx={{ fontWeight: 600, mb: 0.5 }}
-                >
+                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
                   Share Your Link
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -181,7 +172,7 @@ const Referrals = () => {
                   width: 32,
                   height: 32,
                   borderRadius: '50%',
-                  backgroundColor: theme.palette.primary.light + '30',
+                  backgroundColor: `${theme.palette.primary.light}30`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -198,10 +189,7 @@ const Referrals = () => {
                 </Typography>
               </Box>
               <Box>
-                <Typography
-                  variant="subtitle2"
-                  sx={{ fontWeight: 600, mb: 0.5 }}
-                >
+                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
                   They Sign Up
                 </Typography>
                 <Typography variant="body2" color="text.secondary">

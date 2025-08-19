@@ -1,7 +1,3 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { Controller } from 'react-hook-form'
-
 import {
   Box,
   Grid,
@@ -11,6 +7,8 @@ import {
   FormControl,
   FormHelperText,
 } from '@mui/material'
+import { Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 import countries from '../../../../constants/countries'
 import RequiredFieldIndicator from '../../../../shared/components/ui-elements/required-field-indicator'
@@ -33,9 +31,7 @@ const About = ({ control }) => {
             render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
-                placeholder={t(
-                  'REGISTER_EDUCATOR.ABOUT_PAGE.FIRST_NAME_PLACEHOLDER',
-                )}
+                placeholder={t('REGISTER_EDUCATOR.ABOUT_PAGE.FIRST_NAME_PLACEHOLDER')}
                 size="small"
                 fullWidth
                 error={!!error}
@@ -56,9 +52,7 @@ const About = ({ control }) => {
             render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
-                placeholder={t(
-                  'REGISTER_EDUCATOR.ABOUT_PAGE.LAST_NAME_PLACEHOLDER',
-                )}
+                placeholder={t('REGISTER_EDUCATOR.ABOUT_PAGE.LAST_NAME_PLACEHOLDER')}
                 size="small"
                 fullWidth
                 error={!!error}
@@ -80,9 +74,7 @@ const About = ({ control }) => {
             render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
-                placeholder={t(
-                  'REGISTER_EDUCATOR.ABOUT_PAGE.EMAIL_PLACEHOLDER',
-                )}
+                placeholder={t('REGISTER_EDUCATOR.ABOUT_PAGE.EMAIL_PLACEHOLDER')}
                 size="small"
                 fullWidth
                 error={!!error}
@@ -111,13 +103,8 @@ const About = ({ control }) => {
                     renderValue: (selected) => {
                       if (!selected) {
                         return (
-                          <Typography
-                            component="p"
-                            sx={{ color: 'text.secondary' }}
-                          >
-                            {t(
-                              'REGISTER_EDUCATOR.ABOUT_PAGE.COUNTRY_PLACEHOLDER',
-                            )}
+                          <Typography component="p" sx={{ color: 'text.secondary' }}>
+                            {t('REGISTER_EDUCATOR.ABOUT_PAGE.COUNTRY_PLACEHOLDER')}
                           </Typography>
                         )
                       }
@@ -161,9 +148,7 @@ const About = ({ control }) => {
               <TextField
                 {...field}
                 variant="outlined"
-                placeholder={t(
-                  'REGISTER_EDUCATOR.ABOUT_PAGE.STATE_PLACEHOLDER',
-                )}
+                placeholder={t('REGISTER_EDUCATOR.ABOUT_PAGE.STATE_PLACEHOLDER')}
                 fullWidth
                 size="small"
                 error={!!error}

@@ -1,34 +1,28 @@
+import { Box, Slide, Stack, Snackbar, Typography } from '@mui/material'
+import { X, XCircle, CheckCircle } from 'lucide-react'
 import React, { memo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { X, XCircle, CheckCircle } from 'lucide-react'
-
-import { Box, Slide, Stack, Snackbar, Typography } from '@mui/material'
 
 import { removeAlert } from '../../../../redux/reducers/app-slice'
 
-const CustomTransition = React.forwardRef(function CustomTransition(props, ref) {
-  return (
-    <Slide
-      {...props}
-      ref={ref}
-      direction="left"
-      style={{
-        transitionTimingFunction: props.in
-          ? 'cubic-bezier(0.4, 0, 0.2, 1)'
-          : 'cubic-bezier(0.4, 0, 0.6, 1)',
-      }}
-    />
-  )
-})
+const CustomTransition = React.forwardRef((props, ref) => (
+  <Slide
+    {...props}
+    ref={ref}
+    direction="left"
+    style={{
+      transitionTimingFunction: props.in
+        ? 'cubic-bezier(0.4, 0, 0.2, 1)'
+        : 'cubic-bezier(0.4, 0, 0.6, 1)',
+    }}
+  />
+))
 
 const GenericAlert = ({ alert }) => {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(true)
 
-  const handleClose = (
-    _event,
-    reason,
-  ) => {
+  const handleClose = (_event, reason) => {
     if (reason === 'clickaway') {
       return
     }
@@ -120,9 +114,7 @@ const GenericAlert = ({ alert }) => {
               fontSize: '20px',
             }}
             onMouseEnter={(e) => (e.currentTarget.style.transform = 'rotate(90deg)')}
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.transform = 'rotate(0deg)')
-            }
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'rotate(0deg)')}
             onClick={() => setOpen(false)}
           />
         </Box>

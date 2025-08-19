@@ -1,24 +1,15 @@
-import * as yup from 'yup'
-import { useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-
+import { Box, Grid, Button, TextField, IconButton, Typography, InputAdornment } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import {
-  Box,
-  Grid,
-  Button,
-  TextField,
-  IconButton,
-  Typography,
-  InputAdornment,
-} from '@mui/material'
+import { Eye, EyeOff } from 'lucide-react'
+import { useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import * as yup from 'yup'
 
 import MainLogo from '../../../../assets/logo.svg'
-import SocialMediaAuth from '../login/social-media-auth'
 import { useSignUpMutation } from '../../../../services/admin'
+import SocialMediaAuth from '../login/social-media-auth'
 
 const SignUp = ({ setIsLoginPage }) => {
   const theme = useTheme()
@@ -97,18 +88,8 @@ const SignUp = ({ setIsLoginPage }) => {
   return (
     <Box width="100%">
       <Box display="flex" alignItems="center">
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          width="100%"
-        >
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            sx={{ mb: 1 }}
-          >
+        <Box display="flex" flexDirection="column" justifyContent="center" width="100%">
+          <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 1 }}>
             <img src={MainLogo} alt="Logo" style={{ width: 80, height: 80 }} />
           </Box>
 
@@ -222,14 +203,8 @@ const SignUp = ({ setIsLoginPage }) => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <Eye size={20} />
-                        ) : (
-                          <EyeOff size={20} />
-                        )}
+                      <IconButton onClick={() => setShowPassword(!showPassword)}>
+                        {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -259,16 +234,8 @@ const SignUp = ({ setIsLoginPage }) => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                      >
-                        {showConfirmPassword ? (
-                          <Eye size={20} />
-                        ) : (
-                          <EyeOff size={20} />
-                        )}
+                      <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                        {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -332,11 +299,7 @@ const SignUp = ({ setIsLoginPage }) => {
         />
       </Grid>
       <Box display="flex" alignItems="center" justifyContent="center">
-        <Typography
-          variant="body2"
-          color={theme.palette.text.secondary}
-          sx={{ fontSize: 14 }}
-        >
+        <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: 14 }}>
           Already have an account?
           <Typography
             variant="body2"

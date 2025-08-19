@@ -1,10 +1,10 @@
 import { useRef, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 
-import PremiumModal from '../../premium'
-import ApiResponseWrapper from '../../../api-middleware'
-import { useGetParticularCourseQuery } from '../../../../../services/education'
 import ContentView from '../../../../../roles/educator-user/components/Courses/content-view'
+import { useGetParticularCourseQuery } from '../../../../../services/education'
+import ApiResponseWrapper from '../../../api-middleware'
+import PremiumModal from '../../premium'
 
 const CourseDetails = () => {
   const { id } = useParams()
@@ -36,11 +36,7 @@ const CourseDetails = () => {
   }
 
   return (
-    <ApiResponseWrapper
-      error={error}
-      isLoading={isLoading}
-      isData={!!data?.data}
-    >
+    <ApiResponseWrapper error={error} isLoading={isLoading} isData={!!data?.data}>
       {courseData && (
         <ContentView
           isEdit={false}

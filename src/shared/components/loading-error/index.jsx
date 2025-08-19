@@ -1,6 +1,5 @@
-import { useTranslation } from 'react-i18next'
-
 import { Box, useTheme, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 import LodingIssueIcon from '../../../assets/svgicons/loading-issue.svg?react'
 

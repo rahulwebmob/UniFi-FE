@@ -1,15 +1,3 @@
-import { useSelector } from 'react-redux'
-import React, { useState, useEffect } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import {
-  User,
-  LogOut,
-  Receipt,
-  CheckCircle,
-  ChevronRight,
-  GraduationCap,
-} from 'lucide-react'
-
 import {
   Box,
   Fade,
@@ -35,11 +23,15 @@ import {
   useMediaQuery,
   ListItemButton,
 } from '@mui/material'
+import { User, LogOut, Receipt, CheckCircle, ChevronRight, GraduationCap } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import MainLogo from '../../../../assets/logo.svg'
-import AdminProfileSettings from '../profile-settings'
-import CustomSvgIcon from '../../../../shared/components/custom-svg-icon'
 import LogoutWrapper from '../../../../shared/components/auth-wrapper/logout'
+import CustomSvgIcon from '../../../../shared/components/custom-svg-icon'
+import AdminProfileSettings from '../profile-settings'
 
 const DRAWER_WIDTH = 280
 const DRAWER_WIDTH_COLLAPSED = 85
@@ -132,16 +124,10 @@ const ModernAdminLayout = () => {
               height: 56,
               position: 'relative',
               px: drawerCollapsed && !isMobile ? 2 : 2.5,
-              bgcolor: isActive
-                ? alpha(theme.palette.primary.main, 0.15)
-                : 'transparent',
-              color: isActive
-                ? theme.palette.primary.main
-                : theme.palette.text.secondary,
+              bgcolor: isActive ? alpha(theme.palette.primary.main, 0.15) : 'transparent',
+              color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
               transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-              boxShadow: isActive
-                ? `0 2px 8px ${alpha(theme.palette.primary.main, 0.2)}`
-                : 'none',
+              boxShadow: isActive ? `0 2px 8px ${alpha(theme.palette.primary.main, 0.2)}` : 'none',
               '&:hover': {
                 bgcolor: isActive
                   ? alpha(theme.palette.primary.main, 0.18)
@@ -149,16 +135,13 @@ const ModernAdminLayout = () => {
                 transform: 'translateX(2px)',
                 boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.15)}`,
               },
-              justifyContent:
-                drawerCollapsed && !isMobile ? 'center' : 'flex-start',
+              justifyContent: drawerCollapsed && !isMobile ? 'center' : 'flex-start',
             }}
           >
             <ListItemIcon
               sx={{
                 minWidth: drawerCollapsed && !isMobile ? 'auto' : 40,
-                color: isActive
-                  ? theme.palette.primary.main
-                  : theme.palette.text.secondary,
+                color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
                 transition: 'color 0.2s',
               }}
             >
@@ -169,9 +152,7 @@ const ModernAdminLayout = () => {
                   justifyContent: 'center',
                   width: 32,
                   height: 32,
-                  color: isActive
-                    ? theme.palette.primary.main
-                    : theme.palette.text.secondary,
+                  color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
                 }}
               >
                 {item.icon}
@@ -264,16 +245,11 @@ const ModernAdminLayout = () => {
           p: 2,
           display: 'flex',
           alignItems: 'center',
-          justifyContent:
-            drawerCollapsed && !isMobile ? 'center' : 'flex-start',
+          justifyContent: drawerCollapsed && !isMobile ? 'center' : 'flex-start',
           minHeight: 70,
         }}
       >
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={drawerCollapsed && !isMobile ? 0 : 1.5}
-        >
+        <Stack direction="row" alignItems="center" spacing={drawerCollapsed && !isMobile ? 0 : 1.5}>
           <Box
             sx={{
               width: 40,
@@ -297,9 +273,7 @@ const ModernAdminLayout = () => {
           </Box>
 
           <Fade in={!drawerCollapsed || isMobile}>
-            <Box
-              sx={{ display: drawerCollapsed && !isMobile ? 'none' : 'block' }}
-            >
+            <Box sx={{ display: drawerCollapsed && !isMobile ? 'none' : 'block' }}>
               <Typography
                 variant="h6"
                 sx={{
@@ -351,9 +325,7 @@ const ModernAdminLayout = () => {
           boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
         }}
       >
-        <Toolbar
-          sx={{ px: { xs: 1.5, sm: 2, md: 3 }, minHeight: { xs: 60, sm: 70 } }}
-        >
+        <Toolbar sx={{ px: { xs: 1.5, sm: 2, md: 3 }, minHeight: { xs: 60, sm: 70 } }}>
           <IconButton
             edge="start"
             onClick={handleDrawerToggle}
@@ -401,11 +373,7 @@ const ModernAdminLayout = () => {
                   `${user.firstName?.[0]?.toUpperCase() ?? ''}${user.lastName?.[0]?.toUpperCase() ?? ''}`}
               </Avatar>
               <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                <Typography
-                  color="text.primary"
-                  variant="body2"
-                  fontWeight={600}
-                >
+                <Typography color="text.primary" variant="body2" fontWeight={600}>
                   {user.firstName} {user.lastName}
                 </Typography>
               </Box>
@@ -489,10 +457,7 @@ const ModernAdminLayout = () => {
                     }}
                   >
                     <ListItemIcon sx={{ minWidth: 36 }}>
-                      <LogOut
-                        size={16}
-                        style={{ color: theme.palette.error.main }}
-                      />
+                      <LogOut size={16} style={{ color: theme.palette.error.main }} />
                     </ListItemIcon>
                     <ListItemText primary="Logout" />
                   </MenuItem>

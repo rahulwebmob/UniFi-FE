@@ -1,12 +1,11 @@
+import { Box, Avatar, Typography } from '@mui/material'
 import { User as UserIcon } from 'lucide-react'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
-import { Box, Avatar, Typography } from '@mui/material'
-
 import Peers from './Peers'
-import WebinarMedia from './webinar-media'
 import { styles, CarouselItem, VideoPlaceholder } from './styles'
+import WebinarMedia from './webinar-media'
 
 const Learning = ({
   isHost,
@@ -25,8 +24,7 @@ const Learning = ({
   const hasAudio = !!producer?.audio
 
   const isSecondaryScreen =
-    (isHost && isLocalVideoOn && isLocalScreenOn) ||
-    (hasVideo && hasScreen && !isHost)
+    (isHost && isLocalVideoOn && isLocalScreenOn) || (hasVideo && hasScreen && !isHost)
 
   const renderAvatar = () => (
     <Box sx={styles.wrapper}>
@@ -42,77 +40,62 @@ const Learning = ({
   )
 
   const displayName = useMemo(() => {
-    if (isHost) return 'You'
-    if (remoteStream?.firstName)
+    if (isHost) {
+      return 'You'
+    }
+    if (remoteStream?.firstName) {
       return `${remoteStream.firstName}'s screen ( Host )`
+    }
     return 'No Host Yet'
   }, [isHost, remoteStream])
 
   const streamHeight = useMemo(() => {
-    if (isFullscreen && areUsersInRoom) return 'calc(100vh - 270px)'
-    if (isFullscreen) return 'calc(100vh - 150px)'
-    if (areUsersInRoom) return 'calc(100vh - 360px)'
+    if (isFullscreen && areUsersInRoom) {
+      return 'calc(100vh - 270px)'
+    }
+    if (isFullscreen) {
+      return 'calc(100vh - 150px)'
+    }
+    if (areUsersInRoom) {
+      return 'calc(100vh - 360px)'
+    }
     return 'calc(100vh - 250px)'
   }, [isFullscreen, areUsersInRoom])
 
   const renderMainScreen = () => {
-    if (isHost && isLocalScreenOn)
-      return (
-        <WebinarMedia
-          stream={localScreenStream}
-          mediaType="screen"
-          isMirror={false}
-        />
-      )
+    if (isHost && isLocalScreenOn) {
+      return <WebinarMedia stream={localScreenStream} mediaType="screen" isMirror={false} />
+    }
 
-    if (isHost && isLocalVideoOn)
-      return (
-        <WebinarMedia
-          stream={localVideoStream}
-          mediaType="video"
-          isMirror={true}
-        />
-      )
+    if (isHost && isLocalVideoOn) {
+      return <WebinarMedia stream={localVideoStream} mediaType="video" isMirror />
+    }
 
-    if (!isHost && hasScreen && producer?.screen?.stream)
-      return (
-        <WebinarMedia
-          stream={producer.screen.stream}
-          mediaType="screen"
-          isMirror={false}
-        />
-      )
+    if (!isHost && hasScreen && producer?.screen?.stream) {
+      return <WebinarMedia stream={producer.screen.stream} mediaType="screen" isMirror={false} />
+    }
 
-    if (!isHost && hasVideo && producer?.video?.stream)
-      return (
-        <WebinarMedia
-          stream={producer.video.stream}
-          mediaType="video"
-          isMirror={false}
-        />
-      )
+    if (!isHost && hasVideo && producer?.video?.stream) {
+      return <WebinarMedia stream={producer.video.stream} mediaType="video" isMirror={false} />
+    }
 
     return renderAvatar()
   }
 
   const renderSecondaryScreen = () => {
-    if (!isSecondaryScreen) return null
+    if (!isSecondaryScreen) {
+      return null
+    }
 
     const isLocal = isHost && isLocalVideoOn
     const stream = isLocal ? localVideoStream : producer?.video?.stream || null
-    const label = isLocal
-      ? "You're video"
-      : `${remoteStream?.firstName || 'Host'} (Host)`
+    const label = isLocal ? "You're video" : `${remoteStream?.firstName || 'Host'} (Host)`
 
     return (
       <CarouselItem>
         <Box sx={styles.container}>
           <Box sx={styles.videoContainer}>
-            <WebinarMedia
-              stream={stream}
-              mediaType="video"
-              isMirror={isHost && isLocalScreenOn}
-            />
+            <WebinarMedia stream={stream} mediaType="video" isMirror={isHost && isLocalScreenOn} />
           </Box>
         </Box>
         <Typography variant="body1" sx={styles.label}>
@@ -140,11 +123,7 @@ const Learning = ({
         <Box sx={styles.container}>
           <Box sx={styles.videoContainer}>
             {hasAudio && producer?.audio?.stream ? (
-              <WebinarMedia
-                stream={producer.audio.stream}
-                mediaType="audio"
-                isMirror={false}
-              />
+              <WebinarMedia stream={producer.audio.stream} mediaType="audio" isMirror={false} />
             ) : null}
 
             {renderMainScreen()}

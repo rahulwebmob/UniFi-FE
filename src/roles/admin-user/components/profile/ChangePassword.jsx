@@ -1,11 +1,4 @@
-import * as yup from 'yup'
-import { useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
-import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useDispatch, useSelector } from 'react-redux'
-
 import {
   Box,
   Button,
@@ -16,6 +9,12 @@ import {
   useMediaQuery,
   InputAdornment,
 } from '@mui/material'
+import { Eye, EyeOff } from 'lucide-react'
+import { useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
+import * as yup from 'yup'
 
 import { updateUser } from '../../../../redux/reducers/user-slice'
 import { useResetPasswordMutation } from '../../../../services/admin'
@@ -38,9 +37,7 @@ const ChangePassword = ({
   const dispatch = useDispatch()
   const { t } = useTranslation('application')
   const matches = useMediaQuery((theme) => theme.breakpoints.down('sm'))
-  const isPasswordMissing = useSelector(
-    (state) => state.user?.user?.isPasswordMissing ?? false,
-  )
+  const isPasswordMissing = useSelector((state) => state.user?.user?.isPasswordMissing ?? false)
 
   const [resetUserPassword] = useResetPasswordMutation()
   const [updateAdminPassword] = useEditAdminProfileMutation()
@@ -120,7 +117,9 @@ const ChangePassword = ({
         currentPassword: values.currentPassword,
         confirmPassword: values.confirmPassword,
       })
-      if (isPasswordMissing) dispatch(updateUser({ isPasswordMissing: false }))
+      if (isPasswordMissing) {
+        dispatch(updateUser({ isPasswordMissing: false }))
+      }
     }
     if (!response?.error) {
       closeModal()
@@ -194,11 +193,7 @@ const ChangePassword = ({
                     }}
                   >
                     {t('application:PROFILE.CURRENT_PASSWORD')}
-                    <Typography
-                      variant="body1"
-                      color="error.main"
-                      component="span"
-                    >
+                    <Typography variant="body1" color="error.main" component="span">
                       *
                     </Typography>
                   </Typography>
@@ -207,13 +202,9 @@ const ChangePassword = ({
                     control={control}
                     render={({ field }) => (
                       <TextField
-                        placeholder={t(
-                          'application:PROFILE.ENTERYOUR_CURRENTPASSWORD',
-                        )}
+                        placeholder={t('application:PROFILE.ENTERYOUR_CURRENTPASSWORD')}
                         variant="outlined"
-                        type={
-                          showPassword.currentPassword ? 'text' : 'password'
-                        }
+                        type={showPassword.currentPassword ? 'text' : 'password'}
                         fullWidth
                         size="small"
                         {...field}
@@ -225,8 +216,7 @@ const ChangePassword = ({
                                 onClick={() =>
                                   setShowPassword({
                                     ...showPassword,
-                                    currentPassword:
-                                      !showPassword.currentPassword,
+                                    currentPassword: !showPassword.currentPassword,
                                   })
                                 }
                               >
@@ -286,11 +276,7 @@ const ChangePassword = ({
                               })
                             }
                           >
-                            {showPassword.newPassword ? (
-                              <Eye size={18} />
-                            ) : (
-                              <EyeOff size={18} />
-                            )}
+                            {showPassword.newPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                           </IconButton>
                         </InputAdornment>
                       ),
@@ -321,9 +307,7 @@ const ChangePassword = ({
               control={control}
               render={({ field }) => (
                 <TextField
-                  placeholder={t(
-                    'application:PROFILE.ENTERYOUR_CONFIRMPASSWORD',
-                  )}
+                  placeholder={t('application:PROFILE.ENTERYOUR_CONFIRMPASSWORD')}
                   variant="outlined"
                   size="small"
                   type={showPassword.confirmPassword ? 'text' : 'password'}
@@ -341,11 +325,7 @@ const ChangePassword = ({
                             })
                           }
                         >
-                          {showPassword.confirmPassword ? (
-                            <Eye size={18} />
-                          ) : (
-                            <EyeOff size={18} />
-                          )}
+                          {showPassword.confirmPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                         </IconButton>
                       </InputAdornment>
                     ),

@@ -1,18 +1,8 @@
+import { Box, Tab, Tabs, Menu, useTheme, MenuItem, IconButton, useMediaQuery } from '@mui/material'
+import { Menu as MenuIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Menu as MenuIcon } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
-
-import {
-  Box,
-  Tab,
-  Tabs,
-  Menu,
-  useTheme,
-  MenuItem,
-  IconButton,
-  useMediaQuery,
-} from '@mui/material'
 
 const Navigation = () => {
   const theme = useTheme()
@@ -32,8 +22,7 @@ const Navigation = () => {
     },
   ]
 
-  const currentPath =
-    navItems.find((item) => item.path === location.pathname)?.path || false
+  const currentPath = navItems.find((item) => item.path === location.pathname)?.path || false
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget)
@@ -45,9 +34,7 @@ const Navigation = () => {
 
   const handleChange = (path) => {
     if (location.pathname.includes('educator-room')) {
-      const userConfirmed = window.confirm(
-        'Are you sure you want to leave the webinar ?',
-      )
+      const userConfirmed = window.confirm('Are you sure you want to leave the webinar ?')
       if (userConfirmed) {
         void navigate(path)
         handleMenuClose()
@@ -65,11 +52,7 @@ const Navigation = () => {
           <IconButton onClick={handleMenuOpen} sx={{ color: 'text.primary' }}>
             <MenuIcon size={20} />
           </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
+          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
             {navItems.map((item) => (
               <MenuItem
                 key={item.path}

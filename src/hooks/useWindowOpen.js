@@ -1,5 +1,6 @@
-const useWindowOpen = () => {
-  return (url, self = false) => {
+const useWindowOpen =
+  () =>
+  (url, self = false) => {
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
 
     if (isSafari) {
@@ -12,6 +13,5 @@ const useWindowOpen = () => {
       window.open(url, self ? '_self' : '_blank')
     }
   }
-}
 
 export default useWindowOpen

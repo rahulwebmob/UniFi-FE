@@ -1,9 +1,8 @@
+import { Box, Button, Typography } from '@mui/material'
 import Lottie from 'lottie-react'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
-
-import { Box, Button, Typography } from '@mui/material'
 
 import Spinner from '../../../../assets/spinner.json'
 import { useGetParticularWebinarDetailQuery } from '../../../../services/education'
@@ -21,8 +20,9 @@ const WaitingRoom = ({ handleInit }) => {
 
   useEffect(() => {
     const webinarData = data
-    if (!isLoading && !webinarData?.data?.webinarScheduledObj?.can_join)
+    if (!isLoading && !webinarData?.data?.webinarScheduledObj?.can_join) {
       void navigate('/dashboard')
+    }
   }, [data, isLoading, navigate])
 
   return (
@@ -57,12 +57,7 @@ const WaitingRoom = ({ handleInit }) => {
           {t('EDUCATION_DASHBOARD.MAIN_PAGE.WAITING_ROOM')}
         </Typography>
 
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ mt: 2 }}
-          onClick={() => handleInit()}
-        >
+        <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => handleInit()}>
           {t('EDUCATION_DASHBOARD.COMMON_KEYS.JOIN_NOW')}
         </Button>
       </Box>

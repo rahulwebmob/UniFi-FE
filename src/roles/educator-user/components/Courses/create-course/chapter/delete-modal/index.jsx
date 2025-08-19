@@ -1,8 +1,9 @@
-import React, { useRef } from 'react'
-import ModalBox from '../../../../../../../shared/components/ui-elements/modal-box'
 import { Box, Button, IconButton, Typography } from '@mui/material'
 import { X } from 'lucide-react'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import ModalBox from '../../../../../../../shared/components/ui-elements/modal-box'
 
 const DeleteModal = ({ handleDelete, message = '', isDisabled = false }) => {
   const { t } = useTranslation('education')

@@ -1,18 +1,17 @@
-import { FileDown } from 'lucide-react'
-import { useDispatch } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import { useMemo, useState, useCallback } from 'react'
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
-
 import { Box, Chip, alpha, Button, useTheme, Typography } from '@mui/material'
+import { FileDown } from 'lucide-react'
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
+import { useMemo, useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 
 import { successAlert } from '../../../../redux/reducers/app-slice'
-import { generateInvoicePdf } from '../../../../utils/globalUtils'
-import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import {
   useGetEducationAdminInvoiceQuery,
   useLazyDownloadAdminInvoiceQuery,
 } from '../../../../services/admin'
+import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
+import { generateInvoicePdf } from '../../../../utils/globalUtils'
 
 const EducationInvoice = () => {
   const theme = useTheme()
@@ -66,11 +65,7 @@ const EducationInvoice = () => {
         header: 'User Email',
         Cell: (tableProps) => {
           const { cell } = tableProps
-          return (
-            <Typography component="span">
-              {String(cell.getValue() ?? '-')}
-            </Typography>
-          )
+          return <Typography component="span">{String(cell.getValue() ?? '-')}</Typography>
         },
       },
       {
@@ -78,11 +73,7 @@ const EducationInvoice = () => {
         header: 'Educator Email',
         Cell: (tableProps) => {
           const { cell } = tableProps
-          return (
-            <Typography component="span">
-              {String(cell.getValue() ?? '-')}
-            </Typography>
-          )
+          return <Typography component="span">{String(cell.getValue() ?? '-')}</Typography>
         },
       },
       {
@@ -133,11 +124,7 @@ const EducationInvoice = () => {
         Cell: (tableProps) => {
           const { cell } = tableProps
           const value = cell.getValue()
-          return (
-            <Typography>
-              {value ? new Date(value).toLocaleString() : '-'}
-            </Typography>
-          )
+          return <Typography>{value ? new Date(value).toLocaleString() : '-'}</Typography>
         },
       },
       {

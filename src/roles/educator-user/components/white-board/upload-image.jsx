@@ -1,28 +1,25 @@
-import React from 'react'
+import { IconButton } from '@mui/material'
 import * as fabric from 'fabric'
 import { Upload } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
-
-import { IconButton } from '@mui/material'
 
 import { errorAlert } from '../../../../redux/reducers/app-slice'
 
 const UploadImage = () => {
   const dispatch = useDispatch()
-  const canvasId = useSelector(
-    (state) => state.education.canvasId,
-  )
+  const canvasId = useSelector((state) => state.education.canvasId)
 
   // Get fabric canvas instance from global scope or create one
   const getFabricCanvas = () => {
-    if (!canvasId) return null
+    if (!canvasId) {
+      return null
+    }
     const canvasElement = document.getElementById(canvasId)
-    if (!canvasElement) return null
+    if (!canvasElement) {
+      return null
+    }
     // Assume fabric canvas is already initialized elsewhere
-    return (
-      window.__fabric_canvas__ ||
-      null
-    )
+    return window.__fabric_canvas__ || null
   }
 
   const checkFile = (file) => {
@@ -47,7 +44,9 @@ const UploadImage = () => {
     }
 
     const file = e.target.files?.[0]
-    if (!file) return
+    if (!file) {
+      return
+    }
 
     const err = checkFile(file)
     if (err) {
@@ -84,12 +83,7 @@ const UploadImage = () => {
   return (
     <IconButton component="label">
       <Upload size={24} />
-      <input
-        type="file"
-        hidden
-        accept=".jpg, .jpeg, .png"
-        onChange={onImageChange}
-      />
+      <input type="file" hidden accept=".jpg, .jpeg, .png" onChange={onImageChange} />
     </IconButton>
   )
 }

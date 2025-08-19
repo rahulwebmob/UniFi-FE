@@ -1,9 +1,4 @@
-import React from 'react'
-import * as yup from 'yup'
-import { useTranslation } from 'react-i18next'
-import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-
 import {
   Box,
   Grid,
@@ -19,15 +14,14 @@ import {
   FormHelperText,
   FormControlLabel,
 } from '@mui/material'
+import { useForm, Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import * as yup from 'yup'
 
 import countries from '../../../../../constants/countries'
 import RequiredFieldIndicator from '../../../ui-elements/required-field-indicator'
 
-const BillingAddress = ({
-  subscriptionFormData,
-  setSubscriptionFormData,
-  setCurrentStep,
-}) => {
+const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurrentStep }) => {
   const { t } = useTranslation('application')
   const theme = useTheme()
   const zipRegex = /^[0-9a-zA-Z]+(?:-[0-9a-zA-Z]+)?(?: [0-9a-zA-Z]+)?$/
@@ -37,10 +31,7 @@ const BillingAddress = ({
       .string()
       .trim()
       .required(t('application:PREMIUM_MODAL.VALIDATION_FIRSTNAME_REQ')),
-    lastName: yup
-      .string()
-      .trim()
-      .required(t('application:PREMIUM_MODAL.VALIDATION_LASTNAME_REQ')),
+    lastName: yup.string().trim().required(t('application:PREMIUM_MODAL.VALIDATION_LASTNAME_REQ')),
     address: yup
       .string()
       .trim()
@@ -50,26 +41,15 @@ const BillingAddress = ({
         t('application:PREMIUM_MODAL.VALIDATION_ADDRESS_LENGTH'),
         (value) => value.length <= 60,
       ),
-    city: yup
-      .string()
-      .trim()
-      .required(t('application:PREMIUM_MODAL.VALIDATION_CITY_REQ')),
-    state: yup
-      .string()
-      .trim()
-      .required(t('application:PREMIUM_MODAL.VALIDATION_STATE_REQ')),
+    city: yup.string().trim().required(t('application:PREMIUM_MODAL.VALIDATION_CITY_REQ')),
+    state: yup.string().trim().required(t('application:PREMIUM_MODAL.VALIDATION_STATE_REQ')),
     zip: yup
       .string()
       .trim()
       .required(t('application:PREMIUM_MODAL.VALIDATION_ZIP_REQ'))
       .matches(zipRegex, t('application:PREMIUM_MODAL.VALIDATION_INVALID_ZIP')),
-    country: yup
-      .string()
-      .trim()
-      .required(t('application:PREMIUM_MODAL.VALIDATION_COUNTRY_REQ')),
-    isAgree: yup
-      .boolean()
-      .oneOf([true], t('application:PREMIUM_MODAL.VALIDATION_ISAGREE')),
+    country: yup.string().trim().required(t('application:PREMIUM_MODAL.VALIDATION_COUNTRY_REQ')),
+    isAgree: yup.boolean().oneOf([true], t('application:PREMIUM_MODAL.VALIDATION_ISAGREE')),
   })
 
   const { control, handleSubmit, formState, setValue } = useForm({
@@ -278,9 +258,7 @@ const BillingAddress = ({
                   {...field}
                   fullWidth
                   size="small"
-                  placeholder={t(
-                    'application:PREMIUM_MODAL.PLACEHOLDER_ADDRESS',
-                  )}
+                  placeholder={t('application:PREMIUM_MODAL.PLACEHOLDER_ADDRESS')}
                   variant="outlined"
                   error={!!errors.address}
                   helperText={errors.address?.message}
@@ -290,13 +268,7 @@ const BillingAddress = ({
           </Grid>
         </Grid>
       </Box>
-      <Box
-        px={3}
-        pb={3}
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-      >
+      <Box px={3} pb={3} display="flex" justifyContent="space-between" alignItems="center">
         <FormControl component="fieldset">
           <Controller
             name="isAgree"
@@ -335,12 +307,7 @@ const BillingAddress = ({
             {errors.isAgree?.message}
           </FormHelperText>
         </FormControl>
-        <Box
-          gap={1}
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-        >
+        <Box gap={1} display="flex" alignItems="center" justifyContent="space-between">
           <Button
             variant="outlined"
             onClick={() => setCurrentStep((prev) => prev - 1)}

@@ -1,6 +1,3 @@
-import { X } from 'lucide-react'
-import React, { useState, forwardRef, useImperativeHandle } from 'react'
-
 import {
   Slide,
   Dialog,
@@ -8,11 +5,12 @@ import {
   IconButton,
   DialogTitle,
   DialogContent,
+  useMediaQuery,
 } from '@mui/material'
+import { X } from 'lucide-react'
+import React, { useState, forwardRef, useImperativeHandle } from 'react'
 
-const Transition = React.forwardRef((props, ref) => (
-  <Slide direction="up" ref={ref} {...props} />
-))
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />)
 
 Transition.displayName = 'TransitionComponent'
 
@@ -52,7 +50,9 @@ const ModalBox = forwardRef(
       }
     }
 
-    if (!open) return null
+    if (!open) {
+      return null
+    }
 
     return (
       <Dialog
@@ -68,9 +68,7 @@ const ModalBox = forwardRef(
             overflow: 'visible',
             border: `1px solid ${theme.palette.grey[300]}`,
             backgroundColor:
-              theme.palette.mode === 'light'
-                ? '#fff'
-                : theme.palette.background.default,
+              theme.palette.mode === 'light' ? '#fff' : theme.palette.background.default,
             width: size && noWidth ? '100%' : 'auto',
             backgroundImage: 'none',
             borderRadius: '16px',

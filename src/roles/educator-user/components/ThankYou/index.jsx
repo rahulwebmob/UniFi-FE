@@ -1,9 +1,7 @@
-import React from 'react'
-import { CheckCircle } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-
 import { Box, Paper, Button, Typography } from '@mui/material'
+import { CheckCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 const ThankYou = ({ text }) => {
   const navigate = useNavigate()
@@ -46,10 +44,7 @@ const ThankYou = ({ text }) => {
             mb: 3,
           }}
         >
-          <CheckCircle
-            size={40}
-            style={{ color: 'var(--mui-palette-success-main)' }}
-          />
+          <CheckCircle size={40} style={{ color: 'var(--mui-palette-success-main)' }} />
         </Box>
 
         <Typography

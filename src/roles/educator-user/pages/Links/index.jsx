@@ -1,15 +1,7 @@
-import { useTranslation } from 'react-i18next'
+import { Box, Grid, TextField, IconButton, Typography, FormControl } from '@mui/material'
 import { XCircle, PlusCircle } from 'lucide-react'
 import { Controller, useFieldArray } from 'react-hook-form'
-
-import {
-  Box,
-  Grid,
-  TextField,
-  IconButton,
-  Typography,
-  FormControl,
-} from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 import RequiredFieldIndicator from '../../../../shared/components/ui-elements/required-field-indicator'
 
@@ -30,9 +22,7 @@ const Links = ({ control }) => {
       <Grid container spacing={1}>
         <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
           <FormControl fullWidth>
-            <Typography variant="body1">
-              {t('REGISTER_EDUCATOR.LINKS_PAGE.LINKEDIN')}
-            </Typography>
+            <Typography variant="body1">{t('REGISTER_EDUCATOR.LINKS_PAGE.LINKEDIN')}</Typography>
             <Controller
               name="linkedinUrl"
               control={control}
@@ -71,9 +61,7 @@ const Links = ({ control }) => {
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
           <FormControl fullWidth>
-            <Typography variant="body1">
-              {t('REGISTER_EDUCATOR.LINKS_PAGE.YOUTUBE')}
-            </Typography>
+            <Typography variant="body1">{t('REGISTER_EDUCATOR.LINKS_PAGE.YOUTUBE')}</Typography>
             <Controller
               name="youtubeUrl"
               control={control}
@@ -91,9 +79,7 @@ const Links = ({ control }) => {
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
           <FormControl fullWidth>
-            <Typography variant="body1">
-              {t('REGISTER_EDUCATOR.LINKS_PAGE.WEBSITE_URL')}
-            </Typography>
+            <Typography variant="body1">{t('REGISTER_EDUCATOR.LINKS_PAGE.WEBSITE_URL')}</Typography>
             <Controller
               name="websiteUrl"
               control={control}
@@ -139,24 +125,13 @@ const Links = ({ control }) => {
                 </FormControl>
               </Grid>
 
-              <Grid
-                size={{ xs: 2, sm: 1, lg: 1 }}
-                container
-                justifyContent="flex-end"
-              >
+              <Grid size={{ xs: 2, sm: 1, lg: 1 }} container justifyContent="flex-end">
                 {index === 0 ? (
-                  <IconButton
-                    onClick={() => append({ link: '' })}
-                    color="primary"
-                  >
+                  <IconButton onClick={() => append({ link: '' })} color="primary">
                     <PlusCircle size={32} />
                   </IconButton>
                 ) : (
-                  <IconButton
-                    onClick={() => remove(index)}
-                    color="error"
-                    aria-label="delete"
-                  >
+                  <IconButton onClick={() => remove(index)} color="error" aria-label="delete">
                     <XCircle size={32} />
                   </IconButton>
                 )}

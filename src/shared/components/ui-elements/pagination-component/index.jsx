@@ -11,7 +11,7 @@ const PaginationComponent = ({
   const pageLimit = data?.count || 0
   const pageCount = Number.isNaN(pageLimit) ? 0 : Math.ceil(pageLimit / 10)
 
-  const handlePageChange = (_newPage) => {
+  const handlePageChange = (_, newPage) => {
     setPage(newPage)
     scrollToTop()
   }

@@ -1,6 +1,6 @@
 import i18n from '../localization/i18n'
-import { signOut } from '../redux/reducers/user-slice'
 import { errorAlert, successAlert } from '../redux/reducers/app-slice'
+import { signOut } from '../redux/reducers/user-slice'
 
 // Constants for status codes and error handling
 const NUMBER = { ZERO: 0, ONE: 1, FOUR_HUNDRED: 400, FOUR_HUNDRED_THREE: 403 }
@@ -14,10 +14,7 @@ const commonConstant = {
   UNAUTHORIZED_TEXT: 'Unauthorized',
 }
 
-export const onQueryStartedDefault = async (
-  _id,
-  { dispatch, queryFulfilled },
-) => {
+export const onQueryStartedDefault = async (_id, { dispatch, queryFulfilled }) => {
   try {
     await queryFulfilled
     // `onSuccess` side-effect
@@ -38,8 +35,7 @@ export const onQueryStartedDefault = async (
       dispatch(
         errorAlert({
           message:
-            error?.error?.data?.message ||
-            i18n.t('application:MISCELLANEOUS.ERROR_LOADING_DATA'),
+            error?.error?.data?.message || i18n.t('application:MISCELLANEOUS.ERROR_LOADING_DATA'),
         }),
       )
     }
@@ -77,17 +73,13 @@ export const onQueryStarted = async (_id, { dispatch, queryFulfilled }) => {
       dispatch(
         errorAlert({
           message:
-            error?.error?.data?.message ||
-            i18n.t('application:MISCELLANEOUS.ERROR_LOADING_DATA'),
+            error?.error?.data?.message || i18n.t('application:MISCELLANEOUS.ERROR_LOADING_DATA'),
         }),
       )
     }
   }
 }
-export const onMutationStartedDefault = async (
-  _data,
-  { dispatch, queryFulfilled },
-) => {
+export const onMutationStartedDefault = async (_data, { dispatch, queryFulfilled }) => {
   try {
     const res = await queryFulfilled
     // `onSuccess` side-effect

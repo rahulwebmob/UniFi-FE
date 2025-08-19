@@ -1,8 +1,7 @@
+import { Box, Chip, Typography, useTheme } from '@mui/material'
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
-
-import { Box, Chip, Typography, useTheme } from '@mui/material'
 
 import { useGetAllCoursesDetailsQuery } from '../../../../../../services/admin'
 import PaginationComponent from '../../../../../../shared/components/ui-elements/pagination-component'
@@ -69,9 +68,7 @@ const Courses = () => {
         header: 'Title',
         size: 200,
         Cell: ({ cell }) => (
-          <Typography sx={{ fontWeight: 500 }}>
-            {cell.getValue() || '-'}
-          </Typography>
+          <Typography sx={{ fontWeight: 500 }}>{cell.getValue() || '-'}</Typography>
         ),
       },
       {
@@ -205,11 +202,7 @@ const Courses = () => {
           <MaterialReactTable table={table} />
           {coursesDetails?.data && (
             <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-              <PaginationComponent
-                data={coursesDetails.data}
-                page={page}
-                setPage={setPage}
-              />
+              <PaginationComponent data={coursesDetails.data} page={page} setPage={setPage} />
             </Box>
           )}
         </>

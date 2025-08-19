@@ -1,11 +1,10 @@
+import { Box, Link } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
-import { Box, Link } from '@mui/material'
-
-import XIcon from '../../../../assets/social-icons/x-twitter.svg'
 // Social media SVG icons
 import FacebookIcon from '../../../../assets/social-icons/facebook.svg'
 import LinkedinIcon from '../../../../assets/social-icons/linkedin.svg'
+import XIcon from '../../../../assets/social-icons/x-twitter.svg'
 
 const socialLinks = [
   {

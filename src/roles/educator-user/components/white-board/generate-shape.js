@@ -2,13 +2,7 @@ import * as fabric from 'fabric'
 
 import { ShapeTypes } from './constants'
 
-const GenerateShape = (
-  canvas,
-  shape,
-  strokeColor,
-  fillColor,
-  isHollow = true,
-) => {
+const GenerateShape = (canvas, shape, strokeColor, fillColor, isHollow = true) => {
   canvas.isDrawingMode = false
   const strokeWidth = 5
   const fillValue = isHollow ? 'transparent' : fillColor

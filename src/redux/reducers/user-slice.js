@@ -1,5 +1,5 @@
-import { jwtDecode } from 'jwt-decode'
 import { createSlice } from '@reduxjs/toolkit'
+import { jwtDecode } from 'jwt-decode'
 
 const initialState = {
   user: null,
@@ -48,7 +48,6 @@ export const UserSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { signOut, signIn, updateUser, updateToken, loggedIn } =
-  UserSlice.actions
+export const { signOut, signIn, updateUser, updateToken, loggedIn } = UserSlice.actions
 
 export default UserSlice.reducer

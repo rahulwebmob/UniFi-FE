@@ -1,16 +1,6 @@
-import React from 'react'
+import { Box, Card, Button, Avatar, useTheme, Typography, CardContent } from '@mui/material'
 import { ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-
-import {
-  Box,
-  Card,
-  Button,
-  Avatar,
-  useTheme,
-  Typography,
-  CardContent,
-} from '@mui/material'
 
 import CategoryList from '../category-list'
 
@@ -109,11 +99,7 @@ const CourseCard = ({ course, isPurchased }) => {
           </Typography>
 
           {categoryArray.length > 0 && (
-            <CategoryList
-              chips={categoryArray}
-              isPurchased={isPurchased}
-              maxVisible={3}
-            />
+            <CategoryList chips={categoryArray} isPurchased={isPurchased} maxVisible={3} />
           )}
 
           <Box sx={{ flexGrow: 1 }} />
@@ -256,8 +242,7 @@ const CourseCard = ({ course, isPurchased }) => {
                 pr: 0.5,
               }}
             >
-              {course.educatorId.firstName || 'Educator'}{' '}
-              {course.educatorId.lastName || ''}
+              {course.educatorId.firstName || 'Educator'} {course.educatorId.lastName || ''}
             </Typography>
           </Box>
         )}
@@ -271,11 +256,7 @@ const CourseCard = ({ course, isPurchased }) => {
               right: 8,
             }}
           >
-            <CategoryList
-              chips={categoryArray}
-              isPurchased={false}
-              maxVisible={3}
-            />
+            <CategoryList chips={categoryArray} isPurchased={false} maxVisible={3} />
           </Box>
         )}
       </Box>

@@ -1,25 +1,18 @@
-import { useMemo } from 'react'
-import { useDispatch } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-
 import { Box, Button, Divider, useTheme, Typography } from '@mui/material'
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 
-import { educationApi } from '../../../../../services/education'
 import { useBuyPremiumSubscriptionMutation } from '../../../../../services/admin'
+import { educationApi } from '../../../../../services/education'
 
-const ReviewEducation = ({
-  transactionInfo,
-  setCurrentStep,
-  closeModal,
-  purchaseDetails,
-}) => {
+const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchaseDetails }) => {
   console.warn({ purchaseDetails })
 
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation('application')
-  const [buyPremiumSubscription, { isLoading }] =
-    useBuyPremiumSubscriptionMutation()
+  const [buyPremiumSubscription, { isLoading }] = useBuyPremiumSubscriptionMutation()
 
   const { firstName, lastName, country, state, city, address } = transactionInfo
 
@@ -101,12 +94,7 @@ const ReviewEducation = ({
         <Typography component="p" display="block" mt={2}>
           {t('application:PREMIUM_MODAL.BILLING_DETAILS')}
         </Typography>
-        <Typography
-          color="text.secondary"
-          sx={{ wordWrap: 'break-word' }}
-          component="p"
-          mt={1}
-        >
+        <Typography color="text.secondary" sx={{ wordWrap: 'break-word' }} component="p" mt={1}>
           {billingAddress}
         </Typography>
 
@@ -125,10 +113,7 @@ const ReviewEducation = ({
                 alt={purchaseDetails?.title}
                 sx={{ width: '50px', height: '50px', borderRadius: '8px' }}
               />
-              <Typography component="span">
-                {' '}
-                {purchaseDetails?.title}
-              </Typography>
+              <Typography component="span"> {purchaseDetails?.title}</Typography>
             </Box>
           </Box>
         </Box>

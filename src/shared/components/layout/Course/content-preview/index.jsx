@@ -1,7 +1,6 @@
-import { useState } from 'react'
-import { ZoomIn, ZoomOut, RotateCw, Maximize2 } from 'lucide-react'
-
 import { Box, Paper, alpha, Tooltip, useTheme, IconButton } from '@mui/material'
+import { ZoomIn, ZoomOut, RotateCw, Maximize2 } from 'lucide-react'
+import { useState } from 'react'
 
 import useAesDecoder from '../../../../../hooks/useAesDecoder'
 
@@ -222,8 +221,7 @@ const ContentPreview = ({ type, url }) => {
             allowFullScreen
             style={{
               background: 'white',
-              boxShadow:
-                zoomLevel > 100 ? '0 4px 20px rgba(0,0,0,0.1)' : 'none',
+              boxShadow: zoomLevel > 100 ? '0 4px 20px rgba(0,0,0,0.1)' : 'none',
             }}
           />
         </Box>
@@ -242,11 +240,7 @@ const ContentPreview = ({ type, url }) => {
     }
   }
 
-  return (
-    !!decryptedUrl && (
-      <Box sx={{ width: '100%', height: '100%' }}>{renderContent()}</Box>
-    )
-  )
+  return !!decryptedUrl && <Box sx={{ width: '100%', height: '100%' }}>{renderContent()}</Box>
 }
 
 export default ContentPreview

@@ -1,17 +1,14 @@
-import * as Yup from 'yup'
-import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-
 import { Box, Button, TextField, Typography } from '@mui/material'
+import { useForm, Controller } from 'react-hook-form'
+import * as Yup from 'yup'
 
 import { useInviteEducatorMutation } from '../../../../../../services/admin'
 
 const validationSchema = Yup.object().shape({
   firstName: Yup.string().required('First name is required'),
   lastName: Yup.string().required('Last name is required'),
-  email: Yup.string()
-    .email('Invalid email address')
-    .required('Email is required'),
+  email: Yup.string().email('Invalid email address').required('Email is required'),
   url: Yup.string().required('URL is required'),
 })
 

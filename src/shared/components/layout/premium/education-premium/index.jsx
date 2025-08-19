@@ -1,19 +1,7 @@
+import { Box, Card, Avatar, Button, Typography, CardContent } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
-import {
-  Box,
-  Card,
-  Avatar,
-  Button,
-  Typography,
-  CardContent,
-} from '@mui/material'
-
-const EducationPremium = ({
-  mediaDetails,
-  setCurrentStep,
-  subscriptionDetails,
-}) => {
+const EducationPremium = ({ mediaDetails, setCurrentStep, subscriptionDetails }) => {
   const { t } = useTranslation('education')
 
   return (
@@ -70,12 +58,7 @@ const EducationPremium = ({
           <Typography variant="body2" color="text.secondary" sx={{ my: 1 }}>
             {subscriptionDetails?.[0]?.description || '-'}
           </Typography>
-          <Typography
-            variant="h5"
-            color="primary"
-            fontWeight="bold"
-            sx={{ mb: 2 }}
-          >
+          <Typography variant="h5" color="primary" fontWeight="bold" sx={{ mb: 2 }}>
             ${subscriptionDetails?.[0]?.price || '-'}
           </Typography>
           <Button

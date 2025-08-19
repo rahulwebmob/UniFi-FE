@@ -1,5 +1,5 @@
-import { useDispatch } from 'react-redux'
 import { useEffect, useCallback } from 'react'
+import { useDispatch } from 'react-redux'
 
 import { exitFullscreen, enterFullscreen } from '../redux/reducers/app-slice'
 
@@ -41,7 +41,9 @@ const useFullscreen = () => {
   }
 
   const handleExitFullScreen = useCallback(() => {
-    if (!isDocument) return
+    if (!isDocument) {
+      return
+    }
     if (document.exitFullscreen) {
       void document
         .exitFullscreen()
@@ -95,14 +97,8 @@ const useFullscreen = () => {
 
     return () => {
       document.removeEventListener('fullscreenchange', handleFullScreenChange)
-      document.removeEventListener(
-        'mozfullscreenchange',
-        handleFullScreenChange,
-      )
-      document.removeEventListener(
-        'webkitfullscreenchange',
-        handleFullScreenChange,
-      )
+      document.removeEventListener('mozfullscreenchange', handleFullScreenChange)
+      document.removeEventListener('webkitfullscreenchange', handleFullScreenChange)
       document.removeEventListener('msfullscreenchange', handleFullScreenChange)
       handleExitFullScreen()
     }

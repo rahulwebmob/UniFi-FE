@@ -1,11 +1,4 @@
-import * as yup from 'yup'
-import { X } from 'lucide-react'
-import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-
 import {
   Box,
   alpha,
@@ -21,10 +14,16 @@ import {
   DialogContent,
   useMediaQuery,
 } from '@mui/material'
+import { X } from 'lucide-react'
+import { useEffect } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
+import * as yup from 'yup'
 
-import ChangePassword from '../profile/ChangePassword'
 import { signIn } from '../../../../redux/reducers/user-slice'
 import { useEditAdminProfileMutation } from '../../../../services/onboarding'
+import ChangePassword from '../profile/ChangePassword'
 
 const AdminProfileSettings = ({ open, onClose, userData }) => {
   const theme = useTheme()
@@ -148,11 +147,7 @@ const AdminProfileSettings = ({ open, onClose, userData }) => {
               {t('application:PROFILE.PERSONAL_INFO')}
             </Typography>
 
-            <Box
-              display="grid"
-              gridTemplateColumns={!matches ? '1fr 1fr' : '1fr'}
-              gap={2.5}
-            >
+            <Box display="grid" gridTemplateColumns={!matches ? '1fr 1fr' : '1fr'} gap={2.5}>
               <FormControl fullWidth>
                 <Typography
                   variant="body2"
@@ -173,9 +168,7 @@ const AdminProfileSettings = ({ open, onClose, userData }) => {
                       size="small"
                       variant="outlined"
                       fullWidth
-                      placeholder={t(
-                        'application:PROFILE.PLACEHOLDER_FIRST_NAME',
-                      )}
+                      placeholder={t('application:PROFILE.PLACEHOLDER_FIRST_NAME')}
                       {...field}
                       error={!!errors.firstName}
                       helperText={errors.firstName?.message}
@@ -209,9 +202,7 @@ const AdminProfileSettings = ({ open, onClose, userData }) => {
                       size="small"
                       variant="outlined"
                       fullWidth
-                      placeholder={t(
-                        'application:PROFILE.PLACEHOLDER_LAST_NAME',
-                      )}
+                      placeholder={t('application:PROFILE.PLACEHOLDER_LAST_NAME')}
                       {...field}
                       error={!!errors.lastName}
                       helperText={errors.lastName?.message}

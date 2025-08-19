@@ -1,8 +1,7 @@
-import { useParams } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { X, File, Download } from 'lucide-react'
-
 import { Box, Tooltip, Typography } from '@mui/material'
+import { X, File, Download } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { useParams } from 'react-router-dom'
 
 import { useGetWebinarAttachmentsQuery } from '../../../../services/admin'
 import { useGetAttachmentsListQuery } from '../../../../services/education'
@@ -83,12 +82,7 @@ const WebinarAttachments = ({ handleOnClose, isHost }) => {
               >
                 <File size={20} />
                 <Tooltip title={fileName}>
-                  <Typography
-                    variant="body1"
-                    color="secondary"
-                    width={300}
-                    noWrap
-                  >
+                  <Typography variant="body1" color="secondary" width={300} noWrap>
                     {fileName}
                   </Typography>
                 </Tooltip>

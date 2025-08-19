@@ -1,22 +1,17 @@
-import React, { useState } from 'react'
-import { Settings } from 'lucide-react'
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-
 import { Box, Grid, Menu, Avatar, MenuItem, ListItemIcon } from '@mui/material'
+import { Settings } from 'lucide-react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 import { generateImageUrl } from '../../../../../utils/globalUtils'
 
 const UserProfile = () => {
   const { t } = useTranslation('application')
-  const { firstName, lastName, profileImage, _id } = useSelector(
-    (state) => state.user,
-  )
+  const { firstName, lastName, profileImage, _id } = useSelector((state) => state.user)
   const navigate = useNavigate()
-  const imageUrl = generateImageUrl(
-    `${profileImage?.folderName}/${profileImage?.fileName}`,
-  )
+  const imageUrl = generateImageUrl(`${profileImage?.folderName}/${profileImage?.fileName}`)
   const [anchorEl, setAnchorEl] = useState(null)
 
   const handleClick = (event) => {

@@ -1,14 +1,14 @@
-import { setupListeners } from '@reduxjs/toolkit/query'
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/query'
 
-import { adminApi } from '../services/admin'
-import { educationApi } from '../services/education'
 import AlertReducer from '../redux/reducers/app-slice'
-import { onboardingApi } from '../services/onboarding'
-import { uploadApi } from '../services/uploadProgress'
-import { disconnectAllSockets } from '../services/sockets'
 import EducationReducer from '../redux/reducers/education-slice'
 import UserSliceReducer, { signOut } from '../redux/reducers/user-slice'
+import { adminApi } from '../services/admin'
+import { educationApi } from '../services/education'
+import { onboardingApi } from '../services/onboarding'
+import { disconnectAllSockets } from '../services/sockets'
+import { uploadApi } from '../services/uploadProgress'
 
 const combinedReducers = combineReducers({
   user: UserSliceReducer,

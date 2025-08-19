@@ -1,14 +1,19 @@
-import { useRef } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Plus, CloudUpload } from 'lucide-react'
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
-
 import { Box, Grid, Button, Typography, FormControl } from '@mui/material'
+import { Plus, CloudUpload } from 'lucide-react'
+import { useRef } from 'react'
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 const getErrorMessage = (error) => {
-  if (!error) return ''
-  if (typeof error === 'string') return error
-  if (typeof error.message === 'string') return error.message
+  if (!error) {
+    return ''
+  }
+  if (typeof error === 'string') {
+    return error
+  }
+  if (typeof error.message === 'string') {
+    return error.message
+  }
   return ''
 }
 
@@ -76,12 +81,7 @@ const WebinarMetaData = () => {
             }}
           >
             {resourceFields.map((field, index) => (
-              <Box
-                key={field.id}
-                display="grid"
-                gridTemplateColumns="1fr 60px"
-                gap="8px"
-              >
+              <Box key={field.id} display="grid" gridTemplateColumns="1fr 60px" gap="8px">
                 <Controller
                   key={field.id}
                   name={`resources.${index}.file`}
@@ -118,15 +118,14 @@ const WebinarMetaData = () => {
                             style={{ display: 'none' }}
                             onChange={(event) => {
                               const file = event.target.files?.[0]
-                              if (file) onChange(file)
+                              if (file) {
+                                onChange(file)
+                              }
                             }}
                           />
                           {t('EDUCATOR.WEBINAR_META_DATA.BROWSE')}
                         </Button>
-                        <Typography
-                          variant="body2"
-                          sx={{ color: 'text.primary' }}
-                        >
+                        <Typography variant="body2" sx={{ color: 'text.primary' }}>
                           {value?.name || value || 'No file selected'}
                         </Typography>
                       </Box>
@@ -203,7 +202,9 @@ const WebinarMetaData = () => {
                     accept=".png,.jpg,.jpeg"
                     onChange={(event) => {
                       const file = event.target.files?.[0]
-                      if (file) onChange(file)
+                      if (file) {
+                        onChange(file)
+                      }
                     }}
                     style={{
                       position: 'absolute',
@@ -213,10 +214,7 @@ const WebinarMetaData = () => {
                       cursor: 'pointer',
                     }}
                   />
-                  <CloudUpload
-                    size={40}
-                    style={{ color: 'var(--mui-palette-primary-main)' }}
-                  />
+                  <CloudUpload size={40} style={{ color: 'var(--mui-palette-primary-main)' }} />
                   <Typography variant="body1" color="primary">
                     {t('EDUCATOR.WEBINAR_META_DATA.DRAG_DROP')}
                   </Typography>
@@ -228,11 +226,7 @@ const WebinarMetaData = () => {
                   </Typography>
                 </Box>
                 {errors.image && (
-                  <Typography
-                    variant="caption"
-                    color="error"
-                    sx={{ mt: 0.5, display: 'block' }}
-                  >
+                  <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
                     {getErrorMessage(errors.image)}
                   </Typography>
                 )}

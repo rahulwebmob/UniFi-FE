@@ -1,4 +1,3 @@
-import React, { useEffect, useRef } from 'react'
 import {
   Box,
   Card,
@@ -15,17 +14,15 @@ import {
   AccordionDetails,
 } from '@mui/material'
 import { VideoIcon, FileText, ChevronDown } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import ModalBox from '../../../../../shared/components/ui-elements/modal-box'
-import ViewResource from '../create-course/view-resource'
-import { getEducatorDetails, handleFormatSeconds } from '../../common/common'
+import { useNavigate } from 'react-router-dom'
 
-const ContentView = ({
-  courseData,
-  isEdit = true,
-  handleOpenPremiumModal = () => {},
-}) => {
+import ModalBox from '../../../../../shared/components/ui-elements/modal-box'
+import { getEducatorDetails, handleFormatSeconds } from '../../common/common'
+import ViewResource from '../create-course/view-resource'
+
+const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () => {} }) => {
   const previewRef = useRef(null)
   const navigate = useNavigate()
   const { t } = useTranslation('education')
@@ -57,8 +54,8 @@ const ContentView = ({
     }
   }, [])
 
-  const renderEnrollButton = () => {
-    return !courseData?.isCourseBought && courseData?.isPaid ? (
+  const renderEnrollButton = () =>
+    !courseData?.isCourseBought && courseData?.isPaid ? (
       <Button
         fullWidth
         disabled={isEdit}
@@ -66,9 +63,7 @@ const ContentView = ({
         variant="contained"
         onClick={handleOpenPremiumModal}
       >
-        {t(
-          'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.ENROLL_NOW',
-        )}
+        {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.ENROLL_NOW')}
       </Button>
     ) : (
       <Button
@@ -78,28 +73,23 @@ const ContentView = ({
         variant="contained"
         onClick={() => navigate(`/dashboard/course/${courseData?._id}/lessons`)}
       >
-        {t(
-          'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.START_COURSE',
-        )}
+        {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.START_COURSE')}
       </Button>
     )
-  }
 
-  const renderPreview = () => {
-    return (
-      <video
-        width="100%"
-        height="100%"
-        title="modal-preview-video"
-        src={courseData?.previewVideo}
-        controls
-        autoPlay
-        muted
-      >
-        <track kind="captions" />
-      </video>
-    )
-  }
+  const renderPreview = () => (
+    <video
+      width="100%"
+      height="100%"
+      title="modal-preview-video"
+      src={courseData?.previewVideo}
+      controls
+      autoPlay
+      muted
+    >
+      <track kind="captions" />
+    </video>
+  )
 
   return (
     <Box
@@ -158,11 +148,7 @@ const ContentView = ({
                 </Typography>
               </Tooltip>
               <Box mt={1}>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  display="block"
-                >
+                <Typography variant="body2" color="text.secondary" display="block">
                   {t('education:EDUCATION_DASHBOARD.COMMON_KEYS.CREATED_BY')}
                 </Typography>
                 <Box
@@ -220,26 +206,14 @@ const ContentView = ({
                 </Box>
 
                 <CardContent sx={{ p: 0, my: 1 }}>
-                  <Typography
-                    variant="body1"
-                    fontWeight={600}
-                    mb={1}
-                    display="block"
-                  >
+                  <Typography variant="body1" fontWeight={600} mb={1} display="block">
                     {courseData?.title || '-'}
                   </Typography>
                 </CardContent>
                 {!courseData?.isCourseBought && (
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    width="100%"
-                    my={1}
-                  >
+                  <Box display="flex" justifyContent="space-between" width="100%" my={1}>
                     <Typography variant="body2">
-                      {t(
-                        'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.COURSE_PRICE',
-                      )}
+                      {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.COURSE_PRICE')}
                     </Typography>
                     <Typography variant="body2" fontWeight={600}>
                       {courseData?.isPaid
@@ -256,9 +230,7 @@ const ContentView = ({
 
         <Box my={2}>
           <Typography variant="h5" fontWeight={600}>
-            {t(
-              'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.COURSE_CONTENT',
-            )}
+            {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.COURSE_CONTENT')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {!!courseData?.totalChaptersCount &&
@@ -268,12 +240,8 @@ const ContentView = ({
             {!!courseData?.totalLessonsCount &&
               `${courseData.totalLessonsCount} ${
                 courseData.totalLessonsCount === 1
-                  ? t(
-                      'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.LESSON',
-                    )
-                  : t(
-                      'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.LESSONS',
-                    )
+                  ? t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.LESSON')
+                  : t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.LESSONS')
               }`}
             {!!courseData?.totalDurationOfCourse &&
               ` • ${handleFormatSeconds(courseData.totalDurationOfCourse)} ${t(
@@ -438,11 +406,7 @@ const ContentView = ({
                             minWidth={90}
                             maxWidth={100}
                           >
-                            <Typography
-                              variant="body1"
-                              noWrap
-                              color="text.secondary"
-                            >
+                            <Typography variant="body1" noWrap color="text.secondary">
                               {lesson?.durationInSeconds &&
                                 handleFormatSeconds(lesson?.durationInSeconds)}
                             </Typography>
@@ -468,9 +432,7 @@ const ContentView = ({
                 textAlign="start"
                 sx={{ width: '100%' }}
               >
-                {t(
-                  'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.PREVIEW_VIDEO',
-                )}
+                {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.PREVIEW_VIDEO')}
               </Typography>
               <Box
                 p={1}

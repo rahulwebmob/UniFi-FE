@@ -1,14 +1,13 @@
-import * as yup from 'yup'
-import React, { useRef } from 'react'
-import { useDispatch } from 'react-redux'
-import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-
 import { Grid, Button, TextField, InputLabel } from '@mui/material'
+import { useRef } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
+import * as yup from 'yup'
 
 import { signIn } from '../../../../redux/reducers/user-slice'
-import ModalBox from '../../../../shared/components/ui-elements/modal-box'
 import { useEditAdminProfileMutation } from '../../../../services/onboarding'
+import ModalBox from '../../../../shared/components/ui-elements/modal-box'
 
 const EditName = () => {
   const ref = useRef(null)
@@ -69,10 +68,7 @@ const EditName = () => {
       </Button>
 
       <ModalBox ref={ref} title=" Edit Name" size="sm">
-        <form
-          className="editname-form"
-          onSubmit={(e) => void handleSubmit(onSubmit)(e)}
-        >
+        <form className="editname-form" onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
           <Grid>
             <InputLabel>FIRST NAME</InputLabel>
             <Controller

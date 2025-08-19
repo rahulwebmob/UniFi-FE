@@ -1,8 +1,3 @@
-import React from 'react'
-import { CloudUpload } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
-import { Controller } from 'react-hook-form'
-
 import {
   Box,
   Button,
@@ -12,6 +7,9 @@ import {
   FormControl,
   InputAdornment,
 } from '@mui/material'
+import { CloudUpload } from 'lucide-react'
+import { Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 import RequiredFieldIndicator from '../../../../shared/components/ui-elements/required-field-indicator'
 
@@ -41,9 +39,7 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
           render={({ field: { onChange, value } }) => (
             <TextField
               value={value?.name || ''}
-              placeholder={t(
-                'REGISTER_EDUCATOR.DOCUMENT_PAGE.ACCEPTED_FILE_TYPE',
-              )}
+              placeholder={t('REGISTER_EDUCATOR.DOCUMENT_PAGE.ACCEPTED_FILE_TYPE')}
               size="small"
               fullWidth
               InputProps={{
@@ -62,18 +58,14 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
                         type="file"
                         accept=".pdf,.doc,.docx"
                         hidden
-                        onChange={(event) =>
-                          handleFileChange(event, onChange, 'cv')
-                        }
+                        onChange={(event) => handleFileChange(event, onChange, 'cv')}
                       />
                     </Button>
                   </InputAdornment>
                 ),
               }}
               error={!!errors.cv}
-              helperText={
-                errors.cv?.message ? String(errors.cv.message) : undefined
-              }
+              helperText={errors.cv?.message ? String(errors.cv.message) : undefined}
             />
           )}
         />
@@ -90,9 +82,7 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
           render={({ field: { onChange, value } }) => (
             <TextField
               value={value?.name || ''}
-              placeholder={t(
-                'REGISTER_EDUCATOR.DOCUMENT_PAGE.VIDEO_FILE_FORMAT',
-              )}
+              placeholder={t('REGISTER_EDUCATOR.DOCUMENT_PAGE.VIDEO_FILE_FORMAT')}
               size="small"
               fullWidth
               InputProps={{
@@ -111,18 +101,14 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
                         type="file"
                         accept=".mp4,.mov,.webm"
                         hidden
-                        onChange={(event) =>
-                          handleFileChange(event, onChange, 'mp4')
-                        }
+                        onChange={(event) => handleFileChange(event, onChange, 'mp4')}
                       />
                     </Button>
                   </InputAdornment>
                 ),
               }}
               error={!!errors.video}
-              helperText={
-                errors.video?.message ? String(errors.video.message) : undefined
-              }
+              helperText={errors.video?.message ? String(errors.video.message) : undefined}
             />
           )}
         />
@@ -140,22 +126,16 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
               {...field}
               select
               variant="outlined"
-              placeholder={t(
-                'REGISTER_EDUCATOR.DOCUMENT_PAGE.HEARING_PLATFORM_PLACEHOLDER',
-              )}
+              placeholder={t('REGISTER_EDUCATOR.DOCUMENT_PAGE.HEARING_PLATFORM_PLACEHOLDER')}
               fullWidth
               size="small"
               error={!!errors.hau}
-              helperText={
-                errors.hau?.message ? String(errors.hau.message) : undefined
-              }
+              helperText={errors.hau?.message ? String(errors.hau.message) : undefined}
             >
               <MenuItem value="Social Media">
                 {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.SOCIAL_MEDIA')}
               </MenuItem>
-              <MenuItem value="Referral">
-                {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.REFERRAL')}
-              </MenuItem>
+              <MenuItem value="Referral">{t('REGISTER_EDUCATOR.DOCUMENT_PAGE.REFERRAL')}</MenuItem>
               <MenuItem value="Job Portal">
                 {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.JOB_PORTAL')}
               </MenuItem>
@@ -168,9 +148,7 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
               <MenuItem value="Educational Conference">
                 {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.EDUCATIONAL_CONFERENCE')}
               </MenuItem>
-              <MenuItem value="Other">
-                {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.OTHER')}
-              </MenuItem>
+              <MenuItem value="Other">{t('REGISTER_EDUCATOR.DOCUMENT_PAGE.OTHER')}</MenuItem>
             </TextField>
           )}
         />

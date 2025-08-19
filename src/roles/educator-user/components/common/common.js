@@ -1,5 +1,9 @@
 // Common utilities
 
+import { format, isSameDay, intervalToDuration } from 'date-fns'
+import html2pdf from 'html2pdf.js'
+import moment, { utc } from 'moment-timezone'
+
 export const mergeData = (..._args) => {
   void _args
   return {}
@@ -58,12 +62,16 @@ export const createWebinarSocket = () => ({
 })
 
 export const formatDate = (date) => {
-  if (!date) return ''
+  if (!date) {
+    return ''
+  }
   return new Date(date).toLocaleDateString()
 }
 
 export const formatTime = (time) => {
-  if (!time) return ''
+  if (!time) {
+    return ''
+  }
   return new Date(time).toLocaleTimeString()
 }
 
@@ -80,9 +88,13 @@ export const validateEmail = (email) => {
 }
 
 export const truncateText = (text, maxLength) => {
-  if (!text) return ''
-  if (text.length <= maxLength) return text
-  return text.substr(0, maxLength) + '...'
+  if (!text) {
+    return ''
+  }
+  if (text.length <= maxLength) {
+    return text
+  }
+  return `${text.substr(0, maxLength)}...`
 }
 
 export const debounce = (func, wait) => {
@@ -99,18 +111,9 @@ export const debounce = (func, wait) => {
 
 export const CONSTANTS = {
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
-  ALLOWED_FILE_TYPES: [
-    'image/jpeg',
-    'image/png',
-    'image/gif',
-    'application/pdf',
-  ],
+  ALLOWED_FILE_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'],
   DEFAULT_PAGE_SIZE: 10,
 }
-
-import html2pdf from 'html2pdf.js'
-import moment, { utc } from 'moment-timezone'
-import { format, isSameDay, intervalToDuration } from 'date-fns'
 
 export const CHAPTER_CONFIG = {
   VIDEO_EXTENSIONS: ['mp4', 'mov', 'webm', 'mkv'],
@@ -120,7 +123,9 @@ export const CHAPTER_CONFIG = {
 }
 
 export const handleIsTodaySelected = (selectedDate) => {
-  if (!selectedDate) return false
+  if (!selectedDate) {
+    return false
+  }
   return isSameDay(new Date(selectedDate), new Date())
 }
 
@@ -147,22 +152,22 @@ export const convDateToUtc = (localDate, localTime) => {
   return dateMoment.utc().format('YYYY-MM-DD')
 }
 
-export const convHMtoUtc = (localTime) =>
-  moment(localTime).utc().format('HH:mm')
+export const convHMtoUtc = (localTime) => moment(localTime).utc().format('HH:mm')
 
 export const handleMinTime = () => {
   const now = new Date()
   return new Date(now.getTime())
 }
 
-export const iff = (condition, then, otherwise) =>
-  condition ? then : otherwise
+export const iff = (condition, then, otherwise) => (condition ? then : otherwise)
 
 export const handleFileChange = (event, setErrors, setResource) => {
   const file = event.target.files?.[0]
   const fileExtension = file?.name?.split('.').pop()?.toLowerCase()
 
-  if (!file) return
+  if (!file) {
+    return
+  }
 
   if (
     fileExtension &&
@@ -188,17 +193,14 @@ export const handleFileChange = (event, setErrors, setResource) => {
 
   if (
     !fileExtension ||
-    ![
-      ...CHAPTER_CONFIG.VIDEO_EXTENSIONS,
-      ...CHAPTER_CONFIG.DOCUMENT_EXTENSIONS,
-    ].includes(fileExtension)
+    ![...CHAPTER_CONFIG.VIDEO_EXTENSIONS, ...CHAPTER_CONFIG.DOCUMENT_EXTENSIONS].includes(
+      fileExtension,
+    )
   ) {
     setErrors({
       resource: `Invalid file type. Only videos (${CHAPTER_CONFIG.VIDEO_EXTENSIONS.join(
         ', ',
-      )}) and documents (${CHAPTER_CONFIG.DOCUMENT_EXTENSIONS.join(
-        ', ',
-      )}) are allowed.`,
+      )}) and documents (${CHAPTER_CONFIG.DOCUMENT_EXTENSIONS.join(', ')}) are allowed.`,
     })
     return
   }
@@ -211,10 +213,18 @@ export const handleFormatSeconds = (seconds) => {
   const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
   const { hours, minutes, days, seconds: remainingSeconds } = duration
   const parts = []
-  if (days) parts.push(`${days}d`)
-  if (hours) parts.push(`${hours}h`)
-  if (minutes) parts.push(`${minutes}m`)
-  if (remainingSeconds) parts.push(`${remainingSeconds}s`)
+  if (days) {
+    parts.push(`${days}d`)
+  }
+  if (hours) {
+    parts.push(`${hours}h`)
+  }
+  if (minutes) {
+    parts.push(`${minutes}m`)
+  }
+  if (remainingSeconds) {
+    parts.push(`${remainingSeconds}s`)
+  }
   return parts.join(' ')
 }
 
@@ -223,12 +233,13 @@ export const ACTIVE_BUTTON_CSS = {
   color: 'background.paper',
 }
 
-export const transformNaNToNull = (value) =>
-  Number.isNaN(value) ? null : value
+export const transformNaNToNull = (value) => (Number.isNaN(value) ? null : value)
 
 const areValuesEqual = (value1, value2) => {
   if (Array.isArray(value1) && Array.isArray(value2)) {
-    if (value1.length !== value2.length) return false
+    if (value1.length !== value2.length) {
+      return false
+    }
     return value1.every((item, index) => item === value2[index])
   }
   return value1 === value2
@@ -238,10 +249,7 @@ export const getUpdatedFields = (data, initialData, excludeKeys = []) => {
   const updatedFields = {}
 
   Object.keys(data).forEach((key) => {
-    if (
-      !excludeKeys.includes(key) &&
-      !areValuesEqual(data[key], initialData[key])
-    ) {
+    if (!excludeKeys.includes(key) && !areValuesEqual(data[key], initialData[key])) {
       updatedFields[key] = data[key]
     }
   })
@@ -252,9 +260,15 @@ export const getUpdatedFields = (data, initialData, excludeKeys = []) => {
 }
 
 export const isNewFile = (file, previousFile) => {
-  if (!(file instanceof File)) return false
-  if (!previousFile) return true
-  if (typeof previousFile === 'string') return true // If previous is a string URL, any File is new
+  if (!(file instanceof File)) {
+    return false
+  }
+  if (!previousFile) {
+    return true
+  }
+  if (typeof previousFile === 'string') {
+    return true
+  } // If previous is a string URL, any File is new
   if (previousFile instanceof File) {
     return file.size !== previousFile.size || file.name !== previousFile.name
   }
@@ -262,7 +276,9 @@ export const isNewFile = (file, previousFile) => {
 }
 
 export const extractFilename = (fileName) => {
-  if (!fileName) return ''
+  if (!fileName) {
+    return ''
+  }
   const [, ...rest] = fileName.split('_')
   return rest.join('_') || fileName
 }
@@ -281,13 +297,12 @@ export const getEducatorDetails = (detail, returnType = 'fullName') => {
 }
 
 export const containsNestedArray = (objectArray, nestedArrayKey) =>
-  objectArray.every(
-    (item) =>
-      Array.isArray(item[nestedArrayKey]) && item[nestedArrayKey].length,
-  )
+  objectArray.every((item) => Array.isArray(item[nestedArrayKey]) && item[nestedArrayKey].length)
 
 export const formatDateTime = (date) => {
-  if (!date) return '-'
+  if (!date) {
+    return '-'
+  }
 
   try {
     const formattedDate = format(new Date(date), 'dd MMM yyyy')
@@ -306,8 +321,7 @@ const videoMimeTypes = {
   webm: 'video/webm',
 }
 
-export const getFormatType = (ext) =>
-  videoMimeTypes[ext] || 'application/octet-stream'
+export const getFormatType = (ext) => videoMimeTypes[ext] || 'application/octet-stream'
 
 // Generate Invoice
 
@@ -318,8 +332,7 @@ const fetchImageAsBase64 = async (url) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
       reader.onloadend = () => resolve(reader.result)
-      reader.onerror = () =>
-        reject(new Error('Failed to convert image to base64'))
+      reader.onerror = () => reject(new Error('Failed to convert image to base64'))
       reader.readAsDataURL(blob)
     })
   } catch {
@@ -335,23 +348,20 @@ const convertImagesToBase64 = async (div) => {
       const base64 = await fetchImageAsBase64(src)
       if (base64) {
         img.setAttribute('src', base64)
-      } else img.remove()
+      } else {
+        img.remove()
+      }
     }
   })
 
   await Promise.all(promises)
 }
 
-export const handleGeneratePdf = async (
-  id,
-  requestCallback,
-  successCallback,
-) => {
+export const handleGeneratePdf = async (id, requestCallback, successCallback) => {
   const callbackResult = await requestCallback({
     transactionId: id,
   })
-  const response =
-    'unwrap' in callbackResult ? await callbackResult.unwrap() : callbackResult
+  const response = 'unwrap' in callbackResult ? await callbackResult.unwrap() : callbackResult
 
   if (!response.error) {
     const div = document.createElement('div')
@@ -382,25 +392,21 @@ export const handleGeneratePdf = async (
 }
 
 export const isAndroidOrIphone = () => {
-  const userAgent =
-    navigator.userAgent || navigator.vendor || window.opera || ''
-  return (
-    /android/i.test(userAgent) ||
-    (/iPhone/i.test(userAgent) && !window.MSStream)
-  )
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera || ''
+  return /android/i.test(userAgent) || (/iPhone/i.test(userAgent) && !window.MSStream)
 }
 
 export const convUtcToLocal = (timeStr, dateStr = new Date().toISOString()) => {
-  if (!dateStr || !timeStr) return null
+  if (!dateStr || !timeStr) {
+    return null
+  }
   const datePart = dateStr.split('T')[0]
   return utc(`${datePart} ${timeStr}`, 'YYYY-MM-DD HH:mm').local().toDate()
 }
 
 export const handleAreAllFieldsFilled = (arr) =>
   arr.every((obj) =>
-    Object.values(obj).every(
-      (value) => value !== '' && value !== null && value !== undefined,
-    ),
+    Object.values(obj).every((value) => value !== '' && value !== null && value !== undefined),
   )
 
 export default {

@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { ENV } from '../utils/env'
+
 import { onQueryStartedDefault } from './serviceUtility'
 
 export const educationApi = createApi({

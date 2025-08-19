@@ -1,13 +1,5 @@
+import { Box, Button, TextField, FormLabel, Typography, FormHelperText } from '@mui/material'
 import { useState } from 'react'
-
-import {
-  Box,
-  Button,
-  TextField,
-  FormLabel,
-  Typography,
-  FormHelperText,
-} from '@mui/material'
 
 const DeclineConfirmation = ({ onDelete, onClose }) => {
   const [declinationReason, setDeclinationReason] = useState(null)
@@ -16,9 +8,7 @@ const DeclineConfirmation = ({ onDelete, onClose }) => {
   return (
     <Box>
       <Typography variant="h4">Confirm</Typography>
-      <Typography variant="body1">
-        Are you sure you want to decline this application?
-      </Typography>
+      <Typography variant="body1">Are you sure you want to decline this application?</Typography>
       <Box mt={2}>
         <FormLabel>Please specify the reason:</FormLabel>
         <TextField
@@ -41,12 +31,7 @@ const DeclineConfirmation = ({ onDelete, onClose }) => {
         )}
       </Box>
       <Box display="flex" justifyContent="space-between" mt={4} gap={2}>
-        <Button
-          variant="contained"
-          color="secondary"
-          fullWidth
-          onClick={onClose}
-        >
+        <Button variant="contained" color="secondary" fullWidth onClick={onClose}>
           Cancel
         </Button>
         <Button

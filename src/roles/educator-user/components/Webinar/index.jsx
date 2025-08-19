@@ -1,20 +1,3 @@
-import React from 'react'
-import { debounce } from 'lodash'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import {
-  Edit,
-  Plus,
-  Video,
-  Search,
-  Trash2,
-  FileText,
-  ArrowLeft,
-  ArrowRight,
-  MoreVertical,
-} from 'lucide-react'
-
 import {
   Box,
   Chip,
@@ -30,16 +13,30 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
+import { debounce } from 'lodash'
+import {
+  Edit,
+  Plus,
+  Video,
+  Search,
+  Trash2,
+  FileText,
+  ArrowLeft,
+  ArrowRight,
+  MoreVertical,
+} from 'lucide-react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
-import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
-
-import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import {
   useGetAllWebinarQuery,
   useGetPastWebinarsQuery,
   useUpdateWebinarMutation,
   useGetWebinarsCountQuery,
 } from '../../../../services/admin'
+import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
+import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 
 const WebinarTable = ({ columns, data, page, setPage }) => {
   const tableOptions = {
@@ -56,16 +53,10 @@ const WebinarTable = ({ columns, data, page, setPage }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
-        <MuiReactTable
-          columns={columns}
-          rows={data.data || []}
-          materialReactProps={tableOptions}
-        />
+        <MuiReactTable columns={columns} rows={data.data || []} materialReactProps={tableOptions} />
       </Box>
       <Box mt={2} textAlign="center" sx={{ flexShrink: 0 }}>
-        {!!data.data?.length && (
-          <PaginationComponent page={page} data={data} setPage={setPage} />
-        )}
+        {!!data.data?.length && <PaginationComponent page={page} data={data} setPage={setPage} />}
       </Box>
     </Box>
   )
@@ -85,15 +76,12 @@ const AllWebinars = ({ page, setPage }) => {
       page,
       search: searchTerm,
       pageSize: 10,
-      ...(status ? { status: status } : {}),
+      ...(status ? { status } : {}),
     },
     { pollingInterval: 5000 },
   )
 
-  const { data: webinarCount } = useGetWebinarsCountQuery(
-    {},
-    { pollingInterval: 5000 },
-  )
+  const { data: webinarCount } = useGetWebinarsCountQuery({}, { pollingInterval: 5000 })
   const [updateWebinar] = useUpdateWebinarMutation()
 
   const debouncedSearch = debounce((value) => {
@@ -186,9 +174,7 @@ const AllWebinars = ({ page, setPage }) => {
       Cell: (tableProps) => {
         const { cell } = tableProps
         const categories = cell.getValue()
-        const categoryText = Array.isArray(categories)
-          ? categories.join(', ')
-          : '-'
+        const categoryText = Array.isArray(categories) ? categories.join(', ') : '-'
         return (
           <Tooltip title={categoryText} arrow>
             <Typography
@@ -233,9 +219,7 @@ const AllWebinars = ({ page, setPage }) => {
             }}
           />
         ) : (
-          <Typography style={{ whiteSpace: 'pre-line' }}>
-            {joinDate || '-'}
-          </Typography>
+          <Typography style={{ whiteSpace: 'pre-line' }}>{joinDate || '-'}</Typography>
         )
       },
     },
@@ -266,7 +250,7 @@ const AllWebinars = ({ page, setPage }) => {
       size: 120,
       Cell: (tableProps) => {
         const { row } = tableProps
-        const status = row.original.status
+        const { status } = row.original
         return (
           <Chip
             label={status || '-'}
@@ -319,10 +303,7 @@ const AllWebinars = ({ page, setPage }) => {
         const { row } = tableProps
         return (
           <Box display="flex" justifyContent="center">
-            <IconButton
-              size="small"
-              onClick={(e) => handleOpenMenu(e, row.original)}
-            >
+            <IconButton size="small" onClick={(e) => handleOpenMenu(e, row.original)}>
               <MoreVertical size={18} />
             </IconButton>
           </Box>
@@ -369,28 +350,16 @@ const AllWebinars = ({ page, setPage }) => {
               <Button
                 key={statusKey || 'all'}
                 sx={{
-                  backgroundColor:
-                    status === statusKey ? 'primary.main' : 'transparent',
+                  backgroundColor: status === statusKey ? 'primary.main' : 'transparent',
                   color: status === statusKey ? 'white' : 'text.secondary',
                   '&:hover': {
-                    backgroundColor:
-                      status === statusKey ? 'primary.dark' : 'action.hover',
+                    backgroundColor: status === statusKey ? 'primary.dark' : 'action.hover',
                   },
                 }}
                 onClick={() => handleChangeStatus(statusKey)}
               >
-                {
-                  [t('EDUCATOR.WEBINAR.ALL'), t('EDUCATOR.WEBINAR.PUBLISHED')][
-                    index
-                  ]
-                }{' '}
-                (
-                {
-                  webinarCount?.data?.[
-                    ['allWebinarsCount', 'publishedWebinarsCount'][index]
-                  ]
-                }
-                )
+                {[t('EDUCATOR.WEBINAR.ALL'), t('EDUCATOR.WEBINAR.PUBLISHED')][index]} (
+                {webinarCount?.data?.[['allWebinarsCount', 'publishedWebinarsCount'][index]]})
               </Button>
             ))}
           </ButtonGroup>
@@ -400,10 +369,7 @@ const AllWebinars = ({ page, setPage }) => {
             placeholder={t('EDUCATOR.WEBINAR.SEARCH')}
             InputProps={{
               startAdornment: (
-                <Search
-                  size={16}
-                  style={{ color: 'var(--mui-palette-action-disabled)' }}
-                />
+                <Search size={16} style={{ color: 'var(--mui-palette-action-disabled)' }} />
               ),
             }}
           />
@@ -468,10 +434,7 @@ const AllWebinars = ({ page, setPage }) => {
 const PastWebinars = ({ page, setPage }) => {
   const theme = useTheme()
   const { t } = useTranslation('education')
-  const { data } = useGetPastWebinarsQuery(
-    { page, pageSize: 10 },
-    { pollingInterval: 5000 },
-  )
+  const { data } = useGetPastWebinarsQuery({ page, pageSize: 10 }, { pollingInterval: 5000 })
 
   const handleStatusColor = (value) => {
     switch (value) {
@@ -541,9 +504,7 @@ const PastWebinars = ({ page, setPage }) => {
       Cell: (tableProps) => {
         const { cell } = tableProps
         const categories = cell.getValue()
-        const categoryText = Array.isArray(categories)
-          ? categories.join(', ')
-          : '-'
+        const categoryText = Array.isArray(categories) ? categories.join(', ') : '-'
         return (
           <Tooltip title={categoryText} arrow>
             <Typography
@@ -596,7 +557,7 @@ const PastWebinars = ({ page, setPage }) => {
       size: 120,
       Cell: (tableProps) => {
         const { row } = tableProps
-        const status = row.original.status
+        const { status } = row.original
         return (
           <Chip
             label={status || '-'}
@@ -624,12 +585,7 @@ const PastWebinars = ({ page, setPage }) => {
         overflow: 'hidden',
       }}
     >
-      <WebinarTable
-        columns={columns}
-        data={data || { data: [] }}
-        page={page}
-        setPage={setPage}
-      />
+      <WebinarTable columns={columns} data={data || { data: [] }} page={page} setPage={setPage} />
     </Box>
   )
 }
@@ -661,9 +617,7 @@ const Webinar = () => {
               {isLogs ? 'Past' : 'All'} Webinars
             </Typography>
             <Typography component="p" color="text.secondary">
-              {isLogs
-                ? 'View your completed webinar history'
-                : 'Manage and schedule your webinars'}
+              {isLogs ? 'View your completed webinar history' : 'Manage and schedule your webinars'}
             </Typography>
           </Box>
           <Box
@@ -675,15 +629,11 @@ const Webinar = () => {
             }}
           >
             <Button
-              startIcon={
-                isLogs ? <ArrowLeft size={16} /> : <FileText size={16} />
-              }
+              startIcon={isLogs ? <ArrowLeft size={16} /> : <FileText size={16} />}
               onClick={() => setIsLogs(!isLogs)}
               variant="outlined"
             >
-              {isLogs
-                ? t('EDUCATOR.COMMON_KEYS.BACK')
-                : t('EDUCATOR.WEBINAR.VIEW_LOGS')}
+              {isLogs ? t('EDUCATOR.COMMON_KEYS.BACK') : t('EDUCATOR.WEBINAR.VIEW_LOGS')}
             </Button>
             <Button
               onClick={() => {

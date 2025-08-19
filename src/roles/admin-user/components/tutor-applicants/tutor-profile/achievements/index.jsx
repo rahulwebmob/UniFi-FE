@@ -1,7 +1,6 @@
+import { Box, Typography } from '@mui/material'
 import { Beaker } from 'lucide-react'
 import { useParams } from 'react-router-dom'
-
-import { Box, Typography } from '@mui/material'
 
 import { useViewTutorDetailQuery } from '../../../../../../services/admin'
 
@@ -46,12 +45,10 @@ const Achievements = () => {
                   <Typography component="p" fontWeight={600}>
                     {education.degree ?? '-'}
                   </Typography>
-                  <Typography variant="body1">
-                    {education.field ?? '-'}
-                  </Typography>
+                  <Typography variant="body1">{education.field ?? '-'}</Typography>
                 </Box>
               </Box>
-              <Box></Box>
+              <Box />
             </Box>
           ))}
         </Box>
@@ -87,9 +84,7 @@ const Achievements = () => {
                     <Typography component="p" fontWeight={600}>
                       {certificate.name ?? '-'}
                     </Typography>
-                    <Typography variant="body1">
-                      {certificate.organization ?? '-'}
-                    </Typography>
+                    <Typography variant="body1">{certificate.organization ?? '-'}</Typography>
                   </Box>
                 </Box>
               </Box>

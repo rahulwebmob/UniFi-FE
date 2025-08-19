@@ -1,19 +1,11 @@
+import { Box, Button, TextField, Typography, ButtonGroup, Autocomplete } from '@mui/material'
 import _ from 'lodash'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  ButtonGroup,
-  Autocomplete,
-} from '@mui/material'
-
+import { useGetCategoryListQuery } from '../../../../services/education'
 import CourseList from '../course-list'
 import WebinarList from '../webinar-list'
-import { useGetCategoryListQuery } from '../../../../services/education'
 
 const AllContent = () => {
   const { t } = useTranslation('education')
@@ -87,7 +79,9 @@ const AllContent = () => {
           <ButtonGroup size="small" variant="contained">
             <Button
               onClick={() => {
-                if (contentType !== 'course') handleContentType('course')
+                if (contentType !== 'course') {
+                  handleContentType('course')
+                }
               }}
               variant={contentType === 'course' ? 'contained' : 'outlined'}
               sx={{ textTransform: 'none' }}
@@ -96,7 +90,9 @@ const AllContent = () => {
             </Button>
             <Button
               onClick={() => {
-                if (contentType !== 'webinar') handleContentType('webinar')
+                if (contentType !== 'webinar') {
+                  handleContentType('webinar')
+                }
               }}
               variant={contentType === 'webinar' ? 'contained' : 'outlined'}
               sx={{ textTransform: 'none' }}

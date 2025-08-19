@@ -1,5 +1,5 @@
-import { styled } from '@mui/material/styles'
 import { Box, Button, Container } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
 export const StyledContainer = styled(Container)(({ theme }) => ({
   width: '100%',

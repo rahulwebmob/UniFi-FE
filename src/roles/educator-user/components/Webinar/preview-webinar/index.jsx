@@ -1,15 +1,9 @@
-import { useSelector } from 'react-redux'
 import { useState, useEffect, useCallback } from 'react'
-
-import WebinarContent from '../webinar-content'
+import { useSelector } from 'react-redux'
 
 import { useGetDisplayScheduleTimeMutation } from '../../../../../services/admin'
-import {
-  iff,
-  convHMtoUtc,
-  convDateToUtc,
-  getLocalTimezone,
-} from '../../common/common'
+import { iff, convHMtoUtc, convDateToUtc, getLocalTimezone } from '../../common/common'
+import WebinarContent from '../webinar-content'
 
 const PreviewWebinar = ({ webinarData, isTdSkip }) => {
   const { user } = useSelector((state) => state.user)
@@ -28,16 +22,8 @@ const PreviewWebinar = ({ webinarData, isTdSkip }) => {
       return {
         webinarId: webinarData._id || '',
         scheduleType,
-        endTime: isTdSkip
-          ? endTime
-          : endTime
-            ? convHMtoUtc(endTime)
-            : undefined,
-        startTime: isTdSkip
-          ? startTime
-          : startTime
-            ? convHMtoUtc(startTime)
-            : undefined,
+        endTime: isTdSkip ? endTime : endTime ? convHMtoUtc(endTime) : undefined,
+        startTime: isTdSkip ? startTime : startTime ? convHMtoUtc(startTime) : undefined,
         startDate: isTdSkip
           ? startDate
           : startDate && startTime
@@ -55,11 +41,7 @@ const PreviewWebinar = ({ webinarData, isTdSkip }) => {
           day.startTime,
           day.startTime ? convHMtoUtc(day.startTime) : null,
         ),
-        endTime: iff(
-          Boolean(isTdSkip),
-          day.endTime,
-          day.endTime ? convHMtoUtc(day.endTime) : null,
-        ),
+        endTime: iff(Boolean(isTdSkip), day.endTime, day.endTime ? convHMtoUtc(day.endTime) : null),
       })),
       scheduleType,
       timezone: getLocalTimezone(),
@@ -102,12 +84,8 @@ const PreviewWebinar = ({ webinarData, isTdSkip }) => {
     thumbnail: updatedWebinarData.image ? String(updatedWebinarData.image) : '',
     duration: 0, // Default value
     status: 'draft',
-    startTime: updatedWebinarData.startTime
-      ? String(updatedWebinarData.startTime)
-      : '',
-    endTime: updatedWebinarData.endTime
-      ? String(updatedWebinarData.endTime)
-      : '',
+    startTime: updatedWebinarData.startTime ? String(updatedWebinarData.startTime) : '',
+    endTime: updatedWebinarData.endTime ? String(updatedWebinarData.endTime) : '',
     price: updatedWebinarData.price || 0,
     instructor: updatedWebinarData.educatorId,
     scheduleType: updatedWebinarData.scheduleType,
@@ -115,13 +93,9 @@ const PreviewWebinar = ({ webinarData, isTdSkip }) => {
     isPaid: updatedWebinarData.isPaid,
     resources: updatedWebinarData.resources?.map((resource) => ({
       id: resource.id || '',
-      name:
-        typeof resource.file === 'string' ? resource.file : resource.file.name,
+      name: typeof resource.file === 'string' ? resource.file : resource.file.name,
       type: 'file',
-      url:
-        typeof resource.file === 'string'
-          ? resource.file
-          : URL.createObjectURL(resource.file),
+      url: typeof resource.file === 'string' ? resource.file : URL.createObjectURL(resource.file),
       size: 0,
     })),
     days: updatedWebinarData.days,

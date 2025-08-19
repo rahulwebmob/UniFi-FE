@@ -1,23 +1,20 @@
+import { Box, Button, Divider, useTheme, useMediaQuery } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { Box, Button, Divider, useTheme, useMediaQuery } from '@mui/material'
-
-import { SOCIAL_AUTH } from './constant'
+import FacebookIcon from '../../../../../assets/social-icons/facebook.svg'
+import GoogleIcon from '../../../../../assets/social-icons/google.svg'
+import LinkedinIcon from '../../../../../assets/social-icons/linkedin.svg'
 import useFbLogin from '../../../../../hooks/useFbLogin'
 import useGoogleLogin from '../../../../../hooks/useGoogleLogin'
-import { initializeSocket } from '../../../../../services/sockets'
 import useLinkedinLogin from '../../../../../hooks/useLinkedinLogin'
 import { useOAuthLoginMutation } from '../../../../../services/admin'
-// Social media SVG icons
-import GoogleIcon from '../../../../../assets/social-icons/google.svg'
-import FacebookIcon from '../../../../../assets/social-icons/facebook.svg'
-import LinkedinIcon from '../../../../../assets/social-icons/linkedin.svg'
+import { initializeSocket } from '../../../../../services/sockets'
 
-const SocialMediaAuth = ({
-  isOAuthLoading,
-  setIsOAuthLoading,
-}) => {
+import { SOCIAL_AUTH } from './constant'
+// Social media SVG icons
+
+const SocialMediaAuth = ({ isOAuthLoading, setIsOAuthLoading }) => {
   const theme = useTheme()
   const navigate = useNavigate()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))

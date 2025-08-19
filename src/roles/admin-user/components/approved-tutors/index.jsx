@@ -1,17 +1,9 @@
+import { Box, alpha, Button, useTheme, InputBase, Typography } from '@mui/material'
 import { debounce } from 'lodash'
-import { useMemo, useState } from 'react'
 import { User, Search } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
-
-import {
-  Box,
-  alpha,
-  Button,
-  useTheme,
-  InputBase,
-  Typography,
-} from '@mui/material'
+import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { useGetApprovedTutorQuery } from '../../../../services/admin'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
@@ -91,11 +83,7 @@ const ApprovedTtutors = () => {
           const { original } = row
           const firstName = original.approvedBy?.firstName ?? ''
           const lastName = original.approvedBy?.lastName ?? ''
-          return (
-            <Typography>
-              {firstName && lastName ? `${firstName} ${lastName}` : '-'}
-            </Typography>
-          )
+          return <Typography>{firstName && lastName ? `${firstName} ${lastName}` : '-'}</Typography>
         },
       },
 
@@ -110,9 +98,7 @@ const ApprovedTtutors = () => {
                 variant="contained"
                 size="small"
                 startIcon={<User size={16} />}
-                onClick={() =>
-                  void navigate(`/admin/approved-tutors/${tutorId}`)
-                }
+                onClick={() => void navigate(`/admin/approved-tutors/${tutorId}`)}
                 sx={{
                   textTransform: 'none',
                   borderRadius: '8px',
@@ -175,10 +161,7 @@ const ApprovedTtutors = () => {
             },
           }}
         >
-          <Search
-            size={20}
-            style={{ color: 'text.secondary', marginRight: 12 }}
-          />
+          <Search size={20} style={{ color: 'text.secondary', marginRight: 12 }} />
           <InputBase
             placeholder="Search tutors..."
             onChange={(e) => debouncedSearch(e.target.value)}

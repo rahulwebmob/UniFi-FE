@@ -1,8 +1,3 @@
-import { useTranslation } from 'react-i18next'
-import { useLocation } from 'react-router-dom'
-import { useRef, useState, useEffect } from 'react'
-import { User, LogOut, Settings, CreditCard, Gift } from 'lucide-react'
-
 import {
   Box,
   Tab,
@@ -15,12 +10,17 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material'
+import { User, LogOut, Settings, CreditCard, Gift } from 'lucide-react'
+import { useRef, useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
+
+import Logout from '../../../../shared/components/auth-wrapper/logout'
 
 import EducationPayments from './education-payments'
 import PersonalInfo from './personal-info'
-import UserSettings from './user-settings'
 import Referrals from './referrals'
-import Logout from '../../../../shared/components/auth-wrapper/logout'
+import UserSettings from './user-settings'
 
 const MyProfile = () => {
   const theme = useTheme()
@@ -254,9 +254,7 @@ const MyProfile = () => {
             <Logout
               component={
                 <Button
-                  startIcon={
-                    <LogOut size={20} color={theme.palette.error.main} />
-                  }
+                  startIcon={<LogOut size={20} color={theme.palette.error.main} />}
                   sx={{
                     color: theme.palette.error.main,
                   }}

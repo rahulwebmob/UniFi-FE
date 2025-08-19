@@ -25,14 +25,18 @@ const useLinkedinLogin = ({ onError, onSuccess }) => {
   }
 
   useEffect(() => {
-    if (!popup) return undefined
+    if (!popup) {
+      return undefined
+    }
 
     const timer = setInterval(() => {
       try {
         if (!popup || popup.closed) {
           clearInterval(timer)
           setPopup(null)
-          if (onError) onError(new Error('Popup closed by user'))
+          if (onError) {
+            onError(new Error('Popup closed by user'))
+          }
           return
         }
         if (popup.location.href.startsWith(redirectUri)) {
@@ -41,14 +45,17 @@ const useLinkedinLogin = ({ onError, onSuccess }) => {
           const error = urlParams.get('error')
 
           if (code) {
-            if (onSuccess) onSuccess(code)
+            if (onSuccess) {
+              onSuccess(code)
+            }
             popup.close()
             clearInterval(timer)
             setPopup(null)
           } else if (error) {
-            const errorDesc =
-              urlParams.get('error_description') || 'Error during login'
-            if (onError) onError(new Error(errorDesc))
+            const errorDesc = urlParams.get('error_description') || 'Error during login'
+            if (onError) {
+              onError(new Error(errorDesc))
+            }
             popup.close()
             clearInterval(timer)
             setPopup(null)

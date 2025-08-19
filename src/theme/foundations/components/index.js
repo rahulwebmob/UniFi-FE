@@ -165,8 +165,7 @@ export const MuiSnackbar = {
     root: ({ theme }) => ({
       '& .MuiPaper-root': {
         borderRadius: theme.spacing(1.5),
-        boxShadow:
-          '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
       },
     }),
 
@@ -528,8 +527,7 @@ export const MuiCard = {
       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
 
       '&:hover': {
-        boxShadow:
-          '0 10px 40px rgba(17, 66, 98, 0.08), 0 2px 10px rgba(17, 66, 98, 0.04)',
+        boxShadow: '0 10px 40px rgba(17, 66, 98, 0.08), 0 2px 10px rgba(17, 66, 98, 0.04)',
         transform: 'translateY(-3px)',
         borderColor: theme.palette.primary[200],
       },
@@ -797,8 +795,7 @@ export const MuiDialog = {
 
     paper: ({ theme }) => ({
       borderRadius: theme.spacing(2),
-      boxShadow:
-        '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
       backgroundImage: 'none',
       overflow: 'visible',
     }),
@@ -957,8 +954,7 @@ export const MuiDrawer = {
 
     paper: ({ theme }) => ({
       backgroundColor: theme.palette.background.paper,
-      boxShadow:
-        '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
       backgroundImage: 'none',
       borderRight: 'none',
     }),
@@ -1178,9 +1174,7 @@ export const MuiSkeleton = {
   styleOverrides: {
     root: ({ theme }) => ({
       backgroundColor:
-        theme.palette.mode === 'light'
-          ? 'rgba(0, 0, 0, 0.11)'
-          : 'rgba(255, 255, 255, 0.13)',
+        theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.11)' : 'rgba(255, 255, 255, 0.13)',
       borderRadius: theme.shape.borderRadius,
     }),
 
@@ -1378,12 +1372,11 @@ export const MuiTablePagination = {
       backgroundColor: theme.palette.grey[50],
       minHeight: 56,
 
-      '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows':
-        {
-          fontSize: '0.875rem',
-          color: theme.palette.text.secondary,
-          margin: 0,
-        },
+      '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+        fontSize: '0.875rem',
+        color: theme.palette.text.secondary,
+        margin: 0,
+      },
     }),
 
     toolbar: ({ theme }) => ({
@@ -1746,11 +1739,10 @@ export const MuiDataGrid = {
       },
 
       '& .MuiTablePagination-root': {
-        '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows':
-          {
-            fontSize: '0.875rem',
-            color: theme.palette.text.secondary,
-          },
+        '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+          fontSize: '0.875rem',
+          color: theme.palette.text.secondary,
+        },
       },
     }),
   },

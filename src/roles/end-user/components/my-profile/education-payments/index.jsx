@@ -1,18 +1,17 @@
-import { useMemo, useCallback } from 'react'
+import { Box, Typography, Chip, useTheme, Button } from '@mui/material'
 import { FileText } from 'lucide-react'
+import { useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
-import { Box, Typography, Chip, useTheme, Button } from '@mui/material'
-
-import ApiMiddleware from '../../../../../shared/components/api-middleware'
-import MuiReactTable from '../../../../../shared/components/ui-elements/mui-react-table'
 import { successAlert } from '../../../../../redux/reducers/app-slice'
-import { handleGeneratePdf } from '../../../../admin-user/components/common'
 import {
   useGetEducationPaymentsQuery,
   useLazyGetEducationInvoiceQuery,
 } from '../../../../../services/education'
+import ApiMiddleware from '../../../../../shared/components/api-middleware'
+import MuiReactTable from '../../../../../shared/components/ui-elements/mui-react-table'
+import { handleGeneratePdf } from '../../../../admin-user/components/common'
 
 const EducationPayments = () => {
   const theme = useTheme()
@@ -26,9 +25,7 @@ const EducationPayments = () => {
     () =>
       dispatch(
         successAlert({
-          message: t(
-            'application:PROFILE.SUBSCRIPTION.MESSAGE_SUCCESS_INVOICE',
-          ),
+          message: t('application:PROFILE.SUBSCRIPTION.MESSAGE_SUCCESS_INVOICE'),
         }),
       ),
     [dispatch, t],
@@ -59,12 +56,10 @@ const EducationPayments = () => {
           let title = ''
 
           if (item.moduleType === 'course' && item.courseId) {
-            thumbnail =
-              item.courseId.thumbnail || item.courseId.thumbNail || null
+            thumbnail = item.courseId.thumbnail || item.courseId.thumbNail || null
             title = item.courseId.title
           } else if (item.moduleType === 'webinar' && item.webinarId) {
-            thumbnail =
-              item.webinarId.thumbnail || item.webinarId.thumbNail || null
+            thumbnail = item.webinarId.thumbnail || item.webinarId.thumbNail || null
             title = item.webinarId.title
           } else {
             title = `${item.moduleType} Payment`
@@ -156,9 +151,7 @@ const EducationPayments = () => {
           const item = row.original
           return (
             <Typography variant="body2">
-              {item.createdAt
-                ? new Date(item.createdAt).toLocaleDateString()
-                : '-'}
+              {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '-'}
             </Typography>
           )
         },
@@ -199,11 +192,7 @@ const EducationPayments = () => {
       </Typography>
 
       <Box>
-        <ApiMiddleware
-          isLoading={isLoading}
-          error={error}
-          isData={!!data?.length}
-        >
+        <ApiMiddleware isLoading={isLoading} error={error} isData={!!data?.length}>
           <MuiReactTable
             columns={columns}
             rows={data || []}

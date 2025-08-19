@@ -1,12 +1,4 @@
-import * as yup from 'yup'
-import { Upload } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
-import React, { useState, useEffect } from 'react'
-import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { styled } from '@mui/material/styles'
 import {
   Box,
   Button,
@@ -18,10 +10,17 @@ import {
   FormControl,
   useMediaQuery,
 } from '@mui/material'
+import { styled } from '@mui/material/styles'
+import { Upload } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
+import * as yup from 'yup'
 
-import { generateImageUrl } from '../../../../../utils/globalUtils'
 import { errorAlert } from '../../../../../redux/reducers/app-slice'
 import { adminApi, useMyProfileMutation } from '../../../../../services/admin'
+import { generateImageUrl } from '../../../../../utils/globalUtils'
 import ChangePassword from '../../../../admin-user/components/profile/ChangePassword'
 
 const PersonalInfo = () => {
@@ -80,9 +79,7 @@ const PersonalInfo = () => {
 
   useEffect(() => {
     if (profileImage) {
-      const imageUrl = generateImageUrl(
-        `${profileImage.folderName}/${profileImage.fileName}`,
-      )
+      const imageUrl = generateImageUrl(`${profileImage.folderName}/${profileImage.fileName}`)
       setAvatar((prev) => ({ ...prev, image: imageUrl }))
     } else {
       setAvatar((prev) => ({ ...prev, image: null }))
@@ -202,8 +199,7 @@ const PersonalInfo = () => {
               >
                 {firstName &&
                   lastName &&
-                  firstName.charAt(0).toUpperCase() +
-                    lastName.charAt(0).toUpperCase()}
+                  firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase()}
               </Avatar>
 
               <Box
@@ -270,11 +266,7 @@ const PersonalInfo = () => {
             </Box>
           </Box>
 
-          <Box
-            display="grid"
-            gridTemplateColumns={!matches ? '1fr 1fr' : '1fr'}
-            gap={2.5}
-          >
+          <Box display="grid" gridTemplateColumns={!matches ? '1fr 1fr' : '1fr'} gap={2.5}>
             <FormControl fullWidth>
               <Typography
                 variant="body2"
@@ -295,9 +287,7 @@ const PersonalInfo = () => {
                     size="small"
                     variant="outlined"
                     fullWidth
-                    placeholder={t(
-                      'application:PROFILE.PLACEHOLDER_FIRST_NAME',
-                    )}
+                    placeholder={t('application:PROFILE.PLACEHOLDER_FIRST_NAME')}
                     {...field}
                     error={!!errors.firstName}
                     helperText={errors.firstName?.message}

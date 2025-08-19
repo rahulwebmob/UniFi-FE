@@ -32,7 +32,9 @@ const disconnectChatSocket = (removeListener) => {
   if (chatSocket) {
     chatSocket.disconnect()
     chatSocket.close()
-    if (removeListener) chatSocket.removeAllListeners()
+    if (removeListener) {
+      chatSocket.removeAllListeners()
+    }
     chatSocket = null
   }
 }

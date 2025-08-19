@@ -1,17 +1,3 @@
-import { debounce } from 'lodash'
-import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-import {
-  Edit,
-  Plus,
-  Search,
-  Trash2,
-  BookOpen,
-  ArrowRight,
-  MoreVertical,
-} from 'lucide-react'
-
 import {
   Box,
   Chip,
@@ -27,15 +13,19 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-
-import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
-import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
+import { debounce } from 'lodash'
+import { Edit, Plus, Search, Trash2, BookOpen, ArrowRight, MoreVertical } from 'lucide-react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 import {
   useGetAllCoursesQuery,
   useUpdateCourseMutation,
   useGetCoursesCountQuery,
 } from '../../../../services/admin'
+import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
+import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 
 const Courses = () => {
   const theme = useTheme()
@@ -106,50 +96,48 @@ const Courses = () => {
       accessorKey: 'title',
       header: t('EDUCATOR.COURSES.COURSE_NAME'),
       size: 300,
-      Cell: ({ row, cell }) => {
-        return (
-          <Box display="flex" gap={2} alignItems="center">
-            {row.original.thumbNail ? (
-              <Box
-                component="img"
-                width="40px"
-                height="40px"
-                borderRadius="8px"
-                src={row.original.thumbNail}
-                sx={{ objectFit: 'cover', flexShrink: 0 }}
-              />
-            ) : (
-              <Box
-                sx={{
-                  width: '40px',
-                  height: '40px',
-                  padding: '8px',
-                  borderRadius: '8px',
-                  backgroundColor: theme.palette.grey[100],
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <BookOpen size={20} color={theme.palette.grey[400]} />
-              </Box>
-            )}
-            <Tooltip title={String(cell.getValue() || '-')} arrow>
-              <Typography
-                sx={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  maxWidth: '240px',
-                }}
-              >
-                {String(cell.getValue() || '-')}
-              </Typography>
-            </Tooltip>
-          </Box>
-        )
-      },
+      Cell: ({ row, cell }) => (
+        <Box display="flex" gap={2} alignItems="center">
+          {row.original.thumbNail ? (
+            <Box
+              component="img"
+              width="40px"
+              height="40px"
+              borderRadius="8px"
+              src={row.original.thumbNail}
+              sx={{ objectFit: 'cover', flexShrink: 0 }}
+            />
+          ) : (
+            <Box
+              sx={{
+                width: '40px',
+                height: '40px',
+                padding: '8px',
+                borderRadius: '8px',
+                backgroundColor: theme.palette.grey[100],
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <BookOpen size={20} color={theme.palette.grey[400]} />
+            </Box>
+          )}
+          <Tooltip title={String(cell.getValue() || '-')} arrow>
+            <Typography
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: '240px',
+              }}
+            >
+              {String(cell.getValue() || '-')}
+            </Typography>
+          </Tooltip>
+        </Box>
+      ),
     },
 
     {
@@ -158,10 +146,7 @@ const Courses = () => {
       Cell: ({ cell }) => {
         const categories = cell.getValue()
         return (
-          <Tooltip
-            title={Array.isArray(categories) ? categories.join(', ') : '-'}
-            arrow
-          >
+          <Tooltip title={Array.isArray(categories) ? categories.join(', ') : '-'} arrow>
             <Typography
               variant="body1"
               sx={{
@@ -183,22 +168,16 @@ const Courses = () => {
     {
       accessorKey: 'createdAt',
       header: t('EDUCATOR.COURSES.CREATED_ON'),
-      Cell: ({ cell }) => {
-        return (
-          <Typography style={{ whiteSpace: 'pre-line' }}>
-            {cell.getValue()
-              ? new Date(String(cell.getValue())).toLocaleString()
-              : '-'}
-          </Typography>
-        )
-      },
+      Cell: ({ cell }) => (
+        <Typography style={{ whiteSpace: 'pre-line' }}>
+          {cell.getValue() ? new Date(String(cell.getValue())).toLocaleString() : '-'}
+        </Typography>
+      ),
     },
     {
       accessorKey: 'totalPurchased',
       header: t('EDUCATOR.COURSES.TOTAL_PURCHASED'),
-      Cell: ({ cell }) => {
-        return <Typography>{String(cell.getValue() || '-')}</Typography>
-      },
+      Cell: ({ cell }) => <Typography>{String(cell.getValue() || '-')}</Typography>,
     },
     {
       accessorKey: 'status',
@@ -224,45 +203,38 @@ const Courses = () => {
       accessorKey: 'view',
       header: t('EDUCATOR.COURSES.VIEW_COURSE'),
       size: 140,
-      Cell: ({ row }) => {
-        return (
-          <Button
-            size="small"
-            variant="contained"
-            endIcon={<ArrowRight size={16} />}
-            onClick={() => {
-              void navigate('/educator/preview-course', {
-                state: { courseId: row?.original?._id, isPreview: true },
-              })
-            }}
-            disabled={row?.original?.status === 'draft'}
-            sx={{
-              textTransform: 'none',
-              width: 150,
-            }}
-          >
-            View Course
-          </Button>
-        )
-      },
+      Cell: ({ row }) => (
+        <Button
+          size="small"
+          variant="contained"
+          endIcon={<ArrowRight size={16} />}
+          onClick={() => {
+            void navigate('/educator/preview-course', {
+              state: { courseId: row?.original?._id, isPreview: true },
+            })
+          }}
+          disabled={row?.original?.status === 'draft'}
+          sx={{
+            textTransform: 'none',
+            width: 150,
+          }}
+        >
+          View Course
+        </Button>
+      ),
       enableSorting: false,
     },
     {
       accessorKey: 'action',
       header: t('EDUCATOR.COURSES.ACTION'),
       size: 80,
-      Cell: ({ row }) => {
-        return (
-          <Box display="flex" justifyContent="center">
-            <IconButton
-              size="small"
-              onClick={(e) => handleOpenMenu(e, row.original)}
-            >
-              <MoreVertical size={18} />
-            </IconButton>
-          </Box>
-        )
-      },
+      Cell: ({ row }) => (
+        <Box display="flex" justifyContent="center">
+          <IconButton size="small" onClick={(e) => handleOpenMenu(e, row.original)}>
+            <MoreVertical size={18} />
+          </IconButton>
+        </Box>
+      ),
       enableSorting: false,
     },
   ]
@@ -352,8 +324,7 @@ const Courses = () => {
                 backgroundColor: status === '' ? 'primary.main' : 'transparent',
                 color: status === '' ? 'white' : 'text.secondary',
                 '&:hover': {
-                  backgroundColor:
-                    status === '' ? 'primary.dark' : 'action.hover',
+                  backgroundColor: status === '' ? 'primary.dark' : 'action.hover',
                 },
               }}
               onClick={() => handleChangeStatus('')}
@@ -362,33 +333,27 @@ const Courses = () => {
             </Button>
             <Button
               sx={{
-                backgroundColor:
-                  status === 'published' ? 'primary.main' : 'transparent',
+                backgroundColor: status === 'published' ? 'primary.main' : 'transparent',
                 color: status === 'published' ? 'white' : 'text.secondary',
                 '&:hover': {
-                  backgroundColor:
-                    status === 'published' ? 'primary.dark' : 'action.hover',
+                  backgroundColor: status === 'published' ? 'primary.dark' : 'action.hover',
                 },
               }}
               onClick={() => handleChangeStatus('published')}
             >
-              {t('EDUCATOR.COURSES.PUBLISHED')} (
-              {courseCount?.data?.publishedCourseCount})
+              {t('EDUCATOR.COURSES.PUBLISHED')} ({courseCount?.data?.publishedCourseCount})
             </Button>
             <Button
               sx={{
-                backgroundColor:
-                  status === 'draft' ? 'primary.main' : 'transparent',
+                backgroundColor: status === 'draft' ? 'primary.main' : 'transparent',
                 color: status === 'draft' ? 'white' : 'text.secondary',
                 '&:hover': {
-                  backgroundColor:
-                    status === 'draft' ? 'primary.dark' : 'action.hover',
+                  backgroundColor: status === 'draft' ? 'primary.dark' : 'action.hover',
                 },
               }}
               onClick={() => setStatus('draft')}
             >
-              {t('EDUCATOR.COURSES.DRAFT')} (
-              {courseCount?.data?.draftCourseCount})
+              {t('EDUCATOR.COURSES.DRAFT')} ({courseCount?.data?.draftCourseCount})
             </Button>
           </ButtonGroup>
           <TextField
@@ -399,10 +364,7 @@ const Courses = () => {
             placeholder={t('EDUCATOR.COURSES.SEARCH')}
             InputProps={{
               startAdornment: (
-                <Search
-                  size={16}
-                  style={{ color: 'var(--mui-palette-action-disabled)' }}
-                />
+                <Search size={16} style={{ color: 'var(--mui-palette-action-disabled)' }} />
               ),
             }}
           />
@@ -437,11 +399,7 @@ const Courses = () => {
         </Box>
         <Box mt={2} textAlign="center" sx={{ flexShrink: 0 }}>
           {!!coursesData?.data?.courses.length && (
-            <PaginationComponent
-              page={page}
-              data={coursesData?.data}
-              setPage={setPage}
-            />
+            <PaginationComponent page={page} data={coursesData?.data} setPage={setPage} />
           )}
         </Box>
       </Box>

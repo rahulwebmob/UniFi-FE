@@ -1,16 +1,3 @@
-import React from 'react'
-import { debounce } from 'lodash'
-import { useRef, useMemo, useState, useCallback } from 'react'
-import {
-  Eye,
-  Search,
-  XCircle,
-  PlusCircle,
-  CheckCircle,
-  MoreVertical,
-} from 'lucide-react'
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
-
 import {
   Box,
   Tab,
@@ -26,27 +13,36 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
+import { debounce } from 'lodash'
+import { Eye, Search, XCircle, PlusCircle, CheckCircle, MoreVertical } from 'lucide-react'
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
+import React, { useRef, useMemo, useState, useCallback } from 'react'
 
-import ApprovedTtutors from '../approved-tutors'
-import TutorDetailModal from './modal-forms/tutor-detail'
-import InviteTutorForm from './modal-forms/invite-tutor-form'
-import { APPLICANTS_TAB, APPLICANTS_FILTER } from './constant'
-import DeclineConfirmation from './modal-forms/decline-confirmation'
-import ModalBox from '../../../../shared/components/ui-elements/modal-box'
-import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import {
   useReconsiderStatusMutation,
   useApproveEducatorStatusMutation,
   useGetEducationTutorApplicationQuery,
 } from '../../../../services/admin'
+import ModalBox from '../../../../shared/components/ui-elements/modal-box'
+import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
+import ApprovedTtutors from '../approved-tutors'
+
+import { APPLICANTS_TAB, APPLICANTS_FILTER } from './constant'
+import DeclineConfirmation from './modal-forms/decline-confirmation'
+import InviteTutorForm from './modal-forms/invite-tutor-form'
+import TutorDetailModal from './modal-forms/tutor-detail'
 
 const HELPER = {
   getDateFormatWithoutTime: (date) => {
-    if (!date) return ''
+    if (!date) {
+      return ''
+    }
     return new Date(date).toLocaleDateString()
   },
   capitalizeFirst: (str) => {
-    if (!str) return ''
+    if (!str) {
+      return ''
+    }
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
   },
 }
@@ -84,9 +80,7 @@ const TutorApplicants = ({ type }) => {
   }, [])
 
   const handleCheckboxAccept = async () => {
-    const selectedIds = Object.keys(rowSelection).filter(
-      (key) => rowSelection[key],
-    )
+    const selectedIds = Object.keys(rowSelection).filter((key) => rowSelection[key])
 
     if (selectedIds.length > 0) {
       await tutorStatus({
@@ -105,9 +99,7 @@ const TutorApplicants = ({ type }) => {
         declinedReason: reason,
       })
     } else {
-      const selectedIds = Object.keys(rowSelection).filter(
-        (key) => rowSelection[key],
-      )
+      const selectedIds = Object.keys(rowSelection).filter((key) => rowSelection[key])
 
       if (selectedIds.length > 0) {
         await tutorStatus({
@@ -150,9 +142,7 @@ const TutorApplicants = ({ type }) => {
   )
 
   const handleBulkReconsider = async () => {
-    const selectedIds = Object.keys(rowSelection).filter(
-      (key) => rowSelection[key],
-    )
+    const selectedIds = Object.keys(rowSelection).filter((key) => rowSelection[key])
 
     for (const educatorId of selectedIds) {
       await reconsiderStatus({
@@ -175,9 +165,7 @@ const TutorApplicants = ({ type }) => {
               const lastName = original.lastName ?? ''
               return (
                 <Typography>
-                  {firstName || lastName
-                    ? `${firstName} ${lastName}`.trim()
-                    : '-'}
+                  {firstName || lastName ? `${firstName} ${lastName}`.trim() : '-'}
                 </Typography>
               )
             },
@@ -185,9 +173,7 @@ const TutorApplicants = ({ type }) => {
           {
             accessorKey: 'email',
             header: 'Email Address',
-            Cell: ({ cell }) => (
-              <Typography>{cell.getValue() || '-'}</Typography>
-            ),
+            Cell: ({ cell }) => <Typography>{cell.getValue() || '-'}</Typography>,
           },
           {
             accessorKey: 'expertise',
@@ -256,11 +242,7 @@ const TutorApplicants = ({ type }) => {
 
               return (
                 <Box>
-                  <IconButton
-                    size="small"
-                    onClick={handleClick}
-                    sx={{ color: 'text.secondary' }}
-                  >
+                  <IconButton size="small" onClick={handleClick} sx={{ color: 'text.secondary' }}>
                     <MoreVertical size={18} />
                   </IconButton>
                   <Menu
@@ -307,16 +289,12 @@ const TutorApplicants = ({ type }) => {
           {
             accessorKey: 'firstName',
             header: 'Name',
-            Cell: ({ cell }) => (
-              <Typography>{cell.getValue() || '-'}</Typography>
-            ),
+            Cell: ({ cell }) => <Typography>{cell.getValue() || '-'}</Typography>,
           },
           {
             accessorKey: 'email',
             header: 'Email Address',
-            Cell: ({ cell }) => (
-              <Typography>{cell.getValue() || '-'}</Typography>
-            ),
+            Cell: ({ cell }) => <Typography>{cell.getValue() || '-'}</Typography>,
           },
           {
             accessorKey: 'expertise',
@@ -357,9 +335,7 @@ const TutorApplicants = ({ type }) => {
           {
             accessorKey: 'declinedReason',
             header: 'Declined Reason',
-            Cell: ({ cell }) => (
-              <Typography>{cell.getValue() || '-'}</Typography>
-            ),
+            Cell: ({ cell }) => <Typography>{cell.getValue() || '-'}</Typography>,
           },
           {
             accessorKey: 'action',
@@ -521,8 +497,7 @@ const TutorApplicants = ({ type }) => {
                   },
                   '&:focus-within': {
                     borderColor: (thm) => thm.palette.primary.main,
-                    boxShadow: (thm) =>
-                      `0 0 0 3px ${thm.palette.primary.main}15`,
+                    boxShadow: (thm) => `0 0 0 3px ${thm.palette.primary.main}15`,
                   },
                 }}
               >
@@ -617,17 +592,11 @@ const TutorApplicants = ({ type }) => {
             <div />
           )}
 
-          <Box>
-            {!!Object.keys(rowSelection).length && renderActionButtons()}
-          </Box>
+          <Box>{!!Object.keys(rowSelection).length && renderActionButtons()}</Box>
         </Box>
       </Box>
 
-      {type !== 'Approved' ? (
-        <MaterialReactTable table={table} />
-      ) : (
-        <ApprovedTtutors />
-      )}
+      {type !== 'Approved' ? <MaterialReactTable table={table} /> : <ApprovedTtutors />}
 
       {!type && (
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>

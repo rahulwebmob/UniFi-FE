@@ -1,9 +1,9 @@
 import { Box, useTheme, IconButton, Typography } from '@mui/material'
 
-import XIcon from '../../../../assets/social-icons/x-twitter.svg'
 // Social media SVG icons
 import FacebookIcon from '../../../../assets/social-icons/facebook.svg'
 import LinkedinIcon from '../../../../assets/social-icons/linkedin.svg'
+import XIcon from '../../../../assets/social-icons/x-twitter.svg'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -106,13 +106,7 @@ const Footer = () => {
               }}
               aria-label="X"
             >
-              <img
-                src={XIcon}
-                alt="X"
-                width="18"
-                height="18"
-                style={{ display: 'block' }}
-              />
+              <img src={XIcon} alt="X" width="18" height="18" style={{ display: 'block' }} />
             </IconButton>
           </Box>
         </Box>

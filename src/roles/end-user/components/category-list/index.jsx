@@ -1,11 +1,6 @@
 import { Box, Tooltip } from '@mui/material'
 
-const CategoryList = ({
-  chips,
-  containerWidth,
-  isPurchased,
-  maxVisible = 2,
-}) => {
+const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) => {
   const hasMore = chips.length > maxVisible
   const visibleCount = hasMore ? maxVisible - 1 : chips.length
   const remainingCount = chips.length - visibleCount

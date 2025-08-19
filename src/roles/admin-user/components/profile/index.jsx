@@ -1,21 +1,12 @@
-import React, { useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { Box, Card, alpha, Avatar, Button, Divider, useTheme, Typography } from '@mui/material'
 import { Lock, User } from 'lucide-react'
+import { useRef } from 'react'
+import { useSelector } from 'react-redux'
 
-import {
-  Box,
-  Card,
-  alpha,
-  Avatar,
-  Button,
-  Divider,
-  useTheme,
-  Typography,
-} from '@mui/material'
-
-import EditName from './EditName'
-import ChangePassword from './ChangePassword'
 import ModalBox from '../../../../shared/components/ui-elements/modal-box'
+
+import ChangePassword from './ChangePassword'
+import EditName from './EditName'
 
 const Profile = () => {
   const theme = useTheme()
@@ -82,12 +73,7 @@ const Profile = () => {
               </Typography>
             </Box>
 
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              mb={3}
-            >
+            <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
               <Avatar
                 sx={{
                   width: 100,
@@ -193,10 +179,7 @@ const Profile = () => {
       </Box>
 
       <ModalBox ref={passwordRef} title="Change Password" size="sm">
-        <ChangePassword
-          closeModal={() => passwordRef.current?.closeModal()}
-          isUserAdmin
-        />
+        <ChangePassword closeModal={() => passwordRef.current?.closeModal()} isUserAdmin />
       </ModalBox>
     </Box>
   )

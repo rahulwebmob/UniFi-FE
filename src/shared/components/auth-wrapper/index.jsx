@@ -1,12 +1,12 @@
+import { Box, useTheme } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import { Box, useTheme } from '@mui/material'
+import AdminImage from '../../../assets/admin.webp'
+import SignUpImage from '../../../assets/sign-up/Sign Up.png'
 
 import Login from './login'
 import SignUp from './sign-up'
-import AdminImage from '../../../assets/admin.webp'
-import SignUpImage from '../../../assets/sign-up/Sign Up.png'
 
 const EducatorImage = SignUpImage
 
@@ -18,7 +18,9 @@ const AuthWrapper = ({ type = '' }) => {
   )
 
   useEffect(() => {
-    if (type === 'admin') return
+    if (type === 'admin') {
+      return
+    }
 
     if (isLoginPage && searchParams.has('sign-up')) {
       searchParams.delete('sign-up')
@@ -93,11 +95,7 @@ const AuthWrapper = ({ type = '' }) => {
           >
             <img
               src={
-                type === 'admin'
-                  ? AdminImage
-                  : type === 'educator'
-                    ? EducatorImage
-                    : SignUpImage
+                type === 'admin' ? AdminImage : type === 'educator' ? EducatorImage : SignUpImage
               }
               alt={
                 type === 'admin'

@@ -1,9 +1,3 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { Menu, LogOut } from 'lucide-react'
-
-import MuiAppBar from '@mui/material/AppBar'
-import { styled } from '@mui/material/styles'
 import {
   Box,
   Avatar,
@@ -14,6 +8,11 @@ import {
   ListItemIcon,
   Menu as MuiMenu,
 } from '@mui/material'
+import MuiAppBar from '@mui/material/AppBar'
+import { styled } from '@mui/material/styles'
+import { Menu, LogOut } from 'lucide-react'
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import LogoutWrapper from '../../../../shared/components/auth-wrapper/logout'
 
@@ -73,17 +72,10 @@ const AdminHeader = ({ open, position, handleDrawerOpen }) => {
         />
 
         <Box display="flex" alignItems="center">
-          <Avatar
-            alt="Profile Picture"
-            sx={{ backgroundColor: 'background.light' }}
-          >
+          <Avatar alt="Profile Picture" sx={{ backgroundColor: 'background.light' }}>
             {firstName[0].toUpperCase() + lastName[0].toUpperCase()}
           </Avatar>
-          <Box
-            ml={1}
-            style={{ cursor: 'pointer', color: 'white.main' }}
-            onClick={handleClick}
-          >
+          <Box ml={1} style={{ cursor: 'pointer', color: 'white.main' }} onClick={handleClick}>
             <Typography>
               {firstName} {lastName}
             </Typography>

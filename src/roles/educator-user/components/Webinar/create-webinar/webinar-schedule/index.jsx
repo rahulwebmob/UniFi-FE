@@ -1,8 +1,3 @@
-import { useTranslation } from 'react-i18next'
-import { Controller, useFormContext } from 'react-hook-form'
-
-import { TimePicker } from '@mui/x-date-pickers'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import {
   Box,
   Grid,
@@ -14,6 +9,10 @@ import {
   FormControl,
   FormControlLabel,
 } from '@mui/material'
+import { TimePicker } from '@mui/x-date-pickers'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { Controller, useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 import { handleMinTime, handleIsTodaySelected } from '../../../common/common'
 
@@ -78,19 +77,12 @@ const WebinarSchedule = ({
                       variant="outlined"
                       sx={{
                         backgroundColor:
-                          watch('scheduleType') === 'daily'
-                            ? 'primary.main'
-                            : 'transparent',
-                        color:
-                          watch('scheduleType') === 'daily'
-                            ? 'white'
-                            : 'text.secondary',
+                          watch('scheduleType') === 'daily' ? 'primary.main' : 'transparent',
+                        color: watch('scheduleType') === 'daily' ? 'white' : 'text.secondary',
                         borderColor: (theme) => theme.palette.grey[300],
                         '&:hover': {
                           backgroundColor:
-                            watch('scheduleType') === 'daily'
-                              ? 'primary.dark'
-                              : 'action.hover',
+                            watch('scheduleType') === 'daily' ? 'primary.dark' : 'action.hover',
                         },
                       }}
                       onClick={() => {
@@ -103,19 +95,12 @@ const WebinarSchedule = ({
                       variant="outlined"
                       sx={{
                         backgroundColor:
-                          watch('scheduleType') === 'weekly'
-                            ? 'primary.main'
-                            : 'transparent',
-                        color:
-                          watch('scheduleType') === 'weekly'
-                            ? 'white'
-                            : 'text.secondary',
+                          watch('scheduleType') === 'weekly' ? 'primary.main' : 'transparent',
+                        color: watch('scheduleType') === 'weekly' ? 'white' : 'text.secondary',
                         borderColor: (theme) => theme.palette.grey[300],
                         '&:hover': {
                           backgroundColor:
-                            watch('scheduleType') === 'weekly'
-                              ? 'primary.dark'
-                              : 'action.hover',
+                            watch('scheduleType') === 'weekly' ? 'primary.dark' : 'action.hover',
                         },
                       }}
                       onClick={() => {
@@ -128,19 +113,12 @@ const WebinarSchedule = ({
                       variant="outlined"
                       sx={{
                         backgroundColor:
-                          watch('scheduleType') === 'one time'
-                            ? 'primary.main'
-                            : 'transparent',
-                        color:
-                          watch('scheduleType') === 'one time'
-                            ? 'white'
-                            : 'text.secondary',
+                          watch('scheduleType') === 'one time' ? 'primary.main' : 'transparent',
+                        color: watch('scheduleType') === 'one time' ? 'white' : 'text.secondary',
                         borderColor: (theme) => theme.palette.grey[300],
                         '&:hover': {
                           backgroundColor:
-                            watch('scheduleType') === 'one time'
-                              ? 'primary.dark'
-                              : 'action.hover',
+                            watch('scheduleType') === 'one time' ? 'primary.dark' : 'action.hover',
                         },
                       }}
                       onClick={() => {
@@ -179,9 +157,7 @@ const WebinarSchedule = ({
                     }}
                     slotProps={{
                       textField: {
-                        placeholder: t(
-                          'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.DATE_PLACEHOLDER',
-                        ),
+                        placeholder: t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.DATE_PLACEHOLDER'),
                         size: 'small',
                         fullWidth: true,
                       },
@@ -190,11 +166,7 @@ const WebinarSchedule = ({
                 )}
               />
               {errors?.startDate && (
-                <Typography
-                  variant="caption"
-                  color="error"
-                  sx={{ mt: 0.5, display: 'block' }}
-                >
+                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
                   {typeof errors.startDate === 'string'
                     ? errors.startDate
                     : errors.startDate?.message}
@@ -244,11 +216,7 @@ const WebinarSchedule = ({
                 }}
               />
               {errors?.startTime && (
-                <Typography
-                  variant="caption"
-                  color="error"
-                  sx={{ mt: 0.5, display: 'block' }}
-                >
+                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
                   {errors?.startTime?.message}
                 </Typography>
               )}
@@ -296,14 +264,8 @@ const WebinarSchedule = ({
                 }}
               />
               {errors?.endTime && (
-                <Typography
-                  variant="caption"
-                  color="error"
-                  sx={{ mt: 0.5, display: 'block' }}
-                >
-                  {typeof errors.endTime === 'string'
-                    ? errors.endTime
-                    : errors.endTime?.message}
+                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                  {typeof errors.endTime === 'string' ? errors.endTime : errors.endTime?.message}
                 </Typography>
               )}
             </FormControl>
@@ -322,9 +284,7 @@ const WebinarSchedule = ({
                       control={<Checkbox {...field} checked={field.value} />}
                       label={
                         <span style={{ textTransform: 'capitalize' }}>
-                          {t(
-                            `EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.${day.day.toUpperCase()}`,
-                          )}
+                          {t(`EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.${day.day.toUpperCase()}`)}
                         </span>
                       }
                     />
@@ -353,9 +313,7 @@ const WebinarSchedule = ({
                               flexDirection: 'unset',
                             }}
                             ampm={false}
-                            label={t(
-                              'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.START_TIME',
-                            )}
+                            label={t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.START_TIME')}
                             value={value ?? undefined}
                             onChange={handleChange}
                             enableAccessibleFieldDOMStructure={false}
@@ -391,9 +349,7 @@ const WebinarSchedule = ({
                         }
                         return (
                           <TimePicker
-                            label={t(
-                              'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.END_TIME',
-                            )}
+                            label={t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.END_TIME')}
                             ampm={false}
                             value={value ?? undefined}
                             onChange={handleChange}
@@ -427,11 +383,7 @@ const WebinarSchedule = ({
         </Grid>
       )}
       {errors?.days?.root?.message && (
-        <Typography
-          variant="caption"
-          color="error"
-          sx={{ mt: 0.5, display: 'block' }}
-        >
+        <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
           {errors?.days?.root?.message}
         </Typography>
       )}

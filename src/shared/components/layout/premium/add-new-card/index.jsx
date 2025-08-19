@@ -1,32 +1,14 @@
-import React from 'react'
-import * as yup from 'yup'
-import { useTranslation } from 'react-i18next'
-import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Box, Grid, Button, Divider, TextField, Typography, InputAdornment } from '@mui/material'
+import { useForm, Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import * as yup from 'yup'
 
-import {
-  Box,
-  Grid,
-  Button,
-  Divider,
-  TextField,
-  Typography,
-  InputAdornment,
-} from '@mui/material'
-
-import Creditcvv from '../../../../../assets/images/cvv.png'
 import CreditCard from '../../../../../assets/images/cards.png'
+import Creditcvv from '../../../../../assets/images/cvv.png'
 import RequiredFieldIndicator from '../../../ui-elements/required-field-indicator'
 
-
-
-
-
-const AddNewCard = ({
-  subscriptionFormData,
-  setSubscriptionFormData,
-  setCurrentStep,
-}) => {
+const AddNewCard = ({ subscriptionFormData, setSubscriptionFormData, setCurrentStep }) => {
   const today = new Date()
   const { t } = useTranslation('application')
   const currentYear = today.getFullYear() % 100
@@ -45,10 +27,7 @@ const AddNewCard = ({
     expDate: yup
       .string()
       .required(t('application:PREMIUM_MODAL.VALIDATION_EXPIRY_DATE'))
-      .matches(
-        /^(0[1-9]|1[0-2])\/\d{2}$/,
-        t('application:PREMIUM_MODAL.VALIDATION_INVALID_DATE'),
-      )
+      .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, t('application:PREMIUM_MODAL.VALIDATION_INVALID_DATE'))
       .test(
         'is-valid-exp-date',
         t('application:PREMIUM_MODAL.VALIDATION_EXPIRATION_DATE'),
@@ -59,9 +38,7 @@ const AddNewCard = ({
           if (parsedYear < currentYear || parsedYear > currentYear + 100) {
             return false
           }
-          return parsedYear === currentYear
-            ? month >= currentMonth
-            : month >= 1 && month <= 12
+          return parsedYear === currentYear ? month >= currentMonth : month >= 1 && month <= 12
         },
       ),
     cardCode: yup
@@ -73,10 +50,7 @@ const AddNewCard = ({
         (value) => value?.length === 3 || value?.length === 4,
       ),
 
-    nameOnCard: yup
-      .string()
-      .trim()
-      .required(t('application:PREMIUM_MODAL.VALIDATION_NAME_CARD')),
+    nameOnCard: yup.string().trim().required(t('application:PREMIUM_MODAL.VALIDATION_NAME_CARD')),
   })
 
   const { control, handleSubmit, formState } = useForm({
@@ -140,11 +114,7 @@ const AddNewCard = ({
                           maxLength: 16,
                           endAdornment: (
                             <InputAdornment position="end">
-                              <img
-                                src={CreditCard}
-                                alt="Credit Cards"
-                                style={{ height: '20px' }}
-                              />
+                              <img src={CreditCard} alt="Credit Cards" style={{ height: '20px' }} />
                             </InputAdornment>
                           ),
                         },
@@ -170,9 +140,7 @@ const AddNewCard = ({
                     {...field}
                     fullWidth
                     size="small"
-                    placeholder={t(
-                      'application:PREMIUM_MODAL.EXPIRY_DATE_FORMAT',
-                    )}
+                    placeholder={t('application:PREMIUM_MODAL.EXPIRY_DATE_FORMAT')}
                     variant="outlined"
                     error={!!errors.expDate}
                     helperText={errors.expDate?.message}
@@ -194,9 +162,7 @@ const AddNewCard = ({
                     {...field}
                     fullWidth
                     size="small"
-                    placeholder={t(
-                      'application:PREMIUM_MODAL.PLACEHOLDER_CVV/CVC',
-                    )}
+                    placeholder={t('application:PREMIUM_MODAL.PLACEHOLDER_CVV/CVC')}
                     variant="outlined"
                     error={!!errors.cardCode}
                     helperText={errors.cardCode?.message}
@@ -205,11 +171,7 @@ const AddNewCard = ({
                       maxLength: 4,
                       endAdornment: (
                         <InputAdornment position="end">
-                          <img
-                            src={Creditcvv}
-                            alt="Credit Cards"
-                            style={{ height: '45px' }}
-                          />
+                          <img src={Creditcvv} alt="Credit Cards" style={{ height: '45px' }} />
                         </InputAdornment>
                       ),
                     }}

@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -10,8 +9,11 @@ import {
   AccordionSummary,
   useTheme,
 } from '@mui/material'
-import { useFormContext } from 'react-hook-form'
 import { ChevronDown, ChevronUp, Edit } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+
 import {
   useListChapersQuery,
   useSortLessonMutation,
@@ -20,9 +22,8 @@ import {
   useUpdateChapterMutation,
   useGetLessonsDetailsQuery,
 } from '../../../../../../services/admin'
-import { useTranslation } from 'react-i18next'
-import DeleteModal from '../chapter/delete-modal'
 import AddLessonsModal from '../chapter/add-lessons-modal'
+import DeleteModal from '../chapter/delete-modal'
 import ViewResource from '../view-resource'
 
 const SavedChapters = ({ courseId }) => {
@@ -86,7 +87,9 @@ const SavedChapters = ({ courseId }) => {
     const newChapters = [...chapters]
     const targetIndex = direction === 'up' ? index - 1 : index + 1
 
-    if (targetIndex < 0 || targetIndex >= chapters.length) return
+    if (targetIndex < 0 || targetIndex >= chapters.length) {
+      return
+    }
 
     const [movedChapter] = newChapters.splice(index, 1)
     newChapters.splice(targetIndex, 0, movedChapter)
@@ -265,9 +268,7 @@ const SavedChapters = ({ courseId }) => {
                           color="primary"
                           onClick={(e) => {
                             e.stopPropagation()
-                            setIsEditingChapter((prev) =>
-                              prev === chap._id ? null : chap._id,
-                            )
+                            setIsEditingChapter((prev) => (prev === chap._id ? null : chap._id))
                             setNewChapterTitle(chap.title)
                           }}
                           sx={{
@@ -279,9 +280,7 @@ const SavedChapters = ({ courseId }) => {
                           <Edit size={18} />
                         </IconButton>
                         <DeleteModal
-                          handleDelete={() =>
-                            handleUpdateChapter(chap._id, chap?.title, true)
-                          }
+                          handleDelete={() => handleUpdateChapter(chap._id, chap?.title, true)}
                           message="chapter"
                         />
                       </Box>
@@ -294,10 +293,7 @@ const SavedChapters = ({ courseId }) => {
                       p: { xs: 1.5, md: 2 },
                     }}
                   >
-                    <LessonsList
-                      chapterId={chap._id}
-                      courseId={courseId || ''}
-                    />
+                    <LessonsList chapterId={chap._id} courseId={courseId || ''} />
                   </AccordionDetails>
                 </Accordion>
               </Box>
@@ -340,7 +336,9 @@ const LessonsList = ({ courseId, chapterId }) => {
     const newLessons = [...lessons]
     const targetIndex = direction === 'up' ? index - 1 : index + 1
 
-    if (targetIndex < 0 || targetIndex >= lessons.length) return
+    if (targetIndex < 0 || targetIndex >= lessons.length) {
+      return
+    }
 
     const [movedLesson] = newLessons.splice(index, 1)
     newLessons.splice(targetIndex, 0, movedLesson)
@@ -384,9 +382,7 @@ const LessonsList = ({ courseId, chapterId }) => {
             alignItems="center"
             sx={{
               borderBottom:
-                index < lessons.length - 1
-                  ? `1px solid ${theme.palette.divider}`
-                  : 'none',
+                index < lessons.length - 1 ? `1px solid ${theme.palette.divider}` : 'none',
               py: { xs: 1, md: 1.5 },
               px: { xs: 0.5, md: 1 },
               borderRadius: 1,
@@ -434,10 +430,7 @@ const LessonsList = ({ courseId, chapterId }) => {
             </Box>
 
             <Box display="flex" gap={1} alignItems="center">
-              <ViewResource
-                lessonDetail={{ ...lessonDetail, courseId }}
-                isEdit
-              />
+              <ViewResource lessonDetail={{ ...lessonDetail, courseId }} isEdit />
               <AddLessonsModal
                 isEdit
                 chapterId={chapterId}
@@ -458,11 +451,7 @@ const LessonsList = ({ courseId, chapterId }) => {
         ))}
 
       <Box mt={2}>
-        <AddLessonsModal
-          isEdit={false}
-          chapterId={chapterId}
-          courseId={courseId}
-        />
+        <AddLessonsModal isEdit={false} chapterId={chapterId} courseId={courseId} />
       </Box>
     </Box>
   )

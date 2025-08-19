@@ -36,31 +36,36 @@ function useGoogleLogin(options) {
   const isScriptLoaded = useLoadGsiScript()
 
   useEffect(() => {
-    if (!isScriptLoaded) return
+    if (!isScriptLoaded) {
+      return
+    }
 
     if (window.google?.accounts?.oauth2) {
       const client = window.google.accounts.oauth2.initTokenClient({
-        client_id:
-          '1075571822700-qgpstiaffn0o2b5n4r8eku6rfifmorrb.apps.googleusercontent.com',
+        client_id: '1075571822700-qgpstiaffn0o2b5n4r8eku6rfifmorrb.apps.googleusercontent.com',
         scope: 'openid profile email',
         callback: (response) => {
           if (response.error) {
-            if (onErrorRef.current) onErrorRef.current(response)
+            if (onErrorRef.current) {
+              onErrorRef.current(response)
+            }
             return
           }
-          if (onSuccessRef.current) onSuccessRef.current(response)
+          if (onSuccessRef.current) {
+            onSuccessRef.current(response)
+          }
         },
         error_callback: (nonOAuthError) => {
-          if (onNonOAuthErrorRef.current)
+          if (onNonOAuthErrorRef.current) {
             onNonOAuthErrorRef.current(nonOAuthError)
+          }
         },
       })
       clientRef.current = client
     }
   }, [isScriptLoaded])
 
-  const handleLoginImplicit = (config) =>
-    clientRef.current?.requestAccessToken(config)
+  const handleLoginImplicit = (config) => clientRef.current?.requestAccessToken(config)
 
   return handleLoginImplicit
 }

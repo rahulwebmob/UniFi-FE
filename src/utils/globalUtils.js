@@ -15,7 +15,9 @@ const scriptForFreeSignUp = () => {
   // TODO: Implement free signup script
 }
 const handleDateAndTime = (date) => {
-  if (!date) return '-'
+  if (!date) {
+    return '-'
+  }
   return new Date(date).toLocaleString()
 }
 const getLocaleByLanguageCode = () =>
@@ -26,8 +28,7 @@ const getCookie = () =>
   // TODO: Implement cookie retrieval
   null
 
-const generateUniqueId = () =>
-  Date.now().toString(36) + Math.random().toString(36).substr(2)
+const generateUniqueId = () => Date.now().toString(36) + Math.random().toString(36).substr(2)
 const scriptForPaidSubscription = () => {
   // TODO: Implement paid subscription script
 }
@@ -41,7 +42,9 @@ const readLangCookie = () => {
 }
 const exportToCSV = (data, filename = 'export.csv') => {
   // Simple CSV export implementation
-  if (!data || data.length === 0) return
+  if (!data || data.length === 0) {
+    return
+  }
 
   const headers = Object.keys(data[0])
   const csvContent = [
@@ -50,9 +53,7 @@ const exportToCSV = (data, filename = 'export.csv') => {
       headers
         .map((header) => {
           const value = row[header]
-          return typeof value === 'string' && value.includes(',')
-            ? `"${value}"`
-            : value
+          return typeof value === 'string' && value.includes(',') ? `"${value}"` : value
         })
         .join(','),
     ),
@@ -105,12 +106,7 @@ const convertHtmlToPdf = async (htmlContent, options = {}) => {
   }
 }
 
-const generateInvoicePdf = async (
-  htmlContent,
-  invoiceId,
-  onSuccess,
-  onError,
-) => {
+const generateInvoicePdf = async (htmlContent, invoiceId, onSuccess, onError) => {
   await convertHtmlToPdf(htmlContent, {
     filename: `Invoice_${invoiceId}.pdf`,
     margin: 10,

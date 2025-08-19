@@ -1,18 +1,8 @@
-import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { useRef, useEffect, useCallback } from 'react'
+import { Box, Grid, Paper, Button, useTheme, Container, Typography } from '@mui/material'
 import { PenTool, ArrowRight, Presentation } from 'lucide-react'
-
-import {
-  Box,
-  Grid,
-  alpha,
-  Paper,
-  Button,
-  useTheme,
-  Container,
-  Typography,
-} from '@mui/material'
+import { useRef, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 import { chatSocket, initializeSocket } from '../../../../services/sockets'
 
@@ -28,7 +18,9 @@ const Dashboard = () => {
     }
     setTimeoutId.current = window.setTimeout(() => {
       const token = localStorage.getItem('token')
-      if (token) initializeSocket(token, false)
+      if (token) {
+        initializeSocket(token, false)
+      }
     }, 3000)
   }, [])
 
@@ -99,11 +91,7 @@ const Dashboard = () => {
         </Box>
 
         {/* Quick Actions Cards */}
-        <Grid
-          container
-          spacing={3}
-          sx={{ backgroundColor: 'background.light', p: 3 }}
-        >
+        <Grid container spacing={3} sx={{ backgroundColor: 'background.light', p: 3 }}>
           {cardData.map((item) => {
             const Icon = item.icon
             return (
@@ -123,12 +111,7 @@ const Dashboard = () => {
                     void navigate(item.link)
                   }}
                 >
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    mb={3}
-                  >
+                  <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
                     <Box
                       sx={{
                         display: 'flex',
@@ -151,11 +134,7 @@ const Dashboard = () => {
                       >
                         {t(item.title)}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ lineHeight: 1.5 }}
-                      >
+                      <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
                         {t(item.description)}
                       </Typography>
                     </Box>

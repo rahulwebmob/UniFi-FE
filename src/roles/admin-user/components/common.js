@@ -7,8 +7,7 @@ const fetchImageAsBase64 = async (url) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
       reader.onloadend = () => resolve(reader.result)
-      reader.onerror = () =>
-        reject(new Error('Failed to convert image to base64'))
+      reader.onerror = () => reject(new Error('Failed to convert image to base64'))
       reader.readAsDataURL(blob)
     })
   } catch {
@@ -24,18 +23,16 @@ const convertImagesToBase64 = async (div) => {
       const base64 = await fetchImageAsBase64(src)
       if (base64) {
         img.setAttribute('src', base64)
-      } else img.remove()
+      } else {
+        img.remove()
+      }
     }
   })
 
   await Promise.all(promises)
 }
 
-export const handleGeneratePdf = async (
-  id,
-  requestCallback,
-  successCallback,
-) => {
+export const handleGeneratePdf = async (id, requestCallback, successCallback) => {
   const result = await requestCallback({
     transactionId: id,
   })

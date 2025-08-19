@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { ENV } from '../shared/utils/validation/env'
+
 import { onMutationStarted } from './serviceUtility'
 
 export const onboardingApi = createApi({

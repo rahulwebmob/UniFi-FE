@@ -1,9 +1,9 @@
 import { alpha, createTheme } from '@mui/material/styles'
 
 import { colors } from './foundations/colors'
-import { typography } from './foundations/typography'
 import { components } from './foundations/components'
 import { spacing, breakpoints, borderRadius } from './foundations/spacing'
+import { typography } from './foundations/typography'
 
 // UniCitizens brand gradient definitions
 const gradients = {

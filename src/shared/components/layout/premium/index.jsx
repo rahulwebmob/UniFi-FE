@@ -1,19 +1,12 @@
-import { useState, forwardRef } from 'react'
-import {
-  Box,
-  Stepper,
-  Step,
-  StepLabel,
-  useTheme,
-  Divider,
-  Typography,
-} from '@mui/material'
+import { Box, Stepper, Step, StepLabel, useTheme, Divider, Typography } from '@mui/material'
 import { CreditCard, MapPin, ShoppingCart, CheckCircle } from 'lucide-react'
+import { useState, forwardRef } from 'react'
+
+import ModalBox from '../../ui-elements/modal-box'
 
 import AddNewCard from './add-new-card'
 import BillingAddress from './billing-adress'
 import ReviewEducation from './review-education'
-import ModalBox from '../../ui-elements/modal-box'
 
 const PremiumModal = forwardRef(({ purchaseDetails }, ref) => {
   const [currentStep, setCurrentStep] = useState(0)

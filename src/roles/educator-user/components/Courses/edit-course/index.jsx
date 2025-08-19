@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
-import ApiMiddleware from '../../../../../shared/components/api-middleware'
+
 import { useListChapersQuery } from '../../../../../services/admin'
-import CreateCourse from '../create-course'
+import ApiMiddleware from '../../../../../shared/components/api-middleware'
 import { extractFilename } from '../../common/common'
+import CreateCourse from '../create-course'
 
 const EditCourse = ({ currentStep = 0 }) => {
   const location = useLocation()

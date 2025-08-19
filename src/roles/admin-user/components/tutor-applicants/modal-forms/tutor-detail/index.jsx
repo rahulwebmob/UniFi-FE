@@ -1,21 +1,8 @@
+import { Box, Grid, Chip, Link, Avatar, Button, Divider, Typography } from '@mui/material'
 import { Play, Download } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
 import { useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import {
-  Box,
-  Grid,
-  Chip,
-  Link,
-  Avatar,
-  Button,
-  Divider,
-  Typography,
-} from '@mui/material'
-
-import { downloadPdf } from '../../common'
-import DeclineConfirmation from '../decline-confirmation'
-import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
 import {
   useWatchVideoQuery,
   useDownloadCVQuery,
@@ -24,6 +11,9 @@ import {
   useReconsiderStatusMutation,
   useApproveEducatorStatusMutation,
 } from '../../../../../../services/admin'
+import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
+import { downloadPdf } from '../../common'
+import DeclineConfirmation from '../decline-confirmation'
 
 const TutorDetail = ({ tutor, onClose, filter }) => {
   const navigate = useNavigate()
@@ -184,9 +174,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
             )}
           </Box>
         </Box>
-        <Divider
-          sx={{ mt: 2, borderColor: (theme) => theme.palette.divider }}
-        />
+        <Divider sx={{ mt: 2, borderColor: (theme) => theme.palette.divider }} />
       </Box>
 
       <Box
@@ -246,16 +234,10 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
               </Box>
 
               <Box>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ fontWeight: 500, mb: 1 }}
-                >
+                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
                   Executive Summary
                 </Typography>
-                <Typography variant="body1">
-                  {tutorDetails?.summary ?? '-'}
-                </Typography>
+                <Typography variant="body1">{tutorDetails?.summary ?? '-'}</Typography>
               </Box>
 
               {!!tutorDetails?.expertise?.length && (
@@ -290,18 +272,14 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
                   <Typography variant="body1" color="text.secondary">
                     Company:
                   </Typography>
-                  <Typography variant="body1">
-                    {tutorDetails?.company ?? '-'}
-                  </Typography>
+                  <Typography variant="body1">{tutorDetails?.company ?? '-'}</Typography>
                 </Box>
                 {!!tutorDetails?.experience && (
                   <Box>
                     <Typography variant="body1" color="text.secondary">
                       Experience
                     </Typography>
-                    <Typography variant="body1">
-                      {tutorDetails?.experience} Years
-                    </Typography>
+                    <Typography variant="body1">{tutorDetails?.experience} Years</Typography>
                   </Box>
                 )}
               </Box>
@@ -310,9 +288,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
                 <Typography variant="body1" color="text.secondary">
                   Where did you hear about us?
                 </Typography>
-                <Typography variant="body1">
-                  {tutorDetails?.hau ?? '-'}
-                </Typography>
+                <Typography variant="body1">{tutorDetails?.hau ?? '-'}</Typography>
               </Box>
             </Box>
           </Grid>
@@ -331,9 +307,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
                   <Box display="flex" flexWrap="wrap" gap={1}>
                     {tutorDetails?.education.map((education) => (
                       <Chip
-                        label={`${education.degree ?? '-'}, ${
-                          education.field ?? '-'
-                        }`}
+                        label={`${education.degree ?? '-'}, ${education.field ?? '-'}`}
                         color="primary"
                         variant="outlined"
                         size="small"
@@ -360,9 +334,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
                   <Box display="flex" flexWrap="wrap" gap={1}>
                     {tutorDetails?.certifications.map((certificate) => (
                       <Chip
-                        label={`${certificate?.name ?? '-'},${
-                          certificate?.organization ?? '-'
-                        }`}
+                        label={`${certificate?.name ?? '-'},${certificate?.organization ?? '-'}`}
                         color="primary"
                         variant="filled"
                         size="small"
@@ -374,21 +346,12 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
               )}
 
               <Box>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ fontWeight: 500, mb: 1 }}
-                >
+                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
                   Links
                 </Typography>
                 <Box display="flex" flexDirection="column" gap={1}>
                   {LINK_FIELDS.map(({ field, label }) => (
-                    <Box
-                      key={field}
-                      display="flex"
-                      flexDirection="column"
-                      gap={0.5}
-                    >
+                    <Box key={field} display="flex" flexDirection="column" gap={0.5}>
                       <Typography variant="body2" color="textSecondary">
                         {label}
                       </Typography>
@@ -410,22 +373,12 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
               </Box>
 
               <Box>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ fontWeight: 500, mb: 1 }}
-                >
+                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
                   Profiles on other sites
                 </Typography>
                 {!!tutorDetails?.otherProfileUrls?.length &&
                   tutorDetails?.otherProfileUrls.map((url, idx) => (
-                    <Link
-                      key={idx}
-                      href={url}
-                      target="_blank"
-                      rel="noopener"
-                      color="inherit"
-                    >
+                    <Link key={idx} href={url} target="_blank" rel="noopener" color="inherit">
                       view {idx + 1}
                     </Link>
                   ))}
@@ -459,9 +412,7 @@ const TutorDetail = ({ tutor, onClose, filter }) => {
             borderRadius: '6px',
           }}
           onClick={() =>
-            filter === 'DECLINED'
-              ? void handleDelete(tutor._id)
-              : void openDeclineModal(tutor._id)
+            filter === 'DECLINED' ? void handleDelete(tutor._id) : void openDeclineModal(tutor._id)
           }
         >
           {filter === 'DECLINED' ? 'Delete' : 'Decline'}

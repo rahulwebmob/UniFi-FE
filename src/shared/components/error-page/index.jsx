@@ -1,8 +1,7 @@
+import { Box, Button, styled, useTheme, Typography } from '@mui/material'
 import { AlertTriangle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useRouteError } from 'react-router-dom'
-
-import { Box, Button, styled, useTheme, Typography } from '@mui/material'
 
 const ResetPasswordBox = styled(Box)({
   display: 'flex',

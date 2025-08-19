@@ -1,25 +1,14 @@
-import { useState } from 'react'
+import { Box, Chip, Avatar, Button, Tooltip, Typography, ButtonGroup } from '@mui/material'
 import { Download } from 'lucide-react'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import {
-  Box,
-  Chip,
-  Avatar,
-  Button,
-  Tooltip,
-  Typography,
-  ButtonGroup,
-} from '@mui/material'
+import { useDownloadCVQuery, useViewTutorDetailQuery } from '../../../../../services/admin'
+import { downloadPdf } from '../common'
 
+import Achievements from './achievements'
 import Courses from './courses'
 import Webinars from './webinars'
-import { downloadPdf } from '../common'
-import Achievements from './achievements'
-import {
-  useDownloadCVQuery,
-  useViewTutorDetailQuery,
-} from '../../../../../services/admin'
 
 const LIST_TYPE_OPTIONS = [
   { name: 'Achievements', value: 'IS', component: () => <Achievements /> },
@@ -29,19 +18,11 @@ const LIST_TYPE_OPTIONS = [
 
 const TutorProfile = () => {
   const { id } = useParams()
-  const { data: tutorDetails } = useViewTutorDetailQuery(
-    { educatorId: id || '' },
-    { skip: !id },
-  )
-  const { data: DownloadCv } = useDownloadCVQuery(
-    { educatorId: id || '' },
-    { skip: !id },
-  )
+  const { data: tutorDetails } = useViewTutorDetailQuery({ educatorId: id || '' }, { skip: !id })
+  const { data: DownloadCv } = useDownloadCVQuery({ educatorId: id || '' }, { skip: !id })
 
   const [listType, setListType] = useState('IS')
-  const selectedComponent = LIST_TYPE_OPTIONS.find(
-    (item) => item.value === listType,
-  )?.component
+  const selectedComponent = LIST_TYPE_OPTIONS.find((item) => item.value === listType)?.component
 
   return (
     <Box>
@@ -95,18 +76,13 @@ const TutorProfile = () => {
                 {tutorDetails?.data?.email || '-'}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {tutorDetails?.data?.country || '-'},{' '}
-                {tutorDetails?.data?.state || '-'}
+                {tutorDetails?.data?.country || '-'}, {tutorDetails?.data?.state || '-'}
               </Typography>
             </Box>
           </Box>
 
           <Box mb={3}>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ fontWeight: 500, mb: 1 }}
-            >
+            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
               Executive Summary
             </Typography>
             <Tooltip title={tutorDetails?.data?.summary || '-'} arrow>
@@ -129,11 +105,7 @@ const TutorProfile = () => {
 
           {!!tutorDetails?.data?.expertise?.length && (
             <Box>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ fontWeight: 500, mb: 1 }}
-              >
+              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
                 Expertise
               </Typography>
               <Box display="flex" gap={1} flexWrap="wrap">
@@ -172,11 +144,7 @@ const TutorProfile = () => {
             <Typography variant="body1" sx={{ fontWeight: 500 }}>
               Total Earning
             </Typography>
-            <Typography
-              variant="h6"
-              color="primary.main"
-              sx={{ fontWeight: 600 }}
-            >
+            <Typography variant="h6" color="primary.main" sx={{ fontWeight: 600 }}>
               $
               {!Number.isNaN(tutorDetails?.data?.totalEarnings)
                 ? tutorDetails?.data?.totalEarnings?.toFixed(2)
@@ -196,19 +164,13 @@ const TutorProfile = () => {
               gap: 2,
             }}
           >
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
+            <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography variant="body1">LinkedIn</Typography>
               {tutorDetails?.data?.linkedinUrl ? (
                 <Typography
                   sx={{ cursor: 'pointer', textDecoration: 'underline' }}
                   color="primary"
-                  onClick={() =>
-                    window.open(tutorDetails?.data?.linkedinUrl, '_blank')
-                  }
+                  onClick={() => window.open(tutorDetails?.data?.linkedinUrl, '_blank')}
                   variant="body1"
                 >
                   View
@@ -217,20 +179,14 @@ const TutorProfile = () => {
                 <Typography variant="body2">-</Typography>
               )}
             </Box>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
+            <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography variant="body1">Twitter URL</Typography>
               {tutorDetails?.data?.twitterUrl ? (
                 <Typography
                   sx={{ cursor: 'pointer', textDecoration: 'underline' }}
                   color="primary"
                   variant="body1"
-                  onClick={() =>
-                    window.open(tutorDetails?.data?.twitterUrl, '_blank')
-                  }
+                  onClick={() => window.open(tutorDetails?.data?.twitterUrl, '_blank')}
                 >
                   View
                 </Typography>
@@ -239,20 +195,14 @@ const TutorProfile = () => {
               )}
             </Box>
 
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
+            <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography variant="body1">Website URL</Typography>
               {tutorDetails?.data?.websiteUrl ? (
                 <Typography
                   sx={{ cursor: 'pointer', textDecoration: 'underline' }}
                   color="primary"
                   variant="body1"
-                  onClick={() =>
-                    window.open(tutorDetails?.data?.websiteUrl, '_blank')
-                  }
+                  onClick={() => window.open(tutorDetails?.data?.websiteUrl, '_blank')}
                 >
                   View
                 </Typography>
@@ -291,9 +241,7 @@ const TutorProfile = () => {
               color="secondary"
               startIcon={<Download size={16} />}
               sx={{ mt: 2, alignSelf: 'flex-start' }}
-              onClick={() =>
-                DownloadCv?.url && void downloadPdf(DownloadCv.url)
-              }
+              onClick={() => DownloadCv?.url && void downloadPdf(DownloadCv.url)}
             >
               Download CV
             </Button>

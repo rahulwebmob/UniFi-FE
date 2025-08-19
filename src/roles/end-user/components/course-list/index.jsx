@@ -1,16 +1,14 @@
-import { useTranslation } from 'react-i18next'
-import React, { useState, useEffect } from 'react'
-
 import { Box, Grid } from '@mui/material'
+import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
-import CourseCard from '../course-card'
-import ContentSkeleton from '../content-skeleton'
-import NoDataFound from '../../../../shared/components/no-data-found'
 import { useGetAllCoursesQuery } from '../../../../services/education'
+import NoDataFound from '../../../../shared/components/no-data-found'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
+import ContentSkeleton from '../content-skeleton'
+import CourseCard from '../course-card'
 
-const iff = (condition, trueCase, falseCase) =>
-  condition ? trueCase : falseCase
+const iff = (condition, trueCase, falseCase) => (condition ? trueCase : falseCase)
 
 const CourseList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
   const { t } = useTranslation('education')
@@ -30,9 +28,7 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
     if (isSuccess && !isFetching) {
       if (data?.data?.courses?.length) {
         setList((prev) =>
-          page === 1
-            ? (data.data?.courses ?? [])
-            : [...prev, ...(data.data?.courses ?? [])],
+          page === 1 ? (data.data?.courses ?? []) : [...prev, ...(data.data?.courses ?? [])],
         )
         setCount(data.data?.count ?? 0)
       } else {
@@ -55,7 +51,7 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
       <MuiCarousel>
         {isLoading ? (
           <ContentSkeleton isPurchased />
-        ) : !!list.length ? (
+        ) : list.length ? (
           <>
             {list.map((item) => (
               <Box key={item._id} sx={{ minWidth: 420, maxWidth: 420, px: 1 }}>
@@ -85,9 +81,7 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
             }}
           >
             <NoDataFound
-              description={t(
-                'EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_COURSE',
-              )}
+              description={t('EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_COURSE')}
               title={undefined}
             />
           </Box>
@@ -117,10 +111,7 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
         ) : (
           <Grid container spacing={3}>
             {list.map((item) => (
-              <Grid
-                size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }}
-                key={item._id}
-              >
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }} key={item._id}>
                 <CourseCard course={item} isPurchased={false} />
               </Grid>
             ))}

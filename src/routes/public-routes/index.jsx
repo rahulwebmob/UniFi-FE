@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Outlet, Navigate, useLocation } from 'react-router-dom'
 
-import ScrollToTop from '../../shared/components/scroll-to-top'
 import { signIn, signOut } from '../../redux/reducers/user-slice'
+import ScrollToTop from '../../shared/components/scroll-to-top'
 
 const PublicRoutes = () => {
   const dispatch = useDispatch()
@@ -19,9 +19,7 @@ const PublicRoutes = () => {
 
   const iff = (condition, then, otherwise) => (condition ? then : otherwise)
 
-  const isEducatorPath = /\/educator\/(login|onboarding)/.test(
-    location.pathname,
-  )
+  const isEducatorPath = /\/educator\/(login|onboarding)/.test(location.pathname)
   const isAdminPath = location.pathname.includes('admin/login')
 
   useEffect(() => {
@@ -44,14 +42,7 @@ const PublicRoutes = () => {
     }
 
     setCheckedAuth(true)
-  }, [
-    location.pathname,
-    user,
-    dispatch,
-    isAdminPath,
-    isEducatorPath,
-    tokenInQueryParams,
-  ])
+  }, [location.pathname, user, dispatch, isAdminPath, isEducatorPath, tokenInQueryParams])
 
   if (checkedAuth && user) {
     return (

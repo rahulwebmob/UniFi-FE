@@ -1,25 +1,25 @@
 import './style.css'
 
-import * as fabric from 'fabric'
-import { useTranslation } from 'react-i18next'
-import { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Type, Move, Pencil, Trash2, Download, RotateCcw } from 'lucide-react'
-
 import { Box, Tooltip, useTheme, IconButton } from '@mui/material'
+import * as fabric from 'fabric'
+import { Type, Move, Pencil, Trash2, Download, RotateCcw } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
 
-import Shapes from './shapes'
-import UploadImage from './upload-image'
-import ColorPicker from './color-picker'
-import StrokePicker from './stroke-picker'
-import { ToolBarSection } from '../styles'
-import { SizeType, ColorTypes } from './constants'
 import useWindowOpen from '../../../../hooks/useWindowOpen'
 import {
   updateCanvasId,
   updateStrokeColor,
   updateStrokeWidth,
 } from '../../../../redux/reducers/education-slice'
+import { ToolBarSection } from '../styles'
+
+import ColorPicker from './color-picker'
+import { SizeType, ColorTypes } from './constants'
+import Shapes from './shapes'
+import StrokePicker from './stroke-picker'
+import UploadImage from './upload-image'
 
 let canvas = null
 
@@ -27,9 +27,7 @@ const WhiteBoardToolbar = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation('application')
-  const { strokeColor, eraserWidth, strokeWidth } = useSelector(
-    (state) => state.education,
-  )
+  const { strokeColor, eraserWidth, strokeWidth } = useSelector((state) => state.education)
   const [selectedTool, setSelectedTool] = useState('brush')
   const openWindow = useWindowOpen()
 
@@ -71,7 +69,9 @@ const WhiteBoardToolbar = () => {
   }, [eraserWidth])
 
   const handleDeleteObject = () => {
-    if (!canvas) return
+    if (!canvas) {
+      return
+    }
     const activeObjects = canvas.getActiveObjects()
     if (activeObjects.length) {
       activeObjects.forEach((object) => {
@@ -81,7 +81,9 @@ const WhiteBoardToolbar = () => {
   }
 
   const handleClearCanvas = () => {
-    if (!canvas) return
+    if (!canvas) {
+      return
+    }
     canvas.getObjects().forEach((obj) => {
       canvas?.remove(obj)
     })
@@ -97,8 +99,7 @@ const WhiteBoardToolbar = () => {
         fontSize: 30,
         fontFamily: 'arial black',
       })
-      textInput.hiddenTextareaContainer = canvas.lowerCanvasEl
-        ?.parentNode
+      textInput.hiddenTextareaContainer = canvas.lowerCanvasEl?.parentNode
       canvas.add(textInput)
       canvas.setActiveObject(textInput)
       textInput.enterEditing()
@@ -113,7 +114,9 @@ const WhiteBoardToolbar = () => {
   }
 
   const handleDownload = () => {
-    if (!canvas) return
+    if (!canvas) {
+      return
+    }
     const dataURL = canvas.toDataURL({
       format: 'jpeg',
       quality: 0.9,
@@ -165,7 +168,9 @@ const WhiteBoardToolbar = () => {
               <IconButton
                 onClick={() => {
                   dispatch(updateStrokeColor(theme.palette.common.black))
-                  if (canvas) canvas.isDrawingMode = true
+                  if (canvas) {
+                    canvas.isDrawingMode = true
+                  }
                   setSelectedTool('brush')
                 }}
                 className={selectedTool === 'brush' ? 'activeTool' : ''}
@@ -183,14 +188,12 @@ const WhiteBoardToolbar = () => {
           />
         </ToolBarSection>
         <ToolBarSection>
-          <Tooltip
-            title={t('application:CONFERENCE.WHITE_BOARD.MOVE_TOOL')}
-            arrow
-            placement="top"
-          >
+          <Tooltip title={t('application:CONFERENCE.WHITE_BOARD.MOVE_TOOL')} arrow placement="top">
             <IconButton
               onClick={() => {
-                if (canvas) canvas.isDrawingMode = false
+                if (canvas) {
+                  canvas.isDrawingMode = false
+                }
                 setSelectedTool('hand')
               }}
               className={selectedTool === 'hand' ? 'activeTool' : ''}
@@ -198,11 +201,7 @@ const WhiteBoardToolbar = () => {
               <Move size={24} />
             </IconButton>
           </Tooltip>
-          <Tooltip
-            title={t('application:CONFERENCE.WHITE_BOARD.TEXT_TOOL')}
-            arrow
-            placement="top"
-          >
+          <Tooltip title={t('application:CONFERENCE.WHITE_BOARD.TEXT_TOOL')} arrow placement="top">
             <IconButton
               onClick={() => {
                 handleAddInputField()
@@ -239,11 +238,7 @@ const WhiteBoardToolbar = () => {
               <UploadImage />
             </Box>
           </Tooltip>
-          <Tooltip
-            title={t('application:CONFERENCE.WHITE_BOARD.DOWNLOAD')}
-            arrow
-            placement="top"
-          >
+          <Tooltip title={t('application:CONFERENCE.WHITE_BOARD.DOWNLOAD')} arrow placement="top">
             <IconButton
               onClick={() => {
                 handleDownload()

@@ -1,11 +1,7 @@
-import fixWebmDuration from 'webm-duration-fix'
 import { useRef, useState, useEffect, useCallback } from 'react'
+import fixWebmDuration from 'webm-duration-fix'
 
-const useScreenRecorder = ({
-  isHost,
-  isMicAudioRequired,
-  externalAudioStream = null,
-}) => {
+const useScreenRecorder = ({ isHost, isMicAudioRequired, externalAudioStream = null }) => {
   const chunksRef = useRef([])
   const startTimeRef = useRef(0)
   const audioCtxRef = useRef(null)
@@ -65,9 +61,7 @@ const useScreenRecorder = ({
 
       const systemTracks = screenStream.getAudioTracks()
       if (systemTracks.length) {
-        const systemSource = audioCtx.createMediaStreamSource(
-          new MediaStream(systemTracks),
-        )
+        const systemSource = audioCtx.createMediaStreamSource(new MediaStream(systemTracks))
         systemSource.connect(mixDestination)
       }
 
@@ -76,11 +70,7 @@ const useScreenRecorder = ({
         micSource.connect(mixDestination)
       }
 
-      if (
-        !isHost &&
-        externalAudioStream &&
-        externalAudioStream.getAudioTracks().length > 0
-      ) {
+      if (!isHost && externalAudioStream && externalAudioStream.getAudioTracks().length > 0) {
         const remoteSource = audioCtx.createMediaStreamSource(
           new MediaStream(externalAudioStream.getAudioTracks()),
         )
@@ -100,7 +90,9 @@ const useScreenRecorder = ({
       startTimeRef.current = Date.now()
 
       recorder.ondataavailable = (event) => {
-        if (event.data.size) chunksRef.current.push(event.data)
+        if (event.data.size) {
+          chunksRef.current.push(event.data)
+        }
       }
 
       recorder.onstop = async () => {
@@ -135,8 +127,9 @@ const useScreenRecorder = ({
   }, [externalAudioStream, stopRecording, isHost])
 
   useEffect(() => {
-    if (!isRecording || !audioCtxRef.current || !mixDestinationRef.current)
+    if (!isRecording || !audioCtxRef.current || !mixDestinationRef.current) {
       return
+    }
 
     if (remoteSourceRef.current) {
       remoteSourceRef.current.disconnect()
@@ -165,13 +158,14 @@ const useScreenRecorder = ({
     }
   }, [isMicAudioRequired, isRecording])
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       if (isRecording) {
         stopRecording()
       }
-    }
-  }, [isRecording, stopRecording])
+    },
+    [isRecording, stopRecording],
+  )
 
   const handleToggleRecording = useCallback(
     () => (isRecording ? stopRecording() : startRecording()),

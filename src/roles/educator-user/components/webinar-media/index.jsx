@@ -1,7 +1,6 @@
+import { Box, useTheme } from '@mui/material'
 import { Volume2 } from 'lucide-react'
 import { useRef, useState } from 'react'
-
-import { Box, useTheme } from '@mui/material'
 
 import { styles } from '../styles'
 
@@ -24,7 +23,9 @@ const WebinarMedia = ({ stream, mediaType = 'video', isMirror = false }) => {
         node.onloadedmetadata = async () => {
           try {
             await node.play()
-            if (mediaType === 'audio') setAudioError(false)
+            if (mediaType === 'audio') {
+              setAudioError(false)
+            }
           } catch (error) {
             console.error(`Error playing ${mediaType} stream:`, error)
             if (mediaType === 'audio') {
@@ -71,8 +72,8 @@ const WebinarMedia = ({ stream, mediaType = 'video', isMirror = false }) => {
               position: 'absolute',
             }}
           >
-            <Volume2 size={16} style={{ color: theme.palette.primary.main }} />{' '}
-            Host is speaking – Tap to enable audio
+            <Volume2 size={16} style={{ color: theme.palette.primary.main }} /> Host is speaking –
+            Tap to enable audio
           </Box>
         )}
       </>

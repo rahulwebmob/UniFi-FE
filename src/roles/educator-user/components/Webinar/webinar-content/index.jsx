@@ -1,17 +1,3 @@
-import { format } from 'date-fns'
-import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import {
-  Info,
-  User,
-  Clock,
-  Users,
-  Video,
-  MapPin,
-  Calendar,
-  DollarSign,
-} from 'lucide-react'
-
 import {
   Box,
   Card,
@@ -27,9 +13,13 @@ import {
   CardMedia,
   Typography,
 } from '@mui/material'
+import { format } from 'date-fns'
+import { Info, User, Clock, Users, Video, MapPin, Calendar, DollarSign } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
-import { getEducatorDetails } from '../../common/common'
 import { getLocaleByLanguageCode } from '../../../../../shared/utils/date-helpers/commonMethods'
+import { getEducatorDetails } from '../../common/common'
 
 const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
   const navigate = useNavigate()
@@ -91,12 +81,16 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
     )
 
   const formatDate = (dateString) => {
-    if (!dateString) return '-'
+    if (!dateString) {
+      return '-'
+    }
     return format(new Date(dateString), 'EEEE, dd MMMM yyyy', { locale })
   }
 
   const formatTime = (dateString) => {
-    if (!dateString) return '-'
+    if (!dateString) {
+      return '-'
+    }
     return format(new Date(dateString), 'hh:mm a', { locale })
   }
 
@@ -181,18 +175,14 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                 <Box display="flex" alignItems="center" gap={1.5}>
                   <Calendar size={20} color={theme.palette.primary.main} />
                   <Typography variant="body1" fontWeight={500}>
-                    {formatDate(
-                      webinarData?.webinarScheduledObj?.join_date || '',
-                    )}
+                    {formatDate(webinarData?.webinarScheduledObj?.join_date || '')}
                   </Typography>
                 </Box>
 
                 <Box display="flex" alignItems="center" gap={1.5}>
                   <Clock size={20} color={theme.palette.primary.main} />
                   <Typography variant="body1" fontWeight={500}>
-                    {formatTime(
-                      webinarData?.webinarScheduledObj?.join_date || '',
-                    )}
+                    {formatTime(webinarData?.webinarScheduledObj?.join_date || '')}
                   </Typography>
                   {webinarData?.duration && (
                     <Chip
@@ -211,9 +201,7 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                 {webinarData?.location && (
                   <Box display="flex" alignItems="center" gap={1.5}>
                     <MapPin size={20} color={theme.palette.primary.main} />
-                    <Typography variant="body1">
-                      {webinarData.location}
-                    </Typography>
+                    <Typography variant="body1">{webinarData.location}</Typography>
                   </Box>
                 )}
               </Box>
@@ -241,9 +229,7 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                       background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
                     }}
                   >
-                    {getEducatorDetails(webinarData, 'avatarName') || (
-                      <User size={24} />
-                    )}
+                    {getEducatorDetails(webinarData, 'avatarName') || <User size={24} />}
                   </Avatar>
                   <Box>
                     <Typography variant="body1" fontWeight={600}>
@@ -387,11 +373,7 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                       }}
                     >
                       <DollarSign size={16} style={{ marginRight: 2 }} />
-                      <Typography
-                        variant="caption"
-                        fontWeight={700}
-                        sx={{ letterSpacing: 0.5 }}
-                      >
+                      <Typography variant="caption" fontWeight={700} sx={{ letterSpacing: 0.5 }}>
                         FREE
                       </Typography>
                     </Box>
@@ -414,8 +396,7 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                     >
                       <Users size={18} color={theme.palette.text.secondary} />
                       <Typography variant="body2" color="text.secondary">
-                        Limited to <strong>{webinarData.maxAttendees}</strong>{' '}
-                        attendees
+                        Limited to <strong>{webinarData.maxAttendees}</strong> attendees
                       </Typography>
                     </Box>
                   )}
@@ -423,12 +404,7 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                   {/* Price Section - Only show for paid webinars */}
                   {!webinarData?.isWebinarBought && webinarData?.isPaid && (
                     <Box mb={3}>
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        mb={2}
-                      >
+                      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
                         <Typography
                           variant="body2"
                           color="text.secondary"
@@ -454,13 +430,7 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
 
                   {/* Additional Info */}
                   {webinarData?.isPaid && !webinarData?.isWebinarBought && (
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap={1}
-                      mt={2}
-                      justifyContent="center"
-                    >
+                    <Box display="flex" alignItems="center" gap={1} mt={2} justifyContent="center">
                       <Info size={14} color={theme.palette.text.secondary} />
                       <Typography variant="caption" color="text.secondary">
                         Secure payment • Instant access
@@ -506,31 +476,30 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
             </Typography>
 
             {/* Key Takeaways if available */}
-            {webinarData?.keyTakeaways &&
-              webinarData.keyTakeaways.length > 0 && (
-                <>
-                  <Divider sx={{ my: 3 }} />
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: 600,
-                      mb: 2,
-                      color: theme.palette.text.primary,
-                    }}
-                  >
-                    What You&apos;ll Learn
-                  </Typography>
-                  <Box component="ul" sx={{ pl: 2 }}>
-                    {webinarData.keyTakeaways.map((item, index) => (
-                      <Box component="li" key={index} sx={{ mb: 1 }}>
-                        <Typography variant="body1" color="text.secondary">
-                          {item}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                </>
-              )}
+            {webinarData?.keyTakeaways && webinarData.keyTakeaways.length > 0 && (
+              <>
+                <Divider sx={{ my: 3 }} />
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 600,
+                    mb: 2,
+                    color: theme.palette.text.primary,
+                  }}
+                >
+                  What You&apos;ll Learn
+                </Typography>
+                <Box component="ul" sx={{ pl: 2 }}>
+                  {webinarData.keyTakeaways.map((item, index) => (
+                    <Box component="li" key={index} sx={{ mb: 1 }}>
+                      <Typography variant="body1" color="text.secondary">
+                        {item}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </>
+            )}
           </Paper>
         )}
       </Container>

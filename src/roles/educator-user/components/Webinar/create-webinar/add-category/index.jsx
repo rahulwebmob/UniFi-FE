@@ -1,8 +1,3 @@
-import { Plus } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
-import { useRef, useState, useEffect } from 'react'
-import { Controller, useFormContext } from 'react-hook-form'
-
 import {
   Box,
   Chip,
@@ -13,6 +8,10 @@ import {
   FormControl,
   Autocomplete,
 } from '@mui/material'
+import { Plus } from 'lucide-react'
+import { useRef, useState, useEffect } from 'react'
+import { Controller, useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 import { useGetCategoryListQuery } from '../../../../../../services/admin'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
@@ -33,16 +32,9 @@ const AddCategory = () => {
   const { data, isLoading } = useGetCategoryListQuery(undefined)
 
   useEffect(() => {
-    if (
-      data?.data &&
-      Array.isArray(data.data) &&
-      data.data.length &&
-      !isLoading
-    ) {
+    if (data?.data && Array.isArray(data.data) && data.data.length && !isLoading) {
       const categoryNames = data.data.map((category) => category.name)
-      setCategories((prev) => [
-        ...new Set([...categoryNames.slice(0, 5), ...prev]),
-      ])
+      setCategories((prev) => [...new Set([...categoryNames.slice(0, 5), ...prev])])
     }
   }, [data, isLoading])
 
@@ -84,9 +76,7 @@ const AddCategory = () => {
                     backgroundColor: value?.includes(name)
                       ? theme.palette.primary.main
                       : 'transparent',
-                    color: value?.includes(name)
-                      ? 'white'
-                      : theme.palette.text.primary,
+                    color: value?.includes(name) ? 'white' : theme.palette.text.primary,
                     borderColor: value?.includes(name)
                       ? theme.palette.primary.main
                       : theme.palette.grey[300],
@@ -110,7 +100,7 @@ const AddCategory = () => {
                   borderRadius: '16px',
                   height: '32px',
                   '&:hover': {
-                    backgroundColor: theme.palette.primary.main + '10',
+                    backgroundColor: `${theme.palette.primary.main}10`,
                     borderColor: theme.palette.primary.main,
                   },
                 }}
@@ -119,14 +109,8 @@ const AddCategory = () => {
               </Button>
             </Box>
             {errors?.category && (
-              <Typography
-                variant="caption"
-                color="error"
-                sx={{ mt: 0.5, display: 'block' }}
-              >
-                {typeof errors.category === 'string'
-                  ? errors.category
-                  : errors.category.message}
+              <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                {typeof errors.category === 'string' ? errors.category : errors.category.message}
               </Typography>
             )}
           </FormControl>
@@ -156,10 +140,7 @@ const AddCategory = () => {
               setSelectedCategory(newValue || '')
             }}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                label={t('EDUCATOR.CATEGORY_MODAL.CATEGORY_LABEL')}
-              />
+              <TextField {...params} label={t('EDUCATOR.CATEGORY_MODAL.CATEGORY_LABEL')} />
             )}
           />
           <Box display="flex" justifyContent="flex-end" marginTop={2}>

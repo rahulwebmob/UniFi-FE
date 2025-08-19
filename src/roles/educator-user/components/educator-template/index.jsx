@@ -1,15 +1,14 @@
-import { useEffect } from 'react'
-import { Outlet } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-
 import { Box, useTheme } from '@mui/material'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Outlet } from 'react-router-dom'
 
-import Header from '../Header'
-import Footer from '../Footer'
 import LANGUAGES from '../../../../constants/languages'
-import { useEducatorAuthQuery } from '../../../../services/admin'
 import useManualPolling from '../../../../hooks/useManualPolling'
 import { updateLanguage } from '../../../../redux/reducers/app-slice'
+import { useEducatorAuthQuery } from '../../../../services/admin'
+import Footer from '../Footer'
+import Header from '../Header'
 
 const EducatorTemplate = () => {
   const theme = useTheme()
@@ -22,7 +21,9 @@ const EducatorTemplate = () => {
   useManualPolling(refetch, 3000)
 
   useEffect(() => {
-    if (user?.language) dispatch(updateLanguage(LANGUAGES[user.language]))
+    if (user?.language) {
+      dispatch(updateLanguage(LANGUAGES[user.language]))
+    }
   }, [user?.language, dispatch])
 
   return (

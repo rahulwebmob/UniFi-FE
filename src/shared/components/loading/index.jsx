@@ -1,6 +1,5 @@
-import Lottie from 'lottie-react'
-
 import { Box, useTheme } from '@mui/material'
+import Lottie from 'lottie-react'
 
 import LoadingLogo from '../../../assets/loading-logo.json'
 

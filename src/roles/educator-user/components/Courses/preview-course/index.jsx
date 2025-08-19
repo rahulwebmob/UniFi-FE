@@ -1,5 +1,5 @@
-import React from 'react'
 import { useFormContext } from 'react-hook-form'
+
 import { useCoursePreviewQuery } from '../../../../../services/admin'
 import ApiMiddleware from '../../../../../shared/components/api-middleware'
 import ContentView from '../content-view'

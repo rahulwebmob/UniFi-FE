@@ -1,18 +1,15 @@
-import React, { useRef, useState, useMemo } from 'react'
 import { Box, Button } from '@mui/material'
-import { useSelector } from 'react-redux'
 import { VideoIcon, FileText, Lock } from 'lucide-react'
-import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
+import { useRef, useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+
 import { useDownloadResourceMutation } from '../../../../../../services/admin'
 import ContentPreview from '../../../../../../shared/components/layout/Course/content-preview'
-import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
+import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
 
-const ViewResource = ({
-  lessonDetail,
-  isEdit = true,
-  handleOpenPremiumModal = () => {},
-}) => {
+const ViewResource = ({ lessonDetail, isEdit = true, handleOpenPremiumModal = () => {} }) => {
   const videoRef = useRef(null)
   const navigate = useNavigate()
   const { t } = useTranslation('education')
@@ -21,10 +18,7 @@ const ViewResource = ({
   const [downloadResource] = useDownloadResourceMutation()
   const isRTL = direction === 'rtl'
 
-  const isPdf = useMemo(
-    () => lessonDetail?.lessonType === 'pdf',
-    [lessonDetail],
-  )
+  const isPdf = useMemo(() => lessonDetail?.lessonType === 'pdf', [lessonDetail])
   const isFreeOrPurchased = useMemo(
     () => isEdit || lessonDetail?.isFree || lessonDetail?.isCourseBought,
     [isEdit, lessonDetail],
@@ -74,12 +68,8 @@ const ViewResource = ({
           }}
         >
           {isPdf
-            ? t(
-                'education:EDUCATION_DASHBOARD.COURSE_DETAILS.VIEW_RESOURCE.READ_PDF',
-              )
-            : t(
-                'education:EDUCATION_DASHBOARD.COURSE_DETAILS.VIEW_RESOURCE.WATCH_VIDEO',
-              )}
+            ? t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.VIEW_RESOURCE.READ_PDF')
+            : t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.VIEW_RESOURCE.WATCH_VIDEO')}
         </Button>
       ) : (
         <Button

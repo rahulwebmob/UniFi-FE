@@ -1,17 +1,8 @@
+import { Box, Grid, Button, Divider, TextField, Typography, FormControl } from '@mui/material'
 import { Plus, Minus } from 'lucide-react'
+import { Controller, useFieldArray } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { NumericFormat } from 'react-number-format'
-import { Controller, useFieldArray } from 'react-hook-form'
-
-import {
-  Box,
-  Grid,
-  Button,
-  Divider,
-  TextField,
-  Typography,
-  FormControl,
-} from '@mui/material'
 
 const Qualification = ({ control }) => {
   const {
@@ -85,9 +76,7 @@ const Qualification = ({ control }) => {
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
-                  placeholder={t(
-                    'REGISTER_EDUCATOR.QUALIFICATION_PAGE.COMPANY_PLACEHOLDER',
-                  )}
+                  placeholder={t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.COMPANY_PLACEHOLDER')}
                   size="small"
                   error={!!fieldState.error}
                   helperText={fieldState.error?.message}
@@ -99,9 +88,7 @@ const Qualification = ({ control }) => {
 
         <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
           <FormControl fullWidth>
-            <Typography variant="body1">
-              {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.YOE')}
-            </Typography>
+            <Typography variant="body1">{t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.YOE')}</Typography>
             <Controller
               name="experience"
               control={control}
@@ -110,9 +97,7 @@ const Qualification = ({ control }) => {
                   {...field}
                   customInput={TextField}
                   type="text"
-                  placeholder={t(
-                    'REGISTER_EDUCATOR.QUALIFICATION_PAGE.YOE_PLACEHOLDER',
-                  )}
+                  placeholder={t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.YOE_PLACEHOLDER')}
                   size="small"
                   allowNegative={false}
                   decimalScale={2}
@@ -155,12 +140,7 @@ const Qualification = ({ control }) => {
         </Box>
 
         {expertiseFields.map((f, index) => (
-          <Grid
-            container
-            spacing={1}
-            key={f.id}
-            mb={expertiseFields?.length > 1 ? 1 : 0}
-          >
+          <Grid container spacing={1} key={f.id} mb={expertiseFields?.length > 1 ? 1 : 0}>
             {!!index && (
               <Grid size={{ xs: 12 }} textAlign="right">
                 <Button
@@ -190,9 +170,7 @@ const Qualification = ({ control }) => {
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      placeholder={t(
-                        'REGISTER_EDUCATOR.QUALIFICATION_PAGE.CATEGORY_PLACEHOLDER',
-                      )}
+                      placeholder={t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.CATEGORY_PLACEHOLDER')}
                       size="small"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
@@ -233,12 +211,7 @@ const Qualification = ({ control }) => {
         </Box>
 
         {educationFields.map((f, index) => (
-          <Grid
-            container
-            spacing={1}
-            key={f.id}
-            mb={educationFields?.length > 1 ? 1 : 0}
-          >
+          <Grid container spacing={1} key={f.id} mb={educationFields?.length > 1 ? 1 : 0}>
             {!!index && (
               <Grid size={{ xs: 12 }} textAlign="right">
                 <Button
@@ -268,9 +241,7 @@ const Qualification = ({ control }) => {
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      placeholder={t(
-                        'REGISTER_EDUCATOR.QUALIFICATION_PAGE.DEGREE_PLACEHOLDER',
-                      )}
+                      placeholder={t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.DEGREE_PLACEHOLDER')}
                       size="small"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
@@ -292,9 +263,7 @@ const Qualification = ({ control }) => {
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      placeholder={t(
-                        'REGISTER_EDUCATOR.QUALIFICATION_PAGE.FIELD_OF_STUDY',
-                      )}
+                      placeholder={t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.FIELD_OF_STUDY')}
                       size="small"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
@@ -334,12 +303,7 @@ const Qualification = ({ control }) => {
           </Button>
         </Box>
         {certificateFields.map((f, index) => (
-          <Grid
-            container
-            spacing={1}
-            key={f.id}
-            mb={certificateFields?.length > 1 ? 1 : 0}
-          >
+          <Grid container spacing={1} key={f.id} mb={certificateFields?.length > 1 ? 1 : 0}>
             {!!index && (
               <Grid size={{ xs: 12 }} textAlign="right">
                 <Button
@@ -384,9 +348,7 @@ const Qualification = ({ control }) => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <Typography variant="body1">
-                  {t(
-                    'REGISTER_EDUCATOR.QUALIFICATION_PAGE.ISSUING_ORGANIZATION',
-                  )}
+                  {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.ISSUING_ORGANIZATION')}
                 </Typography>
                 <Controller
                   name={`certifications.${index}.organization`}

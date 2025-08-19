@@ -1,7 +1,3 @@
-import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
-import { forwardRef, useImperativeHandle } from 'react'
-
 import {
   Box,
   Radio,
@@ -12,6 +8,9 @@ import {
   FormControl,
   FormControlLabel,
 } from '@mui/material'
+import { forwardRef, useImperativeHandle } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
 
 import LANGUAGES from '../../../../../constants/languages'
 import { updateLanguage } from '../../../../../redux/reducers/app-slice'

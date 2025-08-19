@@ -50,10 +50,7 @@ const PrivateRoute = ({ children, module }) => {
 
   if (user?.role === 'user') {
     // Regular users can only access dashboard and settings routes
-    if (
-      !location.pathname.includes('/dashboard') &&
-      !location.pathname.includes('/settings')
-    ) {
+    if (!location.pathname.includes('/dashboard') && !location.pathname.includes('/settings')) {
       return <Navigate to="/dashboard" />
     }
   }

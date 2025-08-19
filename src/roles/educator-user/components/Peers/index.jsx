@@ -1,20 +1,16 @@
+import { Box, Avatar, Typography } from '@mui/material'
 import { User } from 'lucide-react'
 import { useMemo } from 'react'
 
-import { Box, Avatar, Typography } from '@mui/material'
-
-import { styles, CarouselItem } from '../styles'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
+import { styles, CarouselItem } from '../styles'
 
 const PeerCarouselItem = ({ label }) => (
   <CarouselItem>
     <Box sx={{ ...styles.container }}>
       <Box sx={styles.videoContainer}>
         <Box sx={styles.wrapper}>
-          <Avatar
-            alt={label}
-            sx={{ background: (theme) => theme.palette.primary[100] }}
-          >
+          <Avatar alt={label} sx={{ background: (theme) => theme.palette.primary[100] }}>
             <User size={20} />
           </Avatar>
         </Box>

@@ -1,12 +1,7 @@
 import { Typography } from '@mui/material'
 
 const RequiredFieldIndicator = () => (
-  <Typography
-    variant="body1"
-    className="star"
-    component="span"
-    position="relative"
-  >
+  <Typography variant="body1" className="star" component="span" position="relative">
     <Typography
       component="span"
       sx={{

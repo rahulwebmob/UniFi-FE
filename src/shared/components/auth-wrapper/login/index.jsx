@@ -1,11 +1,4 @@
-import * as yup from 'yup'
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { Eye, EyeOff } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-
 import {
   Box,
   Grid,
@@ -16,18 +9,22 @@ import {
   Typography,
   InputAdornment,
 } from '@mui/material'
+import { Eye, EyeOff } from 'lucide-react'
+import { useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import * as yup from 'yup'
 
-import ResendEmail from '../resend-email'
-import ForgetPassword from '../forget-password'
-import SocialMediaAuth from './social-media-auth'
 import MainLogo from '../../../../assets/logo.svg'
 import { signIn } from '../../../../redux/reducers/user-slice'
-import { initializeSocket } from '../../../../services/sockets'
+import { useLoginMutation, useEducatorLoginMutation } from '../../../../services/admin'
 import { useAdminLoginMutation } from '../../../../services/onboarding'
-import {
-  useLoginMutation,
-  useEducatorLoginMutation,
-} from '../../../../services/admin'
+import { initializeSocket } from '../../../../services/sockets'
+import ForgetPassword from '../forget-password'
+import ResendEmail from '../resend-email'
+
+import SocialMediaAuth from './social-media-auth'
 
 const ViewState = {
   LOGIN: 'LOGIN',
@@ -50,11 +47,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
   const [adminLogin, { isLoading: isAdminLoading }] = useAdminLoginMutation()
 
   const schema = yup.object().shape({
-    email: yup
-      .string()
-      .email('Enter a valid email')
-      .trim()
-      .required('Email is required'),
+    email: yup.string().email('Enter a valid email').trim().required('Email is required'),
     password: yup.string().required('Password is required'),
   })
 
@@ -81,7 +74,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
     }
 
     if (response?.data) {
-      const token = response.data.token
+      const { token } = response.data
       localStorage.setItem('token', token)
       dispatch(signIn({ token }))
 
@@ -112,18 +105,8 @@ const Login = ({ type = '', setIsLoginPage }) => {
 
   const renderHeader = () => (
     <Box display="flex" alignItems="center">
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        width="100%"
-      >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={{ mb: 1 }}
-        >
+      <Box display="flex" flexDirection="column" justifyContent="center" width="100%">
+        <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 1 }}>
           <img src={MainLogo} alt="Logo" style={{ width: 80, height: 80 }} />
         </Box>
         <Typography
@@ -137,13 +120,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
         >
           UNICITIZENS
         </Typography>
-        <Typography
-          component="p"
-          fontWeight={400}
-          textAlign="center"
-          mb={2}
-          sx={{ opacity: 0.8 }}
-        >
+        <Typography component="p" fontWeight={400} textAlign="center" mb={2} sx={{ opacity: 0.8 }}>
           {type === 'admin'
             ? 'Enter your credentials to access the admin portal'
             : type === 'educator'
@@ -230,11 +207,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
 
   const renderForgotPasswordLink = () => (
     <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
-      <Typography
-        variant="body2"
-        color={theme.palette.text.secondary}
-        sx={{ fontSize: 14 }}
-      >
+      <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: 14 }}>
         Trouble logging in?
         <Typography
           variant="body2"
@@ -257,11 +230,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
 
   const renderEducatorSignup = () => (
     <Box display="flex" alignItems="center" justifyContent="center" pt={2}>
-      <Typography
-        variant="body2"
-        color={theme.palette.text.secondary}
-        sx={{ fontSize: 14 }}
-      >
+      <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: 14 }}>
         Want to become an educator?
         <Typography
           variant="body2"
@@ -290,18 +259,8 @@ const Login = ({ type = '', setIsLoginPage }) => {
         setIsOAuthLoading={setIsOAuthLoading}
         isOAuthLoading={isLoading || isOAuthLoading}
       />
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        mt={2}
-        pb={2}
-      >
-        <Typography
-          variant="body2"
-          color={theme.palette.text.secondary}
-          sx={{ fontSize: 14 }}
-        >
+      <Box display="flex" alignItems="center" justifyContent="center" mt={2} pb={2}>
+        <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: 14 }}>
           Don&apos;t have an account?
           <Typography
             variant="body2"

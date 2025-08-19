@@ -2,10 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { ENV } from '../shared/utils/validation/env'
 import { readLangCookie } from '../utils/globalUtils'
-import {
-  onMutationStartedDefault,
-  onQueryStartedDefault,
-} from './serviceUtility'
+
+import { onMutationStartedDefault, onQueryStartedDefault } from './serviceUtility'
 
 export const adminApi = createApi({
   reducerPath: 'adminApi',
@@ -18,7 +16,9 @@ export const adminApi = createApi({
       }
 
       const languePref = readLangCookie()
-      if (languePref) headers.set('language', languePref)
+      if (languePref) {
+        headers.set('language', languePref)
+      }
 
       return headers
     },

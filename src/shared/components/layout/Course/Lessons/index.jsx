@@ -1,17 +1,3 @@
-import React, { useState, useEffect } from 'react'
-import { useParams, useLocation } from 'react-router-dom'
-import {
-  Lock,
-  Video,
-  Clock,
-  FileText,
-  BookOpen,
-  PlayCircle,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react'
-
 import {
   Box,
   Grid,
@@ -26,13 +12,26 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from '@mui/material'
+import {
+  Lock,
+  Video,
+  Clock,
+  FileText,
+  BookOpen,
+  PlayCircle,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useParams, useLocation } from 'react-router-dom'
 
-import ContentPreview from '../content-preview'
-import ApiResponseWrapper from '../../../api-middleware'
 import {
   useGetChapterDetailsQuery,
   useGetParticularCourseQuery,
 } from '../../../../../services/education'
+import ApiResponseWrapper from '../../../api-middleware'
+import ContentPreview from '../content-preview'
 
 const handleFormatSeconds = (seconds) => {
   const hours = Math.floor(seconds / 3600)
@@ -68,11 +67,7 @@ const Lessons = () => {
       lessonId: selectedVideo?.lessonId ?? '',
     },
     {
-      skip: !(
-        selectedVideo?.courseId &&
-        selectedVideo?.chapterId &&
-        selectedVideo?.lessonId
-      ),
+      skip: !(selectedVideo?.courseId && selectedVideo?.chapterId && selectedVideo?.lessonId),
     },
   )
 
@@ -80,12 +75,8 @@ const Lessons = () => {
     const { chapterId, lessonId } = location.state ?? {}
 
     if (chapterId && lessonId && courseData?.data?.chapters) {
-      const chapter = courseData.data.chapters.find(
-        (ch) => ch._id === chapterId,
-      )
-      const lessonIndex =
-        chapter?.lessonList?.findIndex((lesson) => lesson._id === lessonId) ??
-        -1
+      const chapter = courseData.data.chapters.find((ch) => ch._id === chapterId)
+      const lessonIndex = chapter?.lessonList?.findIndex((lesson) => lesson._id === lessonId) ?? -1
 
       if (lessonIndex !== -1) {
         setSelectedVideo({ courseId: id ?? '', chapterId, lessonId })
@@ -96,10 +87,7 @@ const Lessons = () => {
             .findIndex((lesson) => lesson._id === lessonId),
         )
       }
-    } else if (
-      courseData?.data?.chapters?.length &&
-      courseData.data.chapters.length > 0
-    ) {
+    } else if (courseData?.data?.chapters?.length && courseData.data.chapters.length > 0) {
       const firstChapter = courseData.data.chapters[0]
       const firstLesson = firstChapter.lessonList?.[0]
 
@@ -115,7 +103,9 @@ const Lessons = () => {
   }, [location.state, courseData, id])
 
   const handleLessonNavigation = (direction) => {
-    if (!courseData?.data?.chapters) return
+    if (!courseData?.data?.chapters) {
+      return
+    }
 
     const maxIndex =
       courseData.data.chapters
@@ -150,7 +140,9 @@ const Lessons = () => {
       .filter((lesson) => lesson !== undefined).length || 0
 
   const getCurrentLesson = () => {
-    if (!courseData?.data?.chapters || !selectedVideo) return null
+    if (!courseData?.data?.chapters || !selectedVideo) {
+      return null
+    }
     const allLessons = courseData.data.chapters
       .flatMap((ch) => ch.lessonList || [])
       .filter((lesson) => lesson !== undefined)
@@ -158,21 +150,17 @@ const Lessons = () => {
   }
 
   const getCurrentChapter = () => {
-    if (!courseData?.data?.chapters || !selectedVideo) return null
-    return courseData.data.chapters.find(
-      (ch) => ch._id === selectedVideo.chapterId,
-    )
+    if (!courseData?.data?.chapters || !selectedVideo) {
+      return null
+    }
+    return courseData.data.chapters.find((ch) => ch._id === selectedVideo.chapterId)
   }
 
   const currentLesson = getCurrentLesson()
   const currentChapter = getCurrentChapter()
 
   return (
-    <ApiResponseWrapper
-      error={error}
-      isLoading={isLoading}
-      isData={!!courseData?.data}
-    >
+    <ApiResponseWrapper error={error} isLoading={isLoading} isData={!!courseData?.data}>
       <Box
         sx={{
           minHeight: '100vh',
@@ -279,9 +267,7 @@ const Lessons = () => {
                         {currentLesson?.title || 'Loading...'}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {currentLesson?.lessonType === 'video'
-                          ? 'Video Lesson'
-                          : 'Document'}
+                        {currentLesson?.lessonType === 'video' ? 'Video Lesson' : 'Document'}
                       </Typography>
                     </Box>
                   </Box>
@@ -473,12 +459,7 @@ const Lessons = () => {
                           },
                         }}
                       >
-                        <Box
-                          display="flex"
-                          alignItems="center"
-                          gap={2}
-                          width="100%"
-                        >
+                        <Box display="flex" alignItems="center" gap={2} width="100%">
                           <Box
                             sx={{
                               width: 32,
@@ -487,10 +468,7 @@ const Lessons = () => {
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              background: alpha(
-                                theme.palette.primary.main,
-                                0.1,
-                              ),
+                              background: alpha(theme.palette.primary.main, 0.1),
                               color: theme.palette.primary.main,
                               fontWeight: 600,
                               fontSize: '0.875rem',
@@ -508,10 +486,7 @@ const Lessons = () => {
                             >
                               {chapter.title}
                             </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
+                            <Typography variant="caption" color="text.secondary">
                               {chapter.lessonList?.length || 0} Lessons
                             </Typography>
                           </Box>
@@ -520,10 +495,8 @@ const Lessons = () => {
 
                       <AccordionDetails sx={{ p: 0 }}>
                         {chapter.lessonList?.map((lesson, lessonIndex) => {
-                          const isSelected =
-                            lesson._id === selectedVideo?.lessonId
-                          const isLocked =
-                            !lesson?.isFree && !courseData?.data?.isCourseBought
+                          const isSelected = lesson._id === selectedVideo?.lessonId
+                          const isLocked = !lesson?.isFree && !courseData?.data?.isCourseBought
 
                           return (
                             <Box
@@ -548,8 +521,7 @@ const Lessons = () => {
                                       : alpha(theme.palette.primary.main, 0.04),
                                 },
                                 borderBottom:
-                                  lessonIndex <
-                                  (chapter.lessonList?.length ?? 0) - 1
+                                  lessonIndex < (chapter.lessonList?.length ?? 0) - 1
                                     ? `1px solid ${alpha(theme.palette.grey[200], 0.5)}`
                                     : 'none',
                               }}
@@ -564,8 +536,7 @@ const Lessons = () => {
                                     courseData?.data?.chapters
                                       ?.flatMap((ch) => ch.lessonList || [])
                                       .filter((l) => l !== undefined)
-                                      .findIndex((l) => l._id === lesson._id) ??
-                                      0,
+                                      .findIndex((l) => l._id === lesson._id) ?? 0,
                                   )
                                 }
                               }}
@@ -583,10 +554,7 @@ const Lessons = () => {
                                       ? theme.palette.primary.main
                                       : lesson?.lessonType === 'video'
                                         ? alpha(theme.palette.info.main, 0.1)
-                                        : alpha(
-                                            theme.palette.warning.main,
-                                            0.1,
-                                          ),
+                                        : alpha(theme.palette.warning.main, 0.1),
                                     color: isSelected
                                       ? 'white'
                                       : lesson?.lessonType === 'video'
@@ -617,29 +585,12 @@ const Lessons = () => {
                                   >
                                     {lesson?.title}
                                   </Typography>
-                                  <Box
-                                    display="flex"
-                                    alignItems="center"
-                                    gap={1}
-                                  >
-                                    {typeof lesson?.durationInSeconds ===
-                                      'number' && (
-                                      <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={0.5}
-                                      >
-                                        <Clock
-                                          size={12}
-                                          color={theme.palette.text.secondary}
-                                        />
-                                        <Typography
-                                          variant="caption"
-                                          color="text.secondary"
-                                        >
-                                          {handleFormatSeconds(
-                                            lesson.durationInSeconds,
-                                          )}
+                                  <Box display="flex" alignItems="center" gap={1}>
+                                    {typeof lesson?.durationInSeconds === 'number' && (
+                                      <Box display="flex" alignItems="center" gap={0.5}>
+                                        <Clock size={12} color={theme.palette.text.secondary} />
+                                        <Typography variant="caption" color="text.secondary">
+                                          {handleFormatSeconds(lesson.durationInSeconds)}
                                         </Typography>
                                       </Box>
                                     )}
@@ -651,10 +602,7 @@ const Lessons = () => {
                                           sx={{
                                             height: 16,
                                             fontSize: '0.65rem',
-                                            background: alpha(
-                                              theme.palette.success.main,
-                                              0.1,
-                                            ),
+                                            background: alpha(theme.palette.success.main, 0.1),
                                             color: theme.palette.success.main,
                                             '& .MuiChip-label': {
                                               px: 1,
@@ -666,10 +614,7 @@ const Lessons = () => {
                                 </Box>
 
                                 {isSelected && (
-                                  <PlayCircle
-                                    size={18}
-                                    color={theme.palette.primary.main}
-                                  />
+                                  <PlayCircle size={18} color={theme.palette.primary.main} />
                                 )}
                               </Box>
                             </Box>

@@ -1,7 +1,4 @@
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { useRef, useState } from 'react'
+import { Box, Button, Drawer } from '@mui/material'
 import {
   Mic,
   Hand,
@@ -15,20 +12,23 @@ import {
   Paperclip,
   MessageCircle,
 } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
-import { Box, Button, Drawer } from '@mui/material'
-
-import WhiteBoard from '../white-board'
 // import ConferenceChat from '../../Conference/ConferenceChat/ConferenceChat'
-import ControlIcon from './control-icon'
-import { ControlsContainer } from '../styles'
-import RecordingPopup from '../recording-popup'
-import { isAndroidOrIphone } from '../common/common'
-import WebinarAttachments from '../webinar-attachments'
 import useFullscreen from '../../../../hooks/useFullscreen'
 import useScreenRecorder from '../../../../hooks/useScreenRecorder'
 import ModalBox from '../../../../shared/components/ui-elements/modal-box'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
+import { isAndroidOrIphone } from '../common/common'
+import RecordingPopup from '../recording-popup'
+import { ControlsContainer } from '../styles'
+import WebinarAttachments from '../webinar-attachments'
+import WhiteBoard from '../white-board'
+
+import ControlIcon from './control-icon'
 
 const Toolbar = ({
   isHost,
@@ -70,11 +70,12 @@ const Toolbar = ({
     }, 15000)
   }
 
-  const handleToggleFullscreen = () =>
-    isFullscreen ? handleExitFullScreen() : handleFullScreen()
+  const handleToggleFullscreen = () => (isFullscreen ? handleExitFullScreen() : handleFullScreen())
 
   const handleLeaveCall = () => {
-    if (isHost) handleEndWebinar()
+    if (isHost) {
+      handleEndWebinar()
+    }
     if (isHost) {
       void navigate('/educator/webinars')
     } else {
@@ -89,7 +90,9 @@ const Toolbar = ({
 
   const handleOpenWhiteBoard = () => {
     whiteBoardRef.current?.openModal()
-    if (!mediaStatus.isScreen && !isAndroidOrIphone()) handleTurnedScreenShare()
+    if (!mediaStatus.isScreen && !isAndroidOrIphone()) {
+      handleTurnedScreenShare()
+    }
   }
 
   const handleOpenDrawer = (content) => {
@@ -112,9 +115,7 @@ const Toolbar = ({
                   ? t('application:CONFERENCE.CONTROL_SECTION.MUTE')
                   : t('application:CONFERENCE.CONTROL_SECTION.UNMUTE')
               }
-              icon={
-                mediaStatus.isAudio ? <Mic size={18} /> : <MicOff size={18} />
-              }
+              icon={mediaStatus.isAudio ? <Mic size={18} /> : <MicOff size={18} />}
             />
             <ControlIcon
               disabled={isLoading}
@@ -126,13 +127,7 @@ const Toolbar = ({
                   ? t('application:CONFERENCE.CONTROL_SECTION.STOP_VIDEO')
                   : t('application:CONFERENCE.CONTROL_SECTION.START_VIDEO')
               }
-              icon={
-                mediaStatus.isVideo ? (
-                  <Video size={18} />
-                ) : (
-                  <VideoOff size={18} />
-                )
-              }
+              icon={mediaStatus.isVideo ? <Video size={18} /> : <VideoOff size={18} />}
             />
           </>
         )}
@@ -248,11 +243,7 @@ const Toolbar = ({
           : t('application:CONFERENCE.CONTROL_SECTION.LEAVE_CALL')}
       </Button>
 
-      <Drawer
-        anchor="right"
-        open={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-      >
+      <Drawer anchor="right" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
         <Box
           sx={{
             width: 400,
@@ -267,10 +258,7 @@ const Toolbar = ({
             </Box>
           )}
           {activeDrawerContent === 'attachments' && (
-            <WebinarAttachments
-              isHost={isHost}
-              handleOnClose={() => setIsDrawerOpen(false)}
-            />
+            <WebinarAttachments isHost={isHost} handleOnClose={() => setIsDrawerOpen(false)} />
           )}
         </Box>
       </Drawer>

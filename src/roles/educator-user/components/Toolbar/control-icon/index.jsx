@@ -4,26 +4,17 @@ import { ControlButton } from '../../styles'
 
 const iff = (condition, then, otherwise) => (condition ? then : otherwise)
 
-const ControlIcon = ({
-  icon,
-  label,
-  onClick,
-  disabled,
-  isActive = false,
-  isRecording = false,
-}) => (
+const ControlIcon = ({ icon, label, onClick, disabled, isActive = false, isRecording = false }) => (
   <ControlButton
     onClick={onClick}
     disabled={disabled}
     sx={{
       transition: 'all 0.3s ease-in-out',
       '&:hover svg': {
-        fill: (theme) =>
-          isRecording ? theme.palette.error.main : theme.palette.primary.main,
+        fill: (theme) => (isRecording ? theme.palette.error.main : theme.palette.primary.main),
       },
       '&:hover .MuiTypography-root': {
-        color: (theme) =>
-          isRecording ? theme.palette.error.main : theme.palette.primary.main,
+        color: (theme) => (isRecording ? theme.palette.error.main : theme.palette.primary.main),
       },
     }}
   >
@@ -35,11 +26,7 @@ const ControlIcon = ({
             iff(
               isActive && isRecording,
               theme.palette.error.main,
-              iff(
-                isActive,
-                theme.palette.primary.main,
-                theme.palette.grey[500],
-              ),
+              iff(isActive, theme.palette.primary.main, theme.palette.grey[500]),
             ),
         },
         cursor: disabled ? 'not-allowed' : 'pointer',
@@ -55,11 +42,7 @@ const ControlIcon = ({
           iff(
             isActive && isRecording,
             theme.palette.error.main,
-            iff(
-              isActive,
-              theme.palette.primary.main,
-              theme.palette.text.secondary,
-            ),
+            iff(isActive, theme.palette.primary.main, theme.palette.text.secondary),
           ),
       }}
     >

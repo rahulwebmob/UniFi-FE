@@ -1,33 +1,25 @@
-import * as yup from 'yup'
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Box, Step, Button, Stepper, useTheme, StepLabel, Typography } from '@mui/material'
 import { User, Check, Link2, FileText, GraduationCap } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import * as yup from 'yup'
 
-import {
-  Box,
-  Step,
-  Button,
-  Stepper,
-  useTheme,
-  StepLabel,
-  Typography,
-} from '@mui/material'
-
-import About from './About'
-import Links from './Links'
-import Document from './Document'
-import Qualification from './Qualification'
-import ThankYou from '../components/ThankYou'
-import MainLogo from '../../../assets/logo.svg'
-import { urlRegexPatterns } from './constant/constant'
 import EducatorLoginImage from '../../../assets/educator-login.avif'
+import MainLogo from '../../../assets/logo.svg'
 import { useLazyVerifyEducatorEmailQuery } from '../../../services/admin'
 import { useRegisterEducatorMutation } from '../../../services/uploadProgress'
 import { transformNaNToNull } from '../components/common/common'
+import ThankYou from '../components/ThankYou'
+
+import About from './About'
+import { urlRegexPatterns } from './constant/constant'
+import Document from './Document'
+import Links from './Links'
+import Qualification from './Qualification'
 
 const TEXT = (t) => t('education:REGISTER_EDUCATOR.THANK_YOU_TEXT')
 
@@ -73,27 +65,15 @@ const StepIcon = ({ active = false, completed = false, stepIndex = 0 }) => {
 
 const validationSchema = (t) => [
   yup.object().shape({
-    firstName: yup
-      .string()
-      .trim()
-      .required(t('REGISTER_EDUCATOR.VALIDATION.NAME_REQUIRED')),
-    lastName: yup
-      .string()
-      .trim()
-      .required(t('REGISTER_EDUCATOR.VALIDATION.LAST_NAME_REQUIRED')),
+    firstName: yup.string().trim().required(t('REGISTER_EDUCATOR.VALIDATION.NAME_REQUIRED')),
+    lastName: yup.string().trim().required(t('REGISTER_EDUCATOR.VALIDATION.LAST_NAME_REQUIRED')),
     email: yup
       .string()
       .trim()
       .email(t('REGISTER_EDUCATOR.VALIDATION.INVALID_EMAIL'))
       .required(t('REGISTER_EDUCATOR.VALIDATION.EMAIL_REQUIRED')),
-    country: yup
-      .string()
-      .trim()
-      .required(t('REGISTER_EDUCATOR.VALIDATION.COUNTRY_REQUIRED')),
-    state: yup
-      .string()
-      .trim()
-      .required(t('REGISTER_EDUCATOR.VALIDATION.STATE_REQUIRED')),
+    country: yup.string().trim().required(t('REGISTER_EDUCATOR.VALIDATION.COUNTRY_REQUIRED')),
+    state: yup.string().trim().required(t('REGISTER_EDUCATOR.VALIDATION.STATE_REQUIRED')),
   }),
   yup.object().shape({
     summary: yup
@@ -107,9 +87,7 @@ const validationSchema = (t) => [
       .transform(transformNaNToNull)
       .min(0, t('REGISTER_EDUCATOR.VALIDATION.EXPERIENCE_MORE_THAN_ONE_YEAR'))
       .max(99.99, t('REGISTER_EDUCATOR.VALIDATION.NOT_EXCEED_99_YEARS')),
-    expertise: yup
-      .array()
-      .of(yup.object().shape({ category: yup.string().trim() })),
+    expertise: yup.array().of(yup.object().shape({ category: yup.string().trim() })),
     education: yup.array().of(
       yup.object().shape({
         degree: yup
@@ -152,10 +130,7 @@ const validationSchema = (t) => [
             t('REGISTER_EDUCATOR.VALIDATION.ISSUING_ORGANIZATION_REQUIRED'),
             function (value) {
               const { organization } = this.parent
-              if (
-                typeof organization === 'string' &&
-                organization.trim().length > 0
-              ) {
+              if (typeof organization === 'string' && organization.trim().length > 0) {
                 return typeof value === 'string' && value.trim().length > 0
               }
               return true
@@ -225,52 +200,41 @@ const validationSchema = (t) => [
       .mixed()
       .nullable()
       .notRequired()
-      .test(
-        'fileSize',
-        t('REGISTER_EDUCATOR.VALIDATION.CV_LESS_THAN_500'),
-        (value) => {
-          if (!value) return true
-          const fileSize = value.size / (1024 * 1024)
-          return fileSize <= 50
-        },
-      )
-      .test(
-        'fileType',
-        t('REGISTER_EDUCATOR.VALIDATION.CV_FORMAT'),
-        (value) => {
-          if (!value) return true
-          const allowedExtensions = ['pdf', 'doc', 'docx']
-          const fileExtension = value.name.split('.').pop()?.toLowerCase() ?? ''
-          return allowedExtensions.includes(fileExtension)
-        },
-      ),
+      .test('fileSize', t('REGISTER_EDUCATOR.VALIDATION.CV_LESS_THAN_500'), (value) => {
+        if (!value) {
+          return true
+        }
+        const fileSize = value.size / (1024 * 1024)
+        return fileSize <= 50
+      })
+      .test('fileType', t('REGISTER_EDUCATOR.VALIDATION.CV_FORMAT'), (value) => {
+        if (!value) {
+          return true
+        }
+        const allowedExtensions = ['pdf', 'doc', 'docx']
+        const fileExtension = value.name.split('.').pop()?.toLowerCase() ?? ''
+        return allowedExtensions.includes(fileExtension)
+      }),
     video: yup
       .mixed()
       .nullable()
       .notRequired()
-      .test(
-        'fileSize',
-        t('REGISTER_EDUCATOR.VALIDATION.VIDEO_LESS_THAN_200'),
-        (value) => {
-          if (!value) return true
-          const fileSize = value.size / (1024 * 1024)
-          return fileSize <= 200
-        },
-      )
-      .test(
-        'fileType',
-        t('REGISTER_EDUCATOR.VALIDATION.VIDEO_FORMAT'),
-        (value) => {
-          if (!value) return true
-          const allowedExtensions = ['mp4', 'mov', 'webm']
-          const fileExtension = value.name.split('.').pop()?.toLowerCase() ?? ''
-          return allowedExtensions.includes(fileExtension)
-        },
-      ),
-    hau: yup
-      .string()
-      .trim()
-      .required(t('REGISTER_EDUCATOR.VALIDATION.HUA_REQUIRED')),
+      .test('fileSize', t('REGISTER_EDUCATOR.VALIDATION.VIDEO_LESS_THAN_200'), (value) => {
+        if (!value) {
+          return true
+        }
+        const fileSize = value.size / (1024 * 1024)
+        return fileSize <= 200
+      })
+      .test('fileType', t('REGISTER_EDUCATOR.VALIDATION.VIDEO_FORMAT'), (value) => {
+        if (!value) {
+          return true
+        }
+        const allowedExtensions = ['mp4', 'mov', 'webm']
+        const fileExtension = value.name.split('.').pop()?.toLowerCase() ?? ''
+        return allowedExtensions.includes(fileExtension)
+      }),
+    hau: yup.string().trim().required(t('REGISTER_EDUCATOR.VALIDATION.HUA_REQUIRED')),
   }),
 ]
 
@@ -369,9 +333,13 @@ const Educator = () => {
 
         // Handle file fields
         if (name === 'cv') {
-          if (cvFile) formData.append(name, cvFile)
+          if (cvFile) {
+            formData.append(name, cvFile)
+          }
         } else if (name === 'video') {
-          if (mp4) formData.append(name, mp4)
+          if (mp4) {
+            formData.append(name, mp4)
+          }
         }
         // Handle special array fields
         else if (name === 'otherProfileUrls') {
@@ -464,18 +432,8 @@ const Educator = () => {
 
   const renderHeader = () => (
     <Box display="flex" alignItems="center">
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        width="100%"
-      >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={{ mb: 1 }}
-        >
+      <Box display="flex" flexDirection="column" justifyContent="center" width="100%">
+        <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 1 }}>
           <img src={MainLogo} alt="Logo" style={{ width: 80, height: 80 }} />
         </Box>
         <Typography
@@ -489,13 +447,7 @@ const Educator = () => {
         >
           UNICITIZENS
         </Typography>
-        <Typography
-          component="p"
-          fontWeight={400}
-          textAlign="center"
-          mb={2}
-          sx={{ opacity: 0.8 }}
-        >
+        <Typography component="p" fontWeight={400} textAlign="center" mb={2} sx={{ opacity: 0.8 }}>
           {t('REGISTER_EDUCATOR.APPLICATION_FORM_DETAIL')}
         </Typography>
       </Box>
@@ -616,12 +568,7 @@ const Educator = () => {
               {renderHeader()}
 
               {/* Fixed Title */}
-              <Typography
-                variant="h5"
-                fontWeight={600}
-                textAlign="center"
-                mb={3}
-              >
+              <Typography variant="h5" fontWeight={600} textAlign="center" mb={3}>
                 {t('REGISTER_EDUCATOR.APPLICATION_FORM')}
               </Typography>
 

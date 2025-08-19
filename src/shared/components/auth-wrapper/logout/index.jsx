@@ -1,19 +1,15 @@
-import React, { useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { Box, Button, Typography } from '@mui/material'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import { Box, Button, Typography } from '@mui/material'
-
-import ModalBox from '../../ui-elements/modal-box'
 import LANGUAGES from '../../../../constants/languages'
-import { signOut } from '../../../../redux/reducers/user-slice'
 import { updateLanguage } from '../../../../redux/reducers/app-slice'
+import { signOut } from '../../../../redux/reducers/user-slice'
+import { useLogoutMutation, useEducatorLogoutMutation } from '../../../../services/admin'
 import { useAdminLogoutMutation } from '../../../../services/onboarding'
-import {
-  useLogoutMutation,
-  useEducatorLogoutMutation,
-} from '../../../../services/admin'
+import ModalBox from '../../ui-elements/modal-box'
 
 const Logout = ({ component, type }) => {
   const logoutRef = useRef(null)
@@ -26,9 +22,7 @@ const Logout = ({ component, type }) => {
   const [educatorLogout, educatorLogoutResult] = useEducatorLogoutMutation()
 
   const isLoading =
-    userLogoutResult.isLoading ||
-    educatorLogoutResult.isLoading ||
-    adminLogoutResult.isLoading
+    userLogoutResult.isLoading || educatorLogoutResult.isLoading || adminLogoutResult.isLoading
 
   const getLogoutFunction = () => {
     switch (type) {
@@ -76,11 +70,7 @@ const Logout = ({ component, type }) => {
   return (
     <>
       {component ? (
-        <Box
-          component="span"
-          onClick={handleOpenModal}
-          sx={{ cursor: 'pointer' }}
-        >
+        <Box component="span" onClick={handleOpenModal} sx={{ cursor: 'pointer' }}>
           {component}
         </Box>
       ) : (

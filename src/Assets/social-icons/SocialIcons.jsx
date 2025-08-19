@@ -1,5 +1,3 @@
-import React from 'react'
-
 export const LinkedInIcon = ({ size = 24, color = '#0077B5' }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

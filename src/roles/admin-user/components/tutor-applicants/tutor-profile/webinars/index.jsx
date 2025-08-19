@@ -1,9 +1,8 @@
+import { Box, Chip, Typography, useTheme } from '@mui/material'
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import moment from 'moment-timezone'
 import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
-
-import { Box, Chip, Typography, useTheme } from '@mui/material'
 
 import { useGetWebinarDetailsQuery } from '../../../../../../services/admin'
 import PaginationComponent from '../../../../../../shared/components/ui-elements/pagination-component'
@@ -70,9 +69,7 @@ const Webinars = () => {
         header: 'Title',
         size: 200,
         Cell: ({ cell }) => (
-          <Typography sx={{ fontWeight: 500 }}>
-            {cell.getValue() || '-'}
-          </Typography>
+          <Typography sx={{ fontWeight: 500 }}>{cell.getValue() || '-'}</Typography>
         ),
       },
       {
@@ -137,10 +134,7 @@ const Webinars = () => {
           }
 
           const date = moment(startDate).format('MM/DD/YYYY')
-          const timeRange =
-            startTime && endTime
-              ? `${startTime} - ${endTime}`
-              : startTime || '-'
+          const timeRange = startTime && endTime ? `${startTime} - ${endTime}` : startTime || '-'
 
           return (
             <Box>
@@ -272,9 +266,7 @@ const Webinars = () => {
               <PaginationComponent
                 data={{
                   count: webinarDetails.count,
-                  totalPages:
-                    webinarDetails.totalPages ||
-                    Math.ceil(webinarDetails.count / 10),
+                  totalPages: webinarDetails.totalPages || Math.ceil(webinarDetails.count / 10),
                 }}
                 page={page}
                 setPage={setPage}

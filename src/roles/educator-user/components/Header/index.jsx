@@ -1,21 +1,12 @@
+import { Box, Menu, Avatar, MenuItem, Typography, ListItemIcon, useMediaQuery } from '@mui/material'
 import { LogOut } from 'lucide-react'
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 
-import {
-  Box,
-  Menu,
-  Avatar,
-  MenuItem,
-  Typography,
-  ListItemIcon,
-  useMediaQuery,
-} from '@mui/material'
-
-import Navigation from '../Navigation'
 import MainLogo from '../../../../assets/logo.svg'
 import LogoutWrapper from '../../../../shared/components/auth-wrapper/logout'
+import Navigation from '../Navigation'
 
 const Header = () => {
   const { t } = useTranslation('education')

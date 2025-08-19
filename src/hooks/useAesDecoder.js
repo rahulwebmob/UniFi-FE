@@ -18,15 +18,11 @@ const useAesDecoder = (encodedText) => {
       const ivone = userId
       const ivfirst = ivone.padEnd(32, '0').slice(0, 32)
       const iv = CryptoJS.enc.Hex.parse(ivfirst)
-      const bytes = CryptoJS.AES.decrypt(
-        encodedText,
-        CryptoJS.enc.Utf8.parse(secretKey),
-        {
-          iv,
-          mode: CryptoJS.mode.CBC,
-          padding: CryptoJS.pad.Pkcs7,
-        },
-      )
+      const bytes = CryptoJS.AES.decrypt(encodedText, CryptoJS.enc.Utf8.parse(secretKey), {
+        iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7,
+      })
       const decrypted = bytes.toString(CryptoJS.enc.Utf8)
 
       // If decryption fails or returns empty, return original text

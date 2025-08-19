@@ -1,6 +1,5 @@
-import { useTranslation } from 'react-i18next'
-
 import { Box, Button, useTheme, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 const DeleteModal = ({
   selectedValue = '',
@@ -14,9 +13,7 @@ const DeleteModal = ({
 
   return (
     <Box>
-      <Typography variant="h6">
-        {deleteText || t('application:CORE.DELETE_MODAL.DESC')}
-      </Typography>
+      <Typography variant="h6">{deleteText || t('application:CORE.DELETE_MODAL.DESC')}</Typography>
       <Typography
         variant="body2"
         fontStyle="italic"
@@ -35,12 +32,7 @@ const DeleteModal = ({
         >
           {t('application:CORE.DELETE_MODAL.YES')}
         </Button>
-        <Button
-          size="small"
-          sx={{ ml: 1 }}
-          variant="contained"
-          onClick={() => closeModal()}
-        >
+        <Button size="small" sx={{ ml: 1 }} variant="contained" onClick={() => closeModal()}>
           {t('application:CORE.DELETE_MODAL.NO')}
         </Button>
       </Box>

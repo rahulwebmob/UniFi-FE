@@ -1,17 +1,9 @@
-import React from 'react'
-import {
-  Box,
-  Grid,
-  TextField,
-  Typography,
-  FormControl,
-  Button,
-  ButtonGroup,
-} from '@mui/material'
-import { useTranslation } from 'react-i18next'
+import { Box, Grid, TextField, Typography, FormControl, Button, ButtonGroup } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { NumericFormat } from 'react-number-format'
 import { useSelector } from 'react-redux'
+
 import CharacterCount from '../../../character-count'
 import AddCategory from '../../../Webinar/create-webinar/add-category'
 
@@ -82,9 +74,7 @@ const BasicDetails = () => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    placeholder={t(
-                      'EDUCATOR.BASIC_DETAILS.SUBTITLE_DESCRIPTION',
-                    )}
+                    placeholder={t('EDUCATOR.BASIC_DETAILS.SUBTITLE_DESCRIPTION')}
                     size="small"
                     error={!!errors.subtitle}
                     helperText={errors.subtitle?.message}
@@ -112,9 +102,7 @@ const BasicDetails = () => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    placeholder={t(
-                      'EDUCATOR.BASIC_DETAILS.CATEGORY_DESCRIPTION',
-                    )}
+                    placeholder={t('EDUCATOR.BASIC_DETAILS.CATEGORY_DESCRIPTION')}
                     multiline
                     rows={5}
                     variant="outlined"
@@ -147,9 +135,7 @@ const BasicDetails = () => {
                   control={control}
                   defaultValue={false}
                   rules={{
-                    required: t(
-                      'EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICING_TYPE_REQUIRED',
-                    ),
+                    required: t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICING_TYPE_REQUIRED'),
                   }}
                   render={({ field: { onChange, value } }) => (
                     <ButtonGroup color="secondary" variant="contained">
@@ -195,9 +181,7 @@ const BasicDetails = () => {
                   name="price"
                   control={control}
                   rules={{
-                    required: t(
-                      'EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_REQUIRED',
-                    ),
+                    required: t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_REQUIRED'),
                   }}
                   render={({ field, fieldState }) => (
                     <NumericFormat

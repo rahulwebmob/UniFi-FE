@@ -1,18 +1,18 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
+import { useTranslation } from 'react-i18next'
 
-import NoDataFound from '../../no-data-found'
-import { languageLocalization } from './constant'
 import { MaterialReactTableDefaults } from '../../../../theme/foundations/components'
+import NoDataFound from '../../no-data-found'
 
-function MuiReactTable({
+import { languageLocalization } from './constant'
+
+const MuiReactTable = ({
   columns,
   rows,
   localization = {},
   materialReactProps = {},
   returnTableInstance = false,
-}) {
+}) => {
   const { i18n } = useTranslation()
 
   const tableOptions = {

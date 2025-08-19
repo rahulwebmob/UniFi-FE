@@ -1,7 +1,5 @@
-import React from 'react'
-import { Mail, ArrowLeft } from 'lucide-react'
-
 import { Box, Button, useTheme, Typography } from '@mui/material'
+import { Mail, ArrowLeft } from 'lucide-react'
 
 import MainLogo from '../../../../assets/logo.svg'
 import { useResendEmailMutation } from '../../../../services/admin'
@@ -25,18 +23,8 @@ const ResendEmail = ({ setResendEmail, email }) => {
       }}
     >
       <Box display="flex" alignItems="center" position="relative">
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          width="100%"
-        >
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            sx={{ mb: 1 }}
-          >
+        <Box display="flex" flexDirection="column" justifyContent="center" width="100%">
+          <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 1 }}>
             <img src={MainLogo} alt="Logo" style={{ width: 80, height: 80 }} />
           </Box>
           <Typography
@@ -52,18 +40,13 @@ const ResendEmail = ({ setResendEmail, email }) => {
           </Typography>
 
           {/* Email Icon */}
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            sx={{ mb: 2 }}
-          >
+          <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 2 }}>
             <Box
               sx={{
                 width: 64,
                 height: 64,
                 borderRadius: '50%',
-                backgroundColor: theme.palette.primary.light + '20',
+                backgroundColor: `${theme.palette.primary.light}20`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -101,12 +84,7 @@ const ResendEmail = ({ setResendEmail, email }) => {
           mb: 2,
         }}
       >
-        <Typography
-          variant="body2"
-          textAlign="center"
-          mb={1.5}
-          sx={{ opacity: 0.8 }}
-        >
+        <Typography variant="body2" textAlign="center" mb={1.5} sx={{ opacity: 0.8 }}>
           Still can&apos;t find the email? No problem.
         </Typography>
         <Button
@@ -120,12 +98,7 @@ const ResendEmail = ({ setResendEmail, email }) => {
         >
           Resend Verification Email
         </Button>
-        <Typography
-          variant="caption"
-          display="block"
-          textAlign="center"
-          sx={{ opacity: 0.7 }}
-        >
+        <Typography variant="caption" display="block" textAlign="center" sx={{ opacity: 0.7 }}>
           Check your spam folder if you don&apos;t see it in your inbox
         </Typography>
       </Box>

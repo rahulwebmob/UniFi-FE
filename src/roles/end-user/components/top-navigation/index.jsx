@@ -1,8 +1,3 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { Mail, Settings, CreditCard, LayoutDashboard } from 'lucide-react'
-
 import {
   Box,
   List,
@@ -20,6 +15,10 @@ import {
   useMediaQuery,
   ListItemButton,
 } from '@mui/material'
+import { Mail, Settings, CreditCard, LayoutDashboard } from 'lucide-react'
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 import MainLogo from '../../../../assets/logo.svg'
 import CustomSvgIcon from '../../../../shared/components/custom-svg-icon'
@@ -111,10 +110,7 @@ const TopNavigation = () => {
             }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
-              <LayoutDashboard
-                size={20}
-                style={{ color: 'var(--mui-palette-text-secondary)' }}
-              />
+              <LayoutDashboard size={20} style={{ color: 'var(--mui-palette-text-secondary)' }} />
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItemButton>
@@ -125,10 +121,7 @@ const TopNavigation = () => {
             onClick={() => {
               void navigate(`/settings/profile/${user._id}?tab=payments`)
             }}
-            selected={
-              location.pathname.includes('profile') &&
-              location.search.includes('payments')
-            }
+            selected={location.pathname.includes('profile') && location.search.includes('payments')}
             sx={{
               mx: 1,
               borderRadius: 1,
@@ -145,10 +138,7 @@ const TopNavigation = () => {
             }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
-              <CreditCard
-                size={20}
-                style={{ color: 'var(--mui-palette-text-secondary)' }}
-              />
+              <CreditCard size={20} style={{ color: 'var(--mui-palette-text-secondary)' }} />
             </ListItemIcon>
             <ListItemText primary="Payments" />
           </ListItemButton>
@@ -160,8 +150,7 @@ const TopNavigation = () => {
               void navigate(`/settings/profile/${user._id}`)
             }}
             selected={
-              location.pathname.includes('profile') &&
-              !location.search.includes('payments')
+              location.pathname.includes('profile') && !location.search.includes('payments')
             }
             sx={{
               mx: 1,
@@ -179,10 +168,7 @@ const TopNavigation = () => {
             }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
-              <Settings
-                size={20}
-                style={{ color: 'var(--mui-palette-text-secondary)' }}
-              />
+              <Settings size={20} style={{ color: 'var(--mui-palette-text-secondary)' }} />
             </ListItemIcon>
             <ListItemText primary="Settings" />
           </ListItemButton>
@@ -299,13 +285,11 @@ const TopNavigation = () => {
                 }}
                 sx={{
                   color:
-                    location.pathname.includes('profile') &&
-                    location.search.includes('payments')
+                    location.pathname.includes('profile') && location.search.includes('payments')
                       ? 'primary.main'
                       : 'text.secondary',
                   fontWeight:
-                    location.pathname.includes('profile') &&
-                    location.search.includes('payments')
+                    location.pathname.includes('profile') && location.search.includes('payments')
                       ? 600
                       : 500,
                   textDecoration: 'none',
@@ -325,13 +309,11 @@ const TopNavigation = () => {
                 }}
                 sx={{
                   color:
-                    location.pathname.includes('profile') &&
-                    !location.search.includes('payments')
+                    location.pathname.includes('profile') && !location.search.includes('payments')
                       ? 'primary.main'
                       : 'text.secondary',
                   fontWeight:
-                    location.pathname.includes('profile') &&
-                    !location.search.includes('payments')
+                    location.pathname.includes('profile') && !location.search.includes('payments')
                       ? 600
                       : 500,
                   textDecoration: 'none',
@@ -404,9 +386,7 @@ const TopNavigation = () => {
                     color: 'text.primary',
                   }}
                 >
-                  <Typography variant="caption">
-                    {user.firstName?.charAt(0) ?? 'U'}
-                  </Typography>
+                  <Typography variant="caption">{user.firstName?.charAt(0) ?? 'U'}</Typography>
                 </Avatar>
                 <Typography
                   variant="body2"
