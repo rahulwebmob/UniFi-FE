@@ -1,5 +1,5 @@
 import { Box, Typography, LinearProgress } from '@mui/material'
-import { VideoIcon } from 'lucide-react'
+import { Video } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
@@ -8,6 +8,7 @@ const UploadPrompt = ({ progress }) => {
 
   return (
     <Box
+      elevation={3}
       sx={{
         p: 1,
         display: 'flex',
@@ -16,7 +17,7 @@ const UploadPrompt = ({ progress }) => {
         borderRadius: '10px',
       }}
     >
-      <VideoIcon size={50} />
+      <Video size={50} />
 
       <Box sx={{ flex: 1 }}>
         <Typography

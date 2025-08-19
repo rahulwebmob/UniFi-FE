@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { useGetAllWebinarsQuery } from '../../../../../services/education'
 import NoDataFound from '../../../../../shared/components/no-data-found'
 import MuiCarousel from '../../../../../shared/components/ui-elements/mui-carousel'
-import ContentSkeleton from '../../user-content/content-skeleton'
 import { GridContainer } from '../../style'
+import ContentSkeleton from '../../user-content/content-skeleton'
 import WebinarCard from '../webinar-card'
 
 const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {

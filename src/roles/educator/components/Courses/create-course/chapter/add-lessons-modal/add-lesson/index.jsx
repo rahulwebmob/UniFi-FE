@@ -11,10 +11,9 @@ import {
   CircularProgress,
   FormControlLabel,
   Tooltip,
-  useTheme,
 } from '@mui/material'
 import axios from 'axios'
-import { Upload, Save, RotateCcw } from 'lucide-react'
+import { CloudUpload, RotateCcw, Save } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -35,20 +34,15 @@ import { getFormatType, CHAPTER_CONFIG, handleFileChange } from '../../../../../
 import UploadPrompt from '../../../upload-prompt'
 
 const AddLesson = ({
-  isEdit = false,
-  lessonId = '',
-  courseId = '',
-  isChapter = false,
-  chapterId = '',
-  handleClose = () => {},
-  defaultValues = {
-    lessonTitle: '',
-    resource: '',
-    isFree: false,
-  },
+  isEdit,
+  lessonId,
+  courseId,
+  isChapter,
+  chapterId,
+  handleClose,
+  defaultValues,
 }) => {
   const { t } = useTranslation('education')
-  const theme = useTheme()
   const dispatch = useDispatch()
   const fileInputRef = useRef(null)
   const uploadPrompt = useRef(null)
@@ -91,7 +85,7 @@ const AddLesson = ({
     setErrors({})
     setResource(null)
     setNewChapterTitle('')
-    uploadPrompt.current?.closeModal()
+    uploadPrompt.current.closeModal()
   }
 
   const handleOnSuccess = (id) => {
@@ -106,34 +100,35 @@ const AddLesson = ({
       setUploadProgress(0)
       awsControllerRef.current.abort()
       dispatch(errorAlert({ message: t('EDUCATOR.ADD_CHAPTERS.UPLOAD_CANCELLED') }))
-      uploadPrompt.current?.closeModal()
+      uploadPrompt.current.closeModal()
     }
   }
 
   const handleVideoUpload = async (lessonResponse, id, fileExtension) => {
-    uploadPrompt.current?.openModal()
+    uploadPrompt.current.openModal()
     awsControllerRef.current = new AbortController()
     try {
+      // Step 1: Get AWS URL for upload
       const res = await getAwsUrlForUpload({
         courseId,
         chapterId: id,
         lessonId: lessonResponse.data.data._id,
       })
 
-      if (!('error' in res)) {
+      if (!res.error) {
+        // Step 2: Upload video to AWS using Axios
         const awsResponse = await axios.put(res?.data?.url, resource, {
           headers: {
             'Content-Type': getFormatType(fileExtension),
           },
           signal: awsControllerRef?.current?.signal,
           onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              ((progressEvent.loaded || 0) * 100) / (progressEvent.total || 1),
-            )
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
             setUploadProgress(percentCompleted)
           },
         })
 
+        // Step 3: Notify backend of successful upload
         if (awsResponse.status === 200) {
           const result = await successForVideoUpload({
             lessonId: lessonResponse.data.data._id,
@@ -141,7 +136,7 @@ const AddLesson = ({
             chapterId: id,
           })
 
-          if (!('error' in result)) {
+          if (!result.error) {
             handleOnSuccess(id)
           } else {
             handleClosePrompt()
@@ -150,9 +145,8 @@ const AddLesson = ({
       } else {
         handleClosePrompt()
       }
-    } catch (error) {
-      console.error('Upload error:', error)
-      handleClosePrompt()
+    } catch {
+      // error handling
     }
   }
 
@@ -160,10 +154,10 @@ const AddLesson = ({
     const form = new FormData()
     form.append('courseId', courseId)
     form.append('chapterId', newChapterId)
-    form.append('isFree', String(isCourseFree || formData.isFree))
+    form.append('isFree', isCourseFree || formData.isFree)
     form.append('title', formData.lessonTitle)
 
-    const fileExtension = resource?.name?.split('.').pop()?.toLowerCase() || ''
+    const fileExtension = resource?.name?.split('.').pop().toLowerCase()
 
     if (resource) {
       if (CHAPTER_CONFIG.VIDEO_EXTENSIONS.includes(fileExtension)) {
@@ -180,9 +174,9 @@ const AddLesson = ({
     const id = isChapter ? newChapterId : chapterId
 
     const response = isEdit ? await updateLesson(form) : await addLesson(form)
-    if (!('error' in response)) {
+    if (!response.error) {
       if (CHAPTER_CONFIG.VIDEO_EXTENSIONS.includes(fileExtension)) {
-        uploadPrompt.current?.closeModal()
+        uploadPrompt.current.closeModal()
         handleVideoUpload(response, id, fileExtension)
       } else {
         handleOnSuccess(id)
@@ -199,7 +193,7 @@ const AddLesson = ({
       courseId,
       title: newChapterTitle,
     })
-    if (!('error' in response)) {
+    if (!response.error) {
       const newChapterId = response.data.response._id
       await handleAddLesson(newChapterId)
     }
@@ -232,32 +226,16 @@ const AddLesson = ({
   }
 
   const renderForm = () => (
-    <Grid container spacing={{ xs: 2, md: 3 }}>
+    <Grid container spacing={1}>
       {!isChapter && (
-        <Grid size={12}>
-          <Typography
-            variant="body1"
-            sx={{
-              fontWeight: 600,
-              fontSize: { xs: '1rem', md: '1.125rem' },
-              mb: 1,
-            }}
-          >
-            {t('EDUCATOR.ADD_CHAPTERS.LESSON_DETAILS')}
-          </Typography>
+        <Grid item xs={12}>
+          <Typography variant="p1">{t('EDUCATOR.ADD_CHAPTERS.LESSON_DETAILS')}</Typography>
         </Grid>
       )}
       {isChapter && (
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid item xs={12} md={6}>
           <FormControl fullWidth>
-            <Typography
-              variant="body1"
-              sx={{
-                mb: 1,
-                fontSize: { xs: '0.875rem', md: '1rem' },
-                fontWeight: 500,
-              }}
-            >
+            <Typography variant="body1" mb={0.5}>
               {t('EDUCATOR.ADD_CHAPTERS.CHAPTER_TITLE')}{' '}
               <Typography variant="body1" color="error.main" component="span">
                 *
@@ -271,25 +249,13 @@ const AddLesson = ({
               onChange={(e) => setNewChapterTitle(e.target.value)}
               error={!!errors.chapterTitle}
               helperText={errors.chapterTitle}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  fontSize: { xs: '0.875rem', md: '1rem' },
-                },
-              }}
             />
           </FormControl>
         </Grid>
       )}
-      <Grid item size={{ xs: 12, md: 6 }}>
+      <Grid item xs={12} md={6}>
         <FormControl fullWidth>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 1,
-              fontSize: { xs: '0.875rem', md: '1rem' },
-              fontWeight: 500,
-            }}
-          >
+          <Typography variant="body1" mb={0.5}>
             {t('EDUCATOR.ADD_CHAPTERS.LESSON_TITLE')}{' '}
             <Typography variant="body1" color="error.main" component="span">
               *
@@ -303,27 +269,13 @@ const AddLesson = ({
             error={!!errors.lessonTitle}
             helperText={errors.lessonTitle}
             fullWidth
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                fontSize: { xs: '0.875rem', md: '1rem' },
-              },
-            }}
           />
         </FormControl>
       </Grid>
-      <Grid item size={{ xs: 12, md: 6 }}>
+      <Grid item xs={12} md={6}>
         <FormControl fullWidth>
           <Tooltip title={t('EDUCATOR.ADD_CHAPTERS.UPLOAD_RESOURCE')}>
-            <Typography
-              variant="body1"
-              noWrap
-              sx={{
-                maxWidth: '300px',
-                mb: 1,
-                fontSize: { xs: '0.875rem', md: '1rem' },
-                fontWeight: 500,
-              }}
-            >
+            <Typography variant="body1" mb={0.5} noWrap sx={{ maxWidth: '300px' }}>
               {t('EDUCATOR.ADD_CHAPTERS.UPLOAD_RESOURCE')}{' '}
               <Typography variant="body1" color="error.main" component="span">
                 *
@@ -332,14 +284,12 @@ const AddLesson = ({
           </Tooltip>
           <Box
             sx={{
-              p: { xs: 1, md: 1.5 },
+              p: 0.1,
               border: '1px solid',
-              borderColor: theme.palette.divider,
-              borderRadius: 2,
+              borderColor: 'grey.400',
+              borderRadius: '8px',
               display: 'flex',
-              alignItems: 'center',
-              gap: { xs: 1, md: 2 },
-              backgroundColor: theme.palette.background.default,
+              gap: '10px',
             }}
           >
             <input
@@ -352,28 +302,15 @@ const AddLesson = ({
               onChange={(e) => handleFileChange(e, setErrors, setResource)}
             />
             <Button
+              sx={{ gap: '0' }}
               variant="contained"
               color="secondary"
-              onClick={() => fileInputRef.current?.click()}
-              startIcon={<Upload size={18} />}
-              sx={{
-                textTransform: 'none',
-                fontSize: { xs: '0.813rem', md: '0.875rem' },
-                py: { xs: 0.75, md: 1 },
-                px: { xs: 2, md: 3 },
-              }}
+              onClick={() => fileInputRef.current.click()}
+              startIcon={<CloudUpload size={20} />}
             >
               {t('EDUCATOR.ADD_CHAPTERS.BROWSE')}
             </Button>
-            <Typography
-              variant="body2"
-              noWrap
-              sx={{
-                maxWidth: { xs: 100, sm: 150, md: 200 },
-                fontSize: { xs: '0.75rem', md: '0.813rem' },
-                color: theme.palette.text.secondary,
-              }}
-            >
+            <Typography variant="body2" mt={1} noWrap maxWidth={150}>
               {defaultValues.resource || resource?.name}
             </Typography>
           </Box>
@@ -385,17 +322,8 @@ const AddLesson = ({
         )}
       </Grid>
       {!isCourseFree && (
-        <Grid item size={{ xs: 12, md: 6 }}>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 1,
-              fontSize: { xs: '0.875rem', md: '1rem' },
-              fontWeight: 500,
-            }}
-          >
-            {t('EDUCATOR.ADD_CHAPTERS.LESSON_TYPE')}
-          </Typography>
+        <Grid item sm={12} md={6} mt={1.5}>
+          <Typography variant="body1">{t('EDUCATOR.ADD_CHAPTERS.LESSON_TYPE')}</Typography>
           <FormControl component="fieldset" fullWidth>
             <RadioGroup
               row
@@ -417,59 +345,24 @@ const AddLesson = ({
         </Grid>
       )}
       {!isChapter && (
-        <Grid item size={12}>
-          <Box
-            display="flex"
-            flexDirection={{ xs: 'column', sm: 'row' }}
-            gap={{ xs: 1, md: 2 }}
-            mt={{ xs: 2, md: 3 }}
-          >
+        <Grid item xs={12}>
+          <Box display="flex" flexWrap="wrap" mt={1} gap={1}>
             <Button
               onClick={handleOnSubmit}
               variant="contained"
               color="primary"
-              startIcon={<Save size={18} />}
+              startIcon={<Save size={20} />}
               disabled={isLoading}
-              fullWidth={theme.breakpoints.down('sm') ? true : false}
               endIcon={isLoading && <CircularProgress size="1em" />}
-              sx={{
-                textTransform: 'none',
-                fontSize: { xs: '0.875rem', md: '1rem' },
-                py: { xs: 1, md: 1.25 },
-                px: { xs: 3, md: 4 },
-                fontWeight: 500,
-              }}
             >
               {t('EDUCATOR.ADD_CHAPTERS.SAVE_LESSON')}
             </Button>
             {isChapter ? (
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={handleReset}
-                fullWidth={theme.breakpoints.down('sm') ? true : false}
-                sx={{
-                  textTransform: 'none',
-                  fontSize: { xs: '0.875rem', md: '1rem' },
-                  py: { xs: 1, md: 1.25 },
-                  px: { xs: 3, md: 4 },
-                }}
-              >
+              <Button variant="contained" color="error" onClick={handleReset}>
                 {t('EDUCATOR.ADD_CHAPTERS.RESET')}
               </Button>
             ) : (
-              <Button
-                onClick={handleClose}
-                variant="outlined"
-                color="error"
-                fullWidth={theme.breakpoints.down('sm') ? true : false}
-                sx={{
-                  textTransform: 'none',
-                  fontSize: { xs: '0.875rem', md: '1rem' },
-                  py: { xs: 1, md: 1.25 },
-                  px: { xs: 3, md: 4 },
-                }}
-              >
+              <Button onClick={handleClose} variant="contained" color="error">
                 {t('EDUCATOR.ADD_CHAPTERS.CLOSE')}
               </Button>
             )}
@@ -480,68 +373,46 @@ const AddLesson = ({
         ref={uploadPrompt}
         onCloseModal={() => {
           handleClosePrompt()
-          uploadPrompt.current?.closeModal()
+          uploadPrompt.current.closeModal()
         }}
       >
         <UploadPrompt progress={uploadProgress} />
       </ModalBox>
     </Grid>
   )
-
   if (isChapter) {
     return (
       <Box>
         <Box
           display="flex"
-          flexDirection={{ xs: 'column', sm: 'row' }}
-          alignItems={{ xs: 'flex-start', sm: 'center' }}
+          flexWrap="wrap"
+          alignItems="center"
           justifyContent="space-between"
-          mb={{ xs: 2, md: 3 }}
-          gap={2}
+          mb={2}
         >
-          <Typography
-            variant="h6"
-            sx={{
-              fontSize: { xs: '1.125rem', md: '1.25rem' },
-              fontWeight: 600,
-            }}
-          >
-            {t('EDUCATOR.ADD_CHAPTERS.CHAPTER_DETAILS')}
-          </Typography>
-          <Box display="flex" gap={1}>
+          <Typography variant="h6">{t('EDUCATOR.ADD_CHAPTERS.CHAPTER_DETAILS')}</Typography>
+          <Box display="flex" gap="10px" mt={1}>
             <Button
+              sx={{ gap: '0' }}
               onClick={handleOnSubmit}
               variant="outlined"
               color="primary"
-              startIcon={<Save size={18} />}
+              startIcon={<Save size={20} />}
               disabled={isLoading}
               endIcon={isLoading && <CircularProgress size="1em" />}
-              sx={{
-                textTransform: 'none',
-                fontSize: { xs: '0.875rem', md: '1rem' },
-                py: { xs: 0.75, md: 1 },
-                px: { xs: 2, md: 3 },
-              }}
             >
               {t('EDUCATOR.ADD_CHAPTERS.SAVE_CHAPTER')}
             </Button>
-            <IconButton
-              color="error"
-              onClick={handleReset}
-              sx={{
-                p: { xs: 0.75, md: 1 },
-              }}
-            >
-              <RotateCcw size={18} />
+            <IconButton variant="contained" color="error" onClick={handleReset}>
+              <RotateCcw size={20} />
             </IconButton>
           </Box>
         </Box>
         <Box
+          p={2}
           sx={{
-            p: { xs: 2, md: 3 },
-            background: theme.palette.action.hover,
-            borderRadius: { xs: 2, md: 3 },
-            border: `1px solid ${theme.palette.divider}`,
+            background: (theme) => theme.palette.primary.light,
+            borderRadius: '8px',
           }}
         >
           {renderForm()}
@@ -554,17 +425,25 @@ const AddLesson = ({
 }
 
 AddLesson.propTypes = {
-  isEdit: PropTypes.bool,
   lessonId: PropTypes.string,
-  courseId: PropTypes.string,
-  isChapter: PropTypes.bool,
+  isEdit: PropTypes.bool.isRequired,
+  courseId: PropTypes.string.isRequired,
   chapterId: PropTypes.string,
+  defaultValues: PropTypes.oneOfType([PropTypes.object]),
+  isChapter: PropTypes.bool,
   handleClose: PropTypes.func,
-  defaultValues: PropTypes.shape({
-    lessonTitle: PropTypes.string,
-    resource: PropTypes.string,
-    isFree: PropTypes.bool,
-  }),
+}
+
+AddLesson.defaultProps = {
+  defaultValues: {
+    lessonTitle: '',
+    resource: '',
+    isFree: false,
+  },
+  lessonId: '',
+  chapterId: '',
+  isChapter: false,
+  handleClose: () => {},
 }
 
 export default AddLesson

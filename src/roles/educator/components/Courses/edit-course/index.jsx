@@ -7,27 +7,24 @@ import ApiMiddleware from '../../../../../shared/components/api-middleware'
 import { extractFilename } from '../../common/common'
 import CreateCourse from '../create-course'
 
-const EditCourse = ({ currentStep = 0 }) => {
+const EditCourse = ({ currentStep }) => {
   const location = useLocation()
   const { courseId, isPreview } = location?.state || {}
 
-  const { data, error, isLoading } = useListChapersQuery(
-    { courseId: courseId || '' },
-    { skip: !courseId },
-  )
+  const { data, error, isLoading } = useListChapersQuery({ courseId }, { skip: !courseId })
 
   const defaultValues = useMemo(() => {
     const courseData = data?.data || {}
     return {
-      isPaid: courseData.isPaid || true,
+      isPaid: courseData.isPaid,
       title: courseData.title || '',
-      price: courseData.price || null,
+      price: courseData.price || '',
       slugUrl: courseData.slugUrl || '',
       subtitle: courseData.subtitle || '',
       description: courseData.description || '',
       category: courseData.category || [],
-      image: extractFilename(courseData.thumbNail?.fileName) || '',
-      video: extractFilename(courseData.previewVideo?.fileName) || '',
+      image: extractFilename(courseData.thumbNail?.fileName),
+      video: extractFilename(courseData.previewVideo?.fileName),
     }
   }, [data])
 
@@ -47,6 +44,10 @@ const EditCourse = ({ currentStep = 0 }) => {
 
 EditCourse.propTypes = {
   currentStep: PropTypes.number,
+}
+
+EditCourse.defaultProps = {
+  currentStep: 0,
 }
 
 export default EditCourse

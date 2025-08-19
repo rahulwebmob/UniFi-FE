@@ -7,7 +7,6 @@ import AddLesson from './add-lessons-modal/add-lesson'
 
 const Chapter = () => {
   const { courseId } = useFormContext()
-
   return (
     <Box>
       <AddLesson courseId={courseId} isChapter />
@@ -15,7 +14,5 @@ const Chapter = () => {
     </Box>
   )
 }
-
-Chapter.propTypes = {}
 
 export default Chapter

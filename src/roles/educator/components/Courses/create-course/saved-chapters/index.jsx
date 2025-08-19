@@ -1,5 +1,6 @@
 import {
   Box,
+  Grid,
   Button,
   TextField,
   Accordion,
@@ -7,11 +8,11 @@ import {
   IconButton,
   AccordionDetails,
   AccordionSummary,
-  useTheme,
 } from '@mui/material'
-import { ChevronDown, ChevronUp, Edit } from 'lucide-react'
+import { Edit2, GripVertical, ChevronDown, ChevronUp } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+import Draggable from 'react-draggable'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -24,24 +25,23 @@ import {
   useGetLessonsDetailsQuery,
 } from '../../../../../../services/admin'
 import AddLessonsModal from '../chapter/add-lessons-modal'
-import DeleteModal from '../chapter/delete-modal'
+import DeleteModal from '../chapter/delete-chapter'
 import ViewResource from '../view-resource'
 
 const SavedChapters = ({ courseId }) => {
   const { t } = useTranslation('education')
-  const theme = useTheme()
   const { setHasLessons } = useFormContext()
 
   const [chapters, setChapters] = useState([])
   const [newChapterTitle, setNewChapterTitle] = useState('')
-  const [isEditingChapter, setIsEditingChapter] = useState(null)
+  const [isEditingChapter, setIsEditingChapter] = useState('')
   const [expandedChapters, setExpandedChapters] = useState({})
 
   const [sortChapters] = useSortChaptersMutation()
   const [updateChapter] = useUpdateChapterMutation()
 
   const { data, isFetching } = useListChapersQuery(
-    { courseId: courseId || '' },
+    { courseId },
     {
       skip: !courseId,
     },
@@ -50,7 +50,7 @@ const SavedChapters = ({ courseId }) => {
   useEffect(() => {
     if (data?.data?.chapters) {
       const initialExpanded = {}
-      data.data.chapters.forEach((chap) => {
+      data?.data?.chapters?.forEach((chap) => {
         initialExpanded[chap._id] = true
       })
       setExpandedChapters(initialExpanded)
@@ -66,44 +66,46 @@ const SavedChapters = ({ courseId }) => {
   }
 
   const handleUpdateChapter = async (chapterId, title, isDeleted = false) => {
-    if (isDeleted && setHasLessons) {
+    if (isDeleted) {
       setHasLessons((prev) => {
         const { [chapterId]: _, ...rest } = prev
         return rest
       })
     }
     const payload = {
-      courseId: courseId || '',
+      courseId,
       chapterId,
       title,
       ...(isDeleted && { isDeleted }),
     }
     const response = await updateChapter(payload)
-    if (!('error' in response)) {
+    if (!response.error) {
       setIsEditingChapter(null)
     }
   }
 
-  const handleMoveChapter = async (index, direction) => {
+  const handleChapterDragStop = async (_, newData, draggedIndex) => {
     const newChapters = [...chapters]
-    const targetIndex = direction === 'up' ? index - 1 : index + 1
+    const draggedChapter = newChapters[draggedIndex]
 
-    if (targetIndex < 0 || targetIndex >= chapters.length) {
+    if (!draggedChapter) {
       return
     }
+    newChapters.splice(draggedIndex, 1)
 
-    const [movedChapter] = newChapters.splice(index, 1)
-    newChapters.splice(targetIndex, 0, movedChapter)
+    const dropIndex = Math.max(0, Math.min(Math.round(newData.y / 70), newChapters.length))
+
+    newChapters.splice(dropIndex, 0, draggedChapter)
+
     setChapters(newChapters)
 
-    // Sort on backend
-    const firstChapter = chapters[index]
-    const secondChapter = chapters[targetIndex]
+    const replacedChapterIndex = dropIndex + (dropIndex > draggedIndex ? -1 : 1)
+    const replacedChapter = newChapters[replacedChapterIndex]
 
-    if (firstChapter?._id && secondChapter?._id) {
+    if (draggedChapter?._id && replacedChapter?._id) {
       await sortChapters({
-        firstDocId: firstChapter._id,
-        secondDocId: secondChapter._id,
+        firstDocId: draggedChapter._id,
+        secondDocId: replacedChapter._id,
       })
     }
   }
@@ -112,192 +114,112 @@ const SavedChapters = ({ courseId }) => {
     <Box>
       {!!chapters.length && (
         <>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 600,
-              mb: { xs: 2, md: 3 },
-              fontSize: { xs: '1.125rem', md: '1.25rem' },
-              color: theme.palette.text.primary,
-            }}
-          >
-            {t('EDUCATOR.SAVED_CHAPTERS.SAVED_CHAPTERS_TITLE')}
-          </Typography>
+          <Typography variant="h6">{t('EDUCATOR.SAVED_CHAPTERS.SAVED_CHAPTERS_TITLE')}</Typography>
           <Box
             sx={{
-              background: theme.palette.background.paper,
-              borderRadius: { xs: 2, md: 3 },
-              p: { xs: 2, sm: 2.5, md: 3 },
-              border: `1px solid ${theme.palette.divider}`,
-              boxShadow: theme.shadows[1],
+              background: (theme) => theme.palette.primary.light,
+              borderRadius: '8px',
+              padding: '10px',
             }}
           >
             {chapters.map((chap, index) => (
-              <Box key={chap._id} sx={{ mb: { xs: 1.5, md: 2 } }}>
-                <Accordion
-                  expanded={!!expandedChapters[chap._id]}
-                  sx={{
-                    background: theme.palette.background.default,
-                    borderRadius: '8px !important',
-                    border: `1px solid ${theme.palette.divider}`,
-                    boxShadow: 'none',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      boxShadow: theme.shadows[2],
-                    },
-                    '&:before': {
-                      display: 'none',
-                    },
-                    '& .MuiAccordionSummary-content': {
-                      margin: { xs: '8px 0', md: '12px 0' },
-                    },
-                  }}
-                >
-                  <AccordionSummary
-                    aria-controls={`panel-${chap._id}-content`}
-                    id={`panel-${chap._id}-header`}
+              <Draggable
+                key={chap._id}
+                axis="y"
+                position={{ x: 0, y: 0 }}
+                onStop={(e, d) => handleChapterDragStop(e, d, index)}
+                handle=".drag-chapter"
+              >
+                <Box sx={{ mb: 1 }}>
+                  <Accordion
+                    expanded={!!expandedChapters[chap._id]}
+                    key={chap._id}
                     sx={{
-                      background: theme.palette.background.paper,
+                      background: (theme) => theme.palette.primary.light,
                       borderRadius: '8px',
-                      minHeight: { xs: 48, md: 56 },
-                      px: { xs: 1.5, md: 2 },
-                      '&.Mui-expanded': {
-                        minHeight: { xs: 48, md: 56 },
+                      '& .MuiAccordionSummary-content': {
+                        margin: '6px 0',
                       },
                     }}
                   >
-                    <Box
-                      display="flex"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      width="100%"
-                      gap={2}
+                    <AccordionSummary
+                      aria-controls={`panel-${chap._id}-content`}
+                      id={`panel-${chap._id}-header`}
+                      sx={{
+                        background: (theme) => theme.palette.primary.light100,
+                        borderRadius: '4px',
+                      }}
                     >
-                      <Box display="flex" alignItems="center" gap={1}>
-                        <IconButton
-                          size="small"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleToggleAccordion(chap._id)
-                          }}
-                          sx={{
-                            color: theme.palette.text.secondary,
-                            '&:hover': {
-                              backgroundColor: theme.palette.action.hover,
-                            },
-                          }}
-                        >
-                          {expandedChapters[chap._id] ? (
-                            <ChevronUp size={18} />
-                          ) : (
-                            <ChevronDown size={18} />
-                          )}
-                        </IconButton>
-
-                        <Box display="flex" flexDirection="column">
-                          <IconButton
-                            size="small"
-                            disabled={index === 0}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleMoveChapter(index, 'up')
-                            }}
-                            sx={{ padding: 0.5 }}
-                          >
-                            <ChevronUp size={16} />
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        width="100%"
+                        gap="20px"
+                      >
+                        <Box display="flex" alignItems="center" gap="10px">
+                          <IconButton size="small" onClick={() => handleToggleAccordion(chap._id)}>
+                            {expandedChapters[chap._id] ? (
+                              <ChevronUp size={20} />
+                            ) : (
+                              <ChevronDown size={20} />
+                            )}
                           </IconButton>
+                          <GripVertical
+                            className="drag-chapter"
+                            fontSize={24}
+                            style={{ cursor: 'grab' }}
+                          />
+                          {isEditingChapter === chap._id ? (
+                            <Grid container>
+                              <Grid item xs={12}>
+                                <TextField
+                                  size="small"
+                                  fullWidth
+                                  value={newChapterTitle}
+                                  onChange={(e) => setNewChapterTitle(e.target.value)}
+                                />
+                              </Grid>
+                            </Grid>
+                          ) : (
+                            <Typography>
+                              {t('EDUCATOR.SAVED_CHAPTERS.CHAPTER_NAME', {
+                                number: index + 1,
+                                title: chap.title,
+                              })}
+                            </Typography>
+                          )}
+                        </Box>
+                        <Box display="flex" gap="5px" alignItems="center">
+                          {isEditingChapter === chap._id && (
+                            <Button
+                              variant="outlined"
+                              onClick={() => handleUpdateChapter(chap._id, newChapterTitle)}
+                              size="small"
+                            >
+                              {t('EDUCATOR.SAVED_CHAPTERS.UPDATE')}
+                            </Button>
+                          )}
+                          <DeleteModal
+                            handleDelete={() => handleUpdateChapter(chap._id, chap?.title, true)}
+                            message="chapter"
+                          />
                           <IconButton
-                            size="small"
-                            disabled={index === chapters.length - 1}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleMoveChapter(index, 'down')
+                            color="primary"
+                            onClick={() => {
+                              setIsEditingChapter((prev) => (prev === chap._id ? null : chap._id))
+                              setNewChapterTitle(chap.title)
                             }}
-                            sx={{ padding: 0.5 }}
                           >
-                            <ChevronDown size={16} />
+                            <Edit2 size={24} />
                           </IconButton>
                         </Box>
-
-                        {isEditingChapter === chap._id ? (
-                          <TextField
-                            size="small"
-                            value={newChapterTitle}
-                            onChange={(e) => setNewChapterTitle(e.target.value)}
-                            onClick={(e) => e.stopPropagation()}
-                            sx={{
-                              '& .MuiInputBase-root': {
-                                fontSize: '0.875rem',
-                              },
-                            }}
-                          />
-                        ) : (
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              fontWeight: 500,
-                              fontSize: { xs: '0.875rem', md: '1rem' },
-                            }}
-                          >
-                            {t('EDUCATOR.SAVED_CHAPTERS.CHAPTER_NAME', {
-                              number: index + 1,
-                              title: chap.title,
-                            })}
-                          </Typography>
-                        )}
                       </Box>
-
-                      <Box display="flex" gap={1} alignItems="center">
-                        {isEditingChapter === chap._id && (
-                          <Button
-                            variant="contained"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleUpdateChapter(chap._id, newChapterTitle)
-                            }}
-                            size="small"
-                            sx={{
-                              textTransform: 'none',
-                              minWidth: 80,
-                            }}
-                          >
-                            {t('EDUCATOR.SAVED_CHAPTERS.UPDATE')}
-                          </Button>
-                        )}
-                        <IconButton
-                          size="small"
-                          color="primary"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setIsEditingChapter((prev) => (prev === chap._id ? null : chap._id))
-                            setNewChapterTitle(chap.title)
-                          }}
-                          sx={{
-                            '&:hover': {
-                              backgroundColor: theme.palette.action.hover,
-                            },
-                          }}
-                        >
-                          <Edit size={18} />
-                        </IconButton>
-                        <DeleteModal
-                          handleDelete={() => handleUpdateChapter(chap._id, chap?.title, true)}
-                          message="chapter"
-                        />
-                      </Box>
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails
-                    sx={{
-                      background: theme.palette.background.default,
-                      borderTop: `1px solid ${theme.palette.divider}`,
-                      p: { xs: 1.5, md: 2 },
-                    }}
-                  >
-                    <LessonsList chapterId={chap._id} courseId={courseId || ''} />
-                  </AccordionDetails>
-                </Accordion>
-              </Box>
+                    </AccordionSummary>
+                    <LessonsList chapterId={chap._id} courseId={courseId} />
+                  </Accordion>
+                </Box>
+              </Draggable>
             ))}
           </Box>
         </>
@@ -306,13 +228,8 @@ const SavedChapters = ({ courseId }) => {
   )
 }
 
-SavedChapters.propTypes = {
-  courseId: PropTypes.string,
-}
-
 const LessonsList = ({ courseId, chapterId }) => {
   const { t } = useTranslation('education')
-  const theme = useTheme()
   const [lessons, setLessons] = useState([])
 
   const { setHasLessons } = useFormContext()
@@ -328,46 +245,45 @@ const LessonsList = ({ courseId, chapterId }) => {
   useEffect(() => {
     if (data?.data) {
       setLessons(data.data)
-      if (setHasLessons) {
-        setHasLessons((prev) => ({
-          ...prev,
-          [chapterId]: data.data.length,
-        }))
-      }
+      setHasLessons((prev) => ({
+        ...prev,
+        [chapterId]: data.data.length,
+      }))
     }
   }, [data, isFetching, chapterId, setHasLessons])
 
-  const handleMoveLesson = async (index, direction) => {
+  const handleLessonDragStop = async (_, newData, draggedIndex) => {
     const newLessons = [...lessons]
-    const targetIndex = direction === 'up' ? index - 1 : index + 1
+    const draggedItem = newLessons[draggedIndex]
 
-    if (targetIndex < 0 || targetIndex >= lessons.length) {
+    if (!draggedItem) {
       return
     }
 
-    const [movedLesson] = newLessons.splice(index, 1)
-    newLessons.splice(targetIndex, 0, movedLesson)
+    newLessons.splice(draggedIndex, 1)
+
+    const dropIndex = Math.max(0, Math.min(Math.round(newData.y / 50), newLessons.length))
+
+    newLessons.splice(dropIndex, 0, draggedItem)
+
     setLessons(newLessons)
 
-    // Sort on backend
-    const firstLesson = lessons[index]
-    const secondLesson = lessons[targetIndex]
+    const replacedItemIndex = dropIndex + (dropIndex > draggedIndex ? -1 : 1)
+    const replacedItem = newLessons[replacedItemIndex]
 
-    if (firstLesson?._id && secondLesson?._id) {
+    if (draggedItem._id && replacedItem?._id) {
       await sortLesson({
-        firstDocId: firstLesson._id,
-        secondDocId: secondLesson._id,
+        firstDocId: draggedItem._id,
+        secondDocId: replacedItem._id,
       })
     }
   }
 
   const handleDeleteLesson = async (lessonId) => {
-    if (setHasLessons) {
-      setHasLessons((prevCounts) => ({
-        ...prevCounts,
-        [chapterId]: prevCounts[chapterId] - 1,
-      }))
-    }
+    setHasLessons((prevCounts) => ({
+      ...prevCounts,
+      [chapterId]: prevCounts[chapterId] - 1,
+    }))
     await updateLesson({
       courseId,
       chapterId,
@@ -377,94 +293,69 @@ const LessonsList = ({ courseId, chapterId }) => {
   }
 
   return (
-    <Box>
+    <AccordionDetails>
       {!!lessons.length &&
         lessons.map((lessonDetail, index) => (
-          <Box
+          <Draggable
             key={lessonDetail._id}
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{
-              borderBottom:
-                index < lessons.length - 1 ? `1px solid ${theme.palette.divider}` : 'none',
-              py: { xs: 1, md: 1.5 },
-              px: { xs: 0.5, md: 1 },
-              borderRadius: 1,
-              transition: 'background-color 0.2s ease',
-              '&:hover': {
-                backgroundColor: theme.palette.action.hover,
-              },
-            }}
+            axis="y"
+            position={{ x: 0, y: 0 }}
+            handle=".drag-handle"
+            onStop={(e, d) => handleLessonDragStop(e, d, index)}
           >
-            <Box display="flex" alignItems="center" gap={1}>
-              <Box display="flex" flexDirection="column">
-                <IconButton
-                  size="small"
-                  disabled={index === 0}
-                  onClick={() => handleMoveLesson(index, 'up')}
-                  sx={{ padding: 0.5 }}
-                >
-                  <ChevronUp size={14} />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  disabled={index === lessons.length - 1}
-                  onClick={() => handleMoveLesson(index, 'down')}
-                  sx={{ padding: 0.5 }}
-                >
-                  <ChevronDown size={14} />
-                </IconButton>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              flexWrap="wrap"
+              width="100%"
+              sx={{
+                borderBottom: '1px solid',
+                borderColor: (theme) => theme.palette.primary.light,
+                padding: '10px',
+              }}
+            >
+              <Box display="flex" alignItems="center">
+                <GripVertical style={{ cursor: 'grab' }} className="drag-handle" size={24} />
+                <Typography variant="body1">
+                  {t('EDUCATOR.SAVED_CHAPTERS.LESSON_NAME', {
+                    number: index + 1,
+                    title: lessonDetail.title,
+                  })}
+                </Typography>
               </Box>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: theme.palette.text.secondary,
-                  fontSize: { xs: '0.813rem', md: '0.875rem' },
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  maxWidth: { xs: '150px', sm: '250px', md: '350px' },
-                }}
-              >
-                {t('EDUCATOR.SAVED_CHAPTERS.LESSON_NAME', {
-                  number: index + 1,
-                  title: lessonDetail.title,
-                })}
-              </Typography>
+              <Box display="flex" gap="8px" alignItems="center">
+                <ViewResource lessonDetail={{ ...lessonDetail, courseId }} />
+                <DeleteModal
+                  handleDelete={() => handleDeleteLesson(lessonDetail._id)}
+                  message="lesson"
+                />
+                <AddLessonsModal
+                  isEdit
+                  chapterId={chapterId}
+                  courseId={courseId}
+                  defaultValues={{
+                    lessonTitle: lessonDetail.title,
+                    resource: lessonDetail.file,
+                    isFree: lessonDetail.isFree,
+                  }}
+                  lessonId={lessonDetail._id}
+                />
+              </Box>
             </Box>
-
-            <Box display="flex" gap={1} alignItems="center">
-              <ViewResource lessonDetail={{ ...lessonDetail, courseId }} isEdit />
-              <AddLessonsModal
-                isEdit
-                chapterId={chapterId}
-                courseId={courseId}
-                defaultValues={{
-                  lessonTitle: lessonDetail.title,
-                  resource: lessonDetail.file || '',
-                  isFree: lessonDetail.isFree,
-                }}
-                lessonId={lessonDetail._id}
-              />
-              <DeleteModal
-                handleDelete={() => handleDeleteLesson(lessonDetail._id)}
-                message="lesson"
-              />
-            </Box>
-          </Box>
+          </Draggable>
         ))}
-
-      <Box mt={2}>
-        <AddLessonsModal isEdit={false} chapterId={chapterId} courseId={courseId} />
-      </Box>
-    </Box>
+      <AddLessonsModal isEdit={false} chapterId={chapterId} courseId={courseId} />
+    </AccordionDetails>
   )
+}
+
+export default SavedChapters
+
+SavedChapters.propTypes = {
+  courseId: PropTypes.string.isRequired,
 }
 
 LessonsList.propTypes = {
   courseId: PropTypes.string.isRequired,
   chapterId: PropTypes.string.isRequired,
 }
-
-export default SavedChapters

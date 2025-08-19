@@ -16,7 +16,6 @@ import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 
 import Logout from '../../../../shared/components/auth-wrapper/logout'
-
 import UserSettings from '../../components/user-settings-tabs/user-app-settings'
 import EducationPayments from '../../components/user-settings-tabs/user-payments'
 import PersonalInfo from '../../components/user-settings-tabs/user-personal-info'

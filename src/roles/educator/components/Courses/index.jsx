@@ -30,6 +30,7 @@ import PaginationComponent from '../../../../shared/components/ui-elements/pagin
 const Courses = () => {
   const { t } = useTranslation('education')
   const navigate = useNavigate()
+  const theme = useTheme()
 
   const [page, setPage] = useState(1)
   const [status, setStatus] = useState('')
@@ -291,35 +292,37 @@ const Courses = () => {
 
   return (
     <Box>
-      <Box sx={{ mb: 3 }}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          flexWrap="wrap"
-          mb={2}
-        >
+      <Box sx={{ mb: 4 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap">
           <Box>
             <Typography
               variant="h4"
               sx={{
                 fontWeight: 600,
-                mb: 0.5,
+                mb: 1,
+                color: theme.palette.text.primary,
               }}
             >
               All Courses
             </Typography>
-            <Typography component="p" color="text.secondary">
+            <Typography variant="body1" color="text.secondary">
               Manage and track all your courses in one place
             </Typography>
           </Box>
           <Button
-            startIcon={<Plus size={16} />}
+            startIcon={<Plus size={18} />}
             onClick={() => {
               void navigate('/educator/create-course')
             }}
             variant="contained"
-            sx={{ mt: { xs: 2, sm: 0 } }}
+            sx={{
+              mt: { xs: 2, sm: 0 },
+              borderRadius: '8px',
+              textTransform: 'none',
+              fontWeight: 500,
+              px: 3,
+              py: 1,
+            }}
           >
             {t('EDUCATOR.COURSES.CREATE_COURSES')}
           </Button>
@@ -327,14 +330,14 @@ const Courses = () => {
       </Box>
       <Box
         sx={{
-          p: 2,
-          borderRadius: '12px',
-          border: (thm) => `1px solid ${thm.palette.grey[200]}`,
+          p: 3,
+          borderRadius: '16px',
           display: 'flex',
           flexDirection: 'column',
           height: 'calc(100vh - 280px)',
           overflow: 'hidden',
           backgroundColor: 'background.light',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
         }}
       >
         <Box
@@ -347,45 +350,62 @@ const Courses = () => {
           sx={{ flexShrink: 0 }}
         >
           <ButtonGroup
+            variant="outlined"
             sx={{
-              '& .MuiButton-root:not(:last-child)': { borderRight: 'none' },
+              backgroundColor: 'white',
+              '& .MuiButton-root': {
+                borderColor: theme.palette.grey[300],
+                textTransform: 'none',
+                fontWeight: 500,
+                px: 2,
+                py: 0.75,
+                '&:not(:last-child)': {
+                  borderRight: 'none',
+                },
+              },
             }}
           >
             <Button
               sx={{
-                backgroundColor: status === '' ? 'primary.main' : 'transparent',
+                backgroundColor: status === '' ? 'primary.main' : 'white',
                 color: status === '' ? 'white' : 'text.secondary',
+                borderColor: status === '' ? 'primary.main' : theme.palette.grey[300],
                 '&:hover': {
-                  backgroundColor: status === '' ? 'primary.dark' : 'action.hover',
+                  backgroundColor: status === '' ? 'primary.dark' : theme.palette.grey[50],
+                  borderColor: status === '' ? 'primary.dark' : theme.palette.grey[400],
                 },
               }}
               onClick={() => handleChangeStatus('')}
             >
-              {t('EDUCATOR.COURSES.ALL')} ({courseCount?.data?.courseCount})
+              {t('EDUCATOR.COURSES.ALL')} ({courseCount?.data?.courseCount || 0})
             </Button>
             <Button
               sx={{
-                backgroundColor: status === 'published' ? 'primary.main' : 'transparent',
+                backgroundColor: status === 'published' ? 'primary.main' : 'white',
                 color: status === 'published' ? 'white' : 'text.secondary',
+                borderColor: status === 'published' ? 'primary.main' : theme.palette.grey[300],
                 '&:hover': {
-                  backgroundColor: status === 'published' ? 'primary.dark' : 'action.hover',
+                  backgroundColor: status === 'published' ? 'primary.dark' : theme.palette.grey[50],
+                  borderColor: status === 'published' ? 'primary.dark' : theme.palette.grey[400],
                 },
               }}
               onClick={() => handleChangeStatus('published')}
             >
-              {t('EDUCATOR.COURSES.PUBLISHED')} ({courseCount?.data?.publishedCourseCount})
+              {t('EDUCATOR.COURSES.PUBLISHED')} ({courseCount?.data?.publishedCourseCount || 0})
             </Button>
             <Button
               sx={{
-                backgroundColor: status === 'draft' ? 'primary.main' : 'transparent',
+                backgroundColor: status === 'draft' ? 'primary.main' : 'white',
                 color: status === 'draft' ? 'white' : 'text.secondary',
+                borderColor: status === 'draft' ? 'primary.main' : theme.palette.grey[300],
                 '&:hover': {
-                  backgroundColor: status === 'draft' ? 'primary.dark' : 'action.hover',
+                  backgroundColor: status === 'draft' ? 'primary.dark' : theme.palette.grey[50],
+                  borderColor: status === 'draft' ? 'primary.dark' : theme.palette.grey[400],
                 },
               }}
               onClick={() => setStatus('draft')}
             >
-              {t('EDUCATOR.COURSES.DRAFT')} ({courseCount?.data?.draftCourseCount})
+              {t('EDUCATOR.COURSES.DRAFT')} ({courseCount?.data?.draftCourseCount || 0})
             </Button>
           </ButtonGroup>
           <TextField
@@ -394,9 +414,21 @@ const Courses = () => {
               debouncedSearch(e.target.value)
             }}
             placeholder={t('EDUCATOR.COURSES.SEARCH')}
+            sx={{
+              minWidth: 250,
+              backgroundColor: 'white',
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: theme.palette.grey[300],
+                },
+                '&:hover fieldset': {
+                  borderColor: theme.palette.grey[400],
+                },
+              },
+            }}
             InputProps={{
               startAdornment: (
-                <Search size={16} style={{ color: 'var(--mui-palette-action-disabled)' }} />
+                <Search size={16} style={{ marginRight: 8, color: theme.palette.grey[500] }} />
               ),
             }}
           />

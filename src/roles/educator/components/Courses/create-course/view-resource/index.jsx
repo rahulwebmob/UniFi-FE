@@ -1,15 +1,16 @@
 import { Box, Button } from '@mui/material'
-import { VideoIcon, FileText, Lock } from 'lucide-react'
+import { Video, FileText, Lock } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useRef, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+// import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { useDownloadResourceMutation } from '../../../../../../services/admin'
 import ContentPreview from '../../../../../../shared/components/layout/Course/content-preview'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
 
-const ViewResource = ({ lessonDetail, isEdit = true, handleOpenPremiumModal = () => {} }) => {
+const ViewResource = ({ lessonDetail, isEdit, handleOpenPremiumModal }) => {
   const videoRef = useRef(null)
   const navigate = useNavigate()
   const { t } = useTranslation('education')
@@ -30,12 +31,12 @@ const ViewResource = ({ lessonDetail, isEdit = true, handleOpenPremiumModal = ()
         chapterId: lessonDetail?.chapterId,
       })
 
-      if ('data' in response && response?.data?.url) {
-        videoRef.current?.openModal()
+      if (response?.data?.url) {
+        videoRef.current.openModal()
         setResourceUrl(response.data.url)
       }
-    } catch (error) {
-      console.error('Error downloading resource:', error)
+    } catch {
+      // error handling
     }
   }
 
@@ -54,7 +55,7 @@ const ViewResource = ({ lessonDetail, isEdit = true, handleOpenPremiumModal = ()
         <Button
           size="small"
           variant="outlined"
-          startIcon={isPdf ? <FileText size={16} /> : <VideoIcon size={16} />}
+          startIcon={isPdf ? <FileText size={16} /> : <Video size={16} />}
           onClick={isEdit ? handleViewResource : handleRedirectLesson}
           color={isPdf ? 'secondary' : 'primary'}
           disabled={lessonDetail?.status !== 'completed'}
@@ -62,6 +63,8 @@ const ViewResource = ({ lessonDetail, isEdit = true, handleOpenPremiumModal = ()
             gap: '0',
             width: '130px',
             background: 'none',
+            borderColor: (theme) => (isPdf ? theme.palette.white.main : theme.palette.primary.main),
+            color: (theme) => (isPdf ? theme.palette.white.main : theme.palette.primary.main),
             borderRadius: '8px',
           }}
         >
@@ -96,17 +99,14 @@ const ViewResource = ({ lessonDetail, isEdit = true, handleOpenPremiumModal = ()
 }
 
 ViewResource.propTypes = {
-  lessonDetail: PropTypes.shape({
-    _id: PropTypes.string,
-    courseId: PropTypes.string,
-    chapterId: PropTypes.string,
-    lessonType: PropTypes.string,
-    isFree: PropTypes.bool,
-    isCourseBought: PropTypes.bool,
-    status: PropTypes.string,
-  }),
+  lessonDetail: PropTypes.oneOfType([PropTypes.object]).isRequired,
   isEdit: PropTypes.bool,
   handleOpenPremiumModal: PropTypes.func,
+}
+
+ViewResource.defaultProps = {
+  isEdit: true,
+  handleOpenPremiumModal: () => {},
 }
 
 export default ViewResource

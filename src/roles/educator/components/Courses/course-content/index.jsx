@@ -13,7 +13,7 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from '@mui/material'
-import { VideoIcon, FileText, ChevronDown } from 'lucide-react'
+import { Video, FileText, ChevronDown } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -23,8 +23,8 @@ import ModalBox from '../../../../../shared/components/ui-elements/modal-box'
 import { getEducatorDetails, handleFormatSeconds } from '../../common/common'
 import ViewResource from '../create-course/view-resource'
 
-const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () => {} }) => {
-  const previewRef = useRef(null)
+const CourseContent = ({ courseData, isEdit, handleOpenPremiumModal }) => {
+  const previewRef = useRef()
   const navigate = useNavigate()
   const { t } = useTranslation('education')
 
@@ -39,21 +39,9 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
       }
     })
   }
-
-  useEffect(() => {
-    handleSticky()
-
-    const handlePopState = () => {
-      handleSticky(true)
-    }
-
-    window.addEventListener('popstate', handlePopState)
-
-    return () => {
-      handleSticky(true)
-      window.removeEventListener('popstate', handlePopState)
-    }
-  }, [])
+  window.addEventListener('popstate', () => {
+    handleSticky(true)
+  })
 
   const renderEnrollButton = () =>
     !courseData?.isCourseBought && courseData?.isPaid ? (
@@ -78,12 +66,22 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
       </Button>
     )
 
+  useEffect(() => {
+    handleSticky()
+
+    return () => {
+      handleSticky(true)
+    }
+  }, [])
+
   const renderPreview = () => (
     <video
       width="100%"
       height="100%"
       title="modal-preview-video"
       src={courseData?.previewVideo}
+      allowFullScreen
+      frameBorder="0"
       controls
       autoPlay
       muted
@@ -97,7 +95,7 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
       sx={{
         padding: 2,
         borderRadius: '8px',
-        background: (theme) => theme.palette.action.hover,
+        background: (theme) => theme.palette.primary.light,
         '& .MuiTypography-root': {
           fontFamily: 'inter',
         },
@@ -113,7 +111,7 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
         <Grid
           sx={{
             padding: 2,
-            background: (theme) => theme.palette.action.hover,
+            background: (theme) => theme.palette.primary.light,
             borderRadius: '8px',
           }}
         >
@@ -126,14 +124,14 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
             }}
           >
             <Grid item size={{ xs: 12, sm: 6, lg: 6 }}>
-              <Typography variant="h4" mb={2}>
+              <Typography variant="h1" mb={2}>
                 {courseData?.title}
               </Typography>
 
               <Tooltip title={courseData?.description || '-'} arrow>
                 <Typography
                   variant="body1"
-                  color="text.secondary"
+                  color="secondary"
                   sx={{
                     width: '100%',
                     display: '-webkit-box',
@@ -149,7 +147,7 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
                 </Typography>
               </Tooltip>
               <Box mt={1}>
-                <Typography variant="body2" color="text.secondary" display="block">
+                <Typography variant="p" color="secondary" display="block">
                   {t('education:EDUCATION_DASHBOARD.COMMON_KEYS.CREATED_BY')}
                 </Typography>
                 <Box
@@ -157,7 +155,7 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
                   alignItems="center"
                   gap="3px"
                   sx={{
-                    background: (theme) => theme.palette.action.hover,
+                    background: (theme) => theme.palette.primary.light,
                     padding: 1,
                     borderRadius: '8px',
                   }}
@@ -185,8 +183,8 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
                   width: { xs: 'auto', md: '450px' },
                   padding: '16px',
                   borderRadius: '12px',
-                  border: '1px solid',
-                  borderColor: (theme) => theme.palette.divider,
+                  border: '1px solid ',
+                  borderColor: (theme) => theme.palette.primary.light100,
                   background: 'none',
                 }}
               >
@@ -207,22 +205,23 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
                 </Box>
 
                 <CardContent sx={{ p: 0, my: 1 }}>
-                  <Typography variant="body1" fontWeight={600} mb={1} display="block">
+                  <Typography variant="p1" fontWeight={600} mb={1} display="block">
                     {courseData?.title || '-'}
                   </Typography>
                 </CardContent>
                 {!courseData?.isCourseBought && (
                   <Box display="flex" justifyContent="space-between" width="100%" my={1}>
-                    <Typography variant="body2">
+                    <Typography variant="p">
                       {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.COURSE_PRICE')}
                     </Typography>
-                    <Typography variant="body2" fontWeight={600}>
-                      {courseData?.isPaid
+                    <Typography variant="p" fontWeight={600}>
+                      {courseData.isPaid
                         ? `$${courseData?.price}`
                         : t('education:EDUCATION_DASHBOARD.COMMON_KEYS.FREE')}
                     </Typography>
                   </Box>
                 )}
+                {/* enroll button */}
                 {renderEnrollButton()}
               </Card>
             </Grid>
@@ -230,10 +229,10 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
         </Grid>
 
         <Box my={2}>
-          <Typography variant="h5" fontWeight={600}>
+          <Typography variant="h4" fontWeight={600}>
             {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.COURSE_CONTENT')}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="secondary">
             {!!courseData?.totalChaptersCount &&
               `${courseData.totalChaptersCount} ${t(
                 'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.CHAPTERS',
@@ -255,11 +254,13 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
             display: 'grid',
             gridTemplateColumns: { xs: '100%', md: '1fr 434px' },
             columnGap: '20px',
+            marginTop: 2,
+            marginBottom: 2,
           }}
         >
           <Box
             sx={{
-              background: (theme) => theme.palette.action.hover,
+              background: (theme) => theme.palette.primary.light,
               borderRadius: '8px',
               padding: '10px',
               '& .MuiPaper-root.Mui-expanded': {
@@ -296,7 +297,7 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
                     aria-controls={`panel-${chapter._id}-content`}
                     id={`panel-${chapter._id}-header`}
                     sx={{
-                      background: (theme) => theme.palette.action.selected,
+                      background: (theme) => theme.palette.primary.light100,
                       borderRadius: '4px',
                       '& .MuiAccordionSummary-expandIconWrapper': {
                         order: -1,
@@ -313,12 +314,12 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
                       alignItems="center"
                       flexWrap="wrap"
                     >
-                      <Typography variant="body1">
+                      <Typography variant="p1">
                         {`${t(
                           'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.CHAPTER',
                         )} ${chapterIndex + 1}. ${chapter.title || '-'}`}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="p" color="text.secondary">
                         {chapter?.totalLessons}
                         {chapter?.totalLessons === 1
                           ? ` ${t(
@@ -332,7 +333,7 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
                       </Typography>
                     </Box>
                   </AccordionSummary>
-                  {!!chapter?.lessonList?.length &&
+                  {!!chapter?.lessonList.length &&
                     chapter?.lessonList?.map((lesson, lessonIndex) => (
                       <AccordionDetails key={lesson?._id}>
                         <Box
@@ -342,7 +343,7 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
                           alignItems="center"
                           sx={{
                             borderBottom: '1px solid',
-                            borderColor: (theme) => theme.palette.divider,
+                            borderColor: (theme) => theme.palette.primary.light,
                             padding: '10px 0',
                             flexWrap: 'wrap',
                             gap: '10px',
@@ -354,14 +355,14 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
                             gap="10px"
                             sx={{
                               svg: {
-                                color: (theme) => theme.palette.text.secondary,
+                                color: (theme) => theme.palette.grey.light,
                               },
                             }}
                           >
                             {lesson?.lessonType === 'pdf' ? (
-                              <FileText size={20} />
+                              <FileText size={24} />
                             ) : (
-                              <VideoIcon size={20} />
+                              <Video size={24} />
                             )}
                             <Tooltip
                               title={`${t(
@@ -391,9 +392,7 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
                             isEdit={isEdit}
                             lessonDetail={{
                               ...lesson,
-                              _id: lesson._id || '',
-                              courseId: courseData._id || '',
-                              chapterId: chapter._id,
+                              courseId: courseData._id,
                               isCourseBought: courseData.isCourseBought,
                             }}
                             handleOpenPremiumModal={handleOpenPremiumModal}
@@ -427,7 +426,7 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
           >
             <Box sx={{ position: 'sticky', bottom: '0' }}>
               <Typography
-                variant="body1"
+                variant="p1"
                 component="p"
                 mb={1}
                 textAlign="start"
@@ -438,13 +437,11 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
               <Box
                 p={1}
                 sx={{
-                  background: (theme) => theme.palette.action.hover,
+                  background: (theme) => theme.palette.primary.light,
                   borderRadius: '10px',
-                  cursor: 'pointer',
                 }}
-                onClick={() => previewRef.current?.openModal()}
               >
-                {renderPreview()}
+                <Box onClick={() => previewRef.current.openModal()}>{renderPreview()}</Box>
               </Box>
             </Box>
           </Box>
@@ -457,38 +454,15 @@ const ContentView = ({ courseData, isEdit = true, handleOpenPremiumModal = () =>
   )
 }
 
-ContentView.propTypes = {
-  courseData: PropTypes.shape({
-    _id: PropTypes.string,
-    title: PropTypes.string,
-    description: PropTypes.string,
-    thumbNail: PropTypes.string,
-    previewVideo: PropTypes.string,
-    price: PropTypes.number,
-    isPaid: PropTypes.bool,
-    isCourseBought: PropTypes.bool,
-    totalChaptersCount: PropTypes.number,
-    totalLessonsCount: PropTypes.number,
-    totalDurationOfCourse: PropTypes.number,
-    chapters: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string,
-        title: PropTypes.string,
-        totalLessons: PropTypes.number,
-        totalDuration: PropTypes.number,
-        lessonList: PropTypes.arrayOf(
-          PropTypes.shape({
-            _id: PropTypes.string,
-            title: PropTypes.string,
-            lessonType: PropTypes.string,
-            durationInSeconds: PropTypes.number,
-          }),
-        ),
-      }),
-    ),
-  }),
+export default CourseContent
+
+CourseContent.propTypes = {
   isEdit: PropTypes.bool,
   handleOpenPremiumModal: PropTypes.func,
+  courseData: PropTypes.oneOfType([PropTypes.object]).isRequired,
 }
 
-export default ContentView
+CourseContent.defaultProps = {
+  isEdit: true,
+  handleOpenPremiumModal: () => {},
+}
