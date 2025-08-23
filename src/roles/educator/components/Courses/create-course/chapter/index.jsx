@@ -7,9 +7,16 @@ import AddLesson from './add-lessons-modal/add-lesson'
 
 const Chapter = () => {
   const { courseId } = useFormContext()
+
+  const defaultLessonValues = {
+    lessonTitle: '',
+    resource: '',
+    isFree: false,
+  }
+
   return (
     <Box>
-      <AddLesson courseId={courseId} isChapter />
+      <AddLesson courseId={courseId} isChapter defaultValues={defaultLessonValues} />
       <SavedChapters courseId={courseId} />
     </Box>
   )

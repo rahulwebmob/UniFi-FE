@@ -310,6 +310,19 @@
       "CHAPTER_NAME": "Chapter {{number}}. {{title}}",
       "LESSON_NAME": "lesson {{number}}. {{title}}"
     },
+    "CHAPTER_TOOLBAR": {
+      "EDIT_CHAPTER": "Edit Chapter",
+      "EDIT_LESSON": "Edit Lesson",
+      "DELETE_CHAPTER": "Delete Chapter",
+      "DELETE_LESSON": "Delete Lesson",
+      "ADD_LESSON": "Add Lesson",
+      "EDIT_CHAPTER_TITLE": "Edit Chapter Title",
+      "EDIT_LESSON_TITLE": "Edit Lesson Title",
+      "ENTER_CHAPTER_TITLE": "Enter chapter title",
+      "ENTER_LESSON_TITLE": "Enter lesson title",
+      "CONFIRM_DELETE_CHAPTER": "Are you sure you want to delete this chapter?",
+      "CONFIRM_DELETE_LESSON": "Are you sure you want to delete this lesson?"
+    },
     "UPLOAD_PROMPT": {
       "UPLOAD_IN_PROGRESS": "Upload in Progress",
       "UPLOADING_YOUR_VIDEO": "Uploading your video. Please don’t perform any action during this process."

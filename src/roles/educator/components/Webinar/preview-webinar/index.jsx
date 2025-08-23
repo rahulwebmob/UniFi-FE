@@ -106,7 +106,7 @@ const PreviewWebinar = ({ webinarData, isTdSkip }) => {
     <WebinarContent
       isEdit
       webinarData={transformedWebinarData}
-      handleOpenPremiumModal={() => {
+      handlePurchase={() => {
         // No-op for preview mode
       }}
     />

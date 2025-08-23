@@ -46,7 +46,7 @@ const WebinarDetails = () => {
     }
   }, [data])
 
-  const handleOpenPremiumModal = () => {
+  const handlePurchase = () => {
     subscriptionRef.current?.openModal()
   }
 
@@ -87,7 +87,7 @@ const WebinarDetails = () => {
       <WebinarContent
         isEdit={false}
         webinarData={handleCourseData}
-        handleOpenPremiumModal={handleOpenPremiumModal}
+        handlePurchase={handlePurchase}
       />
       <PremiumModal
         ref={subscriptionRef}

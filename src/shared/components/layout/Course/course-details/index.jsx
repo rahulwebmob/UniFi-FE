@@ -31,18 +31,14 @@ const CourseDetails = () => {
     [courseData],
   )
 
-  const handleOpenPremiumModal = () => {
+  const handlePurchase = () => {
     subscriptionRef.current?.openModal()
   }
 
   return (
     <ApiResponseWrapper error={error} isLoading={isLoading} isData={!!data?.data}>
       {courseData && (
-        <ContentView
-          isEdit={false}
-          courseData={courseData}
-          handleOpenPremiumModal={handleOpenPremiumModal}
-        />
+        <ContentView isEdit={false} courseData={courseData} handlePurchase={handlePurchase} />
       )}
       {!!purchaseDetails && (
         <PremiumModal ref={subscriptionRef} purchaseDetails={purchaseDetails} />

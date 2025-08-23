@@ -164,7 +164,7 @@ const Courses = () => {
                 boxSizing: 'border-box',
               }}
             >
-              {Array.isArray(categories) ? categories.join(', ') : '-'}
+              {Array.isArray(categories) && categories.length > 0 ? categories.join(', ') : '-'}
             </Typography>
           </Tooltip>
         )
@@ -315,14 +315,6 @@ const Courses = () => {
               void navigate('/educator/create-course')
             }}
             variant="contained"
-            sx={{
-              mt: { xs: 2, sm: 0 },
-              borderRadius: '8px',
-              textTransform: 'none',
-              fontWeight: 500,
-              px: 3,
-              py: 1,
-            }}
           >
             {t('EDUCATOR.COURSES.CREATE_COURSES')}
           </Button>
@@ -349,22 +341,7 @@ const Courses = () => {
           mb={2}
           sx={{ flexShrink: 0 }}
         >
-          <ButtonGroup
-            variant="outlined"
-            sx={{
-              backgroundColor: 'white',
-              '& .MuiButton-root': {
-                borderColor: theme.palette.grey[300],
-                textTransform: 'none',
-                fontWeight: 500,
-                px: 2,
-                py: 0.75,
-                '&:not(:last-child)': {
-                  borderRight: 'none',
-                },
-              },
-            }}
-          >
+          <ButtonGroup variant="outlined">
             <Button
               sx={{
                 backgroundColor: status === '' ? 'primary.main' : 'white',
@@ -461,7 +438,13 @@ const Courses = () => {
             returnTableInstance={false}
           />
         </Box>
-        <Box mt={2} textAlign="center" sx={{ flexShrink: 0 }}>
+        <Box
+          mt={2}
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
           {!!coursesData?.data?.courses.length && (
             <PaginationComponent page={page} data={coursesData?.data} setPage={setPage} />
           )}

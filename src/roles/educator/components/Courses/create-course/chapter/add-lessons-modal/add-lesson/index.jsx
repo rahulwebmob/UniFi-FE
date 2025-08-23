@@ -11,6 +11,7 @@ import {
   CircularProgress,
   FormControlLabel,
   Tooltip,
+  useTheme,
 } from '@mui/material'
 import axios from 'axios'
 import { CloudUpload, RotateCcw, Save } from 'lucide-react'
@@ -43,6 +44,7 @@ const AddLesson = ({
   defaultValues,
 }) => {
   const { t } = useTranslation('education')
+  const theme = useTheme()
   const dispatch = useDispatch()
   const fileInputRef = useRef(null)
   const uploadPrompt = useRef(null)
@@ -51,8 +53,8 @@ const AddLesson = ({
   const { isCourseFree } = useFormContext()
 
   const [formData, setFormData] = useState({
-    isFree: defaultValues.isFree,
-    lessonTitle: defaultValues.lessonTitle,
+    isFree: defaultValues?.isFree,
+    lessonTitle: defaultValues?.lessonTitle,
   })
   const [errors, setErrors] = useState({})
   const [resource, setResource] = useState(null)
@@ -72,8 +74,8 @@ const AddLesson = ({
 
   useEffect(() => {
     setFormData({
-      isFree: defaultValues.isFree,
-      lessonTitle: defaultValues.lessonTitle,
+      isFree: defaultValues?.isFree,
+      lessonTitle: defaultValues?.lessonTitle,
     })
   }, [defaultValues])
 
@@ -226,16 +228,18 @@ const AddLesson = ({
   }
 
   const renderForm = () => (
-    <Grid container spacing={1}>
+    <Grid container spacing={3}>
       {!isChapter && (
-        <Grid item xs={12}>
-          <Typography variant="p1">{t('EDUCATOR.ADD_CHAPTERS.LESSON_DETAILS')}</Typography>
+        <Grid size={12}>
+          <Typography variant="h6" fontWeight={500}>
+            {t('EDUCATOR.ADD_CHAPTERS.LESSON_DETAILS')}
+          </Typography>
         </Grid>
       )}
       {isChapter && (
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <FormControl fullWidth>
-            <Typography variant="body1" mb={0.5}>
+            <Typography variant="body1" mb={1} fontWeight={500}>
               {t('EDUCATOR.ADD_CHAPTERS.CHAPTER_TITLE')}{' '}
               <Typography variant="body1" color="error.main" component="span">
                 *
@@ -253,9 +257,9 @@ const AddLesson = ({
           </FormControl>
         </Grid>
       )}
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <FormControl fullWidth>
-          <Typography variant="body1" mb={0.5}>
+          <Typography variant="body1" mb={1} fontWeight={500}>
             {t('EDUCATOR.ADD_CHAPTERS.LESSON_TITLE')}{' '}
             <Typography variant="body1" color="error.main" component="span">
               *
@@ -272,10 +276,10 @@ const AddLesson = ({
           />
         </FormControl>
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <FormControl fullWidth>
           <Tooltip title={t('EDUCATOR.ADD_CHAPTERS.UPLOAD_RESOURCE')}>
-            <Typography variant="body1" mb={0.5} noWrap sx={{ maxWidth: '300px' }}>
+            <Typography variant="body1" mb={1} fontWeight={500} noWrap sx={{ maxWidth: '300px' }}>
               {t('EDUCATOR.ADD_CHAPTERS.UPLOAD_RESOURCE')}{' '}
               <Typography variant="body1" color="error.main" component="span">
                 *
@@ -284,12 +288,18 @@ const AddLesson = ({
           </Tooltip>
           <Box
             sx={{
-              p: 0.1,
-              border: '1px solid',
-              borderColor: 'grey.400',
-              borderRadius: '8px',
+              p: 1.5,
+              border: `2px dashed ${theme.palette.grey[300]}`,
+              borderRadius: '12px',
+              backgroundColor: 'background.paper',
               display: 'flex',
-              gap: '10px',
+              alignItems: 'center',
+              gap: 2,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                borderColor: theme.palette.primary.main,
+                backgroundColor: theme.palette.primary.lighter || theme.palette.action.hover,
+              },
             }}
           >
             <input
@@ -302,42 +312,54 @@ const AddLesson = ({
               onChange={(e) => handleFileChange(e, setErrors, setResource)}
             />
             <Button
-              sx={{ gap: '0' }}
               variant="contained"
-              color="secondary"
               onClick={() => fileInputRef.current.click()}
               startIcon={<CloudUpload size={20} />}
+              size="small"
             >
               {t('EDUCATOR.ADD_CHAPTERS.BROWSE')}
             </Button>
-            <Typography variant="body2" mt={1} noWrap maxWidth={150}>
-              {defaultValues.resource || resource?.name}
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              noWrap
+              sx={{
+                maxWidth: 200,
+                fontStyle: resource?.name ? 'normal' : 'italic',
+              }}
+            >
+              {resource?.name || defaultValues?.resource || 'No file selected'}
             </Typography>
           </Box>
         </FormControl>
         {errors.resource && (
-          <Typography color="error" variant="body2" mt={1}>
+          <Typography color="error" variant="caption" sx={{ mt: 0.5, display: 'block' }}>
             {errors.resource}
           </Typography>
         )}
       </Grid>
       {!isCourseFree && (
-        <Grid item sm={12} md={6} mt={1.5}>
-          <Typography variant="body1">{t('EDUCATOR.ADD_CHAPTERS.LESSON_TYPE')}</Typography>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Typography variant="body1" mb={1} fontWeight={500}>
+            {t('EDUCATOR.ADD_CHAPTERS.LESSON_TYPE')}
+          </Typography>
           <FormControl component="fieldset" fullWidth>
             <RadioGroup
               row
               value={formData.isFree}
               onChange={(e) => handleChange('isFree', e.target.value === 'true')}
+              sx={{
+                py: 1,
+              }}
             >
               <FormControlLabel
                 value={false}
-                control={<Radio color="secondary" />}
+                control={<Radio color="primary" />}
                 label={t('EDUCATOR.COMMON_KEYS.PAID')}
               />
               <FormControlLabel
                 value
-                control={<Radio color="secondary" />}
+                control={<Radio color="primary" />}
                 label={t('EDUCATOR.COMMON_KEYS.FREE')}
               />
             </RadioGroup>
@@ -345,7 +367,7 @@ const AddLesson = ({
         </Grid>
       )}
       {!isChapter && (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box display="flex" flexWrap="wrap" mt={1} gap={1}>
             <Button
               onClick={handleOnSubmit}
@@ -354,15 +376,16 @@ const AddLesson = ({
               startIcon={<Save size={20} />}
               disabled={isLoading}
               endIcon={isLoading && <CircularProgress size="1em" />}
+              size="small"
             >
               {t('EDUCATOR.ADD_CHAPTERS.SAVE_LESSON')}
             </Button>
             {isChapter ? (
-              <Button variant="contained" color="error" onClick={handleReset}>
+              <Button variant="outlined" color="error" onClick={handleReset} size="small">
                 {t('EDUCATOR.ADD_CHAPTERS.RESET')}
               </Button>
             ) : (
-              <Button onClick={handleClose} variant="contained" color="error">
+              <Button onClick={handleClose} variant="outlined" color="error" size="small">
                 {t('EDUCATOR.ADD_CHAPTERS.CLOSE')}
               </Button>
             )}
@@ -375,6 +398,7 @@ const AddLesson = ({
           handleClosePrompt()
           uploadPrompt.current.closeModal()
         }}
+        size="md"
       >
         <UploadPrompt progress={uploadProgress} />
       </ModalBox>
@@ -390,33 +414,35 @@ const AddLesson = ({
           justifyContent="space-between"
           mb={2}
         >
-          <Typography variant="h6">{t('EDUCATOR.ADD_CHAPTERS.CHAPTER_DETAILS')}</Typography>
+          <Typography variant="h6" fontWeight={600}>
+            {t('EDUCATOR.ADD_CHAPTERS.CHAPTER_DETAILS')}
+          </Typography>
           <Box display="flex" gap="10px" mt={1}>
             <Button
-              sx={{ gap: '0' }}
               onClick={handleOnSubmit}
-              variant="outlined"
+              variant="contained"
               color="primary"
               startIcon={<Save size={20} />}
               disabled={isLoading}
               endIcon={isLoading && <CircularProgress size="1em" />}
+              size="small"
             >
               {t('EDUCATOR.ADD_CHAPTERS.SAVE_CHAPTER')}
             </Button>
-            <IconButton variant="contained" color="error" onClick={handleReset}>
+            <IconButton
+              color="error"
+              onClick={handleReset}
+              sx={{
+                border: `2px solid ${theme.palette.error.main}`,
+                borderRadius: '8px',
+                p: 1,
+              }}
+            >
               <RotateCcw size={20} />
             </IconButton>
           </Box>
         </Box>
-        <Box
-          p={2}
-          sx={{
-            background: (theme) => theme.palette.primary.light,
-            borderRadius: '8px',
-          }}
-        >
-          {renderForm()}
-        </Box>
+        <Box p={3}>{renderForm()}</Box>
       </Box>
     )
   }

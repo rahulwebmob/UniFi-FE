@@ -144,13 +144,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
           flexWrap="wrap"
           gap={2}
         >
-          <Box
-            display="flex"
-            gap={1}
-            flexWrap="wrap"
-            justifyContent="flex-end"
-            sx={{ width: '100%' }}
-          >
+          <Box display="flex" gap={1} width="400px">
             {downloadCv?.url && (
               <Button
                 variant="contained"

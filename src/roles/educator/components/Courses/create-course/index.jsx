@@ -11,7 +11,7 @@ import {
   StepContent,
   CircularProgress,
 } from '@mui/material'
-import { CheckCircle, Circle, ArrowLeft, Save, Eye } from 'lucide-react'
+import { CheckCircle, ArrowLeft, Save, Eye } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -36,15 +36,109 @@ const StepIcon = ({ active, completed }) => {
   const theme = useTheme()
 
   if (completed) {
-    return <CheckCircle size={28} color={theme.palette.success.main} strokeWidth={2} />
+    return (
+      <Box
+        sx={{
+          width: 36,
+          height: 36,
+          borderRadius: '50%',
+          background: `linear-gradient(135deg, ${theme.palette.success.main}, ${theme.palette.success.dark})`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          position: 'relative',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            background: theme.palette.success.main,
+            opacity: 0.1,
+            zIndex: -1,
+          },
+        }}
+      >
+        <CheckCircle size={22} color="white" strokeWidth={2.5} />
+      </Box>
+    )
   }
-  
+
+  if (active) {
+    return (
+      <Box
+        sx={{
+          width: 36,
+          height: 36,
+          borderRadius: '50%',
+          background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          position: 'relative',
+          animation: 'pulse 2s infinite',
+          '@keyframes pulse': {
+            '0%': {
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            },
+            '50%': {
+              boxShadow: '0 4px 20px rgba(0,0,0,0.25)',
+            },
+            '100%': {
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            },
+          },
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            background: theme.palette.primary.main,
+            opacity: 0.15,
+            zIndex: -1,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            width: 14,
+            height: 14,
+            borderRadius: '50%',
+            backgroundColor: 'white',
+            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)',
+          }}
+        />
+      </Box>
+    )
+  }
+
   return (
-    <Circle 
-      size={28} 
-      color={active ? theme.palette.primary.main : theme.palette.text.disabled}
-      strokeWidth={active ? 2 : 1.5}
-    />
+    <Box
+      sx={{
+        width: 36,
+        height: 36,
+        borderRadius: '50%',
+        border: `2px solid ${theme.palette.grey[300]}`,
+        backgroundColor: theme.palette.grey[50],
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        transition: 'all 0.3s ease',
+      }}
+    >
+      <Box
+        sx={{
+          width: 8,
+          height: 8,
+          borderRadius: '50%',
+          backgroundColor: theme.palette.grey[400],
+        }}
+      />
+    </Box>
   )
 }
 
@@ -415,7 +509,6 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
           {/* Stepper Section */}
           {activeStep !== 3 && (
             <Grid
-              item
               size={{ xs: 12, md: 3 }}
               sx={{
                 backgroundColor: 'background.light',
@@ -480,7 +573,7 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
             </Grid>
           )}
           {/* Form Section */}
-          <Grid item size={{ xs: 12, md: activeStep !== 3 ? 9 : 12 }}>
+          <Grid size={{ xs: 12, md: activeStep !== 3 ? 9 : 12 }}>
             <Box
               sx={{
                 backgroundColor: 'background.light',

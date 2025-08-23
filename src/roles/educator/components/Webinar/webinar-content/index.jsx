@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom'
 import { getLocaleByLanguageCode } from '../../../../../shared/utils/date-helpers/commonMethods'
 import { getEducatorDetails } from '../../common/common'
 
-const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
+const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const { t, i18n } = useTranslation('education')
@@ -35,7 +35,7 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
         disabled={isEdit}
         variant="contained"
         size="large"
-        onClick={handleOpenPremiumModal}
+        onClick={handlePurchase}
         sx={{
           borderRadius: 2,
           textTransform: 'none',
@@ -152,9 +152,9 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                 Array.isArray(webinarData.category) &&
                 webinarData.category.length > 0 && (
                   <Box display="flex" gap={1} flexWrap="wrap" mb={3}>
-                    {webinarData.category.map((cat, index) => (
+                    {webinarData.category.map((cat) => (
                       <Chip
-                        key={index}
+                        key={cat}
                         label={cat}
                         size="small"
                         sx={{
@@ -491,8 +491,8 @@ const WebinarContent = ({ webinarData, isEdit, handleOpenPremiumModal }) => {
                   What You&apos;ll Learn
                 </Typography>
                 <Box component="ul" sx={{ pl: 2 }}>
-                  {webinarData.keyTakeaways.map((item, index) => (
-                    <Box component="li" key={index} sx={{ mb: 1 }}>
+                  {webinarData.keyTakeaways.map((item) => (
+                    <Box component="li" key={item} sx={{ mb: 1 }}>
                       <Typography variant="body1" color="text.secondary">
                         {item}
                       </Typography>
@@ -536,7 +536,7 @@ WebinarContent.propTypes = {
     }),
   }),
   isEdit: PropTypes.bool,
-  handleOpenPremiumModal: PropTypes.func,
+  handlePurchase: PropTypes.func,
 }
 
 export default WebinarContent

@@ -1,17 +1,15 @@
 import {
   Box,
-  Grid,
-  Button,
-  TextField,
   Accordion,
   Typography,
   IconButton,
   AccordionDetails,
   AccordionSummary,
+  useTheme,
 } from '@mui/material'
-import { Edit2, GripVertical, ChevronDown, ChevronUp } from 'lucide-react'
+import { GripVertical, ChevronDown } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Draggable from 'react-draggable'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -24,18 +22,19 @@ import {
   useUpdateChapterMutation,
   useGetLessonsDetailsQuery,
 } from '../../../../../../services/admin'
-import AddLessonsModal from '../chapter/add-lessons-modal'
-import DeleteModal from '../chapter/delete-chapter'
-import ViewResource from '../view-resource'
+import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
+import AddLesson from '../chapter/add-lessons-modal/add-lesson'
+import ChapterToolbar from '../chapter/chapter-toolbar'
 
 const SavedChapters = ({ courseId }) => {
   const { t } = useTranslation('education')
+  const theme = useTheme()
   const { setHasLessons } = useFormContext()
 
   const [chapters, setChapters] = useState([])
-  const [newChapterTitle, setNewChapterTitle] = useState('')
-  const [isEditingChapter, setIsEditingChapter] = useState('')
   const [expandedChapters, setExpandedChapters] = useState({})
+  const chapterRefs = useRef([])
+  const addLessonRefs = useRef({})
 
   const [sortChapters] = useSortChaptersMutation()
   const [updateChapter] = useUpdateChapterMutation()
@@ -78,10 +77,7 @@ const SavedChapters = ({ courseId }) => {
       title,
       ...(isDeleted && { isDeleted }),
     }
-    const response = await updateChapter(payload)
-    if (!response.error) {
-      setIsEditingChapter(null)
-    }
+    await updateChapter(payload)
   }
 
   const handleChapterDragStop = async (_, newData, draggedIndex) => {
@@ -114,41 +110,26 @@ const SavedChapters = ({ courseId }) => {
     <Box>
       {!!chapters.length && (
         <>
-          <Typography variant="h6">{t('EDUCATOR.SAVED_CHAPTERS.SAVED_CHAPTERS_TITLE')}</Typography>
-          <Box
-            sx={{
-              background: (theme) => theme.palette.primary.light,
-              borderRadius: '8px',
-              padding: '10px',
-            }}
-          >
+          <Typography variant="h6" fontWeight={600} mb={2}>
+            {t('EDUCATOR.SAVED_CHAPTERS.SAVED_CHAPTERS_TITLE')}
+          </Typography>
+          <Box p={3}>
             {chapters.map((chap, index) => (
               <Draggable
                 key={chap._id}
+                nodeRef={
+                  (chapterRefs.current[index] = chapterRefs.current[index] || React.createRef())
+                }
                 axis="y"
                 position={{ x: 0, y: 0 }}
                 onStop={(e, d) => handleChapterDragStop(e, d, index)}
                 handle=".drag-chapter"
               >
-                <Box sx={{ mb: 1 }}>
-                  <Accordion
-                    expanded={!!expandedChapters[chap._id]}
-                    key={chap._id}
-                    sx={{
-                      background: (theme) => theme.palette.primary.light,
-                      borderRadius: '8px',
-                      '& .MuiAccordionSummary-content': {
-                        margin: '6px 0',
-                      },
-                    }}
-                  >
+                <Box ref={chapterRefs.current[index]} sx={{ mb: 2 }}>
+                  <Accordion expanded={!!expandedChapters[chap._id]} key={chap._id}>
                     <AccordionSummary
                       aria-controls={`panel-${chap._id}-content`}
                       id={`panel-${chap._id}-header`}
-                      sx={{
-                        background: (theme) => theme.palette.primary.light100,
-                        borderRadius: '4px',
-                      }}
                     >
                       <Box
                         display="flex"
@@ -158,61 +139,66 @@ const SavedChapters = ({ courseId }) => {
                         gap="20px"
                       >
                         <Box display="flex" alignItems="center" gap="10px">
-                          <IconButton size="small" onClick={() => handleToggleAccordion(chap._id)}>
-                            {expandedChapters[chap._id] ? (
-                              <ChevronUp size={20} />
-                            ) : (
-                              <ChevronDown size={20} />
-                            )}
-                          </IconButton>
-                          <GripVertical
-                            className="drag-chapter"
-                            fontSize={24}
-                            style={{ cursor: 'grab' }}
-                          />
-                          {isEditingChapter === chap._id ? (
-                            <Grid container>
-                              <Grid item xs={12}>
-                                <TextField
-                                  size="small"
-                                  fullWidth
-                                  value={newChapterTitle}
-                                  onChange={(e) => setNewChapterTitle(e.target.value)}
-                                />
-                              </Grid>
-                            </Grid>
-                          ) : (
-                            <Typography>
-                              {t('EDUCATOR.SAVED_CHAPTERS.CHAPTER_NAME', {
-                                number: index + 1,
-                                title: chap.title,
-                              })}
-                            </Typography>
-                          )}
-                        </Box>
-                        <Box display="flex" gap="5px" alignItems="center">
-                          {isEditingChapter === chap._id && (
-                            <Button
-                              variant="outlined"
-                              onClick={() => handleUpdateChapter(chap._id, newChapterTitle)}
-                              size="small"
-                            >
-                              {t('EDUCATOR.SAVED_CHAPTERS.UPDATE')}
-                            </Button>
-                          )}
-                          <DeleteModal
-                            handleDelete={() => handleUpdateChapter(chap._id, chap?.title, true)}
-                            message="chapter"
-                          />
                           <IconButton
-                            color="primary"
-                            onClick={() => {
-                              setIsEditingChapter((prev) => (prev === chap._id ? null : chap._id))
-                              setNewChapterTitle(chap.title)
+                            size="small"
+                            onClick={() => handleToggleAccordion(chap._id)}
+                            sx={{
+                              transition: 'transform 0.3s ease',
+                              transform: expandedChapters[chap._id]
+                                ? 'rotate(180deg)'
+                                : 'rotate(0deg)',
                             }}
                           >
-                            <Edit2 size={24} />
+                            <ChevronDown size={20} />
                           </IconButton>
+                          <Box
+                            className="drag-chapter"
+                            sx={{
+                              cursor: 'grab',
+                              color: theme.palette.grey[400],
+                              transition: 'color 0.2s ease',
+                              '&:hover': {
+                                color: theme.palette.primary.main,
+                              },
+                              '&:active': {
+                                cursor: 'grabbing',
+                              },
+                            }}
+                          >
+                            <GripVertical size={24} />
+                          </Box>
+                          <Box display="flex" alignItems="center" gap={1}>
+                            <Typography variant="body1" fontWeight={500}>
+                              {`Chapter ${index + 1}.  ${chap.title}`}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Box display="flex" gap="5px" alignItems="center">
+                          <ChapterToolbar
+                            isLesson={false}
+                            handleDelete={() => handleUpdateChapter(chap._id, chap?.title, true)}
+                            handleEdit={(newTitle) => handleUpdateChapter(chap._id, newTitle)}
+                            handleAddLesson={(closeModal) => {
+                              if (!addLessonRefs.current[chap._id]) {
+                                addLessonRefs.current[chap._id] = React.createRef()
+                              }
+                              return (
+                                <AddLesson
+                                  chapterId={chap._id}
+                                  courseId={courseId}
+                                  isEdit={false}
+                                  defaultValues={{
+                                    lessonTitle: '',
+                                    resource: '',
+                                    isFree: false,
+                                  }}
+                                  handleClose={closeModal}
+                                />
+                              )
+                            }}
+                            currentTitle={chap.title}
+                            message="chapter"
+                          />
                         </Box>
                       </Box>
                     </AccordionSummary>
@@ -229,7 +215,11 @@ const SavedChapters = ({ courseId }) => {
 }
 
 const LessonsList = ({ courseId, chapterId }) => {
-  const { t } = useTranslation('education')
+  const theme = useTheme()
+  const lessonRefs = useRef([])
+  const addLessonRef = useRef(null)
+  const editLessonRefs = useRef({})
+
   const [lessons, setLessons] = useState([])
 
   const { setHasLessons } = useFormContext()
@@ -295,56 +285,120 @@ const LessonsList = ({ courseId, chapterId }) => {
   return (
     <AccordionDetails>
       {!!lessons.length &&
-        lessons.map((lessonDetail, index) => (
-          <Draggable
-            key={lessonDetail._id}
-            axis="y"
-            position={{ x: 0, y: 0 }}
-            handle=".drag-handle"
-            onStop={(e, d) => handleLessonDragStop(e, d, index)}
-          >
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              flexWrap="wrap"
-              width="100%"
-              sx={{
-                borderBottom: '1px solid',
-                borderColor: (theme) => theme.palette.primary.light,
-                padding: '10px',
-              }}
+        lessons.map((lessonDetail, index) => {
+          if (!editLessonRefs.current[lessonDetail._id]) {
+            editLessonRefs.current[lessonDetail._id] = React.createRef()
+          }
+
+          return (
+            <Draggable
+              key={lessonDetail._id}
+              nodeRef={(lessonRefs.current[index] = lessonRefs.current[index] || React.createRef())}
+              axis="y"
+              position={{ x: 0, y: 0 }}
+              handle=".drag-handle"
+              onStop={(e, d) => handleLessonDragStop(e, d, index)}
             >
-              <Box display="flex" alignItems="center">
-                <GripVertical style={{ cursor: 'grab' }} className="drag-handle" size={24} />
-                <Typography variant="body1">
-                  {t('EDUCATOR.SAVED_CHAPTERS.LESSON_NAME', {
-                    number: index + 1,
-                    title: lessonDetail.title,
-                  })}
-                </Typography>
+              <Box
+                ref={lessonRefs.current[index]}
+                display="flex"
+                justifyContent="space-between"
+                flexWrap="wrap"
+                width="100%"
+                sx={{
+                  borderRadius: '8px',
+                  backgroundColor: 'background.paper',
+                  mb: 1.5,
+                  p: 2,
+                  transition: 'all 0.2s ease',
+                  border: `1px solid ${theme.palette.divider}`,
+                  '&:hover': {
+                    borderColor: theme.palette.primary.light,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                  },
+                }}
+              >
+                <Box display="flex" alignItems="center" gap={1}>
+                  <Box
+                    className="drag-handle"
+                    sx={{
+                      cursor: 'grab',
+                      color: theme.palette.grey[400],
+                      transition: 'color 0.2s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      '&:hover': {
+                        color: theme.palette.primary.main,
+                      },
+                      '&:active': {
+                        cursor: 'grabbing',
+                      },
+                    }}
+                  >
+                    <GripVertical size={20} />
+                  </Box>
+                  <Typography variant="body1" fontWeight={500}>
+                    {`Lesson ${index + 1}. ${lessonDetail.title}`}
+                  </Typography>
+                </Box>
+                <Box display="flex" gap="8px" alignItems="center">
+                  <ChapterToolbar
+                    isLesson
+                    lessonDetail={{ ...lessonDetail, courseId }}
+                    handleDelete={() => handleDeleteLesson(lessonDetail._id)}
+                    handleEdit={() => {
+                      editLessonRefs.current[lessonDetail._id]?.current?.openModal()
+                    }}
+                    currentTitle={lessonDetail.title}
+                    message="lesson"
+                  />
+                  <ModalBox
+                    ref={editLessonRefs.current[lessonDetail._id] || React.createRef()}
+                    size="lg"
+                  >
+                    <AddLesson
+                      chapterId={chapterId}
+                      courseId={courseId}
+                      isEdit
+                      defaultValues={{
+                        lessonTitle: lessonDetail.title,
+                        resource: lessonDetail.file,
+                        isFree: lessonDetail.isFree,
+                      }}
+                      lessonId={lessonDetail._id}
+                      handleClose={() =>
+                        editLessonRefs.current[lessonDetail._id]?.current?.closeModal()
+                      }
+                    />
+                  </ModalBox>
+                </Box>
               </Box>
-              <Box display="flex" gap="8px" alignItems="center">
-                <ViewResource lessonDetail={{ ...lessonDetail, courseId }} />
-                <DeleteModal
-                  handleDelete={() => handleDeleteLesson(lessonDetail._id)}
-                  message="lesson"
-                />
-                <AddLessonsModal
-                  isEdit
-                  chapterId={chapterId}
-                  courseId={courseId}
-                  defaultValues={{
-                    lessonTitle: lessonDetail.title,
-                    resource: lessonDetail.file,
-                    isFree: lessonDetail.isFree,
-                  }}
-                  lessonId={lessonDetail._id}
-                />
-              </Box>
-            </Box>
-          </Draggable>
-        ))}
-      <AddLessonsModal isEdit={false} chapterId={chapterId} courseId={courseId} />
+            </Draggable>
+          )
+        })}
+      {lessons.length > 0 && (
+        <Box
+          sx={{
+            borderTop: `1px dashed ${theme.palette.divider}`,
+            pt: 2,
+            mt: 1,
+          }}
+        />
+      )}
+
+      <ModalBox ref={addLessonRef} size="lg">
+        <AddLesson
+          chapterId={chapterId}
+          courseId={courseId}
+          isEdit={false}
+          defaultValues={{
+            lessonTitle: '',
+            resource: '',
+            isFree: false,
+          }}
+          handleClose={() => addLessonRef.current?.closeModal()}
+        />
+      </ModalBox>
     </AccordionDetails>
   )
 }
