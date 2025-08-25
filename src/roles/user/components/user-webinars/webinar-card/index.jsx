@@ -177,7 +177,7 @@ const WebinarCard = ({ webinar, isPurchased }) => {
                 sx={{
                   width: 16,
                   height: 16,
-                  backgroundColor: (thm) => thm.palette.primary.light,
+                  backgroundColor: (theme) => theme.palette.grey[300],
                   fontSize: '0.6rem',
                 }}
               >
@@ -420,7 +420,7 @@ const WebinarCard = ({ webinar, isPurchased }) => {
               sx={{
                 width: 18,
                 height: 18,
-                backgroundColor: (thm) => thm.palette.primary.light,
+                backgroundColor: (theme) => theme.palette.grey[300],
                 fontSize: '0.6rem',
               }}
             >

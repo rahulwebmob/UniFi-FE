@@ -17,12 +17,11 @@ const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) =>
 
       const container = containerRef.current
       const containerMaxWidth = container.offsetWidth
-      const moreButtonWidth = 80 // Approximate width for "+n more" button
-      const gap = 4 // gap in pixels
+      const moreButtonWidth = 80
+      const gap = 4
       let totalWidth = 0
       let count = 0
 
-      // Create temporary elements to measure actual chip widths
       const tempContainer = document.createElement('div')
       tempContainer.style.position = 'absolute'
       tempContainer.style.visibility = 'hidden'
@@ -40,7 +39,6 @@ const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) =>
         const chipWidth = tempChip.offsetWidth
         tempContainer.removeChild(tempChip)
 
-        // Check if we need to show "+n more" button
         const willNeedMore = i < chips.length - 1
         const availableWidth = willNeedMore
           ? containerMaxWidth - moreButtonWidth - count * gap
@@ -56,13 +54,11 @@ const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) =>
 
       document.body.removeChild(tempContainer)
 
-      // Ensure at least 1 chip is visible if there are chips
       setVisibleCount(Math.max(1, Math.min(count, chips.length)))
     }
 
     calculateVisibleChips()
 
-    // Recalculate on window resize
     const handleResize = () => calculateVisibleChips()
     window.addEventListener('resize', handleResize)
 

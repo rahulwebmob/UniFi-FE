@@ -2,7 +2,6 @@ import {
   Box,
   List,
   AppBar,
-  Button,
   Avatar,
   Drawer,
   Toolbar,
@@ -15,7 +14,7 @@ import {
   useMediaQuery,
   ListItemButton,
 } from '@mui/material'
-import { Mail, Settings, CreditCard, LayoutDashboard } from 'lucide-react'
+import { Settings, CreditCard, LayoutDashboard } from 'lucide-react'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -174,22 +173,6 @@ const UserHeader = () => {
           </ListItemButton>
         </ListItem>
       </List>
-
-      {/* Bottom Actions */}
-      <Box sx={{ p: 2, borderTop: `1px solid ${theme.palette.grey[200]}` }}>
-        <Button
-          fullWidth
-          variant="outlined"
-          startIcon={<Mail size={16} />}
-          sx={{
-            textTransform: 'none',
-            color: 'text.secondary',
-            borderColor: theme.palette.grey[300],
-          }}
-        >
-          Contact Support
-        </Button>
-      </Box>
     </Box>
   )
 
@@ -339,28 +322,6 @@ const UserHeader = () => {
               gap: { xs: 1, sm: 2 },
             }}
           >
-            {/* Contact Support Button - Desktop Only */}
-            {!isMobile && (
-              <Button
-                variant="outlined"
-                startIcon={<Mail size={16} />}
-                sx={{
-                  textTransform: 'none',
-                  color: 'text.secondary',
-                  fontWeight: 500,
-                  p: 1,
-                  borderColor: theme.palette.grey[300],
-                  borderWidth: '1px',
-                  '&:hover': {
-                    backgroundColor: 'action.hover',
-                    borderColor: theme.palette.grey[400],
-                  },
-                }}
-              >
-                Contact Support
-              </Button>
-            )}
-
             {/* User Profile - Desktop Only */}
             {!isMobile && (
               <Box

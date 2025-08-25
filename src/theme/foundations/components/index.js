@@ -390,8 +390,7 @@ export const MuiButton = {
       transition: 'all 0.2s ease-in-out',
       textTransform: 'none',
       '&:focus-visible': {
-        outline: `2px solid ${theme.palette.primary.main}`,
-        outlineOffset: 2,
+        outline: 'none',
       },
     }),
 
@@ -529,7 +528,6 @@ export const MuiCard = {
       '&:hover': {
         boxShadow: '0 10px 40px rgba(17, 66, 98, 0.08), 0 2px 10px rgba(17, 66, 98, 0.04)',
         transform: 'translateY(-3px)',
-        borderColor: theme.palette.primary[200],
       },
     }),
   },
@@ -1536,8 +1534,6 @@ export const MuiTextField = {
         },
 
         '&.Mui-focused': {
-          boxShadow: `0 0 0 3px ${theme.palette.primary.main}15`,
-
           '& fieldset': {
             borderColor: theme.palette.primary.main,
             borderWidth: 1.5,

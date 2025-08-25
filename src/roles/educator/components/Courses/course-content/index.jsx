@@ -15,7 +15,7 @@ import {
   AccordionDetails,
   useTheme,
 } from '@mui/material'
-import { Video, Users, Clock, BookOpen, ChevronDown } from 'lucide-react'
+import { Video, Users, Clock, BookOpen, ChevronDown, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -65,6 +65,7 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
           fullWidth
           color="primary"
           variant="contained"
+          startIcon={<ShoppingCart size={20} />}
           onClick={() => {
             if (!isEdit) {
               handlePurchase()
@@ -189,7 +190,9 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
                 }}
               >
                 <Box display="flex" alignItems="center" gap={1.5}>
-                  <Avatar>{getEducatorDetails(courseData, 'avatarName')}</Avatar>
+                  <Avatar sx={{ backgroundColor: (theme) => theme.palette.grey[300] }}>
+                    {getEducatorDetails(courseData, 'avatarName')}
+                  </Avatar>
                   <Box>
                     <Typography variant="caption" color="text.secondary">
                       Created by

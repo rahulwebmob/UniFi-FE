@@ -1,5 +1,15 @@
-import { Box, Button, TextField, Typography, ButtonGroup, Autocomplete } from '@mui/material'
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  ButtonGroup,
+  Autocomplete,
+  Divider,
+  InputAdornment,
+} from '@mui/material'
 import _ from 'lodash'
+import { BookOpen, Presentation, Search, Filter } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -37,7 +47,6 @@ const AllContent = () => {
   return (
     <Box
       sx={{
-        position: 'relative',
         px: { xs: 2, sm: 3, md: 5 },
         py: 2,
         backgroundColor: (theme) => theme.palette.background.light,
@@ -45,7 +54,6 @@ const AllContent = () => {
         mt: 3,
       }}
     >
-      {/* Header Section */}
       <Box
         sx={{
           display: 'flex',
@@ -65,17 +73,7 @@ const AllContent = () => {
             width: { xs: '100%', lg: 'auto' },
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 600,
-              color: (theme) => theme.palette.text.primary,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            All content
-          </Typography>
-          {/* Tab Buttons */}
+          <Typography variant="h6">All content</Typography>
           <ButtonGroup size="small" variant="contained">
             <Button
               onClick={() => {
@@ -84,7 +82,7 @@ const AllContent = () => {
                 }
               }}
               variant={contentType === 'course' ? 'contained' : 'outlined'}
-              sx={{ textTransform: 'none' }}
+              startIcon={<BookOpen size={16} />}
             >
               Courses
             </Button>
@@ -95,13 +93,12 @@ const AllContent = () => {
                 }
               }}
               variant={contentType === 'webinar' ? 'contained' : 'outlined'}
-              sx={{ textTransform: 'none' }}
+              startIcon={<Presentation size={16} />}
             >
               Webinars
             </Button>
           </ButtonGroup>
         </Box>
-        {/* Filters Section */}
         <Box
           sx={{
             display: 'flex',
@@ -123,12 +120,27 @@ const AllContent = () => {
             sx={{
               width: { xs: '100%', sm: 220 },
               minWidth: 200,
-              '& .MuiOutlinedInput-root': {
-                height: '40px',
-              },
             }}
             renderInput={(params) => (
-              <TextField {...params} placeholder="Categories" size="small" />
+              <TextField
+                {...params}
+                placeholder="Categories"
+                size="small"
+                InputProps={{
+                  ...params.InputProps,
+                  startAdornment: (
+                    <>
+                      <InputAdornment
+                        position="start"
+                        sx={{ color: (theme) => theme.palette.text.disabled }}
+                      >
+                        <Filter size={18} />
+                      </InputAdornment>
+                      {params.InputProps.startAdornment}
+                    </>
+                  ),
+                }}
+              />
             )}
           />
           <TextField
@@ -142,47 +154,46 @@ const AllContent = () => {
             size="small"
             placeholder={`Search ${contentType}...`}
             onChange={(e) => handleDebouceSearch(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment
+                  position="start"
+                  sx={{ color: (theme) => theme.palette.text.disabled }}
+                >
+                  <Search size={18} />
+                </InputAdornment>
+              ),
+            }}
           />
         </Box>
       </Box>
 
-      {/* Content Section */}
-      <Box sx={{ position: 'relative' }}>
-        {contentType === 'course' ? (
-          <CourseList
-            page={page}
-            isPurchased={false}
-            searchTerm={searchTerm}
-            setIsLoadMore={setIsLoadMore}
-            selectedCategory={selectedCategory}
-          />
-        ) : (
-          <WebinarList
-            page={page}
-            isPurchased={false}
-            searchTerm={searchTerm}
-            setIsLoadMore={setIsLoadMore}
-            selectedCategory={selectedCategory}
-          />
-        )}
-      </Box>
+      {contentType === 'course' ? (
+        <CourseList
+          page={page}
+          isPurchased={false}
+          searchTerm={searchTerm}
+          setIsLoadMore={setIsLoadMore}
+          selectedCategory={selectedCategory}
+        />
+      ) : (
+        <WebinarList
+          page={page}
+          isPurchased={false}
+          searchTerm={searchTerm}
+          setIsLoadMore={setIsLoadMore}
+          selectedCategory={selectedCategory}
+        />
+      )}
 
       {!!isLoadMore && (
-        <Typography
-          variant="body2"
-          component="p"
-          sx={{
-            mt: 2,
-            cursor: 'pointer',
-            textAlign: 'center',
-            textDecoration: 'underline',
-            color: 'primary.main',
-            fontWeight: 500,
-          }}
-          onClick={() => setPage(page + 1)}
-        >
-          {t('EDUCATION_DASHBOARD.MAIN_PAGE.LOAD_MORE')}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', mt: 3, position: 'relative' }}>
+          <Divider sx={{ flex: 1 }} />
+          <Button color="secondary" variant="contained" onClick={() => setPage(page + 1)}>
+            {t('EDUCATION_DASHBOARD.MAIN_PAGE.LOAD_MORE')}
+          </Button>
+          <Divider sx={{ flex: 1 }} />
+        </Box>
       )}
     </Box>
   )

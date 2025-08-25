@@ -45,21 +45,7 @@ const Footer = () => {
 
           {/* Social Links */}
           <Box sx={{ display: 'flex', gap: 0.5 }}>
-            <IconButton
-              size="small"
-              sx={{
-                color: theme.palette.text.secondary,
-                border: `1px solid ${theme.palette.grey[300]}`,
-                borderRadius: '8px',
-                width: 32,
-                height: 32,
-                '&:hover': {
-                  backgroundColor: theme.palette.action.hover,
-                  borderColor: theme.palette.grey[400],
-                },
-              }}
-              aria-label="Facebook"
-            >
+            <IconButton size="small" aria-label="Facebook">
               <img
                 src={FacebookIcon}
                 alt="Facebook"
@@ -68,21 +54,7 @@ const Footer = () => {
                 style={{ display: 'block' }}
               />
             </IconButton>
-            <IconButton
-              size="small"
-              sx={{
-                color: theme.palette.text.secondary,
-                border: `1px solid ${theme.palette.grey[300]}`,
-                borderRadius: '8px',
-                width: 32,
-                height: 32,
-                '&:hover': {
-                  backgroundColor: theme.palette.action.hover,
-                  borderColor: theme.palette.grey[400],
-                },
-              }}
-              aria-label="LinkedIn"
-            >
+            <IconButton size="small" aria-label="LinkedIn">
               <img
                 src={LinkedinIcon}
                 alt="LinkedIn"
@@ -91,21 +63,7 @@ const Footer = () => {
                 style={{ display: 'block' }}
               />
             </IconButton>
-            <IconButton
-              size="small"
-              sx={{
-                color: theme.palette.text.secondary,
-                border: `1px solid ${theme.palette.grey[300]}`,
-                borderRadius: '8px',
-                width: 32,
-                height: 32,
-                '&:hover': {
-                  backgroundColor: theme.palette.action.hover,
-                  borderColor: theme.palette.grey[400],
-                },
-              }}
-              aria-label="X"
-            >
+            <IconButton size="small" aria-label="X">
               <img src={XIcon} alt="X" width="18" height="18" style={{ display: 'block' }} />
             </IconButton>
           </Box>

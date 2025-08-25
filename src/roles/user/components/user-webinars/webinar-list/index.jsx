@@ -6,10 +6,11 @@ import { useTranslation } from 'react-i18next'
 import { useGetAllWebinarsQuery } from '../../../../../services/education'
 import NoDataFound from '../../../../../shared/components/no-data-found'
 import MuiCarousel from '../../../../../shared/components/ui-elements/mui-carousel'
+import { iff } from '../../../../../utils/globalUtils'
 import ContentSkeleton from '../../user-content/content-skeleton'
 import WebinarCard from '../webinar-card'
 
-const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
+const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoadMore }) => {
   const { t } = useTranslation('education')
   const [list, setList] = useState([])
   const [count, setCount] = useState(0)
@@ -42,12 +43,14 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
   }, [data, isFetching, isSuccess, page])
 
   useEffect(() => {
-    // if (list?.length < count) {
-    //   setIsLoadMore(true)
-    // } else {
-    //   setIsLoadMore(false)
-    // }
-  }, [count, list])
+    if (setIsLoadMore) {
+      if (list?.length < count) {
+        setIsLoadMore(true)
+      } else {
+        setIsLoadMore(false)
+      }
+    }
+  }, [count, list, setIsLoadMore])
 
   if (isPurchased) {
     return (
@@ -88,29 +91,35 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
     )
   }
 
-  return isLoading ? (
-    <Grid container spacing={3}>
-      <ContentSkeleton isPurchased={false} />
-    </Grid>
-  ) : !list.length ? (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '300px',
-      }}
-    >
-      <NoDataFound />
-    </Box>
-  ) : (
-    <Grid container spacing={3}>
-      {list.map((item) => (
-        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }} key={item._id}>
-          <WebinarCard webinar={item} isPurchased={false} />
-        </Grid>
-      ))}
-    </Grid>
+  return (
+    <>
+      {iff(
+        isFetching,
+        <Grid container spacing={3}>
+          <ContentSkeleton isPurchased={false} />
+        </Grid>,
+        !list.length ? (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '300px',
+            }}
+          >
+            <NoDataFound />
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {list.map((item) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }} key={item._id}>
+                <WebinarCard webinar={item} isPurchased={false} />
+              </Grid>
+            ))}
+          </Grid>
+        ),
+      )}
+    </>
   )
 }
 
@@ -119,12 +128,14 @@ WebinarList.propTypes = {
   searchTerm: PropTypes.string,
   isPurchased: PropTypes.bool,
   selectedCategory: PropTypes.string,
+  setIsLoadMore: PropTypes.func,
 }
 
 WebinarList.defaultProps = {
   searchTerm: '',
   isPurchased: false,
   selectedCategory: '',
+  setIsLoadMore: null,
 }
 
 export default WebinarList

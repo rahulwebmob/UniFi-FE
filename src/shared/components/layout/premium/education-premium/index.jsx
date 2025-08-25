@@ -45,6 +45,7 @@ const EducationPremium = ({ mediaDetails, setCurrentStep, subscriptionDetails })
               bottom: -40,
               left: 16,
               border: '3px solid white',
+              backgroundColor: (theme) => theme.palette.grey[300],
             }}
           >
             {`${mediaDetails?.educatorDetails?.firstName?.[0] || ''}${

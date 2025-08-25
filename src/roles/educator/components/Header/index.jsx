@@ -78,7 +78,11 @@ const Header = () => {
             <Avatar
               alt="Profile Picture"
               className="AvatarGroup"
-              sx={{ width: '30px', height: '30px' }}
+              sx={{
+                width: '30px',
+                height: '30px',
+                backgroundColor: (theme) => theme.palette.grey[300],
+              }}
             >
               <Typography variant="body2">
                 {firstName[0]?.toUpperCase() + lastName[0]?.toUpperCase()}

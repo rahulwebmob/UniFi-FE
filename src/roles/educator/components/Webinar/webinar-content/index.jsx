@@ -13,7 +13,7 @@ import {
   useTheme,
 } from '@mui/material'
 import { format } from 'date-fns'
-import { Users, Calendar, Clock } from 'lucide-react'
+import { Users, Calendar, Clock, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -49,6 +49,7 @@ const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
               boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.3)}`,
             },
           }}
+          startIcon={<ShoppingCart size={20} />}
         >
           {t('EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.ENROLL_NOW')}
         </Button>
@@ -155,7 +156,9 @@ const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
                 }}
               >
                 <Box display="flex" alignItems="center" gap={1.5}>
-                  <Avatar>{getEducatorDetails(webinarData, 'avatarName')}</Avatar>
+                  <Avatar sx={{ backgroundColor: (theme) => theme.palette.grey[300] }}>
+                    {getEducatorDetails(webinarData, 'avatarName')}
+                  </Avatar>
                   <Box>
                     <Typography variant="caption" color="text.secondary">
                       Hosted by

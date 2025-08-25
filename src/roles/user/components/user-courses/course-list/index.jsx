@@ -6,19 +6,18 @@ import { useTranslation } from 'react-i18next'
 import { useGetAllCoursesQuery } from '../../../../../services/education'
 import NoDataFound from '../../../../../shared/components/no-data-found'
 import MuiCarousel from '../../../../../shared/components/ui-elements/mui-carousel'
+import { iff } from '../../../../../utils/globalUtils'
 import ContentSkeleton from '../../user-content/content-skeleton'
 import CourseCard from '../course-card'
 
-const iff = (condition, trueCase, falseCase) => (condition ? trueCase : falseCase)
-
-const CourseList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
+const CourseList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoadMore }) => {
   const { t } = useTranslation('education')
 
   const [list, setList] = useState([])
   const [count, setCount] = useState(0)
 
   const { data, isFetching, isSuccess, isLoading } = useGetAllCoursesQuery({
-    page: 1,
+    page,
     searchTerm,
     isPurchased,
     pageSize: 20,
@@ -40,12 +39,14 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
   }, [data, isFetching, isSuccess, page])
 
   useEffect(() => {
-    // if (list?.length < count) {
-    //   setIsLoadMore(true)
-    // } else {
-    //   setIsLoadMore(false)
-    // }
-  }, [count, list])
+    if (setIsLoadMore) {
+      if (list?.length < count) {
+        setIsLoadMore(true)
+      } else {
+        setIsLoadMore(false)
+      }
+    }
+  }, [count, list, setIsLoadMore])
 
   if (isPurchased) {
     return (
@@ -83,7 +84,7 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
           >
             <NoDataFound
               description={t('EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_COURSE')}
-              title={undefined}
+              title=""
             />
           </Box>
         )}
@@ -128,12 +129,14 @@ CourseList.propTypes = {
   searchTerm: PropTypes.string,
   isPurchased: PropTypes.bool,
   selectedCategory: PropTypes.string,
+  setIsLoadMore: PropTypes.func,
 }
 
 CourseList.defaultProps = {
   searchTerm: '',
   isPurchased: false,
   selectedCategory: '',
+  setIsLoadMore: null,
 }
 
 export default CourseList

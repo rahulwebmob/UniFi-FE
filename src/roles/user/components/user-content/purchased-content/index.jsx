@@ -42,9 +42,6 @@ const PurchasedContent = () => {
             onClick={() => setContentType('course')}
             variant={contentType === 'course' ? 'contained' : 'outlined'}
             startIcon={<BookOpen size={16} />}
-            sx={{
-              textTransform: 'none',
-            }}
           >
             Courses
           </Button>
@@ -52,9 +49,6 @@ const PurchasedContent = () => {
             onClick={() => setContentType('webinar')}
             variant={contentType === 'webinar' ? 'contained' : 'outlined'}
             startIcon={<Presentation size={16} />}
-            sx={{
-              textTransform: 'none',
-            }}
           >
             Webinars
           </Button>

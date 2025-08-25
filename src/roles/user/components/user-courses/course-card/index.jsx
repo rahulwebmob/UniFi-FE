@@ -1,5 +1,5 @@
 import { Box, Card, Button, Avatar, useTheme, Typography, CardContent } from '@mui/material'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 
@@ -31,12 +31,8 @@ const CourseCard = ({ course, isPurchased }) => {
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           overflow: 'hidden',
-          backgroundColor: (thm) => thm.palette.background.paper,
           height: '150px',
           width: '100%',
-          '&:hover': {
-            boxShadow: (thm) => thm.shadows[4],
-          },
         }}
       >
         <Box
@@ -111,14 +107,9 @@ const CourseCard = ({ course, isPurchased }) => {
               alignItems: 'center',
               gap: 0.5,
               color: 'primary.main',
-              cursor: 'pointer',
               '&:hover': {
                 textDecoration: 'underline',
               },
-            }}
-            onClick={(e) => {
-              e.stopPropagation()
-              handleCardClick()
             }}
           >
             <Typography
@@ -150,14 +141,8 @@ const CourseCard = ({ course, isPurchased }) => {
         backgroundColor: (thm) => thm.palette.background.paper,
         display: 'flex',
         flexDirection: 'column',
-        position: 'relative',
         border: '1px solid',
         borderColor: (thm) => thm.palette.grey[200],
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: '0 12px 24px rgba(0,0,0,0.1)',
-          borderColor: (thm) => thm.palette.primary.light,
-        },
       }}
     >
       <Box
@@ -188,7 +173,8 @@ const CourseCard = ({ course, isPurchased }) => {
         />
 
         {!course.isPaid && (
-          <Box
+          <Typography
+            variant="caption"
             sx={{
               position: 'absolute',
               top: 10,
@@ -198,38 +184,34 @@ const CourseCard = ({ course, isPurchased }) => {
               px: 1,
               py: 0.3,
               borderRadius: '4px',
-              fontSize: theme.typography.caption.fontSize,
               fontWeight: theme.typography.fontWeightBold,
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
+              display: 'inline-block',
             }}
           >
-            Free
-          </Box>
+            FREE
+          </Typography>
         )}
 
-        {course.educatorId && (
+        {!!course.educatorId && (
           <Box
             sx={{
               position: 'absolute',
               top: 10,
               left: 10,
               display: 'flex',
-              alignItems: 'center',
               gap: 0.5,
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(8px)',
+              backgroundColor: (thm) => thm.palette.background.paper,
               borderRadius: '20px',
               px: 1,
               py: 0.4,
-              boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+              boxShadow: (thm) => thm.shadows[1],
             }}
           >
             <Avatar
               sx={{
                 width: 18,
                 height: 18,
-                backgroundColor: (thm) => thm.palette.primary.light,
+                backgroundColor: (theme) => theme.palette.grey[300],
                 fontSize: '0.6rem',
               }}
             >
@@ -348,6 +330,8 @@ const CourseCard = ({ course, isPurchased }) => {
               variant="contained"
               size="small"
               fullWidth={!course.isPaid}
+              startIcon={course.isPaid ? <ShoppingCart size={16} /> : null}
+              endIcon={course.isPaid ? null : <ArrowRight size={16} />}
               onClick={(e) => {
                 e.stopPropagation()
                 handleCardClick()

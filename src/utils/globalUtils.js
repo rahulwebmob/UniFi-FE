@@ -117,7 +117,10 @@ const generateInvoicePdf = async (htmlContent, invoiceId, onSuccess, onError) =>
   })
 }
 
+const iff = (condition, trueCase, falseCase) => (condition ? trueCase : falseCase)
+
 export {
+  iff,
   getCookie,
   getLogoCdn,
   exportToCSV,
