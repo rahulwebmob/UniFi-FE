@@ -18,7 +18,7 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
   const [count, setCount] = useState(0)
 
   const { data, isFetching, isSuccess, isLoading } = useGetAllCoursesQuery({
-    page,
+    page: 1,
     searchTerm,
     isPurchased,
     pageSize: 20,

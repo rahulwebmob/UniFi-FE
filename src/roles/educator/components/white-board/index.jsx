@@ -33,7 +33,7 @@ const WhiteBoardToolbar = () => {
 
   useEffect(() => {
     canvas = new fabric.Canvas('canvas', {
-      backgroundColor: 'white',
+      backgroundColor: (theme) => theme.palette.background.paper,
     })
 
     canvas.isDrawingMode = true
@@ -167,7 +167,7 @@ const WhiteBoardToolbar = () => {
             >
               <IconButton
                 onClick={() => {
-                  dispatch(updateStrokeColor(theme.palette.common.black))
+                  dispatch(updateStrokeColor(theme.palette.text.primary))
                   if (canvas) {
                     canvas.isDrawingMode = true
                   }

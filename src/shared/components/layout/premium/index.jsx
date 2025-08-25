@@ -113,7 +113,7 @@ const PremiumModal = forwardRef(({ purchaseDetails }, ref) => {
       }}
     >
       <Box>
-        <Box sx={{ px: 3, pt: 3, pb: 2 }}>
+        <Box sx={{ p: 5 }}>
           <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>
             Complete Purchase
           </Typography>

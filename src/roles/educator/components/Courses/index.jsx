@@ -213,7 +213,6 @@ const Courses = () => {
             color={handleStatusColor(courseStatus)}
             size="small"
             sx={{
-              fontWeight: 600,
               textTransform: 'capitalize',
             }}
           />
@@ -298,9 +297,7 @@ const Courses = () => {
             <Typography
               variant="h4"
               sx={{
-                fontWeight: 600,
                 mb: 1,
-                color: theme.palette.text.primary,
               }}
             >
               All Courses
@@ -322,14 +319,14 @@ const Courses = () => {
       </Box>
       <Box
         sx={{
-          p: 3,
-          borderRadius: '16px',
+          backgroundColor: 'background.light',
+          p: 2,
+          borderRadius: '12px',
+          border: `1px solid ${theme.palette.grey[200]}`,
           display: 'flex',
           flexDirection: 'column',
           height: 'calc(100vh - 280px)',
           overflow: 'hidden',
-          backgroundColor: 'background.light',
-          boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
         }}
       >
         <Box
@@ -344,8 +341,8 @@ const Courses = () => {
           <ButtonGroup variant="outlined">
             <Button
               sx={{
-                backgroundColor: status === '' ? 'primary.main' : 'white',
-                color: status === '' ? 'white' : 'text.secondary',
+                backgroundColor: status === '' ? 'primary.main' : theme.palette.background.paper,
+                color: status === '' ? 'primary.contrastText' : 'text.secondary',
                 borderColor: status === '' ? 'primary.main' : theme.palette.grey[300],
                 '&:hover': {
                   backgroundColor: status === '' ? 'primary.dark' : theme.palette.grey[50],
@@ -358,8 +355,9 @@ const Courses = () => {
             </Button>
             <Button
               sx={{
-                backgroundColor: status === 'published' ? 'primary.main' : 'white',
-                color: status === 'published' ? 'white' : 'text.secondary',
+                backgroundColor:
+                  status === 'published' ? 'primary.main' : theme.palette.background.paper,
+                color: status === 'published' ? 'primary.contrastText' : 'text.secondary',
                 borderColor: status === 'published' ? 'primary.main' : theme.palette.grey[300],
                 '&:hover': {
                   backgroundColor: status === 'published' ? 'primary.dark' : theme.palette.grey[50],
@@ -372,8 +370,9 @@ const Courses = () => {
             </Button>
             <Button
               sx={{
-                backgroundColor: status === 'draft' ? 'primary.main' : 'white',
-                color: status === 'draft' ? 'white' : 'text.secondary',
+                backgroundColor:
+                  status === 'draft' ? 'primary.main' : theme.palette.background.paper,
+                color: status === 'draft' ? 'primary.contrastText' : 'text.secondary',
                 borderColor: status === 'draft' ? 'primary.main' : theme.palette.grey[300],
                 '&:hover': {
                   backgroundColor: status === 'draft' ? 'primary.dark' : theme.palette.grey[50],
@@ -393,7 +392,7 @@ const Courses = () => {
             placeholder={t('EDUCATOR.COURSES.SEARCH')}
             sx={{
               minWidth: 250,
-              backgroundColor: 'white',
+              backgroundColor: theme.palette.background.paper,
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
                   borderColor: theme.palette.grey[300],

@@ -58,7 +58,7 @@ const StepIcon = ({ active = false, completed = false, stepIndex = 0 }) => {
           : active
             ? theme.palette.primary.main
             : 'transparent',
-        color: completed || active ? 'white' : theme.palette.grey[400],
+        color: completed || active ? theme.palette.common.white : theme.palette.grey[400],
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

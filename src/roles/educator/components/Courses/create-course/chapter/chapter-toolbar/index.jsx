@@ -5,7 +5,7 @@ import { useRef, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useDownloadResourceMutation } from '../../../../../../../services/admin'
-import ContentPreview from '../../../../../../../shared/components/layout/Course/content-preview'
+import CourseContent from '../../../../../../../shared/components/layout/Course/content-preview'
 import ModalBox from '../../../../../../../shared/components/ui-elements/modal-box'
 
 const ChapterToolbar = ({
@@ -155,7 +155,7 @@ const ChapterToolbar = ({
               height: 'calc(100vh - 200px)',
             }}
           >
-            <ContentPreview url={resourceUrl} type={isPdf ? 'doc' : 'video'} />
+            <CourseContent url={resourceUrl} type={isPdf ? 'doc' : 'video'} />
           </Box>
         )
       default:

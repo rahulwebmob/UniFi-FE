@@ -60,7 +60,7 @@ const Dashboard = () => {
       description: 'EDUCATOR.DASHBOARD.WEBINAR_DESCRIPTION',
       button: 'EDUCATOR.DASHBOARD.CREATE_WEBINAR',
       link: 'create-webinar',
-      color: theme.palette.secondary.main,
+      color: theme.palette.primary.main,
       gradient: `linear-gradient(135deg, ${theme.palette.secondary.main}, ${theme.palette.secondary.dark})`,
     },
   ]
@@ -77,8 +77,6 @@ const Dashboard = () => {
           <Typography
             variant="h4"
             sx={{
-              fontWeight: 600,
-              color: theme.palette.text.primary,
               mb: 1,
             }}
           >
@@ -99,7 +97,7 @@ const Dashboard = () => {
                 <Paper
                   sx={{
                     p: 3,
-                    background: 'white',
+                    background: theme.palette.background.paper,
                     cursor: 'pointer',
                     '&:hover': {
                       '& .action-arrow': {
@@ -127,8 +125,6 @@ const Dashboard = () => {
                       <Typography
                         variant="h6"
                         sx={{
-                          fontWeight: 600,
-                          color: theme.palette.text.primary,
                           mb: 0.5,
                         }}
                       >

@@ -72,279 +72,6 @@ WebinarTable.propTypes = {
   setPage: PropTypes.func.isRequired,
 }
 
-// Cell components extracted to avoid nested component errors
-const WebinarTitleCell = ({ row, cell, theme }) => (
-  <Box display="flex" gap={2} alignItems="center">
-    {row.original.thumbNail ? (
-      <Box
-        component="img"
-        width="40px"
-        height="40px"
-        borderRadius="8px"
-        src={row.original.thumbNail}
-        sx={{ objectFit: 'cover', flexShrink: 0 }}
-      />
-    ) : (
-      <Box
-        sx={{
-          width: '40px',
-          height: '40px',
-          padding: '8px',
-          borderRadius: '8px',
-          backgroundColor: theme.palette.grey[100],
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
-        <Video size={20} color={theme.palette.grey[400]} />
-      </Box>
-    )}
-    <Tooltip title={String(cell.getValue() || '-')} arrow>
-      <Typography
-        sx={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          maxWidth: '240px',
-        }}
-      >
-        {String(cell.getValue() || '-')}
-      </Typography>
-    </Tooltip>
-  </Box>
-)
-
-WebinarTitleCell.propTypes = {
-  row: PropTypes.object.isRequired,
-  cell: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-}
-
-const WebinarCategoryCell = ({ cell }) => {
-  const categories = cell.getValue()
-  const categoryText = Array.isArray(categories) ? categories.join(', ') : '-'
-  return (
-    <Tooltip title={categoryText} arrow>
-      <Typography
-        variant="body1"
-        sx={{
-          width: '100%',
-          display: '-webkit-box',
-          overflow: 'hidden',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical',
-          textOverflow: 'ellipsis',
-          boxSizing: 'border-box',
-        }}
-      >
-        {categoryText}
-      </Typography>
-    </Tooltip>
-  )
-}
-
-WebinarCategoryCell.propTypes = {
-  cell: PropTypes.object.isRequired,
-}
-
-const WebinarScheduleCell = ({ row, t, navigate }) => {
-  const { webinarScheduledObj } = row.original
-  const joinDate = webinarScheduledObj?.join_date
-    ? new Date(webinarScheduledObj.join_date).toLocaleString()
-    : '-'
-
-  return webinarScheduledObj?.can_join ? (
-    <Chip
-      label={t('EDUCATOR.WEBINAR.JOIN_NOW')}
-      color="success"
-      size="small"
-      onClick={() => {
-        void navigate(`/educator/educator-room/${row.original._id}`)
-      }}
-      sx={{
-        fontWeight: 600,
-        cursor: 'pointer',
-      }}
-    />
-  ) : (
-    <Typography style={{ whiteSpace: 'pre-line' }}>{joinDate || '-'}</Typography>
-  )
-}
-
-WebinarScheduleCell.propTypes = {
-  row: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
-  navigate: PropTypes.func.isRequired,
-}
-
-const WebinarEnrollmentCell = ({ row }) => (
-  <Typography>{row.original.totalEnrolled || '-'}</Typography>
-)
-
-WebinarEnrollmentCell.propTypes = {
-  row: PropTypes.object.isRequired,
-}
-
-const WebinarCreatedAtCell = ({ cell }) => {
-  const dateValue = cell.getValue()
-  return (
-    <Typography style={{ whiteSpace: 'pre-line' }}>
-      {dateValue ? new Date(dateValue).toLocaleString() : '-'}
-    </Typography>
-  )
-}
-
-WebinarCreatedAtCell.propTypes = {
-  cell: PropTypes.object.isRequired,
-}
-
-const WebinarStatusCell = ({ row, handleStatusColor }) => {
-  const { status } = row.original
-  return (
-    <Chip
-      label={status || '-'}
-      color={handleStatusColor(status || '')}
-      size="small"
-      sx={{
-        fontWeight: 600,
-        textTransform: 'capitalize',
-      }}
-    />
-  )
-}
-
-WebinarStatusCell.propTypes = {
-  row: PropTypes.object.isRequired,
-  handleStatusColor: PropTypes.func.isRequired,
-}
-
-const WebinarViewCell = ({ row, navigate }) => (
-  <Button
-    size="small"
-    variant="contained"
-    endIcon={<ArrowRight size={16} />}
-    onClick={() => {
-      void navigate('/educator/preview-webinar', {
-        state: {
-          isPreview: true,
-          webinarId: row.original._id,
-        },
-      })
-    }}
-    disabled={row?.original?.status === 'draft'}
-    sx={{
-      textTransform: 'none',
-    }}
-  >
-    View Webinar
-  </Button>
-)
-
-WebinarViewCell.propTypes = {
-  row: PropTypes.object.isRequired,
-  navigate: PropTypes.func.isRequired,
-}
-
-const WebinarActionCell = ({ row, handleOpenMenu }) => (
-  <Box display="flex" justifyContent="center">
-    <IconButton size="small" onClick={(e) => handleOpenMenu(e, row.original)}>
-      <MoreVertical size={18} />
-    </IconButton>
-  </Box>
-)
-
-WebinarActionCell.propTypes = {
-  row: PropTypes.object.isRequired,
-  handleOpenMenu: PropTypes.func.isRequired,
-}
-
-// Additional cell components for PastWebinars
-const PastWebinarScheduleDateCell = ({ cell }) => {
-  const dateValue = cell.getValue()
-  return (
-    <Typography style={{ whiteSpace: 'pre-line' }}>
-      {dateValue ? new Date(dateValue).toLocaleString() : '-'}
-    </Typography>
-  )
-}
-
-PastWebinarScheduleDateCell.propTypes = {
-  cell: PropTypes.object.isRequired,
-}
-
-// Wrapper functions to avoid nested components
-const createWebinarTitleCellWrapper = (theme) => {
-  const WebinarTitleCellWrapper = (tableProps) => (
-    <WebinarTitleCell row={tableProps.row} cell={tableProps.cell} theme={theme} />
-  )
-  WebinarTitleCellWrapper.displayName = 'WebinarTitleCellWrapper'
-  return WebinarTitleCellWrapper
-}
-
-const createWebinarCategoryCellWrapper = () => {
-  const WebinarCategoryCellWrapper = (tableProps) => <WebinarCategoryCell cell={tableProps.cell} />
-  WebinarCategoryCellWrapper.displayName = 'WebinarCategoryCellWrapper'
-  return WebinarCategoryCellWrapper
-}
-
-const createWebinarScheduleCellWrapper = (t, navigate) => {
-  const WebinarScheduleCellWrapper = (tableProps) => (
-    <WebinarScheduleCell row={tableProps.row} t={t} navigate={navigate} />
-  )
-  WebinarScheduleCellWrapper.displayName = 'WebinarScheduleCellWrapper'
-  return WebinarScheduleCellWrapper
-}
-
-const createWebinarEnrollmentCellWrapper = () => {
-  const WebinarEnrollmentCellWrapper = (tableProps) => (
-    <WebinarEnrollmentCell row={tableProps.row} />
-  )
-  WebinarEnrollmentCellWrapper.displayName = 'WebinarEnrollmentCellWrapper'
-  return WebinarEnrollmentCellWrapper
-}
-
-const createWebinarCreatedAtCellWrapper = () => {
-  const WebinarCreatedAtCellWrapper = (tableProps) => (
-    <WebinarCreatedAtCell cell={tableProps.cell} />
-  )
-  WebinarCreatedAtCellWrapper.displayName = 'WebinarCreatedAtCellWrapper'
-  return WebinarCreatedAtCellWrapper
-}
-
-const _createWebinarStatusCellWrapper = (handleStatusColor) => {
-  const WebinarStatusCellWrapper = (tableProps) => (
-    <WebinarStatusCell row={tableProps.row} handleStatusColor={handleStatusColor} />
-  )
-  WebinarStatusCellWrapper.displayName = 'WebinarStatusCellWrapper'
-  return WebinarStatusCellWrapper
-}
-
-const _createWebinarViewCellWrapper = (navigate) => {
-  const WebinarViewCellWrapper = (tableProps) => (
-    <WebinarViewCell row={tableProps.row} navigate={navigate} />
-  )
-  WebinarViewCellWrapper.displayName = 'WebinarViewCellWrapper'
-  return WebinarViewCellWrapper
-}
-
-const _createWebinarActionCellWrapper = (handleOpenMenu) => {
-  const WebinarActionCellWrapper = (tableProps) => (
-    <WebinarActionCell row={tableProps.row} handleOpenMenu={handleOpenMenu} />
-  )
-  WebinarActionCellWrapper.displayName = 'WebinarActionCellWrapper'
-  return WebinarActionCellWrapper
-}
-
-const _createPastWebinarScheduleDateCellWrapper = () => {
-  const PastWebinarScheduleDateCellWrapper = (tableProps) => (
-    <PastWebinarScheduleDateCell cell={tableProps.cell} />
-  )
-  PastWebinarScheduleDateCellWrapper.displayName = 'PastWebinarScheduleDateCellWrapper'
-  return PastWebinarScheduleDateCellWrapper
-}
-
 const AllWebinars = ({ page, setPage }) => {
   const theme = useTheme()
   const navigate = useNavigate()
@@ -387,65 +114,214 @@ const AllWebinars = ({ page, setPage }) => {
     setSelectedRow(row)
   }
 
-  const handleStatusColor = (value) => {
-    switch (value) {
-      case 'published':
-        return 'success'
-      case 'draft':
-        return 'warning'
-      case 'scheduled':
-        return 'info'
-      default:
-        return 'default'
-    }
-  }
-
   const columns = [
     {
       accessorKey: 'title',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.WEBINAR_NAME'),
       size: 300,
-      Cell: createWebinarTitleCellWrapper(theme),
+      Cell: (tableProps) => {
+        const { row, cell } = tableProps
+        const theme = useTheme()
+        return (
+          <Box display="flex" gap={2} alignItems="center">
+            {row.original.thumbNail ? (
+              <Box
+                component="img"
+                width="40px"
+                height="40px"
+                borderRadius="8px"
+                src={row.original.thumbNail}
+                sx={{ objectFit: 'cover', flexShrink: 0 }}
+              />
+            ) : (
+              <Box
+                sx={{
+                  width: '40px',
+                  height: '40px',
+                  padding: '8px',
+                  borderRadius: '8px',
+                  backgroundColor: theme.palette.grey[100],
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <Video size={20} color={theme.palette.grey[400]} />
+              </Box>
+            )}
+            <Tooltip title={String(cell.getValue() || '-')} arrow>
+              <Typography
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '240px',
+                }}
+              >
+                {String(cell.getValue() || '-')}
+              </Typography>
+            </Tooltip>
+          </Box>
+        )
+      },
     },
     {
       accessorKey: 'category',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CATEGORY'),
-      Cell: createWebinarCategoryCellWrapper(),
+      Cell: (tableProps) => {
+        const { cell } = tableProps
+        const categories = cell.getValue()
+        const categoryText = Array.isArray(categories) ? categories.join(', ') : '-'
+        return (
+          <Tooltip title={categoryText} arrow>
+            <Typography
+              variant="body1"
+              sx={{
+                width: '100%',
+                display: '-webkit-box',
+                overflow: 'hidden',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                textOverflow: 'ellipsis',
+                boxSizing: 'border-box',
+              }}
+            >
+              {categoryText}
+            </Typography>
+          </Tooltip>
+        )
+      },
     },
     {
       accessorKey: 'scheduled',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.SCHEDULE'),
-      Cell: createWebinarScheduleCellWrapper(t, navigate),
+      Cell: (tableProps) => {
+        const { row } = tableProps
+        const { t } = useTranslation('education')
+        const navigate = useNavigate()
+        const { webinarScheduledObj } = row.original
+        const joinDate = webinarScheduledObj?.join_date
+          ? new Date(webinarScheduledObj.join_date).toLocaleString()
+          : '-'
+
+        return webinarScheduledObj?.can_join ? (
+          <Chip
+            label={t('EDUCATOR.WEBINAR.JOIN_NOW')}
+            color="success"
+            size="small"
+            onClick={() => {
+              void navigate(`/educator/educator-room/${row.original._id}`)
+            }}
+            sx={{
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          />
+        ) : (
+          <Typography style={{ whiteSpace: 'pre-line' }}>{joinDate || '-'}</Typography>
+        )
+      },
     },
     {
       accessorKey: 'totalEnrolled',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.TOTAL_ENROLLMENT'),
-      Cell: createWebinarEnrollmentCellWrapper(),
+      Cell: (tableProps) => {
+        const { row } = tableProps
+        return <Typography>{row.original.totalEnrolled || '-'}</Typography>
+      },
     },
     {
       accessorKey: 'createdAt',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CREATED_AT'),
-      Cell: createWebinarCreatedAtCellWrapper(),
+      Cell: (tableProps) => {
+        const { cell } = tableProps
+        const dateValue = cell.getValue()
+        return (
+          <Typography style={{ whiteSpace: 'pre-line' }}>
+            {dateValue ? new Date(dateValue).toLocaleString() : '-'}
+          </Typography>
+        )
+      },
     },
     {
       accessorKey: 'status',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.STATUS'),
       size: 120,
-      Cell: _createWebinarStatusCellWrapper(handleStatusColor),
+      Cell: (tableProps) => {
+        const { row } = tableProps
+        const { status } = row.original
+        const handleStatusColor = (value) => {
+          switch (value) {
+            case 'published':
+              return 'success'
+            case 'draft':
+              return 'warning'
+            case 'scheduled':
+              return 'info'
+            default:
+              return 'default'
+          }
+        }
+        return (
+          <Chip
+            label={status || '-'}
+            color={handleStatusColor(status || '')}
+            size="small"
+            sx={{
+              fontWeight: 600,
+              textTransform: 'capitalize',
+            }}
+          />
+        )
+      },
       enableSorting: false,
     },
     {
       accessorKey: 'view',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.VIEW_WEBINAR'),
       size: 140,
-      Cell: _createWebinarViewCellWrapper(navigate),
+      Cell: (tableProps) => {
+        const { row } = tableProps
+        const navigate = useNavigate()
+        return (
+          <Button
+            size="small"
+            variant="contained"
+            endIcon={<ArrowRight size={16} />}
+            onClick={() => {
+              void navigate('/educator/preview-webinar', {
+                state: {
+                  isPreview: true,
+                  webinarId: row.original._id,
+                },
+              })
+            }}
+            disabled={row?.original?.status === 'draft'}
+            sx={{
+              textTransform: 'none',
+            }}
+          >
+            View Webinar
+          </Button>
+        )
+      },
       enableSorting: false,
     },
     {
       accessorKey: 'action',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.ACTION'),
       size: 80,
-      Cell: _createWebinarActionCellWrapper(handleOpenMenu),
+      Cell: (tableProps) => {
+        const { row } = tableProps
+        return (
+          <Box display="flex" justifyContent="center">
+            <IconButton size="small" onClick={(e) => handleOpenMenu(e, row.original)}>
+              <MoreVertical size={18} />
+            </IconButton>
+          </Box>
+        )
+      },
       enableSorting: false,
     },
   ]
@@ -578,44 +454,140 @@ const PastWebinars = ({ page, setPage }) => {
   const { t } = useTranslation('education')
   const { data } = useGetPastWebinarsQuery({ page, pageSize: 10 }, { pollingInterval: 5000 })
 
-  const handleStatusColor = (value) => {
-    switch (value) {
-      case 'completed':
-        return 'success'
-      case 'cancelled':
-        return 'error'
-      default:
-        return 'default'
-    }
-  }
-
   const columns = [
     {
       accessorKey: 'title',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.WEBINAR_NAME'),
       size: 300,
-      Cell: createWebinarTitleCellWrapper(theme),
+      Cell: (tableProps) => {
+        const { row, cell } = tableProps
+        const theme = useTheme()
+        return (
+          <Box display="flex" gap={2} alignItems="center">
+            {row.original.thumbNail ? (
+              <Box
+                component="img"
+                width="40px"
+                height="40px"
+                borderRadius="8px"
+                src={row.original.thumbNail}
+                sx={{ objectFit: 'cover', flexShrink: 0 }}
+              />
+            ) : (
+              <Box
+                sx={{
+                  width: '40px',
+                  height: '40px',
+                  padding: '8px',
+                  borderRadius: '8px',
+                  backgroundColor: theme.palette.grey[100],
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <Video size={20} color={theme.palette.grey[400]} />
+              </Box>
+            )}
+            <Tooltip title={String(cell.getValue() || '-')} arrow>
+              <Typography
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '240px',
+                }}
+              >
+                {String(cell.getValue() || '-')}
+              </Typography>
+            </Tooltip>
+          </Box>
+        )
+      },
     },
     {
       accessorKey: 'category',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CATEGORY'),
-      Cell: createWebinarCategoryCellWrapper(),
+      Cell: (tableProps) => {
+        const { cell } = tableProps
+        const categories = cell.getValue()
+        const categoryText = Array.isArray(categories) ? categories.join(', ') : '-'
+        return (
+          <Tooltip title={categoryText} arrow>
+            <Typography
+              variant="body1"
+              sx={{
+                width: '100%',
+                display: '-webkit-box',
+                overflow: 'hidden',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                textOverflow: 'ellipsis',
+                boxSizing: 'border-box',
+              }}
+            >
+              {categoryText}
+            </Typography>
+          </Tooltip>
+        )
+      },
     },
     {
       accessorKey: 'scheduledDate',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.SCHEDULE'),
-      Cell: _createPastWebinarScheduleDateCellWrapper(),
+      Cell: (tableProps) => {
+        const { cell } = tableProps
+        const dateValue = cell.getValue()
+        return (
+          <Typography style={{ whiteSpace: 'pre-line' }}>
+            {dateValue ? new Date(dateValue).toLocaleString() : '-'}
+          </Typography>
+        )
+      },
     },
     {
       accessorKey: 'createdAt',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CREATED_AT'),
-      Cell: createWebinarCreatedAtCellWrapper(),
+      Cell: (tableProps) => {
+        const { cell } = tableProps
+        const dateValue = cell.getValue()
+        return (
+          <Typography style={{ whiteSpace: 'pre-line' }}>
+            {dateValue ? new Date(dateValue).toLocaleString() : '-'}
+          </Typography>
+        )
+      },
     },
     {
       accessorKey: 'status',
       header: t('EDUCATOR.WEBINAR.TABLE_HEADER.STATUS'),
       size: 120,
-      Cell: _createWebinarStatusCellWrapper(handleStatusColor),
+      Cell: (tableProps) => {
+        const { row } = tableProps
+        const { status } = row.original
+        const handleStatusColor = (value) => {
+          switch (value) {
+            case 'completed':
+              return 'success'
+            case 'cancelled':
+              return 'error'
+            default:
+              return 'default'
+          }
+        }
+        return (
+          <Chip
+            label={status || '-'}
+            color={handleStatusColor(status || '')}
+            size="small"
+            sx={{
+              fontWeight: 600,
+              textTransform: 'capitalize',
+            }}
+          />
+        )
+      },
       enableSorting: false,
     },
   ]
@@ -631,7 +603,12 @@ const PastWebinars = ({ page, setPage }) => {
         overflow: 'hidden',
       }}
     >
-      <WebinarTable columns={columns} data={data || { data: [] }} page={page} setPage={setPage} />
+      <WebinarTable
+        columns={columns}
+        data={data?.data || { data: [] }}
+        page={page}
+        setPage={setPage}
+      />
     </Box>
   )
 }

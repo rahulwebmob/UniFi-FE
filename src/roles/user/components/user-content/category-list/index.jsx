@@ -1,18 +1,81 @@
 import { Box, Tooltip } from '@mui/material'
 import PropTypes from 'prop-types'
+import { useEffect, useRef, useState } from 'react'
 
 const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) => {
-  const hasMore = chips.length > maxVisible
-  const visibleCount = hasMore ? maxVisible - 1 : chips.length
-  const remainingCount = chips.length - visibleCount
+  const [visibleCount, setVisibleCount] = useState(maxVisible)
+  const containerRef = useRef(null)
+  const chipsRef = useRef([])
 
   const isOnImage = !isPurchased && containerWidth === undefined
 
+  useEffect(() => {
+    const calculateVisibleChips = () => {
+      if (!containerRef.current || chips.length === 0) {
+        return
+      }
+
+      const container = containerRef.current
+      const containerMaxWidth = container.offsetWidth
+      const moreButtonWidth = 80 // Approximate width for "+n more" button
+      const gap = 4 // gap in pixels
+      let totalWidth = 0
+      let count = 0
+
+      // Create temporary elements to measure actual chip widths
+      const tempContainer = document.createElement('div')
+      tempContainer.style.position = 'absolute'
+      tempContainer.style.visibility = 'hidden'
+      tempContainer.style.whiteSpace = 'nowrap'
+      document.body.appendChild(tempContainer)
+
+      for (let i = 0; i < chips.length; i++) {
+        const tempChip = document.createElement('span')
+        tempChip.style.cssText = isOnImage
+          ? 'font-size: 0.75rem; padding: 2px 8px;'
+          : 'font-size: 0.75rem; padding: 3px 10px;'
+        tempChip.textContent = chips[i]
+        tempContainer.appendChild(tempChip)
+
+        const chipWidth = tempChip.offsetWidth
+        tempContainer.removeChild(tempChip)
+
+        // Check if we need to show "+n more" button
+        const willNeedMore = i < chips.length - 1
+        const availableWidth = willNeedMore
+          ? containerMaxWidth - moreButtonWidth - count * gap
+          : containerMaxWidth - count * gap
+
+        if (totalWidth + chipWidth <= availableWidth) {
+          totalWidth += chipWidth
+          count++
+        } else {
+          break
+        }
+      }
+
+      document.body.removeChild(tempContainer)
+
+      // Ensure at least 1 chip is visible if there are chips
+      setVisibleCount(Math.max(1, Math.min(count, chips.length)))
+    }
+
+    calculateVisibleChips()
+
+    // Recalculate on window resize
+    const handleResize = () => calculateVisibleChips()
+    window.addEventListener('resize', handleResize)
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [chips, isOnImage, containerWidth])
+
+  const remainingCount = chips.length - visibleCount
+
   const chipStyle = isOnImage
     ? {
-        fontSize: '11px',
-        fontWeight: 500,
-        color: 'white',
+        fontSize: (theme) => theme.typography.caption.fontSize,
+        fontWeight: (theme) => theme.typography.fontWeightMedium,
+        color: (theme) => theme.palette.common.white,
         backgroundColor: 'rgba(0, 0, 0, 0.4)',
         backdropFilter: 'blur(8px)',
         border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -23,8 +86,8 @@ const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) =>
         display: 'inline-block',
       }
     : {
-        fontSize: '12px',
-        fontWeight: 400,
+        fontSize: (theme) => theme.typography.caption.fontSize,
+        fontWeight: (theme) => theme.typography.fontWeightRegular,
         color: (theme) => theme.palette.text.secondary,
         border: (theme) => `1px solid ${theme.palette.grey[300]}`,
         backgroundColor: 'transparent',
@@ -37,25 +100,39 @@ const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) =>
 
   return (
     <Box
+      ref={containerRef}
       sx={{
         display: 'flex',
         gap: 0.5,
         alignItems: 'center',
         flexWrap: 'nowrap',
         overflow: 'hidden',
+        width: '100%',
+        maxWidth: containerWidth || '100%',
       }}
     >
-      {chips.slice(0, visibleCount).map((label) => (
-        <Box key={label} sx={chipStyle}>
+      {chips.slice(0, visibleCount).map((label, index) => (
+        <Box
+          key={label}
+          ref={(el) => (chipsRef.current[index] = el)}
+          sx={{
+            ...chipStyle,
+            flexShrink: 0,
+            maxWidth: '150px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
           {label}
         </Box>
       ))}
       {remainingCount > 0 && (
-        <Tooltip title={chips.slice(visibleCount).join(', ')}>
+        <Tooltip title={chips.slice(visibleCount).join(', ')} placement="top" arrow>
           <Box
             sx={{
               ...chipStyle,
               cursor: 'pointer',
+              flexShrink: 0,
               '&:hover': {
                 backgroundColor: isOnImage
                   ? 'rgba(0, 0, 0, 0.6)'
@@ -63,7 +140,7 @@ const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) =>
               },
             }}
           >
-            +{remainingCount} more
+            +{remainingCount}
           </Box>
         </Tooltip>
       )}

@@ -56,7 +56,7 @@ const MuiCarousel = ({ children }) => {
             pointerEvents: 'none',
             background: `linear-gradient(270deg, ${alpha(
               theme.palette.background.default,
-              0.4,
+              0.1,
             )} 50.04%, ${alpha(theme.palette.background.default, 0)} 100%)`,
             zIndex: 1,
           },

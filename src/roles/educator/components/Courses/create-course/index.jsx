@@ -60,7 +60,11 @@ const StepIcon = ({ active, completed }) => {
           },
         }}
       >
-        <CheckCircle size={22} color="white" strokeWidth={2.5} />
+        <CheckCircle
+          size={22}
+          color={(theme) => theme.palette.primary.contrastText}
+          strokeWidth={2.5}
+        />
       </Box>
     )
   }
@@ -107,7 +111,7 @@ const StepIcon = ({ active, completed }) => {
             width: 14,
             height: 14,
             borderRadius: '50%',
-            backgroundColor: 'white',
+            backgroundColor: (theme) => theme.palette.background.paper,
             boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)',
           }}
         />
@@ -492,9 +496,9 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
             <Typography
               variant="h4"
               sx={{
+                mb: 1,
                 fontWeight: 600,
                 color: theme.palette.text.primary,
-                mb: 1,
               }}
             >
               {handleGetTitle()} {t('EDUCATOR.CREATE_COURSE.COURSE')}

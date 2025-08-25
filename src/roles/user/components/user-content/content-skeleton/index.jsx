@@ -20,7 +20,7 @@ const ContentSkeleton = ({ isPurchased }) => {
                 width: '100%',
                 border: '1px solid',
                 borderColor: (theme) => theme.palette.grey[200],
-                backgroundColor: 'white',
+                backgroundColor: (theme) => theme.palette.background.paper,
               }}
             >
               {/* Image skeleton */}
@@ -37,7 +37,10 @@ const ContentSkeleton = ({ isPurchased }) => {
 
               {/* Content skeleton */}
               <Box sx={{ flex: 1, p: 2, display: 'flex', flexDirection: 'column' }}>
-                <Skeleton variant="text" sx={{ fontSize: '1.2rem', width: '70%', mb: 1 }} />
+                <Skeleton
+                  variant="text"
+                  sx={{ fontSize: (theme) => theme.typography.h6.fontSize, width: '70%', mb: 1 }}
+                />
                 <Box sx={{ display: 'flex', gap: 0.5, mb: 2 }}>
                   <Skeleton
                     variant="rectangular"
@@ -49,7 +52,10 @@ const ContentSkeleton = ({ isPurchased }) => {
                   />
                 </Box>
                 <Box sx={{ flexGrow: 1 }} />
-                <Skeleton variant="text" sx={{ fontSize: '0.875rem', width: '30%' }} />
+                <Skeleton
+                  variant="text"
+                  sx={{ fontSize: (theme) => theme.typography.body2.fontSize, width: '30%' }}
+                />
               </Box>
             </Card>
           </Box>
@@ -99,11 +105,20 @@ const ContentSkeleton = ({ isPurchased }) => {
             {/* Content skeleton */}
             <Box sx={{ p: 2, flex: 1, display: 'flex', flexDirection: 'column' }}>
               {/* Title */}
-              <Skeleton variant="text" sx={{ fontSize: '1.1rem', width: '80%', mb: 1 }} />
+              <Skeleton
+                variant="text"
+                sx={{ fontSize: (theme) => theme.typography.h6.fontSize, width: '80%', mb: 1 }}
+              />
 
               {/* Description */}
-              <Skeleton variant="text" sx={{ fontSize: '0.875rem', width: '100%' }} />
-              <Skeleton variant="text" sx={{ fontSize: '0.875rem', width: '90%', mb: 2 }} />
+              <Skeleton
+                variant="text"
+                sx={{ fontSize: (theme) => theme.typography.body2.fontSize, width: '100%' }}
+              />
+              <Skeleton
+                variant="text"
+                sx={{ fontSize: (theme) => theme.typography.body2.fontSize, width: '90%', mb: 2 }}
+              />
 
               {/* Spacer */}
               <Box sx={{ flexGrow: 1 }} />
@@ -116,7 +131,10 @@ const ContentSkeleton = ({ isPurchased }) => {
                   alignItems: 'center',
                 }}
               >
-                <Skeleton variant="text" sx={{ fontSize: '1.5rem', width: 60 }} />
+                <Skeleton
+                  variant="text"
+                  sx={{ fontSize: (theme) => theme.typography.h6.fontSize, width: 60 }}
+                />
                 <Skeleton
                   variant="rectangular"
                   sx={{ width: 80, height: 32, borderRadius: '6px' }}

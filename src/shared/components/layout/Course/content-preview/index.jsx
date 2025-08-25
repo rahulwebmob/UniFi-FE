@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 import useAesDecoder from '../../../../../hooks/useAesDecoder'
 
-const ContentPreview = ({ type, url }) => {
+const CourseContent = ({ type, url }) => {
   const theme = useTheme()
   const [zoomLevel, setZoomLevel] = useState(100)
   const [rotation, setRotation] = useState(0)
@@ -244,9 +244,9 @@ const ContentPreview = ({ type, url }) => {
   return !!decryptedUrl && <Box sx={{ width: '100%', height: '100%' }}>{renderContent()}</Box>
 }
 
-ContentPreview.propTypes = {
+CourseContent.propTypes = {
   type: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
 }
 
-export default ContentPreview
+export default CourseContent

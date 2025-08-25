@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { useDownloadResourceMutation } from '../../../../../../services/admin'
-import ContentPreview from '../../../../../../shared/components/layout/Course/content-preview'
+import CourseContent from '../../../../../../shared/components/layout/Course/content-preview'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
 
 const ViewResource = ({ lessonDetail, isEdit }) => {
@@ -53,19 +53,10 @@ const ViewResource = ({ lessonDetail, isEdit }) => {
       {isFreeOrPurchased ? (
         <Button
           size="small"
-          variant="outlined"
+          variant="contained"
           startIcon={isPdf ? <FileText size={16} /> : <Video size={16} />}
           onClick={isEdit ? handleViewResource : handleRedirectLesson}
-          color={isPdf ? 'secondary' : 'primary'}
           disabled={lessonDetail?.status !== 'completed'}
-          sx={{
-            gap: '0',
-            width: '130px',
-            background: 'none',
-            borderColor: (theme) => (isPdf ? theme.palette.warning : theme.palette.primary.main),
-            color: (theme) => (isPdf ? theme.palette.warning : theme.palette.primary.main),
-            borderRadius: '8px',
-          }}
         >
           {isPdf
             ? t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.VIEW_RESOURCE.READ_PDF')
@@ -74,10 +65,9 @@ const ViewResource = ({ lessonDetail, isEdit }) => {
       ) : (
         <Button
           size="small"
-          variant="outlined"
+          variant="contained"
           startIcon={<Lock size={16} />}
           onClick={() => {}}
-          sx={{ width: '130px' }}
           color="warning"
         >
           {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.VIEW_RESOURCE.LOCK')}
@@ -90,7 +80,7 @@ const ViewResource = ({ lessonDetail, isEdit }) => {
             height: 'calc(100vh - 200px)',
           }}
         >
-          <ContentPreview url={resourceUrl} type={isPdf ? 'doc' : 'video'} />
+          <CourseContent url={resourceUrl} type={isPdf ? 'doc' : 'video'} />
         </Box>
       </ModalBox>
     </>

@@ -25,7 +25,7 @@ const DeclineApplicant = ({ onDelete, onClose }) => {
         />
         {showError && (
           <FormHelperText>
-            <Typography fontSize="12px" color="error">
+            <Typography variant="caption" color="error">
               Field is Required
             </Typography>
           </FormHelperText>
@@ -37,7 +37,7 @@ const DeclineApplicant = ({ onDelete, onClose }) => {
         </Button>
         <Button
           variant="contained"
-          style={{ background: 'red' }}
+          sx={{ backgroundColor: (theme) => theme.palette.error.main }}
           fullWidth
           onClick={() => {
             if (declinationReason?.trim()) {

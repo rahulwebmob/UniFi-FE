@@ -2,9 +2,10 @@ import {
   Box,
   Card,
   Grid,
+  Chip,
   Avatar,
   Button,
-  Tooltip,
+  Divider,
   Accordion,
   CardMedia,
   Container,
@@ -12,8 +13,9 @@ import {
   CardContent,
   AccordionSummary,
   AccordionDetails,
+  useTheme,
 } from '@mui/material'
-import { Video, FileText, ChevronDown } from 'lucide-react'
+import { Video, Users, Clock, BookOpen, ChevronDown } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -23,8 +25,10 @@ import ModalBox from '../../../../../shared/components/ui-elements/modal-box'
 import { getEducatorDetails, handleFormatSeconds } from '../../common/common'
 import ViewResource from '../create-course/view-resource'
 
-const CourseContent = ({ courseData, isEdit, handleOpenPremiumModal }) => {
+const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () => {} }) => {
+  const theme = useTheme()
   const previewRef = useRef()
+  const descriptionModalRef = useRef()
   const navigate = useNavigate()
   const { t } = useTranslation('education')
 
@@ -39,32 +43,56 @@ const CourseContent = ({ courseData, isEdit, handleOpenPremiumModal }) => {
       }
     })
   }
+
   window.addEventListener('popstate', () => {
     handleSticky(true)
   })
 
-  const renderEnrollButton = () =>
-    !courseData?.isCourseBought && courseData?.isPaid ? (
+  const renderEnrollButton = () => {
+    const buttonStyle = {
+      borderRadius: '8px',
+      textTransform: 'none',
+      fontWeight: 600,
+      boxShadow: 'none',
+      '&:hover': {
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+      },
+    }
+
+    if (!courseData?.isCourseBought && courseData?.isPaid) {
+      return (
+        <Button
+          fullWidth
+          color="primary"
+          variant="contained"
+          onClick={() => {
+            if (!isEdit) {
+              handlePurchase()
+            }
+          }}
+          sx={buttonStyle}
+        >
+          {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.ENROLL_NOW')}
+        </Button>
+      )
+    }
+
+    return (
       <Button
         fullWidth
-        disabled={isEdit}
-        color="secondary"
+        color="primary"
         variant="contained"
-        onClick={handleOpenPremiumModal}
-      >
-        {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.ENROLL_NOW')}
-      </Button>
-    ) : (
-      <Button
-        fullWidth
-        disabled={isEdit}
-        color="secondary"
-        variant="contained"
-        onClick={() => navigate(`/dashboard/course/${courseData?._id}/lessons`)}
+        onClick={() => {
+          if (!isEdit) {
+            navigate(`/dashboard/course/${courseData?._id}/lessons`)
+          }
+        }}
+        sx={buttonStyle}
       >
         {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.START_COURSE')}
       </Button>
     )
+  }
 
   useEffect(() => {
     handleSticky()
@@ -92,377 +120,489 @@ const CourseContent = ({ courseData, isEdit, handleOpenPremiumModal }) => {
 
   return (
     <Box
-      sx={{
-        padding: 2,
-        borderRadius: '8px',
-        background: (theme) => theme.palette.primary.light,
-        '& .MuiTypography-root': {
-          fontFamily: 'inter',
-        },
-      }}
+      sx={{ minHeight: '100vh', backgroundColor: 'background.light', p: 2, borderRadius: '12px' }}
     >
-      <Container
-        sx={{
-          width: '100%',
-          '@media (min-width:1200px)': { maxWidth: '1400px' },
-        }}
-        maxWidth="lg"
-      >
-        <Grid
+      <Container maxWidth={false} sx={{ maxWidth: '1500px' }}>
+        {/* Clean Header Section */}
+        <Box
           sx={{
-            padding: 2,
-            background: (theme) => theme.palette.primary.light,
-            borderRadius: '8px',
+            p: 4,
+            mb: 4,
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            border: '1px solid #e0e0e0',
           }}
         >
-          <Grid
-            container
-            spacing={1}
-            sx={{
-              alignItems: 'center',
-              flexDirection: { xs: 'column-reverse', sm: 'row' },
-            }}
-          >
-            <Grid item size={{ xs: 12, sm: 6, lg: 6 }}>
-              <Typography variant="h1" mb={2}>
+          <Grid container spacing={4}>
+            <Grid size={{ xs: 12, md: 8 }}>
+              <Typography
+                variant="h4"
+                sx={{
+                  mb: 3,
+                }}
+              >
                 {courseData?.title}
               </Typography>
 
-              <Tooltip title={courseData?.description || '-'} arrow>
+              <Box sx={{ mb: 3 }}>
                 <Typography
-                  variant="body1"
-                  color="secondary"
+                  variant="p"
                   sx={{
-                    width: '100%',
+                    lineHeight: 1.7,
                     display: '-webkit-box',
                     overflow: 'hidden',
                     WebkitLineClamp: 3,
                     WebkitBoxOrient: 'vertical',
-                    textOverflow: 'ellipsis',
-                    boxSizing: 'border-box',
                   }}
-                  my={2}
                 >
                   {courseData?.description || '-'}
                 </Typography>
-              </Tooltip>
-              <Box mt={1}>
-                <Typography variant="p" color="secondary" display="block">
-                  {t('education:EDUCATION_DASHBOARD.COMMON_KEYS.CREATED_BY')}
-                </Typography>
-                <Box
-                  display="inline-flex"
-                  alignItems="center"
-                  gap="3px"
-                  sx={{
-                    background: (theme) => theme.palette.primary.light,
-                    padding: 1,
-                    borderRadius: '8px',
-                  }}
-                >
-                  <Avatar sx={{ width: '30px', height: '30px' }}>
-                    <Typography variant="body2">
-                      {getEducatorDetails(courseData, 'avatarName')}
-                    </Typography>
-                  </Avatar>
-                  <Typography variant="body1" color="primary">
-                    {getEducatorDetails(courseData, 'fullName')}
-                  </Typography>
-                </Box>
+                {courseData?.description && courseData.description.length > 300 && (
+                  <Button
+                    onClick={() => descriptionModalRef.current.openModal()}
+                    sx={{
+                      mt: 1,
+                      p: 0,
+                      minWidth: 'auto',
+                      textTransform: 'none',
+                      fontWeight: 500,
+                      '&:hover': {
+                        backgroundColor: 'transparent',
+                        textDecoration: 'underline',
+                      },
+                    }}
+                  >
+                    View More
+                  </Button>
+                )}
               </Box>
-            </Grid>
-            <Grid
-              item
-              size={{ xs: 12, sm: 6, lg: 6 }}
-              display="flex"
-              alignItems="flex-end"
-              justifyContent="flex-end"
-            >
-              <Card
+
+              <Box
                 sx={{
-                  width: { xs: 'auto', md: '450px' },
-                  padding: '16px',
-                  borderRadius: '12px',
-                  border: '1px solid ',
-                  borderColor: (theme) => theme.palette.primary.light100,
-                  background: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: 2,
+                  mb: 3,
+                  pb: 3,
+                  borderBottom: `1px solid ${theme.palette.divider}`,
                 }}
               >
-                <Box sx={{ width: '100%', height: '222px' }}>
+                <Box display="flex" alignItems="center" gap={1.5}>
+                  <Avatar>{getEducatorDetails(courseData, 'avatarName')}</Avatar>
+                  <Box>
+                    <Typography variant="caption" color="text.secondary">
+                      Created by
+                    </Typography>
+                    <Typography variant="body2">
+                      {getEducatorDetails(courseData, 'fullName')}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+
+                <Box display="flex" alignItems="center" gap={3} flexWrap="wrap">
+                  <Box display="flex" alignItems="center" gap={0.5}>
+                    <BookOpen size={18} />
+                    <Typography pl={1} variant="body2" fontStyle="italic" color="text.secondary">
+                      {courseData.totalChaptersCount || 0} Chapters
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" alignItems="center" gap={0.5}>
+                    <Video size={18} />
+                    <Typography pl={1} variant="body2" fontStyle="italic" color="text.secondary">
+                      {courseData.totalLessonsCount || 0} Lessons
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" alignItems="center" gap={0.5}>
+                    <Clock size={18} />
+                    <Typography pl={1} variant="body2" fontStyle="italic" color="text.secondary">
+                      {handleFormatSeconds(courseData.totalDurationOfCourse) || 0} Total
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" alignItems="center" gap={0.5}>
+                    <Users size={18} />
+                    <Typography pl={1} variant="body2" fontStyle="italic" color="text.secondary">
+                      {courseData.totalPurchased || 0} Enrolled
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+
+              {courseData?.category &&
+                Array.isArray(courseData.category) &&
+                courseData.category.length > 0 && (
+                  <Box display="flex" gap={1} flexWrap="wrap">
+                    {courseData.category.map((cat) => (
+                      <Chip key={cat} label={cat} size="small" color="primary" />
+                    ))}
+                  </Box>
+                )}
+            </Grid>
+
+            {/* Course Card - Right Side */}
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Card>
+                {/* Thumbnail */}
+                <Box sx={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>
                   <CardMedia
                     component="img"
+                    image={courseData?.thumbNail}
+                    alt={courseData?.title}
                     sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
                       width: '100%',
                       height: '100%',
-                      borderRadius: '8px',
-                      objectFit: 'contain',
+                      objectFit: 'cover',
                     }}
-                    image={courseData?.thumbNail}
-                    title={t(
-                      'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.COURSE_THUMBNAIL',
-                    )}
                   />
                 </Box>
 
-                <CardContent sx={{ p: 0, my: 1 }}>
-                  <Typography variant="p1" fontWeight={600} mb={1} display="block">
-                    {courseData?.title || '-'}
-                  </Typography>
+                <CardContent sx={{ p: 3 }}>
+                  {/* Price Display */}
+                  {courseData?.isPaid ? (
+                    <Box
+                      sx={{
+                        mb: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Typography variant="p" color="text.secondary">
+                        One-time payment
+                      </Typography>
+                      <Typography variant="h5" fontWeight={700} color="primary">
+                        ${courseData?.price || 0}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Box
+                      sx={{
+                        mb: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Typography variant="p" color="text.secondary">
+                        Full access
+                      </Typography>
+                      <Typography variant="h5" fontWeight={700} color="success.main">
+                        FREE
+                      </Typography>
+                    </Box>
+                  )}
+                  {/* Enroll Button */}
+                  {renderEnrollButton()}
                 </CardContent>
-                {!courseData?.isCourseBought && (
-                  <Box display="flex" justifyContent="space-between" width="100%" my={1}>
-                    <Typography variant="p">
-                      {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.COURSE_PRICE')}
-                    </Typography>
-                    <Typography variant="p" fontWeight={600}>
-                      {courseData.isPaid
-                        ? `$${courseData?.price}`
-                        : t('education:EDUCATION_DASHBOARD.COMMON_KEYS.FREE')}
-                    </Typography>
-                  </Box>
-                )}
-                {/* enroll button */}
-                {renderEnrollButton()}
               </Card>
             </Grid>
           </Grid>
-        </Grid>
-
-        <Box my={2}>
-          <Typography variant="h4" fontWeight={600}>
-            {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.COURSE_CONTENT')}
-          </Typography>
-          <Typography variant="body2" color="secondary">
-            {!!courseData?.totalChaptersCount &&
-              `${courseData.totalChaptersCount} ${t(
-                'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.CHAPTERS',
-              )} • `}
-            {!!courseData?.totalLessonsCount &&
-              `${courseData.totalLessonsCount} ${
-                courseData.totalLessonsCount === 1
-                  ? t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.LESSON')
-                  : t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.LESSONS')
-              }`}
-            {!!courseData?.totalDurationOfCourse &&
-              ` • ${handleFormatSeconds(courseData.totalDurationOfCourse)} ${t(
-                'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.TOTAL_LENGTH',
-              )}`}
-          </Typography>
         </Box>
-        <Box
+
+        {/* Course Content Section */}
+        <Typography
+          variant="h5"
           sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '100%', md: '1fr 434px' },
-            columnGap: '20px',
-            marginTop: 2,
-            marginBottom: 2,
+            fontWeight: 600,
+            mb: 1,
           }}
         >
-          <Box
-            sx={{
-              background: (theme) => theme.palette.primary.light,
-              borderRadius: '8px',
-              padding: '10px',
-              '& .MuiPaper-root.Mui-expanded': {
-                margin: '5px 0',
-              },
-              '& .MuiAccordion-root ': {
-                '& .Mui-expanded': {
-                  minHeight: '48px',
-                  margin: 0,
-                  gap: '5px',
-                },
-              },
-            }}
-          >
-            {!!courseData?.chapters?.length &&
-              courseData?.chapters?.map((chapter, chapterIndex) => (
+          Course Content
+        </Typography>
+        <Typography
+          component="p"
+          sx={{
+            mb: 3,
+            opacity: 0.6,
+          }}
+        >
+          All the chapters and lessons are listed below.
+        </Typography>
+
+        <Box
+          sx={{
+            display: { xs: 'flex', lg: 'grid' },
+            flexDirection: { xs: 'column', lg: 'unset' },
+            gridTemplateColumns: { lg: '1fr 380px' },
+            gap: 3,
+          }}
+        >
+          {/* Chapters Accordion */}
+          <Box>
+            {courseData?.chapters?.length > 0 &&
+              courseData.chapters.map((chapter, chapterIndex) => (
                 <Accordion
-                  defaultExpanded
                   key={chapter._id}
+                  defaultExpanded
                   sx={{
-                    background: 'none',
-                    boxShadow: 'none',
-                    borderRadius: '8px',
-                    '& .MuiAccordionSummary-content': {
-                      margin: '6px 0',
+                    mb: 2,
+                    backgroundColor: 'background.paper',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                    borderRadius: '12px !important',
+                    overflow: 'hidden',
+                    '&:before': {
+                      display: 'none',
                     },
-                    '& .MuiCollapse-wrapper ': {
-                      padding: '0 10px 0 10px',
+                    '& .MuiAccordionSummary-root': {
+                      borderRadius: 0,
+                    },
+                    '&.Mui-expanded': {
+                      margin: '0 0 16px 0',
                     },
                   }}
                 >
                   <AccordionSummary
                     expandIcon={<ChevronDown size={20} />}
-                    aria-controls={`panel-${chapter._id}-content`}
-                    id={`panel-${chapter._id}-header`}
                     sx={{
-                      background: (theme) => theme.palette.primary.light100,
-                      borderRadius: '4px',
+                      backgroundColor: theme.palette.grey[100],
+                      '&:hover': {
+                        backgroundColor: theme.palette.grey[200],
+                      },
                       '& .MuiAccordionSummary-expandIconWrapper': {
-                        order: -1,
-                        marginRight: '10px',
-                        margin: '0px',
-                        alignItems: 'center',
+                        color: 'primary.main',
                       },
                     }}
                   >
                     <Box
                       display="flex"
+                      alignItems="center"
                       justifyContent="space-between"
                       width="100%"
-                      alignItems="center"
-                      flexWrap="wrap"
+                      sx={{ flexWrap: 'nowrap' }}
                     >
-                      <Typography variant="p1">
-                        {`${t(
-                          'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.CHAPTER',
-                        )} ${chapterIndex + 1}. ${chapter.title || '-'}`}
-                      </Typography>
-                      <Typography variant="p" color="text.secondary">
-                        {chapter?.totalLessons}
-                        {chapter?.totalLessons === 1
-                          ? ` ${t(
-                              'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.LESSON',
-                            )}`
-                          : ` ${t(
-                              'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.LESSONS',
-                            )}`}
-                        {!!chapter?.totalDuration &&
-                          ` • ${handleFormatSeconds(chapter.totalDuration)}`}
-                      </Typography>
-                    </Box>
-                  </AccordionSummary>
-                  {!!chapter?.lessonList.length &&
-                    chapter?.lessonList?.map((lesson, lessonIndex) => (
-                      <AccordionDetails key={lesson?._id}>
+                      <Box display="flex" alignItems="center" gap={1.5} flex={1}>
                         <Box
-                          display="flex"
-                          justifyContent="space-between"
-                          width="100%"
-                          alignItems="center"
                           sx={{
-                            borderBottom: '1px solid',
-                            borderColor: (theme) => theme.palette.primary.light,
-                            padding: '10px 0',
-                            flexWrap: 'wrap',
-                            gap: '10px',
+                            width: { xs: 28, sm: 32 },
+                            height: { xs: 28, sm: 32 },
+                            minWidth: { xs: 28, sm: 32 },
+                            borderRadius: '8px',
+                            backgroundColor: 'primary.main',
+                            color: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontWeight: 700,
+                            fontSize: { xs: '0.75rem', sm: '0.875rem' },
                           }}
                         >
-                          <Box
-                            display="flex"
-                            alignItems="center"
-                            gap="10px"
-                            sx={{
-                              svg: {
-                                color: (theme) => theme.palette.grey.light,
-                              },
-                            }}
+                          {chapterIndex + 1}
+                        </Box>
+                        <Typography
+                          sx={{
+                            fontWeight: 600,
+                            fontSize: { xs: '0.9rem', sm: '1.05rem' },
+                            color: 'text.primary',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: { xs: 'nowrap', md: 'normal' },
+                            maxWidth: { xs: '150px', sm: 'none' },
+                          }}
+                        >
+                          {chapter.title || '-'}
+                        </Typography>
+                      </Box>
+
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        gap={{ xs: 1, sm: 1.5 }}
+                        mr={{ xs: 2, sm: 3 }}
+                        flexWrap={{ xs: 'wrap', sm: 'nowrap' }}
+                        justifyContent="flex-end"
+                      >
+                        <Box display="flex" alignItems="center" gap={0.5}>
+                          <Video size={14} />
+                          <Typography
+                            variant="body2"
+                            fontStyle="italic"
+                            color="text.secondary"
+                            sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }}
                           >
-                            {lesson?.lessonType === 'pdf' ? (
-                              <FileText size={24} />
-                            ) : (
-                              <Video size={24} />
-                            )}
-                            <Tooltip
-                              title={`${t(
-                                'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.LESSON',
-                              )} ${lessonIndex + 1}. ${lesson?.title || '-'}`}
-                              arrow
+                            {chapter?.totalLessons}
+                            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                              {' '}
+                              {chapter?.totalLessons === 1 ? 'lesson' : 'lessons'}
+                            </Box>
+                          </Typography>
+                        </Box>
+                        {!!chapter?.totalDuration && (
+                          <>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{ display: { xs: 'none', sm: 'block' } }}
                             >
+                              •
+                            </Typography>
+                            <Box display="flex" alignItems="center" gap={0.5}>
+                              <Clock size={14} />
                               <Typography
-                                variant="body1"
+                                variant="body2"
+                                fontStyle="italic"
                                 color="text.secondary"
-                                noWrap
-                                sx={{
-                                  whiteSpace: { xs: 'unset', sm: 'nowrap' },
-                                  width: {
-                                    xs: '100%',
-                                    sm: '300px',
-                                  },
-                                }}
+                                sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }}
                               >
-                                {`${t(
-                                  'education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.LESSON',
-                                )} ${lessonIndex + 1}. ${lesson?.title || '-'}`}
+                                {handleFormatSeconds(chapter.totalDuration)}
                               </Typography>
-                            </Tooltip>
+                            </Box>
+                          </>
+                        )}
+                      </Box>
+                    </Box>
+                  </AccordionSummary>
+
+                  <AccordionDetails sx={{ p: 0 }}>
+                    {chapter?.lessonList?.length > 0 &&
+                      chapter.lessonList.map((lesson, lessonIndex) => (
+                        <Box
+                          key={lesson?._id}
+                          sx={{
+                            px: { xs: 2, sm: 3 },
+                            py: { xs: 2, sm: 2.5 },
+                            display: 'flex',
+                            flexDirection: { xs: 'column', sm: 'row' },
+                            alignItems: { xs: 'stretch', sm: 'center' },
+                            justifyContent: 'space-between',
+                            borderTop: '1px solid rgba(0, 0, 0, 0.06)',
+                            transition: 'background-color 0.2s ease',
+                            gap: { xs: 1.5, sm: 2 },
+                            '&:first-of-type': {
+                              borderTop: 'none',
+                            },
+                            '&:hover': {
+                              backgroundColor: 'rgba(25, 118, 210, 0.02)',
+                            },
+                          }}
+                        >
+                          <Box display="flex" alignItems="center" gap={1.5} flex={1}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontWeight: 500,
+                                color: 'text.primary',
+                                fontSize: { xs: '0.85rem', sm: '0.95rem' },
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: { xs: 'normal', sm: 'normal' },
+                              }}
+                            >
+                              {lessonIndex + 1}. {lesson?.title || '-'}
+                            </Typography>
                           </Box>
-                          <ViewResource
-                            isEdit={isEdit}
-                            lessonDetail={{
-                              ...lesson,
-                              courseId: courseData._id,
-                              isCourseBought: courseData.isCourseBought,
-                            }}
-                            handleOpenPremiumModal={handleOpenPremiumModal}
-                          />
 
                           <Box
                             display="flex"
-                            gap="12px"
                             alignItems="center"
-                            justifyContent="end"
-                            minWidth={90}
-                            maxWidth={100}
+                            gap={2}
+                            sx={{
+                              justifyContent: { xs: 'space-between', sm: 'flex-end' },
+                            }}
                           >
-                            <Typography variant="body1" noWrap color="text.secondary">
-                              {lesson?.durationInSeconds &&
-                                handleFormatSeconds(lesson?.durationInSeconds)}
-                            </Typography>
+                            <ViewResource
+                              isEdit={isEdit}
+                              lessonDetail={{
+                                ...lesson,
+                                courseId: courseData._id,
+                                isCourseBought: courseData.isCourseBought,
+                              }}
+                              handlePurchase={handlePurchase}
+                            />
+                            {!!lesson?.durationInSeconds && (
+                              <Box
+                                display="flex"
+                                alignItems="center"
+                                gap={0.5}
+                                sx={{ minWidth: { xs: '60px', sm: 'auto' } }}
+                              >
+                                <Clock size={14} />
+                                <Typography
+                                  variant="caption"
+                                  fontStyle="italic"
+                                  color="text.secondary"
+                                  sx={{ fontSize: { xs: '0.75rem', sm: '0.75rem' } }}
+                                >
+                                  {handleFormatSeconds(lesson.durationInSeconds)}
+                                </Typography>
+                              </Box>
+                            )}
                           </Box>
                         </Box>
-                      </AccordionDetails>
-                    ))}
+                      ))}
+                  </AccordionDetails>
                 </Accordion>
               ))}
           </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Box sx={{ position: 'sticky', bottom: '0' }}>
-              <Typography
-                variant="p1"
-                component="p"
-                mb={1}
-                textAlign="start"
-                sx={{ width: '100%' }}
-              >
-                {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.PREVIEW_VIDEO')}
-              </Typography>
-              <Box
-                p={1}
-                sx={{
-                  background: (theme) => theme.palette.primary.light,
-                  borderRadius: '10px',
-                }}
-              >
-                <Box onClick={() => previewRef.current.openModal()}>{renderPreview()}</Box>
+
+          {/* Preview Video Section */}
+          {courseData?.previewVideo && (
+            <Box
+              sx={{
+                position: { xs: 'relative', lg: 'sticky' },
+                top: { xs: 0, lg: 20 },
+                height: 'fit-content',
+                backgroundColor: 'white',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                mb: { xs: 3, lg: 0 },
+              }}
+            >
+              <Box sx={{ position: 'relative', paddingTop: '56.25%' }}>
+                <video
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                  }}
+                  src={courseData?.previewVideo}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                >
+                  <track kind="captions" />
+                </video>
               </Box>
             </Box>
-          </Box>
+          )}
         </Box>
       </Container>
+
       <ModalBox ref={previewRef} size="lg">
         {renderPreview()}
+      </ModalBox>
+
+      {/* Description Modal */}
+      <ModalBox ref={descriptionModalRef} size="md">
+        <Typography variant="h5" fontWeight={600} mb={2}>
+          Course Description
+        </Typography>
+        <Typography variant="body1" sx={{ lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>
+          {courseData?.description}
+        </Typography>
       </ModalBox>
     </Box>
   )
 }
 
-export default CourseContent
+export default CourseContentDetails
 
-CourseContent.propTypes = {
+CourseContentDetails.propTypes = {
   isEdit: PropTypes.bool,
-  handleOpenPremiumModal: PropTypes.func,
+  handlePurchase: PropTypes.func,
   courseData: PropTypes.oneOfType([PropTypes.object]).isRequired,
-}
-
-CourseContent.defaultProps = {
-  isEdit: true,
-  handleOpenPremiumModal: () => {},
 }

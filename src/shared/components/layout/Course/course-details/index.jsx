@@ -1,7 +1,7 @@
 import { useRef, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 
-import ContentView from '../../../../../roles/educator/components/courses/course-content'
+import CourseContentDetails from '../../../../../roles/educator/components/courses/course-content'
 import { useGetParticularCourseQuery } from '../../../../../services/education'
 import ApiResponseWrapper from '../../../api-middleware'
 import PremiumModal from '../../premium'
@@ -38,7 +38,11 @@ const CourseDetails = () => {
   return (
     <ApiResponseWrapper error={error} isLoading={isLoading} isData={!!data?.data}>
       {courseData && (
-        <ContentView isEdit={false} courseData={courseData} handlePurchase={handlePurchase} />
+        <CourseContentDetails
+          isEdit={false}
+          courseData={courseData}
+          handlePurchase={handlePurchase}
+        />
       )}
       {!!purchaseDetails && (
         <PremiumModal ref={subscriptionRef} purchaseDetails={purchaseDetails} />

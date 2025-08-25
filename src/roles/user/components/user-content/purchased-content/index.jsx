@@ -1,4 +1,5 @@
 import { Box, Button, Typography, ButtonGroup } from '@mui/material'
+import { BookOpen, Presentation } from 'lucide-react'
 import { useState } from 'react'
 
 import CourseList from '../../user-courses/course-list'
@@ -40,6 +41,7 @@ const PurchasedContent = () => {
           <Button
             onClick={() => setContentType('course')}
             variant={contentType === 'course' ? 'contained' : 'outlined'}
+            startIcon={<BookOpen size={16} />}
             sx={{
               textTransform: 'none',
             }}
@@ -49,6 +51,7 @@ const PurchasedContent = () => {
           <Button
             onClick={() => setContentType('webinar')}
             variant={contentType === 'webinar' ? 'contained' : 'outlined'}
+            startIcon={<Presentation size={16} />}
             sx={{
               textTransform: 'none',
             }}
@@ -59,45 +62,9 @@ const PurchasedContent = () => {
       </Box>
       <Box
         sx={{
-          position: 'relative',
-          borderBottom: 'none',
-          '& .MuiCard-root': {
-            borderBottom: 'none !important',
-          },
-          '& .MuiTabs-scroller': {
-            whiteSpace: 'wrap',
-          },
-          '& .MuiTabs-flexContainer': {
-            gap: '10px',
-          },
-          '& .MuiTabs-scrollButtons': {
-            position: 'absolute',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            zIndex: 1,
-            '&:first-of-type': {
-              left: -40,
-            },
-            '&:last-of-type': {
-              right: -40,
-            },
-          },
           '& .MuiButtonBase-root': {
             backgroundColor: (theme) => theme.palette.primary.main,
-            borderRadius: '50%',
-            width: 32,
-            height: 32,
-            minWidth: 32,
-            padding: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            '& svg': {
-              fill: 'white',
-              width: 16,
-              height: 16,
-            },
+            color: (theme) => theme.palette.primary.contrastText,
             '&:hover': {
               backgroundColor: (theme) => theme.palette.primary.dark,
             },

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { useGetAllWebinarsQuery } from '../../../../../services/education'
 import NoDataFound from '../../../../../shared/components/no-data-found'
 import MuiCarousel from '../../../../../shared/components/ui-elements/mui-carousel'
-import { GridContainer } from '../../style'
 import ContentSkeleton from '../../user-content/content-skeleton'
 import WebinarCard from '../webinar-card'
 
@@ -90,9 +89,9 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
   }
 
   return isLoading ? (
-    <GridContainer>
+    <Grid container spacing={3}>
       <ContentSkeleton isPurchased={false} />
-    </GridContainer>
+    </Grid>
   ) : !list.length ? (
     <Box
       sx={{
@@ -105,11 +104,13 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory }) => {
       <NoDataFound />
     </Box>
   ) : (
-    <GridContainer>
+    <Grid container spacing={3}>
       {list.map((item) => (
-        <WebinarCard key={item._id} webinar={item} isPurchased={false} />
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }} key={item._id}>
+          <WebinarCard webinar={item} isPurchased={false} />
+        </Grid>
       ))}
-    </GridContainer>
+    </Grid>
   )
 }
 

@@ -3,15 +3,15 @@ import {
   Box,
   Grid,
   Button,
-  useTheme,
   TextField,
   IconButton,
   Typography,
   InputAdornment,
+  CircularProgress,
 } from '@mui/material'
 import { Eye, EyeOff } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -34,7 +34,6 @@ const ViewState = {
 }
 
 const Login = ({ type = '', setIsLoginPage }) => {
-  const theme = useTheme()
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -43,9 +42,14 @@ const Login = ({ type = '', setIsLoginPage }) => {
   const [isOAuthLoading, setIsOAuthLoading] = useState(false)
   const [verificationEmail, setVerificationEmail] = useState('')
 
-  const [educatorLogin] = useEducatorLoginMutation()
-  const [submitLoginForm, { isLoading }] = useLoginMutation()
+  const [userLogin, { isLoading: isUserLoading }] = useLoginMutation()
   const [adminLogin, { isLoading: isAdminLoading }] = useAdminLoginMutation()
+  const [educatorLogin, { isLoading: isEducatorLoading }] = useEducatorLoginMutation()
+
+  const isLoading = useMemo(
+    () => isUserLoading || isAdminLoading || isEducatorLoading,
+    [isUserLoading, isAdminLoading, isEducatorLoading],
+  )
 
   const schema = yup.object().shape({
     email: yup.string().email('Enter a valid email').trim().required('Email is required'),
@@ -71,7 +75,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
         response = await adminLogin(values)
         break
       default:
-        response = await submitLoginForm(values)
+        response = await userLogin(values)
     }
 
     if (response?.data) {
@@ -112,7 +116,6 @@ const Login = ({ type = '', setIsLoginPage }) => {
         </Box>
         <Typography
           variant="h6"
-          fontWeight={700}
           textAlign="center"
           sx={{
             letterSpacing: 3.84,
@@ -121,7 +124,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
         >
           UNICITIZENS
         </Typography>
-        <Typography component="p" fontWeight={400} textAlign="center" mb={2} sx={{ opacity: 0.8 }}>
+        <Typography component="p" textAlign="center" mb={2} sx={{ opacity: 0.8 }}>
           {type === 'admin'
             ? 'Enter your credentials to access the admin portal'
             : type === 'educator'
@@ -195,20 +198,23 @@ const Login = ({ type = '', setIsLoginPage }) => {
       </Grid>
       <Button
         sx={{ mb: 2 }}
-        disabled={isLoading || isAdminLoading || isOAuthLoading}
+        disabled={isLoading || isOAuthLoading}
         variant="contained"
         color="primary"
         type="submit"
+        startIcon={
+          isLoading ? <CircularProgress sx={{ color: 'primary.contrastText' }} size={20} /> : null
+        }
         fullWidth
       >
-        Login
+        {isLoading ? 'Logging in...' : 'Login'}
       </Button>
     </form>
   )
 
   const renderForgotPasswordLink = () => (
     <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
-      <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: 14 }}>
+      <Typography variant="body2" color="text.secondary">
         Trouble logging in?
         <Typography
           variant="body2"
@@ -216,9 +222,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
           onClick={() => setViewState(ViewState.FORGOT_PASSWORD)}
           sx={{
             marginLeft: 0.75,
-            fontSize: 14,
-            fontWeight: 600,
-            color: theme.palette.primary.main,
+            color: 'primary.main',
             cursor: 'pointer',
             '&:hover': { textDecoration: 'underline' },
           }}
@@ -231,7 +235,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
 
   const renderEducatorSignup = () => (
     <Box display="flex" alignItems="center" justifyContent="center" pt={2}>
-      <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: 14 }}>
+      <Typography variant="body2" color="text.secondary">
         Want to become an educator?
         <Typography
           variant="body2"
@@ -241,9 +245,8 @@ const Login = ({ type = '', setIsLoginPage }) => {
           }}
           sx={{
             marginLeft: 0.75,
-            fontSize: 14,
-            fontWeight: 700,
-            color: theme.palette.primary.main,
+            fontWeight: 'bold',
+            color: 'primary.main',
             cursor: 'pointer',
             '&:hover': { textDecoration: 'underline' },
           }}
@@ -261,7 +264,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
         isOAuthLoading={isLoading || isOAuthLoading}
       />
       <Box display="flex" alignItems="center" justifyContent="center" mt={2} pb={2}>
-        <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: 14 }}>
+        <Typography variant="body2" color="text.secondary">
           Don&apos;t have an account?
           <Typography
             variant="body2"
@@ -269,9 +272,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
             onClick={() => setIsLoginPage(false)}
             sx={{
               marginLeft: 0.75,
-              fontSize: 14,
-              fontWeight: 600,
-              color: theme.palette.primary.main,
+              color: 'primary.main',
               cursor: 'pointer',
               '&:hover': { textDecoration: 'underline' },
             }}
