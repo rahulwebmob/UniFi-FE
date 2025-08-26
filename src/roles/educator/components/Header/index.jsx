@@ -77,7 +77,6 @@ const Header = () => {
           >
             <Avatar
               alt="Profile Picture"
-              className="AvatarGroup"
               sx={{
                 width: '30px',
                 height: '30px',

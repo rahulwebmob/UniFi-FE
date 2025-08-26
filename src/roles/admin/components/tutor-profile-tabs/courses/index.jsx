@@ -32,7 +32,6 @@ const Courses = () => {
         size: 100,
         Cell: (tableProps) => {
           const { cell } = tableProps
-          const theme = useTheme()
           const thumbnail = cell.getValue()
           return thumbnail ? (
             <Box
@@ -132,7 +131,6 @@ const Courses = () => {
         size: 100,
         Cell: (tableProps) => {
           const { cell } = tableProps
-          const theme = useTheme()
           const price = cell.getValue()
           return (
             <Typography
@@ -161,6 +159,7 @@ const Courses = () => {
         },
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   )
 

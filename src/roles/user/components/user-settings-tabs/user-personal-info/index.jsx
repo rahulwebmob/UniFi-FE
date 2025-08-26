@@ -147,34 +147,17 @@ const PersonalInfo = () => {
   return (
     <Box>
       <form
-        className="editname-form"
         onSubmit={(e) => {
           e.preventDefault()
           void handleSubmit(handleFormSubmit)(e)
         }}
       >
-        {/* Personal Information Section */}
-        <Box sx={{ pb: 3 }}>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 600,
-              mb: 2.5,
-              color: theme.palette.text.primary,
-            }}
-          >
+        <Box pb={3}>
+          <Typography variant="h6" fontWeight={600} mb={2.5}>
             {t('application:PROFILE.PERSONAL_INFO')}
           </Typography>
 
-          {/* Avatar Edit Section */}
-          <Box
-            sx={{
-              mb: 3,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-            }}
-          >
+          <Box mb={3} display="flex" alignItems="center" gap={2}>
             <Box
               sx={{
                 position: 'relative',
@@ -189,7 +172,7 @@ const PersonalInfo = () => {
                   fontSize: '1.5rem',
                   backgroundColor: theme.palette.primary[100],
                   color: theme.palette.primary.main,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  boxShadow: theme.shadows[2],
                 }}
                 imgProps={{
                   crossOrigin: 'anonymous',
@@ -201,7 +184,6 @@ const PersonalInfo = () => {
               </Avatar>
 
               <Box
-                className="imgUpload"
                 sx={{
                   position: 'absolute',
                   bottom: -4,
@@ -217,7 +199,7 @@ const PersonalInfo = () => {
                     p: 0.5,
                     borderRadius: '50%',
                     backgroundColor: theme.palette.primary.main,
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                    boxShadow: theme.shadows[3],
                     '&:hover': {
                       backgroundColor: theme.palette.primary.dark,
                     },
@@ -243,37 +225,18 @@ const PersonalInfo = () => {
             </Box>
 
             <Box>
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: 500,
-                  color: theme.palette.text.secondary,
-                  mb: 0.5,
-                }}
-              >
+              <Typography variant="body2" fontWeight={500} color="text.secondary" mb={0.5}>
                 {t('application:PROFILE.PROFILE_PICTURE')}
               </Typography>
-              <Typography
-                variant="caption"
-                sx={{
-                  color: theme.palette.text.secondary,
-                }}
-              >
+              <Typography variant="caption" color="text.secondary">
                 JPG, JPEG or PNG. Max size 5MB
               </Typography>
             </Box>
           </Box>
 
-          <Box display="grid" gridTemplateColumns={!matches ? '1fr 1fr' : '1fr'} gap={2.5}>
+          <Box display="grid" gridTemplateColumns={!matches ? '1fr 1fr' : '1fr'} gap={2.5} mb={1}>
             <FormControl fullWidth>
-              <Typography
-                variant="body2"
-                sx={{
-                  mb: 0.5,
-                  fontWeight: 500,
-                  color: theme.palette.text.secondary,
-                }}
-              >
+              <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
                 {t('application:PROFILE.FIRST_NAME')}
               </Typography>
               <Controller
@@ -291,7 +254,7 @@ const PersonalInfo = () => {
                     helperText={errors.firstName?.message}
                     sx={{
                       '& .MuiOutlinedInput-root': {
-                        borderRadius: '8px',
+                        borderRadius: 1,
                       },
                     }}
                   />
@@ -300,14 +263,7 @@ const PersonalInfo = () => {
             </FormControl>
 
             <FormControl fullWidth>
-              <Typography
-                variant="body2"
-                sx={{
-                  mb: 0.5,
-                  fontWeight: 500,
-                  color: theme.palette.text.secondary,
-                }}
-              >
+              <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
                 {t('application:PROFILE.LAST_NAME')}
               </Typography>
               <Controller
@@ -325,7 +281,7 @@ const PersonalInfo = () => {
                     helperText={errors.lastName?.message}
                     sx={{
                       '& .MuiOutlinedInput-root': {
-                        borderRadius: '8px',
+                        borderRadius: 1,
                       },
                     }}
                   />
@@ -334,24 +290,16 @@ const PersonalInfo = () => {
             </FormControl>
           </Box>
 
-          <Button size="medium" type="submit" variant="contained" color="primary" sx={{ mt: 1 }}>
+          <Button size="medium" type="submit" variant="contained" mt={1}>
             {t('application:MISCELLANEOUS.SAVE')}
           </Button>
         </Box>
       </form>
 
-      {/* Change Password Section */}
       <>
-        <Divider sx={{ mb: 3 }} />
-        <Box sx={{ pb: 3 }}>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 600,
-              mb: 2.5,
-              color: theme.palette.text.primary,
-            }}
-          >
+        <Divider mb={3} />
+        <Box pb={3}>
+          <Typography variant="h6" fontWeight={600} mb={2.5}>
             {t('application:PROFILE.CHANGE_PASSWORD')}
           </Typography>
           <ChangePassword

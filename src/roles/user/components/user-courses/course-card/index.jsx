@@ -25,9 +25,8 @@ const CourseCard = ({ course, isPurchased }) => {
         onClick={handleCardClick}
         sx={{
           display: 'flex',
-          flexDirection: 'row',
           borderRadius: '12px',
-          boxShadow: (thm) => thm.shadows[1],
+          boxShadow: 1,
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           overflow: 'hidden',
@@ -51,7 +50,7 @@ const CourseCard = ({ course, isPurchased }) => {
               height: '100%',
               borderRadius: '8px',
               overflow: 'hidden',
-              backgroundColor: (thm) => thm.palette.grey[100],
+              backgroundColor: 'grey.100',
             }}
           >
             <Box
@@ -78,7 +77,6 @@ const CourseCard = ({ course, isPurchased }) => {
           }}
         >
           <Typography
-            component="p"
             sx={{
               fontWeight: 600,
               overflow: 'hidden',
@@ -86,16 +84,14 @@ const CourseCard = ({ course, isPurchased }) => {
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
-              lineHeight: 1.3,
-              color: 'text.primary',
-              mb: 1.5,
+              mb: 1,
               maxWidth: '200px',
             }}
           >
             {course.title}
           </Typography>
 
-          {categoryArray.length > 0 && (
+          {!!categoryArray.length && (
             <CategoryList chips={categoryArray} isPurchased={isPurchased} maxVisible={3} />
           )}
 
@@ -138,11 +134,11 @@ const CourseCard = ({ course, isPurchased }) => {
         cursor: 'pointer',
         transition: 'all 0.2s ease-in-out',
         overflow: 'hidden',
-        backgroundColor: (thm) => thm.palette.background.paper,
+        backgroundColor: 'background.paper',
         display: 'flex',
         flexDirection: 'column',
         border: '1px solid',
-        borderColor: (thm) => thm.palette.grey[200],
+        borderColor: 'grey.200',
       }}
     >
       <Box
@@ -150,7 +146,7 @@ const CourseCard = ({ course, isPurchased }) => {
           width: '100%',
           paddingTop: '56.25%',
           position: 'relative',
-          backgroundColor: (thm) => thm.palette.grey[100],
+          backgroundColor: 'grey.100',
           overflow: 'hidden',
         }}
       >
@@ -166,9 +162,6 @@ const CourseCard = ({ course, isPurchased }) => {
             height: '100%',
             objectFit: 'contain',
             objectPosition: 'center',
-          }}
-          onError={(e) => {
-            e.target.src = '/placeholder-course.jpg'
           }}
         />
 
@@ -200,28 +193,27 @@ const CourseCard = ({ course, isPurchased }) => {
               left: 10,
               display: 'flex',
               gap: 0.5,
-              backgroundColor: (thm) => thm.palette.background.paper,
+              backgroundColor: 'background.paper',
               borderRadius: '20px',
               px: 1,
               py: 0.4,
-              boxShadow: (thm) => thm.shadows[1],
+              boxShadow: 1,
             }}
           >
             <Avatar
               sx={{
                 width: 18,
                 height: 18,
-                backgroundColor: (theme) => theme.palette.grey[300],
+                backgroundColor: 'grey.300',
                 fontSize: '0.6rem',
               }}
             >
               {course.educatorId.firstName?.[0]?.toUpperCase() || 'E'}
             </Avatar>
             <Typography
+              variant="caption"
               sx={{
-                fontSize: '0.7rem',
                 fontWeight: 600,
-                color: (thm) => thm.palette.text.primary,
                 pr: 0.5,
               }}
             >
@@ -230,7 +222,7 @@ const CourseCard = ({ course, isPurchased }) => {
           </Box>
         )}
 
-        {categoryArray.length > 0 && (
+        {!!categoryArray.length && (
           <Box
             sx={{
               position: 'absolute',
@@ -256,9 +248,6 @@ const CourseCard = ({ course, isPurchased }) => {
         <Typography
           sx={{
             fontWeight: 700,
-            fontSize: '0.95rem',
-            lineHeight: 1.3,
-            color: (thm) => thm.palette.text.primary,
             mb: 0.75,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -272,10 +261,9 @@ const CourseCard = ({ course, isPurchased }) => {
 
         {course.description && (
           <Typography
+            variant="body2"
+            color="text.secondary"
             sx={{
-              fontSize: '0.75rem',
-              lineHeight: 1.4,
-              color: (thm) => thm.palette.text.secondary,
               mb: 1.5,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -303,26 +291,14 @@ const CourseCard = ({ course, isPurchased }) => {
             {course.isPaid && course.price ? (
               <Box>
                 <Typography
+                  variant="h6"
                   sx={{
-                    fontSize: '1.25rem',
                     fontWeight: 800,
-                    color: (thm) => thm.palette.success.main,
+                    color: 'success.main',
                   }}
                 >
                   ${course.price}
                 </Typography>
-                {!!course.totalPurchased && course.totalPurchased > 0 && (
-                  <Typography
-                    sx={{
-                      fontSize: '0.65rem',
-                      color: (thm) => thm.palette.text.secondary,
-                      mt: 0.25,
-                      fontWeight: 600,
-                    }}
-                  >
-                    {course.totalPurchased} students
-                  </Typography>
-                )}
               </Box>
             ) : null}
 
@@ -332,10 +308,6 @@ const CourseCard = ({ course, isPurchased }) => {
               fullWidth={!course.isPaid}
               startIcon={course.isPaid ? <ShoppingCart size={16} /> : null}
               endIcon={course.isPaid ? null : <ArrowRight size={16} />}
-              onClick={(e) => {
-                e.stopPropagation()
-                handleCardClick()
-              }}
             >
               {course.isPaid ? 'Enroll Now' : 'Start Free Course'}
             </Button>

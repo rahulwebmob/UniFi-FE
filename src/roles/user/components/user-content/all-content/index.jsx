@@ -27,31 +27,100 @@ const AllContent = () => {
 
   const { data } = useGetCategoryListQuery()
 
-  const handleDebouceSearch = _.debounce((value) => {
+  const contentTypes = [
+    {
+      id: 'course',
+      label: 'Courses',
+      icon: BookOpen,
+    },
+    {
+      id: 'webinar',
+      label: 'Webinars',
+      icon: Presentation,
+    },
+  ]
+
+  const handleDebouncedSearch = _.debounce((value) => {
     setPage(1)
     setSearchTerm(value || '')
   }, 700)
 
-  const handleCategory = (value) => {
+  const handleCategoryChange = (value) => {
     setPage(1)
     setSelectedCategory(value || '')
   }
 
-  const handleContentType = (value) => {
+  const handleContentTypeChange = (value) => {
     setPage(1)
     setSearchTerm('')
     setContentType(value)
     setSelectedCategory('')
   }
 
+  const handleLoadMore = () => {
+    setPage(page + 1)
+  }
+
+  const renderContentTypeButton = (type) => {
+    const Icon = type.icon
+    const isActive = contentType === type.id
+
+    return (
+      <Button
+        key={type.id}
+        onClick={() => {
+          if (!isActive) {
+            handleContentTypeChange(type.id)
+          }
+        }}
+        variant={isActive ? 'contained' : 'outlined'}
+        startIcon={<Icon size={16} />}
+      >
+        {type.label}
+      </Button>
+    )
+  }
+
+  const renderContentList = () => {
+    const commonProps = {
+      page,
+      isPurchased: false,
+      searchTerm,
+      setIsLoadMore,
+      selectedCategory,
+    }
+
+    return contentType === 'course' ? (
+      <CourseList {...commonProps} />
+    ) : (
+      <WebinarList {...commonProps} />
+    )
+  }
+
+  const renderLoadMoreButton = () => {
+    if (!isLoadMore) {
+      return null
+    }
+
+    return (
+      <Box display="flex" alignItems="center" mt={3} position="relative">
+        <Divider sx={{ flex: 1 }} />
+        <Button color="secondary" variant="contained" onClick={handleLoadMore}>
+          {t('EDUCATION_DASHBOARD.MAIN_PAGE.LOAD_MORE')}
+        </Button>
+        <Divider sx={{ flex: 1 }} />
+      </Box>
+    )
+  }
+
   return (
     <Box
+      px={{ xs: 2, sm: 3, md: 5 }}
+      py={2}
+      mt={3}
       sx={{
-        px: { xs: 2, sm: 3, md: 5 },
-        py: 2,
-        backgroundColor: (theme) => theme.palette.background.light,
+        backgroundColor: 'background.light',
         borderRadius: 1,
-        mt: 3,
       }}
     >
       <Box
@@ -75,30 +144,10 @@ const AllContent = () => {
         >
           <Typography variant="h6">All content</Typography>
           <ButtonGroup size="small" variant="contained">
-            <Button
-              onClick={() => {
-                if (contentType !== 'course') {
-                  handleContentType('course')
-                }
-              }}
-              variant={contentType === 'course' ? 'contained' : 'outlined'}
-              startIcon={<BookOpen size={16} />}
-            >
-              Courses
-            </Button>
-            <Button
-              onClick={() => {
-                if (contentType !== 'webinar') {
-                  handleContentType('webinar')
-                }
-              }}
-              variant={contentType === 'webinar' ? 'contained' : 'outlined'}
-              startIcon={<Presentation size={16} />}
-            >
-              Webinars
-            </Button>
+            {contentTypes.map(renderContentTypeButton)}
           </ButtonGroup>
         </Box>
+
         <Box
           sx={{
             display: 'flex',
@@ -112,11 +161,12 @@ const AllContent = () => {
             size="small"
             disablePortal
             options={data?.data ?? []}
-            value={selectedCategory}
+            value={selectedCategory || null}
             getOptionLabel={(option) => option || ''}
             onChange={(__, newValue) => {
-              handleCategory(newValue || '')
+              handleCategoryChange(newValue || '')
             }}
+            isOptionEqualToValue={(option, value) => option === value}
             sx={{
               width: { xs: '100%', sm: 220 },
               minWidth: 200,
@@ -130,10 +180,7 @@ const AllContent = () => {
                   ...params.InputProps,
                   startAdornment: (
                     <>
-                      <InputAdornment
-                        position="start"
-                        sx={{ color: (theme) => theme.palette.text.disabled }}
-                      >
+                      <InputAdornment position="start" sx={{ color: 'text.disabled' }}>
                         <Filter size={18} />
                       </InputAdornment>
                       {params.InputProps.startAdornment}
@@ -143,6 +190,7 @@ const AllContent = () => {
               />
             )}
           />
+
           <TextField
             sx={{
               width: { xs: '100%', sm: 220 },
@@ -153,13 +201,10 @@ const AllContent = () => {
             }}
             size="small"
             placeholder={`Search ${contentType}...`}
-            onChange={(e) => handleDebouceSearch(e.target.value)}
+            onChange={(e) => handleDebouncedSearch(e.target.value)}
             InputProps={{
               startAdornment: (
-                <InputAdornment
-                  position="start"
-                  sx={{ color: (theme) => theme.palette.text.disabled }}
-                >
+                <InputAdornment position="start" sx={{ color: 'text.disabled' }}>
                   <Search size={18} />
                 </InputAdornment>
               ),
@@ -168,33 +213,8 @@ const AllContent = () => {
         </Box>
       </Box>
 
-      {contentType === 'course' ? (
-        <CourseList
-          page={page}
-          isPurchased={false}
-          searchTerm={searchTerm}
-          setIsLoadMore={setIsLoadMore}
-          selectedCategory={selectedCategory}
-        />
-      ) : (
-        <WebinarList
-          page={page}
-          isPurchased={false}
-          searchTerm={searchTerm}
-          setIsLoadMore={setIsLoadMore}
-          selectedCategory={selectedCategory}
-        />
-      )}
-
-      {!!isLoadMore && (
-        <Box sx={{ display: 'flex', alignItems: 'center', mt: 3, position: 'relative' }}>
-          <Divider sx={{ flex: 1 }} />
-          <Button color="secondary" variant="contained" onClick={() => setPage(page + 1)}>
-            {t('EDUCATION_DASHBOARD.MAIN_PAGE.LOAD_MORE')}
-          </Button>
-          <Divider sx={{ flex: 1 }} />
-        </Box>
-      )}
+      {renderContentList()}
+      {renderLoadMoreButton()}
     </Box>
   )
 }

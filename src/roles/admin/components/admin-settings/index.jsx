@@ -219,7 +219,7 @@ const AdminSettings = ({ open, onClose, userData }) => {
               </FormControl>
             </Box>
 
-            <Button size="medium" type="submit" variant="contained" color="primary">
+            <Button size="medium" type="submit" variant="contained">
               {t('application:MISCELLANEOUS.SAVE')}
             </Button>
           </Box>

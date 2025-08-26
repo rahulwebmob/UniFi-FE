@@ -58,7 +58,7 @@ const WaitingRoom = ({ handleInit }) => {
           {t('EDUCATION_DASHBOARD.MAIN_PAGE.WAITING_ROOM')}
         </Typography>
 
-        <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => handleInit()}>
+        <Button variant="contained" sx={{ mt: 2 }} onClick={() => handleInit()}>
           {t('EDUCATION_DASHBOARD.COMMON_KEYS.JOIN_NOW')}
         </Button>
       </Box>

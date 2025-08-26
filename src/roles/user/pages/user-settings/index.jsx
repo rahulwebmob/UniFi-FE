@@ -4,19 +4,18 @@ import {
   Tabs,
   alpha,
   Button,
-  Select,
   MenuItem,
   useTheme,
   Typography,
   useMediaQuery,
+  TextField,
 } from '@mui/material'
-import { User, LogOut, Settings, CreditCard, Gift } from 'lucide-react'
+import { User, LogOut, CreditCard, Gift } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 
 import Logout from '../../../../shared/components/auth-wrapper/logout'
-import UserSettings from '../../components/user-settings-tabs/user-app-settings'
 import EducationPayments from '../../components/user-settings-tabs/user-payments'
 import PersonalInfo from '../../components/user-settings-tabs/user-personal-info'
 import Referrals from '../../components/user-settings-tabs/user-referrals'
@@ -25,7 +24,7 @@ const MyProfile = () => {
   const theme = useTheme()
   const { t } = useTranslation('application')
   const location = useLocation()
-  const matches = useMediaQuery(theme.breakpoints.down('sm'))
+  const isSm = useMediaQuery(theme.breakpoints.down('sm'))
   const [value, setValue] = useState(0)
 
   const handleChange = (newValue) => {
@@ -54,26 +53,13 @@ const MyProfile = () => {
       component: <Referrals />,
       show: true,
     },
-    {
-      key: 'USERSETTING',
-      name: t('application:PROFILE.USER_SETTINGS'),
-      icon: <Settings size={20} />,
-      component: (
-        <Box sx={{ padding: '12px' }}>
-          <UserSettings />
-        </Box>
-      ),
-      show: true,
-    },
   ]
 
   useEffect(() => {
-    // Check for tab query parameter
     const searchParams = new URLSearchParams(location.search)
     const tabParam = searchParams.get('tab')
 
     if (tabParam === 'payments') {
-      // Set to index 1 for Education Payments tab
       setValue(1)
     } else {
       setValue(0)
@@ -81,91 +67,49 @@ const MyProfile = () => {
   }, [location.search])
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ mb: 3 }}>
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: 600,
-            mb: 0.5,
-          }}
-        >
-          {t('application:PROFILE.MY')}&nbsp;
-          {t('application:PROFILE.PROFILE')}
+    <Box width="100%">
+      <Box mb={3}>
+        <Typography variant="h4" mb={0.5}>
+          My Profile
         </Typography>
         <Typography component="p" color="text.secondary">
           {t('application:PROFILE.MANAGE_INFO_DESCRIPTION')}
         </Typography>
       </Box>
 
-      {matches && (
-        <Select
-          sx={{
-            mb: 2,
-            mt: 2,
-            '& .MuiSelect-select': {
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1.5,
-              '& .MuiSvgIcon-root': {
-                fontSize: '1.25rem',
-                flexShrink: 0,
-              },
-            },
-          }}
-          fullWidth
-          size="small"
-          label={null}
-          value={value}
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              {tabComponents[selected].icon}
-              <span>{tabComponents[selected].name}</span>
-            </Box>
-          )}
-        >
+      {isSm && (
+        <TextField select fullWidth value={value} size="small" sx={{ mb: 2 }}>
           {tabComponents.map(
             (item, index) =>
               item.show && (
-                <MenuItem
-                  key={item.key}
-                  value={index}
-                  onClick={() => handleChange(index)}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1.5,
-                    '& .MuiSvgIcon-root': {
-                      fontSize: '1.25rem',
-                      flexShrink: 0,
-                    },
-                  }}
-                >
-                  {item.icon} {item.name}
+                <MenuItem key={item.key} value={index} onClick={() => handleChange(index)}>
+                  <Box display="flex" alignItems="center" gap={1}>
+                    {item.icon}
+                    <span>{item.name}</span>
+                  </Box>
                 </MenuItem>
               ),
           )}
-        </Select>
+        </TextField>
       )}
 
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: !matches ? '280px 1fr' : '1fr',
+          gridTemplateColumns: !isSm ? '280px 1fr' : '1fr',
           gap: 2,
-          minHeight: 'calc(100vh - 300px)', // Dynamic height based on viewport
+          minHeight: 'calc(100vh - 300px)',
         }}
       >
         <Box
           sx={{
-            display: !matches ? 'flex' : 'none',
+            display: !isSm ? 'flex' : 'none',
             flexDirection: 'column',
             justifyContent: 'space-between',
             backgroundColor: theme.palette.background.light,
-            borderRadius: '12px',
+            borderRadius: 1.5,
             p: 2,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-            height: '100%', // Take full height of parent
+            height: '100%',
           }}
         >
           <Tabs
@@ -176,25 +120,24 @@ const MyProfile = () => {
             aria-label="Profile navigation"
             sx={{
               '& .MuiTabs-indicator': {
-                display: 'none', // Hide the indicator
+                display: 'none',
               },
               '& .MuiTab-root': {
                 display: 'flex',
-                flexDirection: 'row',
                 textAlign: 'left',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
                 textTransform: 'none',
                 fontWeight: 500,
                 minHeight: 48,
-                borderRadius: '8px',
+                borderRadius: 1,
                 px: 2,
                 py: 1.5,
                 mb: 0.5,
-                color: theme.palette.text.primary,
+                color: 'text.primary',
                 transition: 'all 0.2s ease',
                 '& .MuiSvgIcon-root': {
-                  color: theme.palette.text.secondary,
+                  color: 'text.secondary',
                   fontSize: '1.25rem',
                   mr: 1.5,
                   flexShrink: 0,
@@ -243,7 +186,7 @@ const MyProfile = () => {
             <Logout
               component={
                 <Button
-                  startIcon={<LogOut size={20} color={theme.palette.error.main} />}
+                  startIcon={<LogOut size={20} />}
                   sx={{
                     color: theme.palette.error.main,
                   }}
@@ -251,7 +194,6 @@ const MyProfile = () => {
                   {t('application:PROFILE.LOGOUT')}
                 </Button>
               }
-              type={undefined}
             />
           </Box>
         </Box>
@@ -260,20 +202,18 @@ const MyProfile = () => {
           sx={{
             flex: 1,
             backgroundColor: theme.palette.background.light,
-            borderRadius: '12px',
-            overflow: 'auto', // Allow scrolling if content is long
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-            height: '100%', // Take full height of parent
+            borderRadius: 1.5,
+            overflow: 'auto',
+            height: '100%',
             display: 'flex',
             flexDirection: 'column',
           }}
         >
           <Box
-            className="main-content"
             sx={{
               p: 3,
               flex: 1,
-              overflow: 'auto', // Allow content scrolling
+              overflow: 'auto',
             }}
           >
             {tabComponents[value].component}

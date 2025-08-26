@@ -8,6 +8,7 @@ import {
   Typography,
   IconButton,
   InputAdornment,
+  alpha,
 } from '@mui/material'
 import { Copy, RefreshCw, Check } from 'lucide-react'
 import { useState } from 'react'
@@ -41,7 +42,6 @@ const Referrals = () => {
   const handleGenerateNewReferral = async () => {
     try {
       await generateReferralLink().unwrap()
-      // Refetch to get the updated referral link
       await refetch()
     } catch {
       //
@@ -50,41 +50,20 @@ const Referrals = () => {
 
   return (
     <Box>
-      {/* Header Section */}
-      <Box sx={{ mb: 3 }}>
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: 600,
-            mb: 1,
-            color: theme.palette.text.primary,
-          }}
-        >
+      <Box mb={3}>
+        <Typography variant="h6" mb={1}>
           Referral Program
         </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            color: theme.palette.text.secondary,
-          }}
-        >
+        <Typography variant="body2" color="text.secondary">
           Share your referral link with friends and earn rewards when they sign up and make their
           first purchase.
         </Typography>
       </Box>
 
-      <Divider sx={{ mb: 3 }} />
+      <Divider mb={3} />
 
-      {/* Referral Code Section */}
-      <Box sx={{ mb: 4 }}>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            fontWeight: 600,
-            mb: 2,
-            color: theme.palette.text.primary,
-          }}
-        >
+      <Box mb={4}>
+        <Typography variant="subtitle1" mb={2}>
           Your Referral Link
         </Typography>
 
@@ -150,15 +129,13 @@ const Referrals = () => {
         </Box>
       </Box>
 
-      <Divider sx={{ mb: 3 }} />
+      <Divider mb={3} />
 
       <Box>
         <Typography
           variant="subtitle1"
           sx={{
-            fontWeight: 600,
             mb: 2,
-            color: theme.palette.text.primary,
           }}
         >
           How It Works
@@ -166,30 +143,23 @@ const Referrals = () => {
 
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 4 }}>
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            <Box display="flex" gap={2}>
               <Box
                 sx={{
-                  width: 32,
-                  height: 32,
+                  width: theme.spacing(4),
+                  height: theme.spacing(4),
                   borderRadius: '50%',
-                  backgroundColor: `${theme.palette.primary.light}30`,
+                  backgroundColor: alpha(theme.palette.primary.light, 0.19),
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
                 }}
               >
-                <Typography
-                  sx={{
-                    fontWeight: 600,
-                    color: theme.palette.primary.main,
-                  }}
-                >
-                  1
-                </Typography>
+                <Typography variant="h6">1</Typography>
               </Box>
               <Box>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                <Typography variant="subtitle2" fontWeight={600} mb={0.5}>
                   Share Your Link
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -200,30 +170,23 @@ const Referrals = () => {
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            <Box display="flex" gap={2}>
               <Box
                 sx={{
-                  width: 32,
-                  height: 32,
+                  width: theme.spacing(4),
+                  height: theme.spacing(4),
                   borderRadius: '50%',
-                  backgroundColor: `${theme.palette.primary.light}30`,
+                  backgroundColor: alpha(theme.palette.primary.light, 0.19),
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
                 }}
               >
-                <Typography
-                  sx={{
-                    fontWeight: 600,
-                    color: theme.palette.primary.main,
-                  }}
-                >
-                  2
-                </Typography>
+                <Typography variant="h6">2</Typography>
               </Box>
               <Box>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                <Typography variant="subtitle2" fontWeight={600} mb={0.5}>
                   They Sign Up
                 </Typography>
                 <Typography variant="body2" color="text.secondary">

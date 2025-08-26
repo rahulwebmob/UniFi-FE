@@ -111,7 +111,7 @@ const ForgetPassword = ({ type, setShowForgetPassword }) => {
           />
         </Grid>
 
-        <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mb: 2 }}>
+        <Button variant="contained" type="submit" fullWidth sx={{ mb: 2 }}>
           Send Reset Link
         </Button>
       </form>

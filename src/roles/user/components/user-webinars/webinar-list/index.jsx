@@ -14,8 +14,9 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
   const { t } = useTranslation('education')
   const [list, setList] = useState([])
   const [count, setCount] = useState(0)
+  const [hasInitialData, setHasInitialData] = useState(false)
 
-  const { data, isLoading, isFetching, isSuccess } = useGetAllWebinarsQuery(
+  const { data, isFetching, isSuccess } = useGetAllWebinarsQuery(
     {
       page,
       search: searchTerm,
@@ -29,38 +30,52 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
   )
 
   useEffect(() => {
-    if (isSuccess && !isFetching) {
-      if (data?.data?.webinars?.length) {
-        setList((prev) =>
-          page === 1 ? (data.data?.webinars ?? []) : [...prev, ...(data.data?.webinars ?? [])],
-        )
-        setCount(data.data?.count ?? 0)
-      } else {
-        setList([])
-        setCount(0)
+    if (page === 1) {
+      setHasInitialData(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm, selectedCategory, isPurchased])
+
+  useEffect(() => {
+    if (isSuccess && data?.data) {
+      const webinars = data.data?.webinars ?? []
+      const totalCount = data.data?.count ?? 0
+
+      if (page === 1) {
+        setList(webinars)
+        setCount(totalCount)
+        setHasInitialData(true)
+      } else if (webinars.length > 0) {
+        setList((prev) => {
+          const existingIds = new Set(prev.map((item) => item._id))
+          const newItems = webinars.filter((item) => !existingIds.has(item._id))
+          return [...prev, ...newItems]
+        })
+        setCount(totalCount)
       }
     }
-  }, [data, isFetching, isSuccess, page])
+  }, [data, isSuccess, page])
 
   useEffect(() => {
     if (setIsLoadMore) {
-      if (list?.length < count) {
-        setIsLoadMore(true)
-      } else {
-        setIsLoadMore(false)
-      }
+      const hasMore = list?.length < count && count > 0
+      setIsLoadMore(hasMore)
     }
-  }, [count, list, setIsLoadMore])
+  }, [count, list?.length, setIsLoadMore])
+
+  const shouldShowSkeleton = !hasInitialData && isFetching
 
   if (isPurchased) {
     return (
       <MuiCarousel>
-        {isLoading ? (
+        {shouldShowSkeleton ? (
           <ContentSkeleton isPurchased />
         ) : list.length > 0 ? (
           <>
             {list.map((item) => (
-              <WebinarCard key={item._id} webinar={item} isPurchased />
+              <Box key={item._id} sx={{ minWidth: 420, maxWidth: 420, px: 1 }}>
+                <WebinarCard webinar={item} isPurchased />
+              </Box>
             ))}
           </>
         ) : (
@@ -94,7 +109,7 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
   return (
     <>
       {iff(
-        isFetching,
+        shouldShowSkeleton,
         <Grid container spacing={3}>
           <ContentSkeleton isPurchased={false} />
         </Grid>,

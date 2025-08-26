@@ -128,7 +128,7 @@ const Links = ({ control }) => {
 
               <Grid size={{ xs: 2, sm: 1, lg: 1 }} container justifyContent="flex-end">
                 {index === 0 ? (
-                  <IconButton onClick={() => append({ link: '' })} color="primary">
+                  <IconButton onClick={() => append({ link: '' })}>
                     <PlusCircle size={32} />
                   </IconButton>
                 ) : (

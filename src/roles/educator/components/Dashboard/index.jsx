@@ -139,13 +139,7 @@ const Dashboard = () => {
                   <Button
                     variant="contained"
                     fullWidth
-                    endIcon={
-                      <ArrowRight
-                        size={18}
-                        className="action-arrow"
-                        style={{ transition: 'transform 0.3s' }}
-                      />
-                    }
+                    endIcon={<ArrowRight size={18} style={{ transition: 'transform 0.3s' }} />}
                   >
                     {t(item.button)}
                   </Button>

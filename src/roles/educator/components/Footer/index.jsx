@@ -82,13 +82,7 @@ const Footer = () => {
           }}
         >
           {socialLinks.map((item) => (
-            <Link
-              key={item.name}
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="sociallink"
-            >
+            <Link key={item.name} href={item.url} target="_blank" rel="noopener noreferrer">
               <img
                 src={item.icon}
                 alt={item.name}
@@ -124,7 +118,6 @@ const Footer = () => {
             rel="noopener noreferrer"
             color="text.secondary"
             variant="body2"
-            className="refLinks"
           >
             {t(link.key)}
           </Link>

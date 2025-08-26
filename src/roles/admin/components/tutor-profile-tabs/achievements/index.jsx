@@ -38,10 +38,7 @@ const Achievements = () => {
           }}
         >
           {educationData.map((education, index) => (
-            <Box
-              key={education._id || `education-${education.degree}-${education.field}-${index}`}
-              className="course"
-            >
+            <Box key={education._id || `education-${education.degree}-${education.field}-${index}`}>
               <Box display="flex">
                 <Beaker size={48} />
                 <Box ml={1}>
@@ -85,7 +82,6 @@ const Achievements = () => {
                   certificate._id ||
                   `certificate-${certificate.name}-${certificate.organization}-${index}`
                 }
-                className="course"
               >
                 <Box display="flex">
                   <Beaker size={48} />

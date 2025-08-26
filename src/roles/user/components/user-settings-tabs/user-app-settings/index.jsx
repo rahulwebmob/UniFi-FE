@@ -8,14 +8,13 @@ import {
   FormControl,
   FormControlLabel,
 } from '@mui/material'
-import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 import LANGUAGES from '../../../../../constants/languages'
 import { updateLanguage } from '../../../../../redux/reducers/app-slice'
 
-const AppSettings = forwardRef((_, userSettingsRef) => {
+const AppSettings = () => {
   const theme = useTheme()
   const { t } = useTranslation('application')
   const dispatch = useDispatch()
@@ -27,34 +26,14 @@ const AppSettings = forwardRef((_, userSettingsRef) => {
     }
   }
 
-  useImperativeHandle(userSettingsRef, () => ({
-    handleExecute: () => {
-      // Language is updated immediately on change
-    },
-  }))
-
   return (
     <>
-      <Typography
-        variant="h6"
-        sx={{
-          fontWeight: 600,
-          mb: 2.5,
-          color: theme.palette.text.primary,
-        }}
-      >
+      <Typography variant="h6" fontWeight={600} mb={2.5}>
         {t('application:PROFILE.LANGUAGE_PREFERENCES')}
       </Typography>
 
       <Box>
-        <Typography
-          variant="body2"
-          sx={{
-            mb: 1.5,
-            color: theme.palette.text.secondary,
-            fontWeight: 500,
-          }}
-        >
+        <Typography variant="body2" mb={1.5} color="text.secondary" fontWeight={500}>
           {t('application:PROFILE.SELECT_PREFERRED_LANGUAGE')}
         </Typography>
 
@@ -93,27 +72,15 @@ const AppSettings = forwardRef((_, userSettingsRef) => {
                   />
                 }
                 label={
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box display="flex" alignItems="center" gap={1}>
                     <Typography
-                      variant="body1"
-                      sx={{
-                        fontWeight: language?.code === item.code ? 600 : 400,
-                        color:
-                          language?.code === item.code
-                            ? theme.palette.text.primary
-                            : theme.palette.text.secondary,
-                      }}
+                      fontWeight={language?.code === item.code ? 600 : 400}
+                      color={language?.code === item.code ? 'text.primary' : 'text.secondary'}
                     >
                       {item.label}
                     </Typography>
                     {language?.code === item.code && (
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color: theme.palette.primary.main,
-                          fontWeight: 600,
-                        }}
-                      >
+                      <Typography variant="caption" color="primary" fontWeight={600}>
                         ({t('application:COMMON.CURRENT')})
                       </Typography>
                     )}
@@ -136,20 +103,16 @@ const AppSettings = forwardRef((_, userSettingsRef) => {
 
         <Typography
           variant="caption"
-          sx={{
-            display: 'block',
-            mt: 2,
-            color: theme.palette.text.secondary,
-            fontStyle: 'italic',
-          }}
+          display="block"
+          mt={2}
+          color="text.secondary"
+          fontStyle="italic"
         >
           {t('application:PROFILE.LANGUAGE_CHANGE_APPLIED_IMMEDIATELY')}
         </Typography>
       </Box>
     </>
   )
-})
-
-AppSettings.displayName = 'AppSettings'
+}
 
 export default AppSettings

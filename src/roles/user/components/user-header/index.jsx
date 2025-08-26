@@ -32,147 +32,167 @@ const UserHeader = () => {
 
   const { user } = useSelector((state) => state.user)
 
+  const navigationItems = [
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: LayoutDashboard,
+      path: '/dashboard',
+      isActive: () =>
+        location.pathname === '/dashboard' ||
+        location.pathname.startsWith('/dashboard/course') ||
+        location.pathname.startsWith('/dashboard/webinar'),
+    },
+    {
+      id: 'payments',
+      label: 'Payments',
+      icon: CreditCard,
+      path: `/settings/profile/${user._id}?tab=payments`,
+      isActive: () => location.pathname.includes('profile') && location.search.includes('payments'),
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      icon: Settings,
+      path: `/settings/profile/${user._id}`,
+      isActive: () =>
+        location.pathname.includes('profile') && !location.search.includes('payments'),
+    },
+  ]
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
   }
 
   const handleProfileClick = () => {
-    void navigate(`/settings/profile/${user._id}`)
+    navigate(`/settings/profile/${user._id}`)
     setMobileOpen(false)
   }
 
   const handleNavigation = (path) => {
-    void navigate(path)
+    navigate(path)
     setMobileOpen(false)
   }
 
-  const drawer = (
-    <Box
-      sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      {/* User Profile Section */}
-      <Box
+  const renderNavigationItem = (item) => {
+    const isActive = item.isActive()
+    const Icon = item.icon
+
+    return (
+      <ListItem key={item.id} disablePadding>
+        <ListItemButton
+          onClick={() => handleNavigation(item.path)}
+          selected={isActive}
+          sx={{
+            mx: 1,
+            borderRadius: 1,
+            '&.Mui-selected': {
+              backgroundColor: (theme) => `${theme.palette.primary.main}08`,
+              '&:hover': {
+                backgroundColor: (theme) => `${theme.palette.primary.main}12`,
+              },
+            },
+            '&:hover': {
+              backgroundColor: 'action.hover',
+              cursor: 'pointer',
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: 40 }}>
+            <Icon size={20} style={{ color: 'var(--mui-palette-text-secondary)' }} />
+          </ListItemIcon>
+          <ListItemText primary={item.label} />
+        </ListItemButton>
+      </ListItem>
+    )
+  }
+
+  const renderDesktopNavItem = (item) => {
+    const isActive = item.isActive()
+
+    return (
+      <Typography
+        key={item.id}
+        component="a"
+        onClick={() => navigate(item.path)}
         sx={{
-          p: 2,
-          borderBottom: `1px solid ${theme.palette.grey[200]}`,
+          color: isActive ? 'primary.main' : 'text.secondary',
+          fontWeight: isActive ? 600 : 500,
+          textDecoration: 'none',
+          cursor: 'pointer',
+          '&:hover': {
+            color: 'primary.main',
+          },
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Avatar
-            sx={{
-              width: 48,
-              height: 48,
-              backgroundColor: theme.palette.primary[100],
-              color: 'primary.main',
-            }}
-          >
-            {user.firstName?.charAt(0) ?? 'U'}
-          </Avatar>
-          <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {user.firstName} {user.lastName}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {user.email}
-            </Typography>
-          </Box>
-        </Box>
+        {item.label}
+      </Typography>
+    )
+  }
+
+  const renderUserProfile = () => (
+    <Box display="flex" alignItems="center" gap={2}>
+      <Avatar
+        sx={{
+          width: 48,
+          height: 48,
+          backgroundColor: (theme) => theme.palette.primary[100],
+          color: 'primary.main',
+        }}
+      >
+        {user.firstName?.charAt(0) ?? 'U'}
+      </Avatar>
+      <Box>
+        <Typography variant="subtitle1" fontWeight={600}>
+          {user.firstName} {user.lastName}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {user.email}
+        </Typography>
+      </Box>
+    </Box>
+  )
+
+  const renderDrawer = () => (
+    <Box height="100%" display="flex" flexDirection="column">
+      <Box
+        p={2}
+        sx={{
+          borderBottom: (theme) => `1px solid ${theme.palette.grey[200]}`,
+        }}
+      >
+        {renderUserProfile()}
       </Box>
 
-      {/* Navigation Items */}
-      <List sx={{ flex: 1, pt: 2 }}>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => handleNavigation('/dashboard')}
-            selected={
-              location.pathname === '/dashboard' ||
-              location.pathname.startsWith('/dashboard/course') ||
-              location.pathname.startsWith('/dashboard/webinar')
-            }
-            sx={{
-              mx: 1,
-              borderRadius: 1,
-              '&.Mui-selected': {
-                backgroundColor: `${theme.palette.primary.main}08`,
-                '&:hover': {
-                  backgroundColor: `${theme.palette.primary.main}12`,
-                },
-              },
-              '&:hover': {
-                backgroundColor: theme.palette.action.hover,
-                cursor: 'pointer',
-              },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 40 }}>
-              <LayoutDashboard size={20} style={{ color: 'var(--mui-palette-text-secondary)' }} />
-            </ListItemIcon>
-            <ListItemText primary="Dashboard" />
-          </ListItemButton>
-        </ListItem>
-
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              void navigate(`/settings/profile/${user._id}?tab=payments`)
-            }}
-            selected={location.pathname.includes('profile') && location.search.includes('payments')}
-            sx={{
-              mx: 1,
-              borderRadius: 1,
-              '&.Mui-selected': {
-                backgroundColor: `${theme.palette.primary.main}08`,
-                '&:hover': {
-                  backgroundColor: `${theme.palette.primary.main}12`,
-                },
-              },
-              '&:hover': {
-                backgroundColor: theme.palette.action.hover,
-                cursor: 'pointer',
-              },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 40 }}>
-              <CreditCard size={20} style={{ color: 'var(--mui-palette-text-secondary)' }} />
-            </ListItemIcon>
-            <ListItemText primary="Payments" />
-          </ListItemButton>
-        </ListItem>
-
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              void navigate(`/settings/profile/${user._id}`)
-            }}
-            selected={
-              location.pathname.includes('profile') && !location.search.includes('payments')
-            }
-            sx={{
-              mx: 1,
-              borderRadius: 1,
-              '&.Mui-selected': {
-                backgroundColor: `${theme.palette.primary.main}08`,
-                '&:hover': {
-                  backgroundColor: `${theme.palette.primary.main}12`,
-                },
-              },
-              '&:hover': {
-                backgroundColor: theme.palette.action.hover,
-                cursor: 'pointer',
-              },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 40 }}>
-              <Settings size={20} style={{ color: 'var(--mui-palette-text-secondary)' }} />
-            </ListItemIcon>
-            <ListItemText primary="Settings" />
-          </ListItemButton>
-        </ListItem>
+      <List pt={2} sx={{ flex: 1 }}>
+        {navigationItems.map(renderNavigationItem)}
       </List>
+    </Box>
+  )
+
+  const renderLogo = () => (
+    <Box display="flex" alignItems="center" mr={4}>
+      <Box
+        component="img"
+        src={MainLogo}
+        alt="UniCitizens"
+        sx={{
+          height: { xs: 32, sm: 40 },
+          width: { xs: 32, sm: 40 },
+          mr: 1.5,
+        }}
+      />
+      <Typography
+        variant="h6"
+        sx={{
+          fontWeight: 700,
+          letterSpacing: 3.84,
+          fontSize: { xs: '16px', sm: '18px' },
+          color: 'text.primary',
+        }}
+      >
+        UNICITIZENS
+      </Typography>
     </Box>
   )
 
@@ -183,13 +203,12 @@ const UserHeader = () => {
         elevation={0}
         sx={{
           backgroundColor: 'background.paper',
-          borderBottom: `1px solid ${theme.palette.grey[300]}`,
-          boxShadow: '0 2px 4px rgba(0,0,0,0.08)',
+          borderBottom: (theme) => `1px solid ${theme.palette.grey[300]}`,
+          boxShadow: theme.shadows[1],
           color: 'text.primary',
         }}
       >
         <Toolbar sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
-          {/* Mobile Menu Button - Always before logo */}
           <IconButton
             onClick={handleDrawerToggle}
             sx={{
@@ -204,117 +223,16 @@ const UserHeader = () => {
             <CustomSvgIcon icon="drawer" />
           </IconButton>
 
-          {/* Logo Section - Always visible */}
-          <Box sx={{ display: 'flex', alignItems: 'center', mr: 4 }}>
-            <Box
-              component="img"
-              src={MainLogo}
-              alt="UniCitizens"
-              sx={{
-                height: { xs: 32, sm: 40 },
-                width: { xs: 32, sm: 40 },
-                mr: 1.5,
-              }}
-            />
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 700,
-                letterSpacing: 3.84,
-                fontSize: { xs: '16px', sm: '18px' },
-                color: 'text.primary',
-              }}
-            >
-              UNICITIZENS
-            </Typography>
-          </Box>
+          {renderLogo()}
 
-          {/* Desktop Navigation Links */}
           {!isMobile && (
-            <Box sx={{ display: 'flex', gap: 3, ml: 2 }}>
-              <Typography
-                component="a"
-                variant="body1"
-                onClick={() => {
-                  void navigate('/dashboard')
-                }}
-                sx={{
-                  color:
-                    location.pathname === '/dashboard' ||
-                    location.pathname.startsWith('/dashboard/course') ||
-                    location.pathname.startsWith('/dashboard/webinar')
-                      ? 'primary.main'
-                      : 'text.secondary',
-                  fontWeight:
-                    location.pathname === '/dashboard' ||
-                    location.pathname.startsWith('/dashboard/course') ||
-                    location.pathname.startsWith('/dashboard/webinar')
-                      ? 600
-                      : 500,
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    color: 'primary.main',
-                  },
-                }}
-              >
-                Dashboard
-              </Typography>
-              <Typography
-                component="a"
-                variant="body1"
-                onClick={() => {
-                  void navigate(`/settings/profile/${user._id}?tab=payments`)
-                }}
-                sx={{
-                  color:
-                    location.pathname.includes('profile') && location.search.includes('payments')
-                      ? 'primary.main'
-                      : 'text.secondary',
-                  fontWeight:
-                    location.pathname.includes('profile') && location.search.includes('payments')
-                      ? 600
-                      : 500,
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    color: 'primary.main',
-                  },
-                }}
-              >
-                Payments
-              </Typography>
-              <Typography
-                component="a"
-                variant="body1"
-                onClick={() => {
-                  void navigate(`/settings/profile/${user._id}`)
-                }}
-                sx={{
-                  color:
-                    location.pathname.includes('profile') && !location.search.includes('payments')
-                      ? 'primary.main'
-                      : 'text.secondary',
-                  fontWeight:
-                    location.pathname.includes('profile') && !location.search.includes('payments')
-                      ? 600
-                      : 500,
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    color: 'primary.main',
-                  },
-                }}
-              >
-                Settings
-              </Typography>
+            <Box display="flex" gap={3} ml={2}>
+              {navigationItems.map(renderDesktopNavItem)}
             </Box>
           )}
 
-          {/* Spacer */}
-          <Box sx={{ flexGrow: 1 }} />
+          <Box flexGrow={1} />
 
-          {/* Right Section */}
           <Box
             sx={{
               display: 'flex',
@@ -322,7 +240,6 @@ const UserHeader = () => {
               gap: { xs: 1, sm: 2 },
             }}
           >
-            {/* User Profile - Desktop Only */}
             {!isMobile && (
               <Box
                 sx={{
@@ -343,18 +260,13 @@ const UserHeader = () => {
                     width: 32,
                     height: 32,
                     mr: 1,
-                    backgroundColor: theme.palette.grey[300],
+                    backgroundColor: (theme) => theme.palette.grey[300],
                     color: 'text.primary',
                   }}
                 >
                   <Typography variant="caption">{user.firstName?.charAt(0) ?? 'U'}</Typography>
                 </Avatar>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontWeight: 500,
-                  }}
-                >
+                <Typography variant="body2" fontWeight={500}>
                   {user.firstName} {user.lastName}
                 </Typography>
               </Box>
@@ -363,13 +275,12 @@ const UserHeader = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer - Opens from left */}
       <Drawer
         anchor="left"
         open={mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
+          keepMounted: true,
         }}
         sx={{
           display: { xs: 'block', md: 'none' },
@@ -380,7 +291,7 @@ const UserHeader = () => {
           },
         }}
       >
-        {drawer}
+        {renderDrawer()}
       </Drawer>
     </>
   )

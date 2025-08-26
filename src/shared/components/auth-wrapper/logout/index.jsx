@@ -12,7 +12,7 @@ import { useLogoutMutation, useEducatorLogoutMutation } from '../../../../servic
 import { useAdminLogoutMutation } from '../../../../services/onboarding'
 import ModalBox from '../../ui-elements/modal-box'
 
-const Logout = ({ component, type }) => {
+const Logout = ({ component = null, type = 'user' }) => {
   const logoutRef = useRef(null)
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -75,7 +75,7 @@ const Logout = ({ component, type }) => {
           {component}
         </Box>
       ) : (
-        <Button variant="contained" color="primary" onClick={handleOpenModal}>
+        <Button variant="contained" onClick={handleOpenModal}>
           {t('application:PROFILE.LOGOUT')}
         </Button>
       )}
@@ -116,12 +116,7 @@ const LogoutWrapper = Logout
 
 Logout.propTypes = {
   component: PropTypes.element,
-  type: PropTypes.string,
-}
-
-Logout.defaultProps = {
-  component: null,
-  type: 'user',
+  type: PropTypes.oneOf(['user', 'admin', 'educator']),
 }
 
 export default LogoutWrapper
