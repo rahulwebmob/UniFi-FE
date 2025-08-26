@@ -11,13 +11,12 @@ const Footer = () => {
 
   return (
     <Box
-      component="footer"
       sx={{
         backgroundColor: 'background.paper',
         borderTop: `1px solid ${theme.palette.grey[300]}`,
         boxShadow: '0 -2px 4px rgba(0,0,0,0.08)',
         mt: 'auto',
-        py: 2,
+        py: 3,
       }}
     >
       <Box

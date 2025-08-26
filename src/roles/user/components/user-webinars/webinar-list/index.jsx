@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { useGetAllWebinarsQuery } from '../../../../../services/education'
 import NoDataFound from '../../../../../shared/components/no-data-found'
 import MuiCarousel from '../../../../../shared/components/ui-elements/mui-carousel'
-import { iff } from '../../../../../utils/globalUtils'
 import ContentSkeleton from '../../user-content/content-skeleton'
 import WebinarCard from '../webinar-card'
 
@@ -14,7 +13,7 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
   const { t } = useTranslation('education')
   const [list, setList] = useState([])
   const [count, setCount] = useState(0)
-  const [hasInitialData, setHasInitialData] = useState(false)
+  const [hasInitialized, setHasInitialized] = useState(false)
 
   const { data, isFetching, isSuccess } = useGetAllWebinarsQuery(
     {
@@ -31,7 +30,7 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
 
   useEffect(() => {
     if (page === 1) {
-      setHasInitialData(false)
+      setHasInitialized(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, selectedCategory, isPurchased])
@@ -44,7 +43,7 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
       if (page === 1) {
         setList(webinars)
         setCount(totalCount)
-        setHasInitialData(true)
+        setHasInitialized(true)
       } else if (webinars.length > 0) {
         setList((prev) => {
           const existingIds = new Set(prev.map((item) => item._id))
@@ -53,6 +52,8 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
         })
         setCount(totalCount)
       }
+    } else if (isSuccess && !data?.data) {
+      setHasInitialized(true)
     }
   }, [data, isSuccess, page])
 
@@ -63,14 +64,17 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
     }
   }, [count, list?.length, setIsLoadMore])
 
-  const shouldShowSkeleton = !hasInitialData && isFetching
+  const isInitialLoad =
+    (page === 1 && isFetching && !hasInitialized) || (!hasInitialized && page === 1)
+  const showContent = hasInitialized
+  const showNoData = hasInitialized && !list.length && !isFetching
 
   if (isPurchased) {
     return (
       <MuiCarousel>
-        {shouldShowSkeleton ? (
+        {isInitialLoad ? (
           <ContentSkeleton isPurchased />
-        ) : list.length > 0 ? (
+        ) : showContent && list.length > 0 ? (
           <>
             {list.map((item) => (
               <Box key={item._id} sx={{ minWidth: 420, maxWidth: 420, px: 1 }}>
@@ -78,7 +82,7 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
               </Box>
             ))}
           </>
-        ) : (
+        ) : showNoData ? (
           <Box
             sx={{
               '&.MuiTabs-flexContainer': {
@@ -101,41 +105,37 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
           >
             <NoDataFound description={t('EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_WEBINAR')} />
           </Box>
-        )}
+        ) : null}
       </MuiCarousel>
     )
   }
 
-  return (
-    <>
-      {iff(
-        shouldShowSkeleton,
-        <Grid container spacing={3}>
-          <ContentSkeleton isPurchased={false} />
-        </Grid>,
-        !list.length ? (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '300px',
-            }}
-          >
-            <NoDataFound />
-          </Box>
-        ) : (
-          <Grid container spacing={3}>
-            {list.map((item) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }} key={item._id}>
-                <WebinarCard webinar={item} isPurchased={false} />
-              </Grid>
-            ))}
+  return isInitialLoad ? (
+    <Grid container spacing={3}>
+      <ContentSkeleton isPurchased={false} />
+    </Grid>
+  ) : showContent ? (
+    list.length ? (
+      <Grid container spacing={3}>
+        {list.map((item) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }} key={item._id}>
+            <WebinarCard webinar={item} isPurchased={false} />
           </Grid>
-        ),
-      )}
-    </>
-  )
+        ))}
+      </Grid>
+    ) : (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '300px',
+        }}
+      >
+        <NoDataFound />
+      </Box>
+    )
+  ) : null
 }
 
 WebinarList.propTypes = {

@@ -1,19 +1,26 @@
 import {
   Box,
   Tab,
-  Menu,
   Tabs,
   Button,
-  MenuItem,
   TextField,
-  IconButton,
   Typography,
+  IconButton,
+  Menu,
+  MenuItem,
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
 import { debounce } from 'lodash'
-import { Eye, Search, XCircle, PlusCircle, CheckCircle, MoreVertical } from 'lucide-react'
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
+import {
+  Eye,
+  Search,
+  XCircle,
+  PlusCircle,
+  CheckCircle,
+  RefreshCw,
+  MoreVertical,
+} from 'lucide-react'
 import React, { useRef, useMemo, useState } from 'react'
 
 import {
@@ -21,7 +28,9 @@ import {
   useApproveEducatorStatusMutation,
   useGetEducationTutorApplicationQuery,
 } from '../../../../services/admin'
+import ApiMiddleware from '../../../../shared/components/api-middleware'
 import ModalBox from '../../../../shared/components/ui-elements/modal-box'
+import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import DeclineConfirmation from '../../components/admin-modals/decline-tutor'
 import InviteTutorForm from '../../components/admin-modals/invite-tutor'
@@ -39,7 +48,11 @@ const TutorApplicants = () => {
   const [rowSelection, setRowSelection] = useState({})
   const [deleteUser, setDeleteUser] = useState()
 
-  const { data: tutorData } = useGetEducationTutorApplicationQuery({
+  const {
+    data: tutorData,
+    isLoading,
+    error,
+  } = useGetEducationTutorApplicationQuery({
     page,
     pageSize: 10,
     filter,
@@ -47,7 +60,7 @@ const TutorApplicants = () => {
   })
 
   const [tutorStatus] = useApproveEducatorStatusMutation()
-  const [reconsiderStatus, { isLoading }] = useReconsiderStatusMutation()
+  const [reconsiderStatus, { isLoading: reconsiderLoading }] = useReconsiderStatusMutation()
 
   const debouncedSearch = debounce((value) => {
     setPage(1)
@@ -139,7 +152,7 @@ const TutorApplicants = () => {
               const firstName = original.firstName ?? ''
               const lastName = original.lastName ?? ''
               return (
-                <Typography>
+                <Typography variant="body2">
                   {firstName || lastName ? `${firstName} ${lastName}`.trim() : '-'}
                 </Typography>
               )
@@ -150,7 +163,7 @@ const TutorApplicants = () => {
             header: 'Email Address',
             Cell: (tableProps) => {
               const { cell } = tableProps
-              return <Typography>{cell.getValue() || '-'}</Typography>
+              return <Typography variant="body2">{cell.getValue() || '-'}</Typography>
             },
           },
           {
@@ -160,11 +173,13 @@ const TutorApplicants = () => {
               const { row } = tableProps
               const { original } = row
               return (
-                <Typography>
-                  {original.expertise?.length
-                    ? original.expertise.map((item) => item.category).join(', ')
-                    : '-'}
-                </Typography>
+                <Box display="flex" alignItems="center" gap={0.5}>
+                  <Typography variant="body2">
+                    {original.expertise?.length
+                      ? original.expertise.map((item) => item.category).join(', ')
+                      : '-'}
+                  </Typography>
+                </Box>
               )
             },
           },
@@ -179,12 +194,8 @@ const TutorApplicants = () => {
                 <Button
                   variant="outlined"
                   size="small"
-                  startIcon={<Eye size={16} />}
+                  startIcon={<Eye size={14} />}
                   onClick={() => handleViewButton(original)}
-                  sx={{
-                    textTransform: 'none',
-                    borderRadius: 1,
-                  }}
                 >
                   View
                 </Button>
@@ -212,12 +223,12 @@ const TutorApplicants = () => {
               }
 
               const handleApprove = () => {
-                void handleAccept(original)
+                handleAccept(original)
                 handleClose()
               }
 
               const handleReject = () => {
-                void openDeclineConfirmation(original)
+                openDeclineConfirmation(original)
                 handleClose()
               }
 
@@ -239,14 +250,14 @@ const TutorApplicants = () => {
                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                   >
-                    <MenuItem onClick={handleApprove} sx={{ color: 'success.main' }}>
-                      <ListItemIcon sx={{ color: 'success.main' }}>
+                    <MenuItem onClick={handleApprove}>
+                      <ListItemIcon>
                         <CheckCircle size={18} />
                       </ListItemIcon>
                       <ListItemText primary="Approve" />
                     </MenuItem>
-                    <MenuItem onClick={handleReject} sx={{ color: 'error.main' }}>
-                      <ListItemIcon sx={{ color: 'error.main' }}>
+                    <MenuItem onClick={handleReject}>
+                      <ListItemIcon>
                         <XCircle size={18} />
                       </ListItemIcon>
                       <ListItemText primary="Decline" />
@@ -270,7 +281,7 @@ const TutorApplicants = () => {
               const firstName = original.firstName ?? ''
               const lastName = original.lastName ?? ''
               return (
-                <Typography>
+                <Typography variant="body2">
                   {firstName || lastName ? `${firstName} ${lastName}`.trim() : '-'}
                 </Typography>
               )
@@ -281,7 +292,7 @@ const TutorApplicants = () => {
             header: 'Email Address',
             Cell: (tableProps) => {
               const { cell } = tableProps
-              return <Typography>{cell.getValue() || '-'}</Typography>
+              return <Typography variant="body2">{cell.getValue() || '-'}</Typography>
             },
           },
           {
@@ -291,11 +302,13 @@ const TutorApplicants = () => {
               const { row } = tableProps
               const { original } = row
               return (
-                <Typography>
-                  {original.expertise?.length
-                    ? original.expertise.map((item) => item.category).join(', ')
-                    : '-'}
-                </Typography>
+                <Box display="flex" alignItems="center" gap={0.5}>
+                  <Typography variant="body2">
+                    {original.expertise?.length
+                      ? original.expertise.map((item) => item.category).join(', ')
+                      : '-'}
+                  </Typography>
+                </Box>
               )
             },
           },
@@ -308,12 +321,12 @@ const TutorApplicants = () => {
               const handleViewButton = table.options.meta?.handleViewButton
               return (
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   size="small"
-                  startIcon={<Eye size={16} />}
+                  startIcon={<Eye size={14} />}
                   onClick={() => handleViewButton(original)}
                 >
-                  Viewqwe
+                  View
                 </Button>
               )
             },
@@ -324,7 +337,26 @@ const TutorApplicants = () => {
             header: 'Declined Reason',
             Cell: (tableProps) => {
               const { cell } = tableProps
-              return <Typography>{cell.getValue() || '-'}</Typography>
+              return (
+                <Box display="flex" alignItems="center" gap={0.5}>
+                  <Typography variant="body2">{cell.getValue() || '-'}</Typography>
+                </Box>
+              )
+            },
+          },
+          {
+            accessorKey: 'createdAt',
+            header: 'Applied On',
+            Cell: (tableProps) => {
+              const { cell } = tableProps
+              const value = cell.getValue()
+              return (
+                <Box display="flex" alignItems="center" gap={0.5}>
+                  <Typography variant="body2">
+                    {value ? new Date(value).toLocaleDateString() : '-'}
+                  </Typography>
+                </Box>
+              )
             },
           },
           {
@@ -334,15 +366,15 @@ const TutorApplicants = () => {
               const { row, table } = tableProps
               const { original } = row
               const handleCheckboxReconsider = table.options.meta?.handleCheckboxReconsider
-              const isLoading = table.options.meta?.isLoading
+              const reconsiderLoading = table.options.meta?.reconsiderLoading
               return (
                 <Button
                   variant="contained"
                   color="secondary"
-                  disabled={isLoading}
-                  onClick={() => {
-                    handleCheckboxReconsider(original)
-                  }}
+                  size="small"
+                  disabled={reconsiderLoading}
+                  startIcon={<RefreshCw size={14} />}
+                  onClick={() => handleCheckboxReconsider(original)}
                 >
                   Reconsider
                 </Button>
@@ -355,53 +387,28 @@ const TutorApplicants = () => {
       default:
         return []
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const table = useMaterialReactTable({
-    columns,
-    data: tutorData?.data ?? [],
-    enableRowSelection: true,
-    getRowId: (row) => row.userId || row._id,
-    onRowSelectionChange: setRowSelection,
-    state: { rowSelection },
-    enablePagination: false,
-    enableTopToolbar: false,
-    enableBottomToolbar: false,
-    enableColumnActions: false,
-    enableColumnFilters: false,
-    enableSorting: false,
-    enableDensityToggle: false,
-    enableFullScreenToggle: false,
-    enableGlobalFilter: false,
-    enableHiding: false,
-    meta: {
-      handleViewButton,
-      handleAccept,
-      openDeclineConfirmation,
-      handleCheckboxReconsider,
-      isLoading,
-    },
-  })
+  }, [filter])
 
   const renderActionButtons = () => {
     switch (filter) {
       case APPLICANTS_FILTER.ALL: {
         return (
-          <Box display="flex" justifyContent="flex-end" gap="10px">
+          <Box display="flex" justifyContent="flex-end" gap={1}>
             <Button
               variant="contained"
               color="success"
+              size="small"
               onClick={() => void handleCheckboxAccept()}
-              startIcon={<CheckCircle size={16} />}
+              startIcon={<CheckCircle size={14} />}
             >
               Approve Selected
             </Button>
             <Button
               variant="outlined"
               color="error"
+              size="small"
               onClick={() => void openDeclineConfirmation()}
-              startIcon={<XCircle size={16} />}
+              startIcon={<XCircle size={14} />}
             >
               Decline Selected
             </Button>
@@ -410,14 +417,16 @@ const TutorApplicants = () => {
       }
       case APPLICANTS_FILTER.DECLINED: {
         return (
-          <Box display="flex" justifyContent="flex-end" gap="10px">
+          <Box display="flex" justifyContent="flex-end" gap={1}>
             <Button
               variant="contained"
-              color="success"
-              disabled={isLoading}
+              color="secondary"
+              size="small"
+              disabled={reconsiderLoading}
               onClick={() => void handleBulkReconsider()}
+              startIcon={<RefreshCw size={14} />}
             >
-              Reconsider
+              Reconsider Selected
             </Button>
           </Box>
         )
@@ -429,100 +438,127 @@ const TutorApplicants = () => {
   }
 
   return (
-    <Box>
-      <Box sx={{ mb: 3 }}>
+    <ApiMiddleware
+      error={error}
+      isLoading={isLoading}
+      isData={!!tutorData?.data?.length}
+      text="No Tutor Applications Found"
+      description="There are no tutor applications at the moment."
+    >
+      <Box>
         <Box mb={3}>
           <Typography variant="h4" mb={0.5}>
             Tutor Applications
           </Typography>
-          <Typography component="p" color="text.secondary">
-            Review and manage tutor applications efficiently
-          </Typography>
+          <Typography color="text.secondary">Review and manage tutor applications</Typography>
         </Box>
 
         <Box
           sx={{
-            display: { xs: 'column', sm: 'flex' },
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            mb: 3,
+            p: 2,
+            mb: 4,
+            borderRadius: 1,
+            backgroundColor: (theme) => theme.palette.background.light,
+            boxShadow: (theme) => theme.customShadows.primary,
           }}
         >
-          <Tabs value={filter} onChange={(_, newValue) => setFilter(newValue)}>
-            {APPLICANTS_TAB.map((item) => (
-              <Tab key={item.key} value={item.key} label={item.name} />
-            ))}
-          </Tabs>
-
-          <Box display="flex" alignItems="center" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search tutors..."
-              onChange={(e) => debouncedSearch(e.target.value)}
-              InputProps={{
-                startAdornment: <Search size={20} style={{ marginRight: 8 }} />,
-              }}
-              sx={{ minWidth: 250 }}
-            />
-            <Button
-              startIcon={<PlusCircle size={16} />}
-              variant="contained"
-              onClick={() => inviteModalRef.current?.openModal()}
-            >
-              Invite Tutor
-            </Button>
-          </Box>
-        </Box>
-
-        {!!Object.keys(rowSelection).length && (
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'flex-end',
-              mb: 2,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 3,
             }}
           >
-            {renderActionButtons()}
+            <Tabs value={filter} onChange={(_, newValue) => setFilter(newValue)}>
+              {APPLICANTS_TAB.map((item) => (
+                <Tab key={item.key} value={item.key} label={item.name} />
+              ))}
+            </Tabs>
+
+            <Box display="flex" alignItems="center" gap={2}>
+              <TextField
+                size="small"
+                placeholder="Search tutors..."
+                onChange={(e) => debouncedSearch(e.target.value)}
+                InputProps={{
+                  startAdornment: <Search size={18} style={{ marginRight: 8 }} />,
+                }}
+                sx={{ width: 250 }}
+              />
+              <Button
+                startIcon={<PlusCircle size={14} />}
+                variant="contained"
+                onClick={() => inviteModalRef.current?.openModal()}
+              >
+                Invite Tutor
+              </Button>
+            </Box>
           </Box>
-        )}
+
+          {!!Object.keys(rowSelection).length && <Box mb={2}>{renderActionButtons()}</Box>}
+
+          <MuiReactTable
+            columns={columns}
+            rows={tutorData?.data ?? []}
+            materialReactProps={{
+              enableRowSelection: true,
+              getRowId: (row) => row.userId || row._id,
+              onRowSelectionChange: setRowSelection,
+              state: { rowSelection },
+              enableColumnActions: false,
+              enableDensityToggle: false,
+              enableFullScreenToggle: false,
+              muiTableContainerProps: {
+                sx: {
+                  maxHeight: 'calc(100vh - 350px)',
+                },
+              },
+              meta: {
+                handleViewButton,
+                handleAccept,
+                openDeclineConfirmation,
+                handleCheckboxReconsider,
+                reconsiderLoading,
+              },
+            }}
+          />
+
+          <Box mt={2} display="flex" justifyContent="center">
+            <PaginationComponent data={tutorData} page={page} setPage={setPage} />
+          </Box>
+        </Box>
+        <ModalBox ref={inviteModalRef} title="Invite Tutor">
+          <InviteTutorForm
+            onClose={() => {
+              inviteModalRef.current?.closeModal()
+            }}
+          />
+        </ModalBox>
+
+        <ModalBox size="lg" ref={viewModalRef} title="Tutor Details">
+          <TutorDetailModal
+            tutor={viewTutorData}
+            onClick={handleViewButton}
+            filter={filter}
+            onClose={() => {
+              viewModalRef.current?.closeModal()
+            }}
+          />
+        </ModalBox>
+
+        <ModalBox ref={confirmationRef}>
+          <DeclineConfirmation
+            onDelete={(data) => {
+              void handleDecline(data)
+            }}
+            onClose={() => {
+              confirmationRef.current?.closeModal()
+            }}
+          />
+        </ModalBox>
       </Box>
-
-      <MaterialReactTable table={table} />
-
-      <Box mt={2} display="flex" justifyContent="center">
-        <PaginationComponent data={tutorData} page={page} setPage={setPage} />
-      </Box>
-
-      <ModalBox ref={inviteModalRef} title="Invite Tutor">
-        <InviteTutorForm
-          onClose={() => {
-            inviteModalRef.current?.closeModal()
-          }}
-        />
-      </ModalBox>
-
-      <ModalBox size="lg" ref={viewModalRef} title="Tutor Details">
-        <TutorDetailModal
-          tutor={viewTutorData}
-          onClick={handleViewButton}
-          filter={filter}
-          onClose={() => {
-            viewModalRef.current?.closeModal()
-          }}
-        />
-      </ModalBox>
-
-      <ModalBox ref={confirmationRef}>
-        <DeclineConfirmation
-          onDelete={(data) => {
-            void handleDecline(data)
-          }}
-          onClose={() => {
-            confirmationRef.current?.closeModal()
-          }}
-        />
-      </ModalBox>
-    </Box>
+    </ApiMiddleware>
   )
 }
 

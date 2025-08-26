@@ -28,7 +28,7 @@ const AppSettings = () => {
 
   return (
     <>
-      <Typography variant="h6" fontWeight={600} mb={2.5}>
+      <Typography variant="h6" mb={2.5}>
         {t('application:PROFILE.LANGUAGE_PREFERENCES')}
       </Typography>
 

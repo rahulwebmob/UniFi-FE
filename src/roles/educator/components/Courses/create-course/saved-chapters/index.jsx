@@ -110,7 +110,7 @@ const SavedChapters = ({ courseId }) => {
     <Box>
       {!!chapters.length && (
         <>
-          <Typography variant="h6" fontWeight={600} mb={2}>
+          <Typography variant="h6" mb={2}>
             {t('EDUCATOR.SAVED_CHAPTERS.SAVED_CHAPTERS_TITLE')}
           </Typography>
           <Box p={3}>

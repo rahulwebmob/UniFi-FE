@@ -14,6 +14,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   useTheme,
+  alpha,
 } from '@mui/material'
 import { Video, Users, Clock, BookOpen, ChevronDown, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
@@ -55,7 +56,7 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
       fontWeight: 600,
       boxShadow: 'none',
       '&:hover': {
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+        boxShadow: (theme) => theme.shadows[3],
       },
     }
 
@@ -121,7 +122,13 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
 
   return (
     <Box
-      sx={{ minHeight: '100vh', backgroundColor: 'background.light', p: 2, borderRadius: '12px' }}
+      sx={{
+        p: 2,
+        minHeight: '100vh',
+        borderRadius: '12px',
+        backgroundColor: 'background.light',
+        boxShadow: (theme) => theme.customShadows.primary,
+      }}
     >
       <Container maxWidth={false} sx={{ maxWidth: '1500px' }}>
         {/* Clean Header Section */}
@@ -129,9 +136,9 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
           sx={{
             p: 4,
             mb: 4,
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            border: '1px solid #e0e0e0',
+            borderRadius: 1,
+            backgroundColor: 'background.paper',
+            boxShadow: (theme) => theme.customShadows.primary,
           }}
         >
           <Grid container spacing={4}>
@@ -247,10 +254,14 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
                 )}
             </Grid>
 
-            {/* Course Card - Right Side */}
             <Grid size={{ xs: 12, md: 4 }}>
-              <Card>
-                {/* Thumbnail */}
+              <Card
+                sx={{
+                  borderRadius: 1,
+                  backgroundColor: 'background.paper',
+                  boxShadow: (theme) => theme.customShadows.primary,
+                }}
+              >
                 <Box sx={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>
                   <CardMedia
                     component="img"
@@ -282,7 +293,7 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
                       <Typography variant="p" color="text.secondary">
                         One-time payment
                       </Typography>
-                      <Typography variant="h5" fontWeight={700} color="primary">
+                      <Typography variant="h5" color="primary">
                         ${courseData?.price || 0}
                       </Typography>
                     </Box>
@@ -299,7 +310,7 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
                       <Typography variant="p" color="text.secondary">
                         Full access
                       </Typography>
-                      <Typography variant="h5" fontWeight={700} color="success.main">
+                      <Typography variant="h5" color="success.main">
                         FREE
                       </Typography>
                     </Box>
@@ -316,7 +327,6 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
         <Typography
           variant="h5"
           sx={{
-            fontWeight: 600,
             mb: 1,
           }}
         >
@@ -350,7 +360,7 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
                   sx={{
                     mb: 2,
                     backgroundColor: 'background.paper',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                    boxShadow: (theme) => theme.customShadows.primary,
                     borderRadius: '12px !important',
                     overflow: 'hidden',
                     '&:before': {
@@ -391,7 +401,7 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
                             minWidth: { xs: 28, sm: 32 },
                             borderRadius: '8px',
                             backgroundColor: 'primary.main',
-                            color: 'white',
+                            color: (theme) => theme.palette.common.white,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -477,14 +487,15 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
                             flexDirection: { xs: 'column', sm: 'row' },
                             alignItems: { xs: 'stretch', sm: 'center' },
                             justifyContent: 'space-between',
-                            borderTop: '1px solid rgba(0, 0, 0, 0.06)',
+                            borderTop: (theme) =>
+                              `1px solid ${alpha(theme.palette.common.black, 0.06)}`,
                             transition: 'background-color 0.2s ease',
                             gap: { xs: 1.5, sm: 2 },
                             '&:first-of-type': {
                               borderTop: 'none',
                             },
                             '&:hover': {
-                              backgroundColor: 'rgba(25, 118, 210, 0.02)',
+                              backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.02),
                             },
                           }}
                         >
@@ -554,10 +565,10 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
                 position: { xs: 'relative', lg: 'sticky' },
                 top: { xs: 0, lg: 20 },
                 height: 'fit-content',
-                backgroundColor: 'white',
+                backgroundColor: (theme) => theme.palette.background.paper,
                 borderRadius: '12px',
                 overflow: 'hidden',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                boxShadow: (theme) => theme.shadows[2],
                 mb: { xs: 3, lg: 0 },
               }}
             >
@@ -591,7 +602,7 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
 
       {/* Description Modal */}
       <ModalBox ref={descriptionModalRef} size="md">
-        <Typography variant="h5" fontWeight={600} mb={2}>
+        <Typography variant="h5" mb={2}>
           Course Description
         </Typography>
         <Typography variant="body1" sx={{ lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>

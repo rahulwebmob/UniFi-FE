@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { useGetAllCoursesQuery } from '../../../../../services/education'
 import NoDataFound from '../../../../../shared/components/no-data-found'
 import MuiCarousel from '../../../../../shared/components/ui-elements/mui-carousel'
-import { iff } from '../../../../../utils/globalUtils'
 import ContentSkeleton from '../../user-content/content-skeleton'
 import CourseCard from '../course-card'
 
@@ -15,6 +14,7 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoad
 
   const [list, setList] = useState([])
   const [count, setCount] = useState(0)
+  const [hasInitialized, setHasInitialized] = useState(false)
 
   const { data, isSuccess, isFetching } = useGetAllCoursesQuery({
     page,
@@ -32,6 +32,7 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoad
       if (page === 1) {
         setList(courses)
         setCount(totalCount)
+        setHasInitialized(true)
       } else if (courses.length > 0) {
         setList((prev) => {
           const existingIds = new Set(prev.map((item) => item._id))
@@ -40,6 +41,8 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoad
         })
         setCount(totalCount)
       }
+    } else if (isSuccess && !data?.data) {
+      setHasInitialized(true)
     }
   }, [data, isSuccess, page, searchTerm, selectedCategory, isPurchased])
 
@@ -50,12 +53,17 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoad
     }
   }, [count, list?.length, setIsLoadMore])
 
+  const isInitialLoad =
+    (page === 1 && isFetching && !hasInitialized) || (!hasInitialized && page === 1)
+  const showContent = hasInitialized
+  const showNoData = hasInitialized && !list.length && !isFetching
+
   if (isPurchased) {
     return (
       <MuiCarousel>
-        {isFetching ? (
+        {isInitialLoad ? (
           <ContentSkeleton isPurchased />
-        ) : list.length ? (
+        ) : showContent && list.length ? (
           <>
             {list.map((item) => (
               <Box key={item._id} sx={{ minWidth: 420, maxWidth: 420, px: 1 }}>
@@ -63,7 +71,7 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoad
               </Box>
             ))}
           </>
-        ) : (
+        ) : showNoData ? (
           <Box
             sx={{
               '&.MuiTabs-flexContainer': {
@@ -89,41 +97,37 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoad
               title=""
             />
           </Box>
-        )}
+        ) : null}
       </MuiCarousel>
     )
   }
 
-  return (
-    <>
-      {iff(
-        isFetching,
-        <Grid container spacing={3}>
-          <ContentSkeleton isPurchased={false} />
-        </Grid>,
-        !list.length ? (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '300px',
-            }}
-          >
-            <NoDataFound />
-          </Box>
-        ) : (
-          <Grid container spacing={3}>
-            {list.map((item) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }} key={item._id}>
-                <CourseCard course={item} isPurchased={false} />
-              </Grid>
-            ))}
+  return isInitialLoad ? (
+    <Grid container spacing={3}>
+      <ContentSkeleton isPurchased={false} />
+    </Grid>
+  ) : showContent ? (
+    list.length ? (
+      <Grid container spacing={3}>
+        {list.map((item) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }} key={item._id}>
+            <CourseCard course={item} isPurchased={false} />
           </Grid>
-        ),
-      )}
-    </>
-  )
+        ))}
+      </Grid>
+    ) : (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '300px',
+        }}
+      >
+        <NoDataFound />
+      </Box>
+    )
+  ) : null
 }
 
 CourseList.propTypes = {

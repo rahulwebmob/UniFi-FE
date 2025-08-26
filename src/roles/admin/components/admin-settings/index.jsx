@@ -1,22 +1,16 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
   Box,
-  alpha,
   Button,
-  Dialog,
   Divider,
-  useTheme,
   TextField,
-  IconButton,
   Typography,
-  DialogTitle,
   FormControl,
-  DialogContent,
   useMediaQuery,
 } from '@mui/material'
-import { X } from 'lucide-react'
+import { Save } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useEffect } from 'react'
+import { forwardRef, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
@@ -25,12 +19,12 @@ import * as yup from 'yup'
 import { signIn } from '../../../../redux/reducers/user-slice'
 import { useEditAdminProfileMutation } from '../../../../services/onboarding'
 import ChangePassword from '../../../../shared/components/auth-wrapper/change-password'
+import ModalBox from '../../../../shared/components/ui-elements/modal-box'
 
-const AdminSettings = ({ open, onClose, userData }) => {
-  const theme = useTheme()
+const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
   const { t } = useTranslation('application')
   const dispatch = useDispatch()
-  const matches = useMediaQuery(theme.breakpoints.down('sm'))
+  const matches = useMediaQuery((theme) => theme.breakpoints.down('sm'))
   const [updateName] = useEditAdminProfileMutation()
 
   const schemaResolver = yupResolver(
@@ -83,82 +77,33 @@ const AdminSettings = ({ open, onClose, userData }) => {
       localStorage.removeItem('token')
       localStorage.setItem('token', newToken)
       dispatch(signIn({ token: newToken }))
-      onClose()
+      if (onClose) {
+        onClose()
+      }
+      if (ref?.current) {
+        ref.current.closeModal()
+      }
     }
   }
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="md"
-      fullWidth
+    <ModalBox
+      ref={ref}
+      title="Admin Profile Settings"
+      size="lg"
       fullScreen={matches}
-      sx={{
-        '& .MuiDialog-paper': {
-          borderRadius: matches ? 0 : 3,
-          overflow: 'visible',
-        },
-      }}
+      onCloseModal={onClose}
     >
-      <DialogTitle
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          pb: 2,
-          borderBottom: `1px solid ${theme.palette.divider}`,
-        }}
-      >
-        <Typography
-          variant="h5"
-          component="span"
-          sx={{
-            fontWeight: 600,
-            color: theme.palette.text.primary,
-          }}
-        >
-          {t('application:PROFILE.PROFILE_SETTINGS')}
-        </Typography>
-        <IconButton
-          onClick={onClose}
-          size="small"
-          sx={{
-            color: theme.palette.text.secondary,
-            '&:hover': {
-              bgcolor: alpha(theme.palette.grey[500], 0.1),
-            },
-          }}
-        >
-          <X size={18} />
-        </IconButton>
-      </DialogTitle>
-
-      <DialogContent sx={{ pt: 3 }}>
+      <Box>
         <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
-          {/* Personal Information Section */}
-          <Box sx={{ pb: 3 }}>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                mb: 2.5,
-                color: theme.palette.text.primary,
-              }}
-            >
+          <Box pb={3}>
+            <Typography variant="h6" mb={2.5}>
               {t('application:PROFILE.PERSONAL_INFO')}
             </Typography>
 
             <Box display="grid" gridTemplateColumns={!matches ? '1fr 1fr' : '1fr'} gap={2.5}>
               <FormControl fullWidth>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    mb: 0.5,
-                    fontWeight: 500,
-                    color: theme.palette.text.secondary,
-                  }}
-                >
+                <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
                   {t('application:PROFILE.FIRST_NAME')}
                 </Typography>
                 <Controller
@@ -174,25 +119,13 @@ const AdminSettings = ({ open, onClose, userData }) => {
                       {...field}
                       error={!!errors.firstName}
                       helperText={errors.firstName?.message}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: '8px',
-                        },
-                      }}
                     />
                   )}
                 />
               </FormControl>
 
               <FormControl fullWidth>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    mb: 0.5,
-                    fontWeight: 500,
-                    color: theme.palette.text.secondary,
-                  }}
-                >
+                <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
                   {t('application:PROFILE.LAST_NAME')}
                 </Typography>
                 <Controller
@@ -208,38 +141,39 @@ const AdminSettings = ({ open, onClose, userData }) => {
                       {...field}
                       error={!!errors.lastName}
                       helperText={errors.lastName?.message}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: '8px',
-                        },
-                      }}
                     />
                   )}
                 />
               </FormControl>
             </Box>
 
-            <Button size="medium" type="submit" variant="contained">
+            <Button
+              size="medium"
+              type="submit"
+              variant="contained"
+              startIcon={<Save size={18} />}
+              sx={{ mt: 2.5 }}
+            >
               {t('application:MISCELLANEOUS.SAVE')}
             </Button>
           </Box>
         </form>
 
-        {/* Change Password Section */}
-        <Divider sx={{ mb: 3 }} />
-        <Box sx={{ pb: 3 }}>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 600,
-              mb: 2.5,
-              color: theme.palette.text.primary,
-            }}
-          >
+        <Divider sx={{ my: 3 }} />
+
+        <Box>
+          <Typography variant="h6" mb={2.5}>
             {t('application:PROFILE.CHANGE_PASSWORD')}
           </Typography>
           <ChangePassword
-            closeModal={onClose}
+            closeModal={() => {
+              if (onClose) {
+                onClose()
+              }
+              if (ref?.current) {
+                ref.current.closeModal()
+              }
+            }}
             userEmail={userData?.email}
             headerName={null}
             isUserAdmin
@@ -247,14 +181,15 @@ const AdminSettings = ({ open, onClose, userData }) => {
             isResetPassword={false}
           />
         </Box>
-      </DialogContent>
-    </Dialog>
+      </Box>
+    </ModalBox>
   )
-}
+})
+
+AdminSettings.displayName = 'AdminSettings'
 
 AdminSettings.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
   userData: PropTypes.shape({
     firstName: PropTypes.string,
     lastName: PropTypes.string,

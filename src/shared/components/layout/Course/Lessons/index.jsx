@@ -9,6 +9,7 @@ import {
   Typography,
   AccordionSummary,
   AccordionDetails,
+  alpha,
 } from '@mui/material'
 import {
   Lock,
@@ -162,17 +163,19 @@ const Lessons = () => {
       <Box
         sx={{
           minHeight: '100vh',
+          backgroundColor: 'background.light',
+          borderRadius: 1,
+          boxShadow: (theme) => theme.customShadows.primary,
         }}
       >
         <Container maxWidth="xl" sx={{ py: 3 }}>
-          {/* Clean Header Section */}
           <Box
             sx={{
               p: 4,
               mb: 4,
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              border: '1px solid #e0e0e0',
+              backgroundColor: 'background.paper',
+              borderRadius: 1,
+              boxShadow: (theme) => theme.customShadows.primary,
             }}
           >
             <Typography
@@ -220,17 +223,15 @@ const Lessons = () => {
           </Box>
 
           <Grid container spacing={3}>
-            {/* Video Player Section */}
             <Grid size={{ xs: 12, lg: 8 }}>
               <Box
                 sx={{
-                  backgroundColor: 'white',
-                  borderRadius: '12px',
-                  border: '1px solid #e0e0e0',
+                  backgroundColor: 'background.paper',
+                  borderRadius: 1,
+                  boxShadow: (theme) => theme.customShadows.primary,
                   overflow: 'hidden',
                 }}
               >
-                {/* Current Lesson Title */}
                 <Box
                   sx={{
                     p: 3,
@@ -248,7 +249,7 @@ const Lessons = () => {
                         justifyContent: 'center',
                         backgroundColor:
                           currentLesson?.lessonType === 'video' ? 'primary.main' : 'warning.main',
-                        color: 'white',
+                        color: (theme) => theme.palette.common.white,
                       }}
                     >
                       {currentLesson?.lessonType === 'video' ? (
@@ -258,9 +259,7 @@ const Lessons = () => {
                       )}
                     </Box>
                     <Box flex={1}>
-                      <Typography variant="h6" fontWeight={600}>
-                        {currentLesson?.title || 'Loading...'}
-                      </Typography>
+                      <Typography variant="h6">{currentLesson?.title || 'Loading...'}</Typography>
                       <Typography variant="caption" color="text.secondary">
                         {currentLesson?.lessonType === 'video' ? 'Video Lesson' : 'Document'}
                       </Typography>
@@ -272,7 +271,7 @@ const Lessons = () => {
                 <Box
                   sx={{
                     width: '100%',
-                    backgroundColor: '#000',
+                    backgroundColor: (theme) => theme.palette.common.black,
                     aspectRatio: '16/9',
                     display: 'flex',
                     alignItems: 'center',
@@ -307,7 +306,7 @@ const Lessons = () => {
                         px: { xs: 1, sm: 3 },
                         py: 1.5,
                         '&:hover': {
-                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                          backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.04),
                         },
                       }}
                     >
@@ -342,7 +341,7 @@ const Lessons = () => {
                         py: 1.5,
                         boxShadow: 'none',
                         '&:hover': {
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                          boxShadow: (theme) => theme.shadows[3],
                         },
                       }}
                     >
@@ -356,7 +355,6 @@ const Lessons = () => {
               </Box>
             </Grid>
 
-            {/* Course Content Sidebar */}
             <Grid size={{ xs: 12, lg: 4 }}>
               <Box
                 sx={{
@@ -369,15 +367,15 @@ const Lessons = () => {
                   flexDirection: 'column',
                 }}
               >
-                {/* Header */}
                 <Box
                   sx={{
                     p: 3,
                     backgroundColor: 'primary.main',
-                    color: 'white',
+                    color: (theme) => theme.palette.common.white,
+                    boxShadow: (theme) => theme.customShadows.primary,
                   }}
                 >
-                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+                  <Typography variant="h6" sx={{ mb: 0.5 }}>
                     Course Content
                   </Typography>
                   <Box display="flex" gap={3}>
@@ -416,7 +414,7 @@ const Lessons = () => {
                       defaultExpanded
                       sx={{
                         mb: 2,
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                        boxShadow: (theme) => theme.customShadows.primary,
                         borderRadius: '12px !important',
                         overflow: 'hidden',
                         '&:before': {
@@ -457,7 +455,7 @@ const Lessons = () => {
                                 minWidth: { xs: 28, sm: 32 },
                                 borderRadius: '8px',
                                 backgroundColor: 'primary.main',
-                                color: 'white',
+                                color: (theme) => theme.palette.common.white,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',

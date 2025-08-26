@@ -414,9 +414,7 @@ const AddLesson = ({
           justifyContent="space-between"
           mb={2}
         >
-          <Typography variant="h6" fontWeight={600}>
-            {t('EDUCATOR.ADD_CHAPTERS.CHAPTER_DETAILS')}
-          </Typography>
+          <Typography variant="h6">{t('EDUCATOR.ADD_CHAPTERS.CHAPTER_DETAILS')}</Typography>
           <Box display="flex" gap="10px" mt={1}>
             <Button
               onClick={handleOnSubmit}

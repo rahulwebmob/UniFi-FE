@@ -33,9 +33,8 @@ const Webinars = () => {
         size: 100,
         Cell: (tableProps) => {
           const { row } = tableProps
-          const theme = useTheme()
           const thumbnail = row.original.thumbnail || row.original.thumbNail
-          return thumbnail ? (
+          return (
             <Box
               component="img"
               src={thumbnail}
@@ -47,22 +46,6 @@ const Webinars = () => {
                 borderRadius: '8px',
               }}
             />
-          ) : (
-            <Box
-              sx={{
-                width: 80,
-                height: 60,
-                backgroundColor: theme.palette.grey[200],
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Typography variant="caption" color="text.secondary">
-                No Image
-              </Typography>
-            </Box>
           )
         },
       },
@@ -72,7 +55,11 @@ const Webinars = () => {
         size: 200,
         Cell: (tableProps) => {
           const { cell } = tableProps
-          return <Typography sx={{ fontWeight: 500 }}>{cell.getValue() || '-'}</Typography>
+          return (
+            <Typography variant="p" fontWeight={500}>
+              {cell.getValue() || '-'}
+            </Typography>
+          )
         },
       },
       {
@@ -99,34 +86,7 @@ const Webinars = () => {
           )
         },
       },
-      {
-        accessorKey: 'category',
-        header: 'Categories',
-        size: 200,
-        Cell: (tableProps) => {
-          const { cell } = tableProps
-          const categories = cell.getValue()
-          return categories?.length ? (
-            <Box display="flex" gap={0.5} flexWrap="wrap">
-              {categories.map((category) => (
-                <Chip
-                  key={category}
-                  label={category}
-                  size="small"
-                  variant="filled"
-                  color="primary"
-                  sx={{
-                    borderRadius: '6px',
-                    fontSize: '0.75rem',
-                  }}
-                />
-              ))}
-            </Box>
-          ) : (
-            <Typography variant="body2">-</Typography>
-          )
-        },
-      },
+
       {
         accessorKey: 'startDate',
         header: 'Schedule',
@@ -147,7 +107,7 @@ const Webinars = () => {
               <Typography variant="body2" sx={{ fontWeight: 500 }}>
                 {date}
               </Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="body2" color="text.secondary">
                 {timeRange}
               </Typography>
             </Box>
@@ -160,7 +120,6 @@ const Webinars = () => {
         size: 100,
         Cell: (tableProps) => {
           const { cell } = tableProps
-          const theme = useTheme()
           const price = cell.getValue()
           return (
             <Typography
@@ -195,35 +154,11 @@ const Webinars = () => {
         Cell: (tableProps) => {
           const { cell } = tableProps
           const status = cell.getValue()
-          const getStatusColor = () => {
-            switch (status?.toLowerCase()) {
-              case 'completed':
-                return 'success'
-              case 'expired':
-                return 'error'
-              case 'scheduled':
-                return 'info'
-              case 'live':
-                return 'warning'
-              default:
-                return 'default'
-            }
-          }
-          return (
-            <Chip
-              label={status || '-'}
-              size="small"
-              color={getStatusColor()}
-              sx={{
-                textTransform: 'capitalize',
-                fontWeight: 500,
-                borderRadius: '6px',
-              }}
-            />
-          )
+          return <Chip label={status || '-'} size="small" color="primary" />
         },
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   )
 
@@ -272,7 +207,7 @@ const Webinars = () => {
         <>
           <MaterialReactTable table={table} />
           {webinarDetails && webinarDetails.count && (
-            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+            <Box mt={2} display="flex" justifyContent="center">
               <PaginationComponent
                 data={{
                   count: webinarDetails.count,
@@ -294,9 +229,7 @@ const Webinars = () => {
             border: `1px solid ${theme.palette.divider}`,
           }}
         >
-          <Typography variant="body1" color="text.secondary">
-            No webinars available
-          </Typography>
+          <Typography color="text.secondary">No webinars available</Typography>
         </Box>
       )}
     </Box>

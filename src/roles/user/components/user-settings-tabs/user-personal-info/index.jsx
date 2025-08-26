@@ -11,7 +11,7 @@ import {
   useMediaQuery,
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { Upload } from 'lucide-react'
+import { Upload, Save } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -153,7 +153,7 @@ const PersonalInfo = () => {
         }}
       >
         <Box pb={3}>
-          <Typography variant="h6" fontWeight={600} mb={2.5}>
+          <Typography variant="h6" mb={2.5}>
             {t('application:PROFILE.PERSONAL_INFO')}
           </Typography>
 
@@ -252,11 +252,6 @@ const PersonalInfo = () => {
                     {...field}
                     error={!!errors.firstName}
                     helperText={errors.firstName?.message}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 1,
-                      },
-                    }}
                   />
                 )}
               />
@@ -279,18 +274,19 @@ const PersonalInfo = () => {
                     {...field}
                     error={!!errors.lastName}
                     helperText={errors.lastName?.message}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 1,
-                      },
-                    }}
                   />
                 )}
               />
             </FormControl>
           </Box>
 
-          <Button size="medium" type="submit" variant="contained" mt={1}>
+          <Button
+            size="medium"
+            type="submit"
+            variant="contained"
+            mt={1}
+            startIcon={<Save size={18} />}
+          >
             {t('application:MISCELLANEOUS.SAVE')}
           </Button>
         </Box>
@@ -299,7 +295,7 @@ const PersonalInfo = () => {
       <>
         <Divider mb={3} />
         <Box pb={3}>
-          <Typography variant="h6" fontWeight={600} mb={2.5}>
+          <Typography variant="h6" mb={2.5}>
             {t('application:PROFILE.CHANGE_PASSWORD')}
           </Typography>
           <ChangePassword

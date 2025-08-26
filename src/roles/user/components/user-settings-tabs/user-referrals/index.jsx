@@ -159,7 +159,7 @@ const Referrals = () => {
                 <Typography variant="h6">1</Typography>
               </Box>
               <Box>
-                <Typography variant="subtitle2" fontWeight={600} mb={0.5}>
+                <Typography variant="subtitle2" mb={0.5}>
                   Share Your Link
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -186,7 +186,7 @@ const Referrals = () => {
                 <Typography variant="h6">2</Typography>
               </Box>
               <Box>
-                <Typography variant="subtitle2" fontWeight={600} mb={0.5}>
+                <Typography variant="subtitle2" mb={0.5}>
                   They Sign Up
                 </Typography>
                 <Typography variant="body2" color="text.secondary">

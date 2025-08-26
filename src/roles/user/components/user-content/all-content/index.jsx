@@ -9,7 +9,7 @@ import {
   InputAdornment,
 } from '@mui/material'
 import _ from 'lodash'
-import { BookOpen, Presentation, Search, Filter } from 'lucide-react'
+import { BookOpen, Presentation, Search, Filter, ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -69,9 +69,7 @@ const AllContent = () => {
       <Button
         key={type.id}
         onClick={() => {
-          if (!isActive) {
-            handleContentTypeChange(type.id)
-          }
+          handleContentTypeChange(type.id)
         }}
         variant={isActive ? 'contained' : 'outlined'}
         startIcon={<Icon size={16} />}
@@ -105,7 +103,12 @@ const AllContent = () => {
     return (
       <Box display="flex" alignItems="center" mt={3} position="relative">
         <Divider sx={{ flex: 1 }} />
-        <Button color="secondary" variant="contained" onClick={handleLoadMore}>
+        <Button
+          color="secondary"
+          variant="contained"
+          onClick={handleLoadMore}
+          endIcon={<ChevronDown size={18} />}
+        >
           {t('EDUCATION_DASHBOARD.MAIN_PAGE.LOAD_MORE')}
         </Button>
         <Divider sx={{ flex: 1 }} />
@@ -115,12 +118,12 @@ const AllContent = () => {
 
   return (
     <Box
-      px={{ xs: 2, sm: 3, md: 5 }}
-      py={2}
-      mt={3}
       sx={{
-        backgroundColor: 'background.light',
+        p: 2,
+        mb: 4,
         borderRadius: 1,
+        backgroundColor: (theme) => theme.palette.background.light,
+        boxShadow: (theme) => theme.customShadows.primary,
       }}
     >
       <Box

@@ -129,7 +129,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
         display: 'flex',
         flexDirection: 'column',
         height: '70vh',
-        maxHeight: '600px',
+        maxHeight: 600,
         '& .MuiChip-root': {
           color: (theme) => theme.palette.primary.main,
           borderColor: (theme) => theme.palette.primary.main,
@@ -144,7 +144,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
           flexWrap="wrap"
           gap={2}
         >
-          <Box display="flex" gap={1} width="400px">
+          <Box display="flex" gap={1} width={400}>
             {downloadCv?.url && (
               <Button
                 variant="contained"
@@ -179,15 +179,15 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
           px: 3,
           pb: 2,
           '&::-webkit-scrollbar': {
-            width: '8px',
+            width: 8,
           },
           '&::-webkit-scrollbar-track': {
             background: (theme) => theme.palette.grey[100],
-            borderRadius: '4px',
+            borderRadius: 0.5,
           },
           '&::-webkit-scrollbar-thumb': {
             background: (theme) => theme.palette.grey[400],
-            borderRadius: '4px',
+            borderRadius: 0.5,
             '&:hover': {
               background: (theme) => theme.palette.grey[500],
             },
@@ -215,7 +215,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
                     }}
                   />
                   <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+                    <Typography variant="h6" sx={{ mb: 0.5 }}>
                       {tutorDetails?.firstName ?? '-'}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
@@ -223,16 +223,20 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
                     </Typography>
                   </Box>
                 </Box>
-                <Typography variant="body2" color="text.secondary">
-                  {tutorDetails?.country ?? '-'}, {tutorDetails?.state ?? '-'}
+              </Box>
+
+              <Box>
+                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
+                  Location
                 </Typography>
+                {tutorDetails?.country ?? '-'}, {tutorDetails?.state ?? '-'}
               </Box>
 
               <Box>
                 <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
                   Executive Summary
                 </Typography>
-                <Typography variant="body1">{tutorDetails?.summary ?? '-'}</Typography>
+                <Typography>{tutorDetails?.summary ?? '-'}</Typography>
               </Box>
 
               {!!tutorDetails?.expertise?.length && (
@@ -252,10 +256,6 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
                         color="primary"
                         variant="outlined"
                         size="small"
-                        sx={{
-                          borderRadius: '8px',
-                          fontWeight: 500,
-                        }}
                       />
                     ))}
                   </Box>
@@ -264,26 +264,20 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
 
               <Box mt={2} display="flex" gap={4} flexWrap="wrap">
                 <Box>
-                  <Typography variant="body1" color="text.secondary">
-                    Company:
-                  </Typography>
-                  <Typography variant="body1">{tutorDetails?.company ?? '-'}</Typography>
+                  <Typography color="text.secondary">Company:</Typography>
+                  <Typography>{tutorDetails?.company ?? '-'}</Typography>
                 </Box>
                 {!!tutorDetails?.experience && (
                   <Box>
-                    <Typography variant="body1" color="text.secondary">
-                      Experience
-                    </Typography>
-                    <Typography variant="body1">{tutorDetails?.experience} Years</Typography>
+                    <Typography color="text.secondary">Experience</Typography>
+                    <Typography>{tutorDetails?.experience} Years</Typography>
                   </Box>
                 )}
               </Box>
 
               <Box>
-                <Typography variant="body1" color="text.secondary">
-                  Where did you hear about us?
-                </Typography>
-                <Typography variant="body1">{tutorDetails?.hau ?? '-'}</Typography>
+                <Typography color="text.secondary">Where did you hear about us?</Typography>
+                <Typography>{tutorDetails?.hau ?? '-'}</Typography>
               </Box>
             </Box>
           </Grid>
@@ -307,10 +301,6 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
                         variant="outlined"
                         size="small"
                         key={education._id}
-                        sx={{
-                          borderRadius: '6px',
-                          fontWeight: 500,
-                        }}
                       />
                     ))}
                   </Box>
@@ -331,7 +321,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
                       <Chip
                         label={`${certificate?.name ?? '-'},${certificate?.organization ?? '-'}`}
                         color="primary"
-                        variant="filled"
+                        variant="outlined"
                         size="small"
                         key={certificate._id}
                       />
@@ -404,7 +394,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
             textTransform: 'none',
             fontWeight: 500,
             py: 1,
-            borderRadius: '6px',
+            borderRadius: 0.75,
           }}
           onClick={() =>
             filter === 'DECLINED' ? void handleDelete(tutor._id) : void openDeclineModal(tutor._id)
@@ -421,10 +411,10 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
             textTransform: 'none',
             fontWeight: 500,
             py: 1,
-            borderRadius: '6px',
+            borderRadius: 0.75,
             boxShadow: 'none',
             '&:hover': {
-              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+              boxShadow: (theme) => theme.shadows[3],
             },
           }}
           onClick={() =>

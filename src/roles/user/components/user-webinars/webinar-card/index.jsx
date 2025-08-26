@@ -33,18 +33,18 @@ const WebinarCard = ({ webinar, isPurchased }) => {
         onClick={handleCardClick}
         sx={{
           display: 'flex',
-          borderRadius: '12px',
+          borderRadius: 1.5,
           boxShadow: 1,
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           overflow: 'hidden',
-          height: '150px',
+          height: 150,
           width: '100%',
         }}
       >
         <Box
           sx={{
-            width: '180px',
+            width: 180,
             flexShrink: 0,
             p: 1.5,
             display: 'flex',
@@ -56,9 +56,10 @@ const WebinarCard = ({ webinar, isPurchased }) => {
             sx={{
               width: '100%',
               height: '100%',
-              borderRadius: '8px',
+              borderRadius: 1,
               overflow: 'hidden',
               backgroundColor: 'grey.100',
+              position: 'relative',
             }}
           >
             <Box
@@ -161,7 +162,7 @@ const WebinarCard = ({ webinar, isPurchased }) => {
                 mb: 0.75,
               }}
             >
-              <Calendar size={12} style={{ color: 'var(--mui-palette-text-secondary)' }} />
+              <Calendar size={12} sx={{ color: 'text.secondary' }} />
               <Typography sx={{ fontSize: '0.7rem', color: 'text.secondary' }}>
                 {format(new Date(webinar.webinarScheduledObj.join_date), 'MMM dd, yyyy')}
                 {' at '}

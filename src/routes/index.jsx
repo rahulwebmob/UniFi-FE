@@ -6,8 +6,9 @@ import AdminTemplate from '../roles/admin/components/admin-layout'
 import Invoices from '../roles/admin/pages/admin-invoices'
 import AdminLogin from '../roles/admin/pages/admin-login'
 // import EducatorLogin from '../educator-login/EducatorLogin'
+import ApprovedTutors from '../roles/admin/pages/approved-tutors'
+import TutorApplicants from '../roles/admin/pages/tutor-applicants'
 import TutorProfile from '../roles/admin/pages/tutor-profile'
-import Tutors from '../roles/admin/pages/tutors'
 import Courses from '../roles/educator/components/courses'
 import CreateCourse from '../roles/educator/components/courses/create-course'
 import EditCourse from '../roles/educator/components/courses/edit-course'
@@ -94,19 +95,19 @@ const Routes = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <Tutors />,
+        element: <TutorApplicants />,
+      },
+      {
+        path: 'tutor-applicants',
+        element: <TutorApplicants />,
       },
       {
         path: 'approved-tutors',
-        element: <Tutors type="Approved" />,
+        element: <ApprovedTutors />,
       },
       {
         path: 'approved-tutors/:id',
         element: <TutorProfile />,
-      },
-      {
-        path: 'tutor-applicants',
-        element: <Tutors />,
       },
       {
         path: 'invoices',

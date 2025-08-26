@@ -54,7 +54,7 @@ const EducationPremium = ({ mediaDetails, setCurrentStep, subscriptionDetails })
           </Avatar>
         </Box>
         <CardContent sx={{ mt: 4 }}>
-          <Typography variant="h6" component="div" fontWeight="bold">
+          <Typography variant="h6" component="div">
             {subscriptionDetails?.[0]?.displayName || '-'}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ my: 1 }}>

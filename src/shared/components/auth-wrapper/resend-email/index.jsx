@@ -57,7 +57,7 @@ const ResendEmail = ({ setResendEmail, email }) => {
             </Box>
           </Box>
 
-          <Typography variant="h5" fontWeight={600} textAlign="center" mb={1}>
+          <Typography variant="h5" textAlign="center" mb={1}>
             Please verify your email
           </Typography>
           <Typography

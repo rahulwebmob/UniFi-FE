@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import { useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom'
@@ -11,13 +11,18 @@ import TopNavigation from '../user-header'
 
 const DashboardLayout = () => {
   const dispatch = useDispatch()
-  const { data: loggedUser } = useLoggedUserQuery()
+  const theme = useTheme()
+  const { data: loggedUser } = useLoggedUserQuery(undefined)
 
   const { isFullscreen } = useSelector((state) => state.app)
 
   const updateUser = useCallback(() => {
     if (loggedUser) {
-      dispatch(loggedIn({ loggedUser }))
+      dispatch(
+        loggedIn({
+          loggedUser,
+        }),
+      )
     }
   }, [loggedUser, dispatch])
 
@@ -26,11 +31,24 @@ const DashboardLayout = () => {
   }, [loggedUser, updateUser])
 
   return (
-    <Box>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        backgroundColor: theme.palette.grey[50],
+      }}
+    >
       <ScrollToTop />
       {!isFullscreen && <TopNavigation />}
 
-      <Box p={{ xs: 2, sm: 3, md: 4 }}>
+      <Box
+        p={{
+          xs: 2,
+          sm: 3,
+          md: 4,
+        }}
+      >
         <Outlet />
       </Box>
 

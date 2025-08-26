@@ -80,7 +80,7 @@ const Logout = ({ component = null, type = 'user' }) => {
         </Button>
       )}
 
-      <ModalBox ref={logoutRef} size="xs">
+      <ModalBox ref={logoutRef} size="sm">
         <Typography variant="h6" sx={{ fontWeight: 500 }}>
           {t('application:PROFILE.LOGOUT_DESC')}
         </Typography>
@@ -89,7 +89,6 @@ const Logout = ({ component = null, type = 'user' }) => {
             variant="contained"
             color="primary"
             size="small"
-            sx={{ fontWeight: 600, textTransform: 'capitalize' }}
             onClick={handleCloseModal}
             disabled={isLoading}
           >
@@ -99,7 +98,6 @@ const Logout = ({ component = null, type = 'user' }) => {
             variant="contained"
             size="small"
             color="error"
-            sx={{ fontWeight: 600, textTransform: 'capitalize' }}
             onClick={() => {
               handleLogout()
             }}

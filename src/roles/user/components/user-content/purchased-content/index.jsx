@@ -10,19 +10,16 @@ const PurchasedContent = () => {
 
   return (
     <Box
-      mb={4}
-      position="relative"
-      px={{ xs: 2, sm: 3, md: 5 }}
-      py={2}
       sx={{
-        backgroundColor: (theme) => theme.palette.background.light,
+        p: 2,
+        mb: 4,
         borderRadius: 1,
+        backgroundColor: (theme) => theme.palette.background.light,
+        boxShadow: (theme) => theme.customShadows.primary,
       }}
     >
       <Box display="flex" alignItems="center" gap={2} mb={2}>
-        <Typography variant="h6" fontWeight={600}>
-          Purchased content
-        </Typography>
+        <Typography variant="h6">Purchased content</Typography>
 
         <ButtonGroup size="small" variant="contained">
           <Button

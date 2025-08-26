@@ -29,9 +29,7 @@ const RecordingPopup = ({ handleOnClose, handleToggleRecording }) => {
       </Box>
 
       <Box flexGrow={1}>
-        <Typography variant="subtitle1" fontWeight="bold">
-          {t('EDUCATOR.RECORDING_POPUP.TITLE')}
-        </Typography>
+        <Typography variant="subtitle1">{t('EDUCATOR.RECORDING_POPUP.TITLE')}</Typography>
         <Typography variant="body2" color="grey.400">
           {t('EDUCATOR.RECORDING_POPUP.SUBTITLE')}
         </Typography>

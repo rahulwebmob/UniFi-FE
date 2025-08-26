@@ -1529,19 +1529,19 @@ export const MuiTextField = {
           boxShadow: '0 2px 4px rgba(17, 66, 98, 0.06)',
 
           '& fieldset': {
-            borderColor: theme.palette.primary[300],
+            borderColor: theme.palette.grey[400],
           },
         },
 
         '&.Mui-focused': {
           '& fieldset': {
-            borderColor: theme.palette.primary.main,
+            borderColor: theme.palette.grey[400],
             borderWidth: 1.5,
           },
         },
 
         '&.Mui-error fieldset': {
-          borderColor: theme.palette.error.main,
+          borderColor: theme.palette.grey[400],
         },
 
         '&.Mui-disabled': {
@@ -1835,9 +1835,127 @@ export const MaterialReactTableDefaults = {
   },
   muiBottomToolbarProps: {
     sx: {
-      backgroundColor: 'transparent',
+      backgroundColor: (theme) => theme.palette.grey[50],
       boxShadow: 'none',
-      borderTop: 'none',
+      borderTop: (theme) => `1px solid ${theme.palette.grey[200]}`,
+      padding: '12px 16px',
+      minHeight: 64,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      borderBottomLeftRadius: '12px',
+      borderBottomRightRadius: '12px',
+
+      // Pagination controls styling
+      '& .MuiTablePagination-root': {
+        overflow: 'visible',
+        color: (theme) => theme.palette.text.secondary,
+        fontSize: '0.875rem',
+      },
+
+      // Rows per page label
+      '& .MuiTablePagination-selectLabel': {
+        margin: 0,
+        fontWeight: 500,
+        color: (theme) => theme.palette.text.secondary,
+        fontSize: '0.875rem',
+      },
+
+      // Rows per page select dropdown
+      '& .MuiTablePagination-select': {
+        fontSize: '0.875rem',
+        fontWeight: 600,
+        borderRadius: '8px',
+        padding: '6px 32px 6px 12px',
+        marginLeft: '8px',
+        marginRight: '16px',
+        backgroundColor: (theme) => theme.palette.background.paper,
+        border: (theme) => `1px solid ${theme.palette.grey[300]}`,
+        transition: 'all 0.2s ease',
+        '&:hover': {
+          backgroundColor: (theme) => theme.palette.grey[100],
+          borderColor: (theme) => theme.palette.primary.main,
+        },
+        '&:focus': {
+          backgroundColor: (theme) => theme.palette.background.paper,
+          borderColor: (theme) => theme.palette.primary.main,
+          boxShadow: (theme) => `0 0 0 2px ${theme.palette.primary.main}20`,
+        },
+      },
+
+      // Select dropdown icon
+      '& .MuiTablePagination-selectIcon': {
+        top: 'calc(50% - 10px)',
+        right: '8px',
+        fontSize: '20px',
+        color: (theme) => theme.palette.text.secondary,
+      },
+
+      // Page info text
+      '& .MuiTablePagination-displayedRows': {
+        margin: 0,
+        fontSize: '0.875rem',
+        fontWeight: 500,
+        color: (theme) => theme.palette.text.secondary,
+      },
+
+      // Navigation buttons container
+      '& .MuiTablePagination-actions': {
+        marginLeft: '20px',
+        gap: '6px',
+        display: 'flex',
+        alignItems: 'center',
+
+        // All navigation buttons
+        '& .MuiIconButton-root': {
+          padding: '8px',
+          borderRadius: '8px',
+          color: (theme) => theme.palette.common.white,
+          backgroundColor: (theme) => theme.palette.primary.main,
+          border: 'none',
+          transition: 'all 0.2s ease',
+          boxShadow: '0 2px 4px rgba(17, 66, 98, 0.15)',
+
+          '&:hover:not(.Mui-disabled)': {
+            backgroundColor: (theme) => theme.palette.primary.dark,
+            transform: 'translateY(-2px)',
+            boxShadow: '0 4px 8px rgba(17, 66, 98, 0.25)',
+          },
+
+          '&:active:not(.Mui-disabled)': {
+            transform: 'translateY(0)',
+            boxShadow: '0 1px 2px rgba(17, 66, 98, 0.2)',
+          },
+
+          '&.Mui-disabled': {
+            opacity: 0.5,
+            backgroundColor: (theme) => theme.palette.grey[400],
+            color: (theme) => theme.palette.grey[100],
+            boxShadow: 'none',
+            cursor: 'not-allowed',
+          },
+
+          // Icon sizing
+          '& svg': {
+            fontSize: '20px',
+          },
+        },
+      },
+
+      // Menu items in dropdown
+      '& .MuiTablePagination-menuItem': {
+        fontSize: '0.875rem',
+        '&:hover': {
+          backgroundColor: (theme) => theme.palette.primary[50],
+        },
+        '&.Mui-selected': {
+          backgroundColor: (theme) => theme.palette.primary[100],
+          fontWeight: 600,
+          '&:hover': {
+            backgroundColor: (theme) => theme.palette.primary[200],
+          },
+        },
+      },
     },
   },
   enableColumnActions: false,

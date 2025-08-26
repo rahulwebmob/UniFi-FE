@@ -12,23 +12,22 @@ const ContentSkeleton = ({ isPurchased }) => {
             <Card
               sx={{
                 display: 'flex',
-                flexDirection: 'row',
-                borderRadius: '12px',
+                borderRadius: 1.5,
                 overflow: 'hidden',
-                height: '150px',
+                height: 150,
                 width: '100%',
-                border: '1px solid',
+                border: 1,
                 borderColor: (theme) => theme.palette.grey[200],
                 backgroundColor: (theme) => theme.palette.background.paper,
               }}
             >
-              <Box sx={{ width: '180px', flexShrink: 0, p: 1.5 }}>
+              <Box sx={{ width: 180, flexShrink: 0, p: 1.5 }}>
                 <Skeleton
                   variant="rectangular"
                   sx={{
                     width: '100%',
                     height: '100%',
-                    borderRadius: '8px',
+                    borderRadius: 1,
                   }}
                 />
               </Box>
@@ -41,11 +40,11 @@ const ContentSkeleton = ({ isPurchased }) => {
                 <Box sx={{ display: 'flex', gap: 0.5, mb: 2 }}>
                   <Skeleton
                     variant="rectangular"
-                    sx={{ width: 80, height: 24, borderRadius: '20px' }}
+                    sx={{ width: 80, height: 24, borderRadius: 2.5 }}
                   />
                   <Skeleton
                     variant="rectangular"
-                    sx={{ width: 60, height: 24, borderRadius: '20px' }}
+                    sx={{ width: 60, height: 24, borderRadius: 2.5 }}
                   />
                 </Box>
                 <Box sx={{ flexGrow: 1 }} />
@@ -74,7 +73,7 @@ const ContentSkeleton = ({ isPurchased }) => {
               flexDirection: 'column',
               border: '1px solid',
               borderColor: (theme) => theme.palette.grey[200],
-              backgroundColor: 'white',
+              backgroundColor: (theme) => theme.palette.background.paper,
             }}
           >
             <Box

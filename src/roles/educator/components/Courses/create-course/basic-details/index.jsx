@@ -149,8 +149,10 @@ const BasicDetails = () => {
                     <ButtonGroup variant="outlined" sx={{ ml: 2 }}>
                       <Button
                         sx={{
-                          backgroundColor: !value ? 'primary.main' : 'white',
-                          color: !value ? 'white' : 'text.secondary',
+                          backgroundColor: !value
+                            ? 'primary.main'
+                            : (theme) => theme.palette.background.paper,
+                          color: !value ? (theme) => theme.palette.common.white : 'text.secondary',
                           borderColor: !value ? 'primary.main' : theme.palette.grey[300],
                           textTransform: 'none',
                           px: 3,
@@ -165,8 +167,10 @@ const BasicDetails = () => {
                       </Button>
                       <Button
                         sx={{
-                          backgroundColor: value ? 'primary.main' : 'white',
-                          color: value ? 'white' : 'text.secondary',
+                          backgroundColor: value
+                            ? 'primary.main'
+                            : (theme) => theme.palette.background.paper,
+                          color: value ? (theme) => theme.palette.common.white : 'text.secondary',
                           borderColor: value ? 'primary.main' : theme.palette.grey[300],
                           textTransform: 'none',
                           px: 3,

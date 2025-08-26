@@ -25,18 +25,18 @@ const CourseCard = ({ course, isPurchased }) => {
         onClick={handleCardClick}
         sx={{
           display: 'flex',
-          borderRadius: '12px',
+          borderRadius: 1.5,
           boxShadow: 1,
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           overflow: 'hidden',
-          height: '150px',
+          height: 150,
           width: '100%',
         }}
       >
         <Box
           sx={{
-            width: '180px',
+            width: 180,
             flexShrink: 0,
             p: 1.5,
             display: 'flex',
@@ -48,7 +48,7 @@ const CourseCard = ({ course, isPurchased }) => {
             sx={{
               width: '100%',
               height: '100%',
-              borderRadius: '8px',
+              borderRadius: 1,
               overflow: 'hidden',
               backgroundColor: 'grey.100',
             }}

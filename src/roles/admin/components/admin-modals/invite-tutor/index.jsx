@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Button, TextField, Typography } from '@mui/material'
+import { X, Send } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
 import * as Yup from 'yup'
@@ -38,23 +39,14 @@ const InviiteApplicant = ({ onClose }) => {
   return (
     <Box
       component="form"
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2.5,
-        p: 1,
-      }}
+      display="flex"
+      flexDirection="column"
+      gap={2.5}
+      p={1}
       onSubmit={(e) => void handleSubmit(onSubmit)(e)}
     >
       <Box>
-        <Typography
-          variant="body2"
-          sx={{
-            mb: 0.5,
-            fontWeight: 500,
-            color: 'text.secondary',
-          }}
-        >
+        <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
           First Name
         </Typography>
         <Controller
@@ -71,7 +63,7 @@ const InviiteApplicant = ({ onClose }) => {
               helperText={errors.firstName?.message}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
+                  borderRadius: 1,
                 },
               }}
             />
@@ -80,14 +72,7 @@ const InviiteApplicant = ({ onClose }) => {
       </Box>
 
       <Box>
-        <Typography
-          variant="body2"
-          sx={{
-            mb: 0.5,
-            fontWeight: 500,
-            color: 'text.secondary',
-          }}
-        >
+        <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
           Last Name
         </Typography>
         <Controller
@@ -104,7 +89,7 @@ const InviiteApplicant = ({ onClose }) => {
               helperText={errors.lastName?.message}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
+                  borderRadius: 1,
                 },
               }}
             />
@@ -113,14 +98,7 @@ const InviiteApplicant = ({ onClose }) => {
       </Box>
 
       <Box>
-        <Typography
-          variant="body2"
-          sx={{
-            mb: 0.5,
-            fontWeight: 500,
-            color: 'text.secondary',
-          }}
-        >
+        <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
           Email
         </Typography>
         <Controller
@@ -137,7 +115,7 @@ const InviiteApplicant = ({ onClose }) => {
               helperText={errors.email?.message}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
+                  borderRadius: 1,
                 },
               }}
             />
@@ -146,14 +124,7 @@ const InviiteApplicant = ({ onClose }) => {
       </Box>
 
       <Box>
-        <Typography
-          variant="body2"
-          sx={{
-            mb: 0.5,
-            fontWeight: 500,
-            color: 'text.secondary',
-          }}
-        >
+        <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
           Onboarding Form Link
         </Typography>
         <Controller
@@ -170,7 +141,7 @@ const InviiteApplicant = ({ onClose }) => {
               helperText={errors.url?.message}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
+                  borderRadius: 1,
                 },
               }}
             />
@@ -182,9 +153,10 @@ const InviiteApplicant = ({ onClose }) => {
         <Button
           variant="outlined"
           onClick={onClose}
+          startIcon={<X size={18} />}
           sx={{
             textTransform: 'none',
-            borderRadius: '8px',
+            borderRadius: 1,
             fontWeight: 600,
             px: 3,
           }}
@@ -194,9 +166,10 @@ const InviiteApplicant = ({ onClose }) => {
         <Button
           type="submit"
           variant="contained"
+          startIcon={<Send size={18} />}
           sx={{
             textTransform: 'none',
-            borderRadius: '8px',
+            borderRadius: 1,
             fontWeight: 600,
             px: 3,
           }}

@@ -1,4 +1,5 @@
 import { Box, Button, TextField, FormLabel, Typography, FormHelperText } from '@mui/material'
+import { X, XCircle } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
@@ -8,7 +9,7 @@ const DeclineApplicant = ({ onDelete, onClose }) => {
 
   return (
     <Box>
-      <Typography variant="h4">Confirm</Typography>
+      <Typography variant="h6">Confirm</Typography>
       <Typography variant="body1">Are you sure you want to decline this application?</Typography>
       <Box mt={2}>
         <FormLabel>Please specify the reason:</FormLabel>
@@ -32,12 +33,18 @@ const DeclineApplicant = ({ onDelete, onClose }) => {
         )}
       </Box>
       <Box display="flex" justifyContent="space-between" mt={4} gap={2}>
-        <Button variant="contained" color="secondary" fullWidth onClick={onClose}>
+        <Button
+          fullWidth
+          color="secondary"
+          onClick={onClose}
+          variant="contained"
+          startIcon={<X size={18} />}
+        >
           Cancel
         </Button>
         <Button
           variant="contained"
-          sx={{ backgroundColor: (theme) => theme.palette.error.main }}
+          color="error"
           fullWidth
           onClick={() => {
             if (declinationReason?.trim()) {
@@ -46,6 +53,7 @@ const DeclineApplicant = ({ onDelete, onClose }) => {
               setShowError(true)
             }
           }}
+          startIcon={<XCircle size={18} />}
         >
           Decline
         </Button>

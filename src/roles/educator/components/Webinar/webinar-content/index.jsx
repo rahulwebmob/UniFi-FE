@@ -120,7 +120,6 @@ const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
               <Typography
                 variant="h3"
                 sx={{
-                  fontWeight: 700,
                   color: theme.palette.text.primary,
                   mb: 2,
                   fontSize: { xs: '1.8rem', md: '2.2rem' },

@@ -192,7 +192,7 @@ const Payments = () => {
 
   return (
     <>
-      <Typography variant="h6" fontWeight={600} mb={2.5}>
+      <Typography variant="h6" mb={2.5}>
         {t('application:PROFILE.EDUCATION_PAYMENTS')}
       </Typography>
 
@@ -211,6 +211,20 @@ const Payments = () => {
               enableDensityToggle: false,
               enableFullScreenToggle: false,
               enableHiding: false,
+              muiTableContainerProps: {
+                sx: {
+                  maxHeight: 'calc(100vh - 400px)',
+                  minHeight: '300px',
+                  '& .MuiPaper-root': {
+                    maxHeight: '100%',
+                  },
+                },
+              },
+              muiTablePaperProps: {
+                sx: {
+                  boxShadow: 'none',
+                },
+              },
             }}
           />
         </ApiMiddleware>

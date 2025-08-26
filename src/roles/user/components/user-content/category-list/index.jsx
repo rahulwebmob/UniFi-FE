@@ -1,4 +1,4 @@
-import { Box, Tooltip } from '@mui/material'
+import { Box, Tooltip, alpha } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useEffect, useRef, useState } from 'react'
 
@@ -72,9 +72,9 @@ const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) =>
         fontSize: (theme) => theme.typography.caption.fontSize,
         fontWeight: (theme) => theme.typography.fontWeightMedium,
         color: (theme) => theme.palette.common.white,
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: (theme) => alpha(theme.palette.common.black, 0.4),
         backdropFilter: 'blur(8px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
+        border: (theme) => `1px solid ${alpha(theme.palette.common.white, 0.2)}`,
         px: 1,
         py: 0.25,
         borderRadius: '20px',
@@ -131,7 +131,7 @@ const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) =>
               flexShrink: 0,
               '&:hover': {
                 backgroundColor: isOnImage
-                  ? 'rgba(0, 0, 0, 0.6)'
+                  ? (theme) => alpha(theme.palette.common.black, 0.6)
                   : (theme) => theme.palette.grey[100],
               },
             }}

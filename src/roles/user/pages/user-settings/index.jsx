@@ -106,10 +106,11 @@ const MyProfile = () => {
             display: !isSm ? 'flex' : 'none',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            backgroundColor: theme.palette.background.light,
-            borderRadius: 1.5,
             p: 2,
             height: '100%',
+            backgroundColor: theme.palette.background.light,
+            borderRadius: 1.5,
+            boxShadow: (theme) => theme.customShadows.primary,
           }}
         >
           <Tabs
@@ -207,6 +208,7 @@ const MyProfile = () => {
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
+            boxShadow: (theme) => theme.customShadows.primary,
           }}
         >
           <Box

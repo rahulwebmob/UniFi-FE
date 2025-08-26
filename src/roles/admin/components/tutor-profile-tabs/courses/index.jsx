@@ -1,4 +1,4 @@
-import { Box, Chip, Typography, useTheme } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -33,10 +33,10 @@ const Courses = () => {
         Cell: (tableProps) => {
           const { cell } = tableProps
           const thumbnail = cell.getValue()
-          return thumbnail ? (
+          return (
             <Box
               component="img"
-              src={thumbnail}
+              src={thumbnail || ''}
               alt="Course thumbnail"
               sx={{
                 width: 80,
@@ -45,22 +45,6 @@ const Courses = () => {
                 borderRadius: '8px',
               }}
             />
-          ) : (
-            <Box
-              sx={{
-                width: 80,
-                height: 60,
-                backgroundColor: theme.palette.grey[200],
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Typography variant="caption" color="text.secondary">
-                No Image
-              </Typography>
-            </Box>
           )
         },
       },
@@ -70,7 +54,11 @@ const Courses = () => {
         size: 200,
         Cell: (tableProps) => {
           const { cell } = tableProps
-          return <Typography sx={{ fontWeight: 500 }}>{cell.getValue() || '-'}</Typography>
+          return (
+            <Typography variant="p" fontWeight={500}>
+              {cell.getValue() || '-'}
+            </Typography>
+          )
         },
       },
       {
@@ -98,34 +86,6 @@ const Courses = () => {
         },
       },
       {
-        accessorKey: 'category',
-        header: 'Categories',
-        size: 200,
-        Cell: (tableProps) => {
-          const { cell } = tableProps
-          const categories = cell.getValue()
-          return categories?.length ? (
-            <Box display="flex" gap={0.5} flexWrap="wrap">
-              {categories.map((category) => (
-                <Chip
-                  key={category}
-                  label={category}
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                  sx={{
-                    borderRadius: '6px',
-                    fontSize: '0.75rem',
-                  }}
-                />
-              ))}
-            </Box>
-          ) : (
-            <Typography variant="body2">-</Typography>
-          )
-        },
-      },
-      {
         accessorKey: 'price',
         header: 'Price',
         size: 100,
@@ -134,6 +94,7 @@ const Courses = () => {
           const price = cell.getValue()
           return (
             <Typography
+              variant="p"
               sx={{
                 fontWeight: 600,
                 color: theme.palette.success.main,
@@ -196,36 +157,16 @@ const Courses = () => {
       <Typography
         variant="h6"
         sx={{
-          fontWeight: 600,
           mb: 2,
-          color: theme.palette.text.primary,
         }}
       >
         Courses
       </Typography>
 
-      {coursesData.length > 0 ? (
-        <>
-          <MaterialReactTable table={table} />
-          {coursesDetails?.data && (
-            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-              <PaginationComponent data={coursesDetails.data} page={page} setPage={setPage} />
-            </Box>
-          )}
-        </>
-      ) : (
-        <Box
-          sx={{
-            p: 4,
-            textAlign: 'center',
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: '8px',
-            border: `1px solid ${theme.palette.divider}`,
-          }}
-        >
-          <Typography variant="body1" color="text.secondary">
-            No courses available
-          </Typography>
+      <MaterialReactTable table={table} />
+      {coursesDetails?.data && (
+        <Box mt={2} display="flex" justifyContent="center">
+          <PaginationComponent data={coursesDetails.data} page={page} setPage={setPage} />
         </Box>
       )}
     </Box>

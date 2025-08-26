@@ -47,6 +47,7 @@ const gradients = {
 
 // UniCitizens shadow system with brand colors
 const customShadows = {
+  // Standard shadows
   card: `0px 1px 3px ${alpha(colors.primary.main, 0.04)}, 0px 2px 8px ${alpha(colors.primary.dark, 0.08)}`,
   dialog: `0px 4px 16px ${alpha(colors.primary.main, 0.08)}, 0px 8px 32px ${alpha(colors.primary.dark, 0.12)}`,
   dropdown: `0px 2px 8px ${alpha(colors.grey[600], 0.15)}, 0px 4px 16px ${alpha(colors.grey[600], 0.1)}`,
@@ -54,10 +55,31 @@ const customShadows = {
   button: `0px 2px 4px ${alpha(colors.primary.main, 0.15)}, 0px 4px 8px ${alpha(colors.primary.main, 0.1)}`,
   buttonHover: `0px 4px 12px ${alpha(colors.primary.main, 0.2)}, 0px 8px 24px ${alpha(colors.primary.main, 0.15)}`,
   colored: `0px 4px 16px ${alpha(colors.primary.main, 0.18)}`,
+
+  // Content shadows (matching the one you're using)
+  content: '0px 0px 10px 0px rgba(0, 0, 0, 0.1)',
+  contentHover: '0px 0px 15px 0px rgba(0, 0, 0, 0.15)',
+
+  // Brand colored shadows
+  primary: `0px 0px 10px 0px ${alpha(colors.primary.main, 0.15)}`,
+  primaryStrong: `0px 0px 15px 0px ${alpha(colors.primary.main, 0.25)}`,
+  primarySubtle: `0px 0px 8px 0px ${alpha(colors.primary.main, 0.08)}`,
+
+  secondary: `0px 0px 10px 0px ${alpha(colors.secondary.main, 0.15)}`,
+  secondaryStrong: `0px 0px 15px 0px ${alpha(colors.secondary.main, 0.25)}`,
+  secondarySubtle: `0px 0px 8px 0px ${alpha(colors.secondary.main, 0.08)}`,
+
+  // Elevation levels (neutral)
   elevation1: `0px 1px 2px ${alpha('#000000', 0.05)}`,
   elevation2: `0px 1px 3px ${alpha('#000000', 0.04)}, 0px 1px 2px ${alpha('#000000', 0.06)}`,
   elevation3: `0px 2px 4px ${alpha('#000000', 0.04)}, 0px 2px 8px ${alpha('#000000', 0.06)}`,
   elevation4: `0px 4px 8px ${alpha('#000000', 0.04)}, 0px 4px 16px ${alpha('#000000', 0.08)}`,
+
+  // Special effects
+  glow: `0px 0px 20px 0px ${alpha(colors.primary.main, 0.3)}`,
+  soft: '0px 2px 8px 0px rgba(0, 0, 0, 0.06)',
+  medium: '0px 4px 12px 0px rgba(0, 0, 0, 0.08)',
+  strong: '0px 8px 24px 0px rgba(0, 0, 0, 0.12)',
 }
 
 // Create base theme with enhanced foundations

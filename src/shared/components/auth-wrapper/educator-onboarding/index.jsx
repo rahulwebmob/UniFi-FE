@@ -594,7 +594,7 @@ const Educator = () => {
               {renderHeader()}
 
               {/* Fixed Title */}
-              <Typography variant="h5" fontWeight={600} textAlign="center" mb={3}>
+              <Typography variant="h5" textAlign="center" mb={3}>
                 {t('REGISTER_EDUCATOR.APPLICATION_FORM')}
               </Typography>
 

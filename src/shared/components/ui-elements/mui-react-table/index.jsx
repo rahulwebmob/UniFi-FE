@@ -13,8 +13,32 @@ const MuiReactTable = ({
   localization = {},
   materialReactProps = {},
   returnTableInstance = false,
+  height = 'auto', // New prop with default value
 }) => {
   const { i18n } = useTranslation()
+
+  // Override default height if custom height is provided
+  const tablePaperProps = {
+    ...MaterialReactTableDefaults.muiTablePaperProps,
+    ...materialReactProps?.muiTablePaperProps,
+    sx: {
+      ...MaterialReactTableDefaults.muiTablePaperProps?.sx,
+      height, // Use the height prop
+      display: height === 'auto' ? 'block' : 'flex',
+      ...materialReactProps?.muiTablePaperProps?.sx,
+    },
+  }
+
+  const tableContainerProps = {
+    ...MaterialReactTableDefaults.muiTableContainerProps,
+    ...materialReactProps?.muiTableContainerProps,
+    sx: {
+      ...MaterialReactTableDefaults.muiTableContainerProps?.sx,
+      flex: height === 'auto' ? 'none' : 1,
+      maxHeight: height === 'auto' ? 'none' : undefined,
+      ...materialReactProps?.muiTableContainerProps?.sx,
+    },
+  }
 
   const tableOptions = {
     columns,
@@ -27,11 +51,9 @@ const MuiReactTable = ({
     // Custom empty state with NoDataFound component (can be overridden)
     renderEmptyRowsFallback: () => <NoDataFound isTable />,
     ...materialReactProps,
-    // Merge sx props properly
-    muiTablePaperProps: {
-      ...MaterialReactTableDefaults.muiTablePaperProps,
-      ...materialReactProps?.muiTablePaperProps,
-    },
+    // Merge props with height-aware overrides
+    muiTablePaperProps: tablePaperProps,
+    muiTableContainerProps: tableContainerProps,
     muiTableHeadCellProps: {
       ...MaterialReactTableDefaults.muiTableHeadCellProps,
       ...materialReactProps?.muiTableHeadCellProps,
@@ -65,6 +87,7 @@ MuiReactTable.propTypes = {
   localization: PropTypes.object,
   materialReactProps: PropTypes.object,
   returnTableInstance: PropTypes.bool,
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 }
 
 export default MuiReactTable

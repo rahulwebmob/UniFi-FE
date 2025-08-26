@@ -5,7 +5,7 @@ import PurchasedContent from '../../components/user-content/purchased-content'
 
 const EducationLanding = () => (
   <Box>
-    <Box sx={{ mb: 3 }}>
+    <Box mb={3}>
       <Typography variant="h4">Overview</Typography>
       <Typography component="p" color="text.secondary">
         View and access your purchased courses or webinars anytime, anywhere.

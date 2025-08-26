@@ -1,20 +1,17 @@
 import {
   Box,
-  List,
   AppBar,
   Avatar,
-  Drawer,
   Toolbar,
-  ListItem,
   useTheme,
   IconButton,
   Typography,
-  ListItemText,
-  ListItemIcon,
   useMediaQuery,
-  ListItemButton,
+  Menu,
+  MenuItem,
+  Divider,
 } from '@mui/material'
-import { Settings, CreditCard, LayoutDashboard } from 'lucide-react'
+import { Settings, CreditCard, Home } from 'lucide-react'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -28,7 +25,8 @@ const UserHeader = () => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
 
   const { user } = useSelector((state) => state.user)
 
@@ -36,7 +34,7 @@ const UserHeader = () => {
     {
       id: 'dashboard',
       label: 'Dashboard',
-      icon: LayoutDashboard,
+      icon: Home,
       path: '/dashboard',
       isActive: () =>
         location.pathname === '/dashboard' ||
@@ -60,52 +58,46 @@ const UserHeader = () => {
     },
   ]
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen)
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null)
   }
 
   const handleProfileClick = () => {
     navigate(`/settings/profile/${user._id}`)
-    setMobileOpen(false)
+    handleMenuClose()
   }
 
   const handleNavigation = (path) => {
     navigate(path)
-    setMobileOpen(false)
+    handleMenuClose()
   }
 
-  const renderNavigationItem = (item) => {
-    const isActive = item.isActive()
-    const Icon = item.icon
-
-    return (
-      <ListItem key={item.id} disablePadding>
-        <ListItemButton
-          onClick={() => handleNavigation(item.path)}
-          selected={isActive}
-          sx={{
-            mx: 1,
-            borderRadius: 1,
-            '&.Mui-selected': {
-              backgroundColor: (theme) => `${theme.palette.primary.main}08`,
-              '&:hover': {
-                backgroundColor: (theme) => `${theme.palette.primary.main}12`,
-              },
-            },
-            '&:hover': {
-              backgroundColor: 'action.hover',
-              cursor: 'pointer',
-            },
-          }}
-        >
-          <ListItemIcon sx={{ minWidth: 40 }}>
-            <Icon size={20} style={{ color: 'var(--mui-palette-text-secondary)' }} />
-          </ListItemIcon>
-          <ListItemText primary={item.label} />
-        </ListItemButton>
-      </ListItem>
-    )
-  }
+  const renderUserProfile = () => (
+    <Box display="flex" alignItems="center" gap={1.5}>
+      <Avatar
+        sx={{
+          width: 36,
+          height: 36,
+          backgroundColor: (theme) => theme.palette.primary[100],
+          color: 'primary.main',
+        }}
+      >
+        {user.firstName?.charAt(0) ?? 'U'}
+      </Avatar>
+      <Box sx={{ lineHeight: 0.5 }}>
+        <Typography variant="body2" fontWeight={600}>
+          {user.firstName} {user.lastName}
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          {user.email}
+        </Typography>
+      </Box>
+    </Box>
+  )
 
   const renderDesktopNavItem = (item) => {
     const isActive = item.isActive()
@@ -130,46 +122,6 @@ const UserHeader = () => {
     )
   }
 
-  const renderUserProfile = () => (
-    <Box display="flex" alignItems="center" gap={2}>
-      <Avatar
-        sx={{
-          width: 48,
-          height: 48,
-          backgroundColor: (theme) => theme.palette.primary[100],
-          color: 'primary.main',
-        }}
-      >
-        {user.firstName?.charAt(0) ?? 'U'}
-      </Avatar>
-      <Box>
-        <Typography variant="subtitle1" fontWeight={600}>
-          {user.firstName} {user.lastName}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {user.email}
-        </Typography>
-      </Box>
-    </Box>
-  )
-
-  const renderDrawer = () => (
-    <Box height="100%" display="flex" flexDirection="column">
-      <Box
-        p={2}
-        sx={{
-          borderBottom: (theme) => `1px solid ${theme.palette.grey[200]}`,
-        }}
-      >
-        {renderUserProfile()}
-      </Box>
-
-      <List pt={2} sx={{ flex: 1 }}>
-        {navigationItems.map(renderNavigationItem)}
-      </List>
-    </Box>
-  )
-
   const renderLogo = () => (
     <Box display="flex" alignItems="center" mr={4}>
       <Box
@@ -185,7 +137,6 @@ const UserHeader = () => {
       <Typography
         variant="h6"
         sx={{
-          fontWeight: 700,
           letterSpacing: 3.84,
           fontSize: { xs: '16px', sm: '18px' },
           color: 'text.primary',
@@ -209,20 +160,6 @@ const UserHeader = () => {
         }}
       >
         <Toolbar sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
-          <IconButton
-            onClick={handleDrawerToggle}
-            sx={{
-              mr: 2,
-              color: 'text.primary',
-              display: { xs: 'inline-flex', md: 'none' },
-              '&:hover': {
-                backgroundColor: 'action.hover',
-              },
-            }}
-          >
-            <CustomSvgIcon icon="drawer" />
-          </IconButton>
-
           {renderLogo()}
 
           {!isMobile && (
@@ -233,66 +170,80 @@ const UserHeader = () => {
 
           <Box flexGrow={1} />
 
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: { xs: 1, sm: 2 },
-            }}
-          >
-            {!isMobile && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  px: 1,
-                  py: 0.5,
-                  borderRadius: 1,
-                  '&:hover': {
-                    backgroundColor: 'action.hover',
-                  },
-                }}
-                onClick={handleProfileClick}
-              >
-                <Avatar
-                  sx={{
-                    width: 32,
-                    height: 32,
-                    mr: 1,
-                    backgroundColor: (theme) => theme.palette.grey[300],
-                    color: 'text.primary',
-                  }}
-                >
-                  <Typography variant="caption">{user.firstName?.charAt(0) ?? 'U'}</Typography>
-                </Avatar>
-                <Typography variant="body2" fontWeight={500}>
-                  {user.firstName} {user.lastName}
-                </Typography>
-              </Box>
-            )}
-          </Box>
+          {isMobile && (
+            <IconButton
+              onClick={handleMenuOpen}
+              sx={{
+                color: 'text.primary',
+              }}
+            >
+              <CustomSvgIcon icon="drawer" />
+            </IconButton>
+          )}
+
+          {!isMobile && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                px: 1,
+                py: 0.5,
+                borderRadius: 1,
+                '&:hover': {
+                  backgroundColor: 'action.hover',
+                },
+              }}
+              onClick={handleProfileClick}
+            >
+              {renderUserProfile()}
+            </Box>
+          )}
         </Toolbar>
       </AppBar>
 
-      <Drawer
-        anchor="left"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        sx={{
-          display: { xs: 'block', md: 'none' },
-          '& .MuiDrawer-paper': {
-            boxSizing: 'border-box',
-            width: 280,
-            backgroundColor: 'background.paper',
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleMenuClose}
+        PaperProps={{
+          sx: {
+            mt: 1,
+            minWidth: 200,
           },
         }}
       >
-        {renderDrawer()}
-      </Drawer>
+        <Box px={2} py={1}>
+          {renderUserProfile()}
+        </Box>
+
+        <Divider />
+
+        {navigationItems.map((item) => {
+          const Icon = item.icon
+          const isActive = item.isActive()
+
+          return (
+            <MenuItem
+              key={item.id}
+              onClick={() => handleNavigation(item.path)}
+              sx={{
+                py: 1.5,
+                px: 2,
+                gap: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                color: isActive ? 'primary.main' : 'text.primary',
+                fontWeight: isActive ? 600 : 400,
+                backgroundColor: isActive ? 'action.selected' : 'transparent',
+              }}
+            >
+              <Icon size={18} />
+              <Typography variant="body2">{item.label}</Typography>
+            </MenuItem>
+          )
+        })}
+      </Menu>
     </>
   )
 }

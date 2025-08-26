@@ -1,6 +1,5 @@
-import { Box, Chip, alpha, Button, useTheme, Typography } from '@mui/material'
-import { FileDown } from 'lucide-react'
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
+import { Box, Chip, Button, Typography } from '@mui/material'
+import { FileDown, Calendar } from 'lucide-react'
 import { useMemo, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
@@ -10,17 +9,18 @@ import {
   useGetEducationAdminInvoiceQuery,
   useLazyDownloadAdminInvoiceQuery,
 } from '../../../../services/admin'
+import ApiMiddleware from '../../../../shared/components/api-middleware'
+import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 import { generateInvoicePdf } from '../../../../utils/globalUtils'
 
 const AdminInvoices = () => {
-  const theme = useTheme()
   const dispatch = useDispatch()
   const [page, setPage] = useState(1)
   const { t } = useTranslation('application')
 
   const [downloadAdminInvoice] = useLazyDownloadAdminInvoiceQuery()
-  const { data } = useGetEducationAdminInvoiceQuery({ page, pageSize: 10 })
+  const { data, isLoading, error } = useGetEducationAdminInvoiceQuery({ page, pageSize: 10 })
 
   const columnsList = useMemo(
     () =>
@@ -54,7 +54,13 @@ const AdminInvoices = () => {
         Cell: (tableProps) => {
           const { row } = tableProps
           const { firstName, lastName } = row.original
-          return <Typography>{`${firstName || ''} ${lastName || ''}`.trim() || '-'}</Typography>
+          return (
+            <Box display="flex" alignItems="center" gap={0.5}>
+              <Typography variant="body2">
+                {`${firstName || ''} ${lastName || ''}`.trim() || '-'}
+              </Typography>
+            </Box>
+          )
         },
       },
       {
@@ -62,7 +68,11 @@ const AdminInvoices = () => {
         header: 'User Email',
         Cell: (tableProps) => {
           const { cell } = tableProps
-          return <Typography>{cell.getValue() || '-'}</Typography>
+          return (
+            <Box display="flex" alignItems="center" gap={0.5}>
+              <Typography variant="body2">{cell.getValue() || '-'}</Typography>
+            </Box>
+          )
         },
       },
       {
@@ -70,7 +80,11 @@ const AdminInvoices = () => {
         header: 'Educator Email',
         Cell: (tableProps) => {
           const { cell } = tableProps
-          return <Typography>{cell.getValue() || '-'}</Typography>
+          return (
+            <Box display="flex" alignItems="center" gap={0.5}>
+              <Typography variant="body2">{cell.getValue() || '-'}</Typography>
+            </Box>
+          )
         },
       },
       {
@@ -78,22 +92,13 @@ const AdminInvoices = () => {
         header: 'Purchase Type',
         Cell: (tableProps) => {
           const { cell } = tableProps
-          const theme = useTheme()
           const moduleType = cell.getValue()
           return moduleType ? (
-            <Chip
-              label={moduleType}
-              size="small"
-              sx={{
-                textTransform: 'capitalize',
-                fontWeight: 500,
-                borderRadius: '6px',
-                backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                color: theme.palette.primary.main,
-              }}
-            />
+            <Box display="flex" alignItems="center" gap={0.5}>
+              <Chip label={moduleType} size="small" color="primary" />
+            </Box>
           ) : (
-            <Typography component="span">-</Typography>
+            <Typography variant="body2">-</Typography>
           )
         },
       },
@@ -102,18 +107,13 @@ const AdminInvoices = () => {
         header: 'Purchase Amount',
         Cell: (tableProps) => {
           const { cell } = tableProps
-          const theme = useTheme()
           const amount = cell.getValue()
           return (
-            <Typography
-              component="span"
-              sx={{
-                fontWeight: 600,
-                color: theme.palette.success.main,
-              }}
-            >
-              {amount ? `$${amount}` : '-'}
-            </Typography>
+            <Box display="flex" alignItems="center" gap={0.5}>
+              <Typography variant="body2" fontWeight={600} color="success.main">
+                {amount ? `$${amount}` : '-'}
+              </Typography>
+            </Box>
           )
         },
       },
@@ -123,7 +123,14 @@ const AdminInvoices = () => {
         Cell: (tableProps) => {
           const { cell } = tableProps
           const value = cell.getValue()
-          return <Typography>{value ? new Date(value).toLocaleString() : '-'}</Typography>
+          return (
+            <Box display="flex" alignItems="center" gap={0.5}>
+              <Calendar size={14} />
+              <Typography variant="body2">
+                {value ? new Date(value).toLocaleDateString() : '-'}
+              </Typography>
+            </Box>
+          )
         },
       },
       {
@@ -137,7 +144,7 @@ const AdminInvoices = () => {
             <Button
               variant="contained"
               size="small"
-              startIcon={<FileDown size={16} />}
+              startIcon={<FileDown size={14} />}
               onClick={() => {
                 void (async () => {
                   try {
@@ -162,11 +169,6 @@ const AdminInvoices = () => {
                   }
                 })()
               }}
-              sx={{
-                textTransform: 'none',
-                borderRadius: '8px',
-                fontWeight: 600,
-              }}
             >
               Download
             </Button>
@@ -178,64 +180,59 @@ const AdminInvoices = () => {
     [],
   )
 
-  const table = useMaterialReactTable({
-    columns,
-    data: columnsList ?? [],
-    getRowId: (row) => row.userId || '',
-    enablePagination: false,
-    enableTopToolbar: false,
-    enableBottomToolbar: false,
-    enableColumnActions: false,
-    enableColumnFilters: false,
-    enableSorting: false,
-    enableDensityToggle: false,
-    enableFullScreenToggle: false,
-    enableGlobalFilter: false,
-    enableHiding: false,
-    meta: {
-      downloadAdminInvoice,
-      handleSuccessAlert,
-    },
-  })
-
   return (
-    <Box>
-      <Box sx={{ mb: 3 }}>
-        <Typography
-          variant="h4"
+    <ApiMiddleware
+      error={error}
+      isLoading={isLoading}
+      isData={!!columnsList?.length}
+      text="No Invoices Found"
+      description="There are no invoices available at the moment."
+    >
+      <Box>
+        <Box mb={3}>
+          <Typography variant="h4" mb={0.5}>
+            <Box display="flex" alignItems="center" gap={1}>
+              Invoices
+            </Box>
+          </Typography>
+          <Typography color="text.secondary">Manage and download transaction invoices</Typography>
+        </Box>
+
+        <Box
           sx={{
-            fontWeight: 600,
-            mb: 0.5,
-            color: theme.palette.primary.main,
+            p: 2,
+            mb: 4,
+            borderRadius: 1,
+            backgroundColor: (theme) => theme.palette.background.light,
+            boxShadow: (theme) => theme.customShadows.primary,
           }}
         >
-          Invoices
-        </Typography>
-        <Typography component="p" color="text.secondary">
-          Manage and download transaction invoices
-        </Typography>
-      </Box>
+          <MuiReactTable
+            columns={columns}
+            rows={columnsList ?? []}
+            height="auto"
+            materialReactProps={{
+              getRowId: (row) => row.userId || '',
+              enableColumnActions: false,
+              enableDensityToggle: false,
+              enableFullScreenToggle: false,
+              meta: {
+                downloadAdminInvoice,
+                handleSuccessAlert,
+              },
+            }}
+          />
 
-      <MaterialReactTable table={table} />
-
-      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-        <PaginationComponent
-          data={
-            data?.data
-              ? {
-                  count: data.data.count,
-                  totalPages: Math.ceil(data.data.count / 10),
-                }
-              : undefined
-          }
-          page={page}
-          setPage={setPage}
-          disabled={false}
-          customStyle={{}}
-          scrollToTop={() => window.scrollTo(0, 0)}
-        />
+          <Box mt={2} display="flex" justifyContent="center">
+            <PaginationComponent
+              data={{ count: data?.data?.count }}
+              page={page}
+              setPage={setPage}
+            />
+          </Box>
+        </Box>
       </Box>
-    </Box>
+    </ApiMiddleware>
   )
 }
 

@@ -38,7 +38,7 @@ const NoDataFound = ({ title, description, isTable = false }) => {
           }}
         />
       </Box>
-      <Typography variant="h5" mb={1} fontWeight={600}>
+      <Typography variant="h5" mb={1}>
         {title ?? t('application:UI.NO_DATA_FOUND.TITLE')}
       </Typography>
       <Typography variant="body2" color="text.secondary">
