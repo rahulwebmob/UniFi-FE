@@ -18,7 +18,6 @@ import { CloudUpload, RotateCcw, Save } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
 import { errorAlert } from '../../../../../../../../redux/reducers/app-slice'
@@ -43,7 +42,6 @@ const AddLesson = ({
   handleClose,
   defaultValues,
 }) => {
-  const { t } = useTranslation('education')
   const theme = useTheme()
   const dispatch = useDispatch()
   const fileInputRef = useRef(null)
@@ -101,7 +99,7 @@ const AddLesson = ({
     if (awsControllerRef.current) {
       setUploadProgress(0)
       awsControllerRef.current.abort()
-      dispatch(errorAlert({ message: t('EDUCATOR.ADD_CHAPTERS.UPLOAD_CANCELLED') }))
+      dispatch(errorAlert({ message: 'Upload cancelled' }))
       uploadPrompt.current.closeModal()
     }
   }
@@ -205,13 +203,13 @@ const AddLesson = ({
     const validationErrors = {}
 
     if (isChapter && !newChapterTitle.trim()) {
-      validationErrors.chapterTitle = t('EDUCATOR.ADD_CHAPTERS.CHAPTER_TITLE_REQUIRED')
+      validationErrors.chapterTitle = 'Chapter title is required'
     }
     if (!formData.lessonTitle.trim()) {
-      validationErrors.lessonTitle = t('EDUCATOR.ADD_CHAPTERS.LESSON_TITLE_REQUIRED')
+      validationErrors.lessonTitle = 'Lesson title is required'
     }
     if (!isEdit && !resource) {
-      validationErrors.resource = t('EDUCATOR.ADD_CHAPTERS.RESOURCE_REQUIRED')
+      validationErrors.resource = 'Resource is required'
     }
 
     setErrors(validationErrors)
@@ -232,7 +230,7 @@ const AddLesson = ({
       {!isChapter && (
         <Grid size={12}>
           <Typography variant="h6" fontWeight={500}>
-            {t('EDUCATOR.ADD_CHAPTERS.LESSON_DETAILS')}
+            Lesson Details
           </Typography>
         </Grid>
       )}
@@ -240,13 +238,13 @@ const AddLesson = ({
         <Grid size={{ xs: 12, md: 6 }}>
           <FormControl fullWidth>
             <Typography variant="body1" mb={1} fontWeight={500}>
-              {t('EDUCATOR.ADD_CHAPTERS.CHAPTER_TITLE')}{' '}
+              Chapter Title{' '}
               <Typography variant="body1" color="error.main" component="span">
                 *
               </Typography>{' '}
             </Typography>
             <TextField
-              placeholder={t('EDUCATOR.ADD_CHAPTERS.CHAPTER_TITLE_PLACEHOLDER')}
+              placeholder="Enter chapter title"
               size="small"
               fullWidth
               value={newChapterTitle}
@@ -260,7 +258,7 @@ const AddLesson = ({
       <Grid size={{ xs: 12, md: 6 }}>
         <FormControl fullWidth>
           <Typography variant="body1" mb={1} fontWeight={500}>
-            {t('EDUCATOR.ADD_CHAPTERS.LESSON_TITLE')}{' '}
+            Lesson Title{' '}
             <Typography variant="body1" color="error.main" component="span">
               *
             </Typography>{' '}
@@ -268,7 +266,7 @@ const AddLesson = ({
           <TextField
             value={formData.lessonTitle}
             onChange={(e) => handleChange('lessonTitle', e.target.value)}
-            placeholder={t('EDUCATOR.ADD_CHAPTERS.LESSON_TITLE')}
+            placeholder="Enter lesson title"
             size="small"
             error={!!errors.lessonTitle}
             helperText={errors.lessonTitle}
@@ -278,9 +276,9 @@ const AddLesson = ({
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <FormControl fullWidth>
-          <Tooltip title={t('EDUCATOR.ADD_CHAPTERS.UPLOAD_RESOURCE')}>
+          <Tooltip title="Upload Resource (PDF/Video)">
             <Typography variant="body1" mb={1} fontWeight={500} noWrap sx={{ maxWidth: '300px' }}>
-              {t('EDUCATOR.ADD_CHAPTERS.UPLOAD_RESOURCE')}{' '}
+              Upload Resource (PDF/Video){' '}
               <Typography variant="body1" color="error.main" component="span">
                 *
               </Typography>{' '}
@@ -317,7 +315,7 @@ const AddLesson = ({
               startIcon={<CloudUpload size={20} />}
               size="small"
             >
-              {t('EDUCATOR.ADD_CHAPTERS.BROWSE')}
+              Browse
             </Button>
             <Typography
               variant="body2"
@@ -341,7 +339,7 @@ const AddLesson = ({
       {!isCourseFree && (
         <Grid size={{ xs: 12, md: 6 }}>
           <Typography variant="body1" mb={1} fontWeight={500}>
-            {t('EDUCATOR.ADD_CHAPTERS.LESSON_TYPE')}
+            Lesson Type
           </Typography>
           <FormControl component="fieldset" fullWidth>
             <RadioGroup
@@ -352,16 +350,8 @@ const AddLesson = ({
                 py: 1,
               }}
             >
-              <FormControlLabel
-                value={false}
-                control={<Radio color="primary" />}
-                label={t('EDUCATOR.COMMON_KEYS.PAID')}
-              />
-              <FormControlLabel
-                value
-                control={<Radio color="primary" />}
-                label={t('EDUCATOR.COMMON_KEYS.FREE')}
-              />
+              <FormControlLabel value={false} control={<Radio color="primary" />} label="Paid" />
+              <FormControlLabel value control={<Radio color="primary" />} label="Free" />
             </RadioGroup>
           </FormControl>
         </Grid>
@@ -378,15 +368,15 @@ const AddLesson = ({
               endIcon={isLoading && <CircularProgress size="1em" />}
               size="small"
             >
-              {t('EDUCATOR.ADD_CHAPTERS.SAVE_LESSON')}
+              Save Lesson
             </Button>
             {isChapter ? (
               <Button variant="outlined" color="error" onClick={handleReset} size="small">
-                {t('EDUCATOR.ADD_CHAPTERS.RESET')}
+                Reset
               </Button>
             ) : (
               <Button onClick={handleClose} variant="outlined" color="error" size="small">
-                {t('EDUCATOR.ADD_CHAPTERS.CLOSE')}
+                Close
               </Button>
             )}
           </Box>
@@ -414,7 +404,7 @@ const AddLesson = ({
           justifyContent="space-between"
           mb={2}
         >
-          <Typography variant="h6">{t('EDUCATOR.ADD_CHAPTERS.CHAPTER_DETAILS')}</Typography>
+          <Typography variant="h6">Chapter Details</Typography>
           <Box display="flex" gap="10px" mt={1}>
             <Button
               onClick={handleOnSubmit}
@@ -425,7 +415,7 @@ const AddLesson = ({
               endIcon={isLoading && <CircularProgress size="1em" />}
               size="small"
             >
-              {t('EDUCATOR.ADD_CHAPTERS.SAVE_CHAPTER')}
+              Save Chapter
             </Button>
             <IconButton
               color="error"

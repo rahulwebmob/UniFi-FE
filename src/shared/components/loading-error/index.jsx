@@ -1,10 +1,8 @@
 import { Box, useTheme, Typography } from '@mui/material'
-import { useTranslation } from 'react-i18next'
 
 import LodingIssueIcon from '../../../assets/svgicons/loading-issue.svg?react'
 
 const LoadingError = () => {
-  const { t } = useTranslation('application')
   const theme = useTheme()
   return (
     <Box
@@ -35,10 +33,10 @@ const LoadingError = () => {
           />
         </Box>
         <Typography variant="h3" mb={1} mt={1}>
-          {t('application:UI.LOADING_ERROR.TROUBLE_PROMPT')}
+          We had some trouble loading this page.
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          {t('application:UI.LOADING_ERROR.REFRESH_PROMPT')}
+          Please try refreshing the page or check your internet connectivity,
         </Typography>
       </Box>
     </Box>

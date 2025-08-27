@@ -1,6 +1,5 @@
 import { Box, Button, useTheme, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
-import { useTranslation } from 'react-i18next'
 
 const DeleteModal = ({
   selectedValue = '',
@@ -9,12 +8,11 @@ const DeleteModal = ({
   isSubmitting = false,
   deleteText = '',
 }) => {
-  const { t } = useTranslation('application')
   const theme = useTheme()
 
   return (
     <Box>
-      <Typography variant="h6">{deleteText || t('application:CORE.DELETE_MODAL.DESC')}</Typography>
+      <Typography variant="h6">{deleteText || 'Are you sure you want to delete?'}</Typography>
       <Typography
         variant="body2"
         fontStyle="italic"
@@ -31,10 +29,10 @@ const DeleteModal = ({
           onClick={() => submit()}
           disabled={isSubmitting}
         >
-          {t('application:CORE.DELETE_MODAL.YES')}
+          Yes
         </Button>
         <Button size="small" sx={{ ml: 1 }} variant="contained" onClick={() => closeModal()}>
-          {t('application:CORE.DELETE_MODAL.NO')}
+          No
         </Button>
       </Box>
     </Box>

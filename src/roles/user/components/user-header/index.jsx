@@ -11,12 +11,13 @@ import {
   MenuItem,
   Divider,
 } from '@mui/material'
-import { Settings, CreditCard, Home } from 'lucide-react'
+import { Settings, CreditCard, Home, LogOut } from 'lucide-react'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import MainLogo from '../../../../assets/logo.svg'
+import LogoutWrapper from '../../../../shared/components/auth-wrapper/logout'
 import CustomSvgIcon from '../../../../shared/components/custom-svg-icon'
 
 const UserHeader = () => {
@@ -243,6 +244,32 @@ const UserHeader = () => {
             </MenuItem>
           )
         })}
+
+        <Divider sx={{ my: 0.5 }} />
+
+        <LogoutWrapper
+          type="user"
+          component={
+            <MenuItem
+              sx={{
+                py: 1.5,
+                px: 2,
+                gap: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                color: 'error.main',
+                '&:hover': {
+                  backgroundColor: (theme) =>
+                    theme.palette.error.lighter || 'rgba(211, 47, 47, 0.04)',
+                  color: 'error.main',
+                },
+              }}
+            >
+              <LogOut size={18} />
+              <Typography variant="body2">Logout</Typography>
+            </MenuItem>
+          }
+        />
       </Menu>
     </>
   )

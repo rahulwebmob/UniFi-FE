@@ -2,13 +2,10 @@ import { Box, Grid, TextField, IconButton, Typography, FormControl } from '@mui/
 import { XCircle, PlusCircle } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { Controller, useFieldArray } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 import RequiredFieldIndicator from '../../../ui-elements/required-field-indicator'
 
 const Links = ({ control }) => {
-  const { t } = useTranslation('education')
-
   const {
     fields: webUrlFields,
     append,
@@ -23,14 +20,14 @@ const Links = ({ control }) => {
       <Grid container spacing={1}>
         <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
           <FormControl fullWidth>
-            <Typography variant="body1">{t('REGISTER_EDUCATOR.LINKS_PAGE.LINKEDIN')}</Typography>
+            <Typography variant="body1">LinkedIn</Typography>
             <Controller
               name="linkedinUrl"
               control={control}
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
-                  placeholder={t('REGISTER_EDUCATOR.LINKS_PAGE.HTTPS')}
+                  placeholder="https://..."
                   size="small"
                   error={!!fieldState.error}
                   helperText={fieldState.error?.message}
@@ -42,7 +39,7 @@ const Links = ({ control }) => {
         <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
           <FormControl fullWidth>
             <Typography variant="body1">
-              {t('REGISTER_EDUCATOR.LINKS_PAGE.TWITTER')}
+              X (Twitter)
               <RequiredFieldIndicator />
             </Typography>
             <Controller
@@ -51,7 +48,7 @@ const Links = ({ control }) => {
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
-                  placeholder={t('REGISTER_EDUCATOR.LINKS_PAGE.HTTPS')}
+                  placeholder="https://..."
                   size="small"
                   error={!!fieldState.error}
                   helperText={fieldState.error?.message}
@@ -62,14 +59,14 @@ const Links = ({ control }) => {
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
           <FormControl fullWidth>
-            <Typography variant="body1">{t('REGISTER_EDUCATOR.LINKS_PAGE.YOUTUBE')}</Typography>
+            <Typography variant="body1">YouTube</Typography>
             <Controller
               name="youtubeUrl"
               control={control}
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
-                  placeholder={t('REGISTER_EDUCATOR.LINKS_PAGE.HTTPS')}
+                  placeholder="https://..."
                   size="small"
                   error={!!fieldState.error}
                   helperText={fieldState.error?.message}
@@ -80,14 +77,14 @@ const Links = ({ control }) => {
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
           <FormControl fullWidth>
-            <Typography variant="body1">{t('REGISTER_EDUCATOR.LINKS_PAGE.WEBSITE_URL')}</Typography>
+            <Typography variant="body1">Website URL</Typography>
             <Controller
               name="websiteUrl"
               control={control}
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
-                  placeholder={t('REGISTER_EDUCATOR.LINKS_PAGE.HTTPS')}
+                  placeholder="https://..."
                   size="small"
                   error={!!fieldState.error}
                   helperText={fieldState.error?.message}
@@ -97,9 +94,7 @@ const Links = ({ control }) => {
           </FormControl>
         </Grid>
         <Grid size={{ xs: 12 }}>
-          <Typography variant="body1">
-            {t('REGISTER_EDUCATOR.LINKS_PAGE.PROFILES_ON_OTHER_SITES.LABEL')}
-          </Typography>
+          <Typography variant="body1">Profiles on Other Sites</Typography>
           {webUrlFields.map((f, index) => (
             <Box display="flex" alignItems="center" key={f.id}>
               <Grid size={{ xs: 10, sm: 11, lg: 11 }}>
@@ -108,14 +103,12 @@ const Links = ({ control }) => {
                     name={`otherProfileUrls.${index}.link`}
                     control={control}
                     rules={{
-                      required: t(
-                        'REGISTER_EDUCATOR.LINKS_PAGE.PROFILES_ON_OTHER_SITES.VALIDATION',
-                      ),
+                      required: 'Profile link is required',
                     }}
                     render={({ field, fieldState }) => (
                       <TextField
                         {...field}
-                        placeholder={t('REGISTER_EDUCATOR.LINKS_PAGE.HTTPS')}
+                        placeholder="https://..."
                         size="small"
                         fullWidth
                         error={!!fieldState.error}

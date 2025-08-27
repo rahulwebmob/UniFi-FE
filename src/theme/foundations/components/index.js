@@ -392,6 +392,13 @@ export const MuiButton = {
       '&:focus-visible': {
         outline: 'none',
       },
+      '&:disabled': {
+        backgroundColor: theme.palette.grey[200],
+        color: theme.palette.grey[500],
+        opacity: 0.7,
+        cursor: 'not-allowed',
+        boxShadow: 'none',
+      },
     }),
 
     sizeLarge: ({ theme }) => ({
@@ -419,6 +426,15 @@ export const MuiButton = {
         transform: 'translateY(0)',
         boxShadow: '0 2px 8px rgba(17, 66, 98, 0.2)',
       },
+      '&:disabled': {
+        background: 'none',
+        backgroundColor: theme.palette.grey[200],
+        color: theme.palette.grey[500],
+        opacity: 0.7,
+        cursor: 'not-allowed',
+        boxShadow: 'none',
+        transform: 'none',
+      },
     }),
 
     containedSecondary: ({ theme }) => ({
@@ -435,6 +451,15 @@ export const MuiButton = {
       '&:active': {
         transform: 'translateY(0)',
         boxShadow: '0 2px 8px rgba(32, 133, 68, 0.2)',
+      },
+      '&:disabled': {
+        background: 'none',
+        backgroundColor: theme.palette.grey[200],
+        color: theme.palette.grey[500],
+        opacity: 0.7,
+        cursor: 'not-allowed',
+        boxShadow: 'none',
+        transform: 'none',
       },
     }),
 
@@ -455,8 +480,12 @@ export const MuiButton = {
       },
       '&:disabled': {
         background: 'none',
-        backgroundColor: theme.palette.action.disabledBackground,
-        color: theme.palette.action.disabled,
+        backgroundColor: theme.palette.grey[200],
+        color: theme.palette.grey[500],
+        opacity: 0.7,
+        cursor: 'not-allowed',
+        boxShadow: 'none',
+        transform: 'none',
       },
     }),
 
@@ -468,6 +497,13 @@ export const MuiButton = {
         backgroundColor: `${theme.palette.primary.main}08`,
         borderWidth: 1.5,
       },
+      '&:disabled': {
+        backgroundColor: theme.palette.grey[200],
+        color: theme.palette.grey[500],
+        borderWidth: 2,
+        opacity: 0.7,
+        cursor: 'not-allowed',
+      },
     }),
 
     outlinedPrimary: ({ theme }) => ({
@@ -477,6 +513,13 @@ export const MuiButton = {
         borderColor: theme.palette.primary.dark,
         backgroundColor: `${theme.palette.primary.main}08`,
       },
+      '&:disabled': {
+        backgroundColor: theme.palette.grey[200],
+        color: theme.palette.grey[500],
+        borderWidth: 2,
+        opacity: 0.7,
+        cursor: 'not-allowed',
+      },
     }),
 
     outlinedError: ({ theme }) => ({
@@ -485,6 +528,13 @@ export const MuiButton = {
       '&:hover': {
         borderColor: theme.palette.error.dark,
         backgroundColor: `${theme.palette.error.main}08`,
+      },
+      '&:disabled': {
+        backgroundColor: theme.palette.grey[200],
+        color: theme.palette.grey[500],
+        borderWidth: 2,
+        opacity: 0.7,
+        cursor: 'not-allowed',
       },
     }),
 

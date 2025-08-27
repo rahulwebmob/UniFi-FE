@@ -1,12 +1,10 @@
 import { Box, useTheme, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
-import { useTranslation } from 'react-i18next'
 
 import NoDataIcon from '../../../assets/svgicons/no-data.svg?react'
 
 const NoDataFound = ({ title, description, isTable = false }) => {
   const theme = useTheme()
-  const { t } = useTranslation('application')
 
   return (
     <Box
@@ -39,10 +37,10 @@ const NoDataFound = ({ title, description, isTable = false }) => {
         />
       </Box>
       <Typography variant="h5" mb={1}>
-        {title ?? t('application:UI.NO_DATA_FOUND.TITLE')}
+        {title ?? "There's no data available."}
       </Typography>
       <Typography variant="body2" color="text.secondary">
-        {description ?? t('application:UI.NO_DATA_FOUND.DESCRIPTION')}
+        {description ?? 'Please try changing your filters or search for something else.'}
       </Typography>
     </Box>
   )

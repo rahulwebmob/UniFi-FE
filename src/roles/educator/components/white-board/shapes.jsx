@@ -1,13 +1,11 @@
 import { Box, Tooltip, IconButton } from '@mui/material'
 import { Minus, Square, Circle, Triangle, RectangleHorizontal } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { ShapeTypes } from './constants'
 import GenerateShape from './generate-shape'
 
 const Shapes = () => {
-  const { t } = useTranslation('application')
   const canvasId = useSelector((state) => state.education.canvasId)
   const { fillColor, strokeColor } = useSelector((state) => state.education)
 
@@ -21,7 +19,7 @@ const Shapes = () => {
 
   return (
     <Box>
-      <Tooltip title={t('CONFERENCE.WHITE_BOARD.SHAPES.LINE')} arrow placement="top">
+      <Tooltip title="Line" arrow placement="top">
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()
@@ -33,7 +31,7 @@ const Shapes = () => {
           <Minus size={24} />
         </IconButton>
       </Tooltip>
-      <Tooltip title={t('CONFERENCE.WHITE_BOARD.SHAPES.SQUARE')} arrow placement="top">
+      <Tooltip title="Square" arrow placement="top">
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()
@@ -45,7 +43,7 @@ const Shapes = () => {
           <Square size={24} />
         </IconButton>
       </Tooltip>
-      <Tooltip title={t('CONFERENCE.WHITE_BOARD.SHAPES.RECTANGLE')} arrow placement="top">
+      <Tooltip title="Rectangle" arrow placement="top">
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()
@@ -57,7 +55,7 @@ const Shapes = () => {
           <RectangleHorizontal size={24} />
         </IconButton>
       </Tooltip>
-      <Tooltip title={t('CONFERENCE.WHITE_BOARD.SHAPES.TRIANGLE')} arrow placement="top">
+      <Tooltip title="Triangle" arrow placement="top">
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()
@@ -69,7 +67,7 @@ const Shapes = () => {
           <Triangle size={24} />
         </IconButton>
       </Tooltip>
-      <Tooltip title={t('CONFERENCE.WHITE_BOARD.SHAPES.CIRCLE')} arrow placement="top">
+      <Tooltip title="Circle" arrow placement="top">
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()
@@ -81,7 +79,7 @@ const Shapes = () => {
           <Circle size={24} />
         </IconButton>
       </Tooltip>
-      <Tooltip title={t('CONFERENCE.WHITE_BOARD.SHAPES.OVAL')} arrow placement="top">
+      <Tooltip title="Oval" arrow placement="top">
         <IconButton
           onClick={() => {
             const canvas = getFabricCanvas()

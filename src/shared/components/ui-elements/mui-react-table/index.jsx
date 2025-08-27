@@ -1,6 +1,5 @@
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import PropTypes from 'prop-types'
-import { useTranslation } from 'react-i18next'
 
 import { MaterialReactTableDefaults } from '../../../../theme/foundations/components'
 import NoDataFound from '../../no-data-found'
@@ -15,8 +14,6 @@ const MuiReactTable = ({
   returnTableInstance = false,
   height = 'auto', // New prop with default value
 }) => {
-  const { i18n } = useTranslation()
-
   // Override default height if custom height is provided
   const tablePaperProps = {
     ...MaterialReactTableDefaults.muiTablePaperProps,
@@ -44,7 +41,7 @@ const MuiReactTable = ({
     columns,
     data: rows,
     localization: {
-      ...languageLocalization[i18n.language],
+      ...languageLocalization['en'],
       ...localization,
     },
     ...MaterialReactTableDefaults,

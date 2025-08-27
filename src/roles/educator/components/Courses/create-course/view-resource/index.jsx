@@ -2,7 +2,6 @@ import { Box, Button } from '@mui/material'
 import { Video, FileText, Lock } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useRef, useState, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { useDownloadResourceMutation } from '../../../../../../services/admin'
@@ -12,7 +11,6 @@ import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
 const ViewResource = ({ lessonDetail, isEdit }) => {
   const videoRef = useRef(null)
   const navigate = useNavigate()
-  const { t } = useTranslation('education')
   const [resourceUrl, setResourceUrl] = useState('')
   const [downloadResource] = useDownloadResourceMutation()
 
@@ -58,9 +56,7 @@ const ViewResource = ({ lessonDetail, isEdit }) => {
           onClick={isEdit ? handleViewResource : handleRedirectLesson}
           disabled={lessonDetail?.status !== 'completed'}
         >
-          {isPdf
-            ? t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.VIEW_RESOURCE.READ_PDF')
-            : t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.VIEW_RESOURCE.WATCH_VIDEO')}
+          {isPdf ? 'Read PDF' : 'Watch Video'}
         </Button>
       ) : (
         <Button
@@ -70,7 +66,7 @@ const ViewResource = ({ lessonDetail, isEdit }) => {
           onClick={() => {}}
           color="warning"
         >
-          {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.VIEW_RESOURCE.LOCK')}
+          Locked
         </Button>
       )}
 

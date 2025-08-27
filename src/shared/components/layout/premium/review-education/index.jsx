@@ -1,7 +1,6 @@
 import { Box, Button, Divider, useTheme, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
 import { useBuyPremiumSubscriptionMutation } from '../../../../../services/admin'
@@ -12,7 +11,6 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
 
   const theme = useTheme()
   const dispatch = useDispatch()
-  const { t } = useTranslation('application')
   const [buyPremiumSubscription, { isLoading }] = useBuyPremiumSubscriptionMutation()
 
   const { firstName, lastName, country, state, city, address } = transactionInfo
@@ -93,7 +91,7 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
     >
       <Box p={3}>
         <Typography component="p" display="block" mt={2}>
-          {t('application:PREMIUM_MODAL.BILLING_DETAILS')}
+          Billing Details:
         </Typography>
         <Typography color="text.secondary" sx={{ wordWrap: 'break-word' }} component="p" mt={1}>
           {billingAddress}
@@ -124,7 +122,7 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
 
       <Box px={3} pb={3}>
         <Box className="TotalBilling">
-          {t('application:PREMIUM_MODAL.PAYBALE')}
+          Payable Now:
           <Typography> ${purchaseDetails?.price}</Typography>
         </Box>
         <Box
@@ -147,8 +145,7 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
             fontSize="13px"
             fontWeight={100}
           >
-            <b>{t('application:PREMIUM_MODAL.NOTE')}:</b>{' '}
-            {t('application:PREMIUM_MODAL.TRANSACTION_INFO')}
+            <b>Note:</b> Please do not refresh the page when transaction is in-progress.
           </Typography>
           <Box display="flex" gap={2}>
             <Button
@@ -166,7 +163,7 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
               variant="contained"
               sx={{ borderRadius: '8px', fontWeight: 600 }}
             >
-              {t('application:PREMIUM_MODAL.PAY_NOW')}
+              Pay Now
             </Button>
           </Box>
         </Box>

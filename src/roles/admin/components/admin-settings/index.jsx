@@ -12,7 +12,6 @@ import { Save } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { forwardRef, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import * as yup from 'yup'
 
@@ -22,7 +21,6 @@ import ChangePassword from '../../../../shared/components/auth-wrapper/change-pa
 import ModalBox from '../../../../shared/components/ui-elements/modal-box'
 
 const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
-  const { t } = useTranslation('application')
   const dispatch = useDispatch()
   const matches = useMediaQuery((theme) => theme.breakpoints.down('sm'))
   const [updateName] = useEditAdminProfileMutation()
@@ -32,13 +30,13 @@ const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
       firstName: yup
         .string()
         .trim()
-        .required(t('application:PROFILE.VALIDATION_FIRSTNAME_REQ'))
-        .max(100, t('application:PROFILE.VALIDATION_FIRSTNAME_MAX')),
+        .required('First name is required')
+        .max(100, 'First name cannot exceed 100 characters'),
       lastName: yup
         .string()
         .trim()
-        .required(t('application:PROFILE.VALIDATION_LASTNAME_REQ'))
-        .max(100, t('application:PROFILE.VALIDATION_LASTNAME_MAX')),
+        .required('Last name is required')
+        .max(100, 'Last name cannot exceed 100 characters'),
     }),
   )
 
@@ -98,13 +96,13 @@ const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
         <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
           <Box pb={3}>
             <Typography variant="h6" mb={2.5}>
-              {t('application:PROFILE.PERSONAL_INFO')}
+              Personal Information
             </Typography>
 
             <Box display="grid" gridTemplateColumns={!matches ? '1fr 1fr' : '1fr'} gap={2.5}>
               <FormControl fullWidth>
                 <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
-                  {t('application:PROFILE.FIRST_NAME')}
+                  First Name
                 </Typography>
                 <Controller
                   name="firstName"
@@ -115,7 +113,7 @@ const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
                       size="small"
                       variant="outlined"
                       fullWidth
-                      placeholder={t('application:PROFILE.PLACEHOLDER_FIRST_NAME')}
+                      placeholder="Enter your first name"
                       {...field}
                       error={!!errors.firstName}
                       helperText={errors.firstName?.message}
@@ -126,7 +124,7 @@ const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
 
               <FormControl fullWidth>
                 <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
-                  {t('application:PROFILE.LAST_NAME')}
+                  Last Name
                 </Typography>
                 <Controller
                   name="lastName"
@@ -137,7 +135,7 @@ const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
                       size="small"
                       variant="outlined"
                       fullWidth
-                      placeholder={t('application:PROFILE.PLACEHOLDER_LAST_NAME')}
+                      placeholder="Enter your last name"
                       {...field}
                       error={!!errors.lastName}
                       helperText={errors.lastName?.message}
@@ -154,7 +152,7 @@ const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
               startIcon={<Save size={18} />}
               sx={{ mt: 2.5 }}
             >
-              {t('application:MISCELLANEOUS.SAVE')}
+              Save
             </Button>
           </Box>
         </form>
@@ -163,7 +161,7 @@ const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
 
         <Box>
           <Typography variant="h6" mb={2.5}>
-            {t('application:PROFILE.CHANGE_PASSWORD')}
+            Reset Password
           </Typography>
           <ChangePassword
             closeModal={() => {

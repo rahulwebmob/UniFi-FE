@@ -4,7 +4,6 @@ import { Box, Tooltip, useTheme, IconButton } from '@mui/material'
 import * as fabric from 'fabric'
 import { Type, Move, Pencil, Trash2, Download, RotateCcw } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 import useWindowOpen from '../../../../hooks/useWindowOpen'
@@ -26,7 +25,6 @@ let canvas = null
 const WhiteBoardToolbar = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
-  const { t } = useTranslation('application')
   const { strokeColor, eraserWidth, strokeWidth } = useSelector((state) => state.education)
   const [selectedTool, setSelectedTool] = useState('brush')
   const openWindow = useWindowOpen()
@@ -160,11 +158,7 @@ const WhiteBoardToolbar = () => {
       <Box className="toolField" p={1}>
         <ToolBarSection className="brushWidth">
           <Box display="flex">
-            <Tooltip
-              title={t('application:CONFERENCE.WHITE_BOARD.PENCIL_TOOL')}
-              arrow
-              placement="top"
-            >
+            <Tooltip title="Pencil Tool" arrow placement="top">
               <IconButton
                 onClick={() => {
                   dispatch(updateStrokeColor(theme.palette.text.primary))
@@ -188,7 +182,7 @@ const WhiteBoardToolbar = () => {
           />
         </ToolBarSection>
         <ToolBarSection>
-          <Tooltip title={t('application:CONFERENCE.WHITE_BOARD.MOVE_TOOL')} arrow placement="top">
+          <Tooltip title="Move Tool" arrow placement="top">
             <IconButton
               onClick={() => {
                 if (canvas) {
@@ -201,7 +195,7 @@ const WhiteBoardToolbar = () => {
               <Move size={24} />
             </IconButton>
           </Tooltip>
-          <Tooltip title={t('application:CONFERENCE.WHITE_BOARD.TEXT_TOOL')} arrow placement="top">
+          <Tooltip title="Text Tool" arrow placement="top">
             <IconButton
               onClick={() => {
                 handleAddInputField()
@@ -210,11 +204,7 @@ const WhiteBoardToolbar = () => {
               <Type size={24} />
             </IconButton>
           </Tooltip>
-          <Tooltip
-            title={t('application:CONFERENCE.WHITE_BOARD.DELETE_TOOL')}
-            arrow
-            placement="top"
-          >
+          <Tooltip title="Delete Tool" arrow placement="top">
             <IconButton
               color="error"
               onClick={() => {
@@ -229,16 +219,12 @@ const WhiteBoardToolbar = () => {
           <Shapes />
         </ToolBarSection>
         <ToolBarSection>
-          <Tooltip
-            title={t('application:CONFERENCE.WHITE_BOARD.UPLOAD_IMAGE')}
-            arrow
-            placement="top"
-          >
+          <Tooltip title="Upload Image" arrow placement="top">
             <Box component="span">
               <UploadImage />
             </Box>
           </Tooltip>
-          <Tooltip title={t('application:CONFERENCE.WHITE_BOARD.DOWNLOAD')} arrow placement="top">
+          <Tooltip title="Download" arrow placement="top">
             <IconButton
               onClick={() => {
                 handleDownload()
@@ -247,11 +233,7 @@ const WhiteBoardToolbar = () => {
               <Download size={24} />
             </IconButton>
           </Tooltip>
-          <Tooltip
-            title={t('application:CONFERENCE.WHITE_BOARD.CLEAR_CANVAS')}
-            arrow
-            placement="top"
-          >
+          <Tooltip title="Clear Canvas" arrow placement="top">
             <IconButton
               onClick={() => {
                 handleClearCanvas()

@@ -2,7 +2,6 @@ import { Box, Button, Typography } from '@mui/material'
 import Lottie from 'lottie-react'
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import Spinner from '../../../../assets/spinner.json'
@@ -11,8 +10,6 @@ import { useGetParticularWebinarDetailQuery } from '../../../../services/educati
 const WaitingRoom = ({ handleInit }) => {
   const { roomId } = useParams()
   const navigate = useNavigate()
-
-  const { t } = useTranslation('education')
 
   const { data, isLoading } = useGetParticularWebinarDetailQuery(
     { webinarId: roomId },
@@ -55,11 +52,11 @@ const WaitingRoom = ({ handleInit }) => {
       >
         <Lottie className="lottie" animationData={Spinner} loop />
         <Typography component="p" color="secondary">
-          {t('EDUCATION_DASHBOARD.MAIN_PAGE.WAITING_ROOM')}
+          Please wait while we prepare your webinar room...
         </Typography>
 
         <Button variant="contained" sx={{ mt: 2 }} onClick={() => handleInit()}>
-          {t('EDUCATION_DASHBOARD.COMMON_KEYS.JOIN_NOW')}
+          Join Now
         </Button>
       </Box>
     </Box>

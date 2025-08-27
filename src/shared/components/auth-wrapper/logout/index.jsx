@@ -1,12 +1,10 @@
 import { Box, Button, Typography } from '@mui/material'
+import { X, LogOut } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useRef } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import LANGUAGES from '../../../../constants/languages'
-import { updateLanguage } from '../../../../redux/reducers/app-slice'
 import { signOut } from '../../../../redux/reducers/user-slice'
 import { useLogoutMutation, useEducatorLogoutMutation } from '../../../../services/admin'
 import { useAdminLogoutMutation } from '../../../../services/onboarding'
@@ -16,7 +14,6 @@ const Logout = ({ component = null, type = 'user' }) => {
   const logoutRef = useRef(null)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { t } = useTranslation('application')
 
   const [userLogout, userLogoutResult] = useLogoutMutation()
   const [adminLogout, adminLogoutResult] = useAdminLogoutMutation()
@@ -37,12 +34,6 @@ const Logout = ({ component = null, type = 'user' }) => {
     }
   }
 
-  const handleLanguageChange = () => {
-    const item = 'ENGLISH'
-    const lang = LANGUAGES[item]
-    dispatch(updateLanguage({ ...lang, value: item }))
-  }
-
   const handleCloseModal = () => {
     logoutRef.current?.closeModal()
   }
@@ -59,7 +50,6 @@ const Logout = ({ component = null, type = 'user' }) => {
 
       if (response?.data) {
         dispatch(signOut())
-        handleLanguageChange()
         await navigate('/')
         handleCloseModal()
       }
@@ -76,13 +66,13 @@ const Logout = ({ component = null, type = 'user' }) => {
         </Box>
       ) : (
         <Button variant="contained" onClick={handleOpenModal}>
-          {t('application:PROFILE.LOGOUT')}
+          Logout
         </Button>
       )}
 
       <ModalBox ref={logoutRef} size="sm">
         <Typography variant="h6" sx={{ fontWeight: 500 }}>
-          {t('application:PROFILE.LOGOUT_DESC')}
+          Are you sure you want to logout?
         </Typography>
         <Box mt={3} display="flex" gap="10px" justifyContent="flex-start">
           <Button
@@ -91,8 +81,9 @@ const Logout = ({ component = null, type = 'user' }) => {
             size="small"
             onClick={handleCloseModal}
             disabled={isLoading}
+            startIcon={<X size={16} />}
           >
-            {t('application:MISCELLANEOUS.CANCEL')}
+            Cancel
           </Button>
           <Button
             variant="contained"
@@ -101,8 +92,9 @@ const Logout = ({ component = null, type = 'user' }) => {
             onClick={() => {
               handleLogout()
             }}
+            startIcon={!isLoading && <LogOut size={16} />}
           >
-            {isLoading ? 'Logging out...' : t('application:PROFILE.LOGOUT')}
+            {isLoading ? 'Logging out...' : 'Logout'}
           </Button>
         </Box>
       </ModalBox>

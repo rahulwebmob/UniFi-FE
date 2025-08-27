@@ -21,7 +21,6 @@ import MainLogo from '../../../../assets/logo.svg'
 import { signIn } from '../../../../redux/reducers/user-slice'
 import { useLoginMutation, useEducatorLoginMutation } from '../../../../services/admin'
 import { useAdminLoginMutation } from '../../../../services/onboarding'
-import { initializeSocket } from '../../../../services/sockets'
 import ForgetPassword from '../forget-password'
 import ResendEmail from '../resend-email'
 
@@ -88,11 +87,9 @@ const Login = ({ type = '', setIsLoginPage }) => {
           void navigate('/admin')
           break
         case 'educator':
-          void initializeSocket(token, false)
           void navigate('/educator')
           break
         default:
-          void initializeSocket(token)
           setTimeout(() => {
             void navigate('/dashboard')
           }, 100)

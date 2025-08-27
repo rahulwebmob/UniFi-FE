@@ -2,7 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Grid, Button, Divider, TextField, Typography, InputAdornment } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
 
 import CreditCard from '../../../../../assets/images/cards.png'
@@ -11,47 +10,34 @@ import RequiredFieldIndicator from '../../../ui-elements/required-field-indicato
 
 const AddNewCard = ({ subscriptionFormData, setSubscriptionFormData, setCurrentStep }) => {
   const today = new Date()
-  const { t } = useTranslation('application')
   const currentYear = today.getFullYear() % 100
   const currentMonth = today.getMonth() + 1
 
   const schema = yup.object().shape({
     cardNumber: yup
       .string()
-      .required(t('application:PREMIUM_MODAL.VALIDATION_CARD_NUMBER'))
+      .required('Card number is required.')
       .transform((_, originalValue) => originalValue.replace(/\s/g, ''))
-      .test(
-        'Length',
-        t('application:PREMIUM_MODAL.VALIDATION_INVALID_CARD'),
-        (value) => value?.length >= 13 && value?.length <= 16,
-      ),
+      .test('Length', 'Invalid card number', (value) => value?.length >= 13 && value?.length <= 16),
     expDate: yup
       .string()
-      .required(t('application:PREMIUM_MODAL.VALIDATION_EXPIRY_DATE'))
-      .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, t('application:PREMIUM_MODAL.VALIDATION_INVALID_DATE'))
-      .test(
-        'is-valid-exp-date',
-        t('application:PREMIUM_MODAL.VALIDATION_EXPIRATION_DATE'),
-        (value) => {
-          const [monthStr, yearStr] = value.split('/')
-          const month = parseInt(monthStr, 10)
-          const parsedYear = parseInt(yearStr, 10)
-          if (parsedYear < currentYear || parsedYear > currentYear + 100) {
-            return false
-          }
-          return parsedYear === currentYear ? month >= currentMonth : month >= 1 && month <= 12
-        },
-      ),
+      .required('Expiration date is required.')
+      .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, 'Invalid date (MM/YY).')
+      .test('is-valid-exp-date', 'Invalid expiration date.', (value) => {
+        const [monthStr, yearStr] = value.split('/')
+        const month = parseInt(monthStr, 10)
+        const parsedYear = parseInt(yearStr, 10)
+        if (parsedYear < currentYear || parsedYear > currentYear + 100) {
+          return false
+        }
+        return parsedYear === currentYear ? month >= currentMonth : month >= 1 && month <= 12
+      }),
     cardCode: yup
       .string()
-      .required(t('application:PREMIUM_MODAL.VALIDATION_CARD_CODE'))
-      .test(
-        'Length',
-        t('application:PREMIUM_MODAL.VALIDATION_INVALID_CODE'),
-        (value) => value?.length === 3 || value?.length === 4,
-      ),
+      .required('Card code is required.')
+      .test('Length', 'Invalid Length.', (value) => value?.length === 3 || value?.length === 4),
 
-    nameOnCard: yup.string().trim().required(t('application:PREMIUM_MODAL.VALIDATION_NAME_CARD')),
+    nameOnCard: yup.string().trim().required('Name on card is required.'),
   })
 
   const { control, handleSubmit, formState } = useForm({
@@ -91,7 +77,7 @@ const AddNewCard = ({ subscriptionFormData, setSubscriptionFormData, setCurrentS
           <Grid container spacing={1} columnSpacing={2}>
             <Grid size={{ xs: 12 }} mb={1}>
               <Typography component="p">
-                {t('application:PREMIUM_MODAL.CARD_NUMBER')}
+                Card Number
                 <RequiredFieldIndicator />
               </Typography>
 
@@ -129,7 +115,7 @@ const AddNewCard = ({ subscriptionFormData, setSubscriptionFormData, setCurrentS
 
             <Grid size={{ xs: 12, md: 6 }} mb={1}>
               <Typography component="p">
-                {t('application:PREMIUM_MODAL.EXPIRY_DATE')}
+                Expiration Date
                 <RequiredFieldIndicator />
               </Typography>
               <Controller
@@ -141,7 +127,7 @@ const AddNewCard = ({ subscriptionFormData, setSubscriptionFormData, setCurrentS
                     {...field}
                     fullWidth
                     size="small"
-                    placeholder={t('application:PREMIUM_MODAL.EXPIRY_DATE_FORMAT')}
+                    placeholder="MM/YY"
                     variant="outlined"
                     error={!!errors.expDate}
                     helperText={errors.expDate?.message}
@@ -151,7 +137,7 @@ const AddNewCard = ({ subscriptionFormData, setSubscriptionFormData, setCurrentS
             </Grid>
             <Grid size={{ xs: 12, md: 6 }} mb={1}>
               <Typography component="p">
-                {t('application:PREMIUM_MODAL.CVV/CVC')}
+                CVV/CVC
                 <RequiredFieldIndicator />
               </Typography>
               <Controller
@@ -163,7 +149,7 @@ const AddNewCard = ({ subscriptionFormData, setSubscriptionFormData, setCurrentS
                     {...field}
                     fullWidth
                     size="small"
-                    placeholder={t('application:PREMIUM_MODAL.PLACEHOLDER_CVV/CVC')}
+                    placeholder="Enter your card's CVV/CVC"
                     variant="outlined"
                     error={!!errors.cardCode}
                     helperText={errors.cardCode?.message}
@@ -183,7 +169,7 @@ const AddNewCard = ({ subscriptionFormData, setSubscriptionFormData, setCurrentS
             </Grid>
             <Grid size={{ xs: 12 }} mb={1}>
               <Typography component="p">
-                {t('application:PREMIUM_MODAL.NAME_ON_CARD')}
+                Name on Card
                 <RequiredFieldIndicator />
               </Typography>
               <Controller
@@ -195,7 +181,7 @@ const AddNewCard = ({ subscriptionFormData, setSubscriptionFormData, setCurrentS
                     {...field}
                     fullWidth
                     size="small"
-                    placeholder={t('application:PREMIUM_MODAL.NAME_ON_CARD')}
+                    placeholder="Name on Card"
                     variant="outlined"
                     error={!!errors.nameOnCard}
                     helperText={errors.nameOnCard?.message}

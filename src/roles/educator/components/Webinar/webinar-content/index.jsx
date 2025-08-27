@@ -3,7 +3,6 @@ import {
   Card,
   Grid,
   Chip,
-  alpha,
   Avatar,
   Button,
   Divider,
@@ -11,11 +10,11 @@ import {
   CardMedia,
   Typography,
   useTheme,
+  CardContent,
 } from '@mui/material'
 import { format } from 'date-fns'
 import { Users, Calendar, Clock, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { getEducatorDetails } from '../../common/common'
@@ -23,7 +22,6 @@ import { getEducatorDetails } from '../../common/common'
 const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
   const theme = useTheme()
   const navigate = useNavigate()
-  const { t } = useTranslation('education')
 
   const renderEnrollButton = () => {
     if (!webinarData?.isWebinarBought && webinarData?.isPaid) {
@@ -38,20 +36,9 @@ const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
               handlePurchase()
             }
           }}
-          sx={{
-            borderRadius: 2,
-            textTransform: 'none',
-            fontWeight: 600,
-            py: 1.5,
-            boxShadow: 'none',
-            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-            '&:hover': {
-              boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.3)}`,
-            },
-          }}
           startIcon={<ShoppingCart size={20} />}
         >
-          {t('EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.ENROLL_NOW')}
+          Enroll Now
         </Button>
       )
     }
@@ -67,25 +54,8 @@ const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
             navigate(`/dashboard/webinar/${webinarData?._id}`)
           }
         }}
-        sx={{
-          borderRadius: 2,
-          textTransform: 'none',
-          fontWeight: 600,
-          py: 1.5,
-          boxShadow: 'none',
-          background: webinarData?.webinarScheduledObj?.can_join
-            ? `linear-gradient(135deg, ${theme.palette.success.main}, ${theme.palette.success.dark})`
-            : theme.palette.grey[400],
-          '&:hover': {
-            boxShadow: webinarData?.webinarScheduledObj?.can_join
-              ? `0 4px 12px ${alpha(theme.palette.success.main, 0.3)}`
-              : 'none',
-          },
-        }}
       >
-        {webinarData?.webinarScheduledObj?.can_join
-          ? t('EDUCATION_DASHBOARD.COMMON_KEYS.JOIN_NOW')
-          : t('EDUCATION_DASHBOARD.COMMON_KEYS.MEETING_WILL_START_SOON')}
+        {webinarData?.webinarScheduledObj?.can_join ? 'Join Now' : 'Meeting will start soon'}
       </Button>
     )
   }
@@ -93,36 +63,29 @@ const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
   return (
     <Box
       sx={{
+        p: 2,
         minHeight: '100vh',
-        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.03)} 0%, ${alpha(theme.palette.primary.light, 0.05)} 100%)`,
+        borderRadius: '12px',
+        backgroundColor: 'background.light',
+        boxShadow: (theme) => theme.customShadows.primary,
       }}
     >
-      <Container
-        sx={{
-          width: '100%',
-          py: 4,
-          '@media (min-width:1200px)': { maxWidth: '1400px' },
-        }}
-        maxWidth="lg"
-      >
-        {/* Header Section */}
+      <Container maxWidth={false} sx={{ maxWidth: '1500px' }}>
         <Box
           sx={{
+            p: 4,
             mb: 4,
-            p: { xs: 3, md: 4 },
-            background: theme.palette.background.paper,
-            borderRadius: 3,
-            boxShadow: `0 2px 12px ${alpha(theme.palette.primary.main, 0.08)}`,
+            borderRadius: 1,
+            backgroundColor: 'background.paper',
+            boxShadow: (theme) => theme.customShadows.primary,
           }}
         >
           <Grid container spacing={4}>
-            <Grid size={{ xs: 12, md: 7 }}>
+            <Grid size={{ xs: 12, md: 8 }}>
               <Typography
-                variant="h3"
+                variant="h4"
                 sx={{
-                  color: theme.palette.text.primary,
-                  mb: 2,
-                  fontSize: { xs: '1.8rem', md: '2.2rem' },
+                  mb: 3,
                 }}
               >
                 {webinarData?.title}
@@ -212,28 +175,15 @@ const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
                 )}
             </Grid>
 
-            {/* Enrollment Card */}
-            <Grid size={{ xs: 12, md: 5 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Card
                 sx={{
-                  p: 0,
-                  borderRadius: 2,
-                  overflow: 'hidden',
-                  boxShadow: `0 4px 20px ${alpha(theme.palette.primary.main, 0.1)}`,
-                  border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-                  background: theme.palette.background.paper,
+                  borderRadius: 1,
+                  backgroundColor: 'background.paper',
+                  boxShadow: (theme) => theme.customShadows.primary,
                 }}
               >
-                {/* Thumbnail */}
-                <Box
-                  sx={{
-                    width: '100%',
-                    position: 'relative',
-                    paddingTop: '56.25%', // 16:9 aspect ratio
-                    overflow: 'hidden',
-                    background: theme.palette.grey[100],
-                  }}
-                >
+                <Box sx={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>
                   <CardMedia
                     component="img"
                     image={webinarData?.thumbNail}
@@ -244,122 +194,78 @@ const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
                       left: 0,
                       width: '100%',
                       height: '100%',
-                      objectFit: 'contain',
+                      objectFit: 'cover',
                     }}
                   />
-                  {/* Free Badge */}
-                  {!webinarData?.isPaid && (
+                </Box>
+
+                <CardContent sx={{ p: 3 }}>
+                  {webinarData?.isPaid && !webinarData?.isWebinarBought ? (
                     <Box
                       sx={{
-                        position: 'absolute',
-                        top: 16,
-                        left: 16,
-                        background: `linear-gradient(135deg, ${theme.palette.success.main}, ${theme.palette.success.dark})`,
-                        color: 'white',
-                        px: 2.5,
-                        py: 1,
-                        borderRadius: '20px',
+                        mb: 2,
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 0.5,
-                        zIndex: 1,
-                        boxShadow: `0 2px 8px ${alpha(theme.palette.success.main, 0.4)}`,
+                        gap: 1,
+                        justifyContent: 'space-between',
                       }}
                     >
-                      <Typography variant="caption" fontWeight={700} sx={{ letterSpacing: 0.5 }}>
-                        FREE
+                      <Typography variant="p" color="text.secondary">
+                        One-time payment
+                      </Typography>
+                      <Typography variant="h5" color="primary">
+                        ${webinarData?.price || 0}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Box
+                      sx={{
+                        mb: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Typography variant="p" color="text.secondary">
+                        Full access
+                      </Typography>
+                      <Typography variant="h5" color="success.main">
+                        {!webinarData?.isWebinarBought ? 'FREE' : 'PAID'}
                       </Typography>
                     </Box>
                   )}
-                </Box>
-
-                <Box sx={{ p: 3 }}>
-                  {/* Schedule Info */}
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    gap={1}
-                    sx={{
-                      mb: 3,
-                      p: 1.5,
-                      background: alpha(theme.palette.grey[100], 0.5),
-                      borderRadius: 1,
-                    }}
-                  >
-                    <Calendar size={18} color={theme.palette.text.secondary} />
-                    <Typography variant="body2" color="text.secondary">
-                      {webinarData?.webinarScheduledObj?.join_date ? (
-                        <>
-                          <strong>
-                            {format(
-                              new Date(webinarData?.webinarScheduledObj?.join_date),
-                              'EEEE, dd MMMM yyyy',
-                            )}
-                          </strong>{' '}
-                          at{' '}
-                          <strong>
-                            {format(
-                              new Date(webinarData?.webinarScheduledObj?.join_date),
-                              'hh:mm a',
-                            )}
-                          </strong>
-                        </>
-                      ) : (
-                        'Schedule to be announced'
-                      )}
-                    </Typography>
-                  </Box>
-
-                  {/* Price Section */}
-                  {webinarData?.isPaid && !webinarData?.isWebinarBought && (
-                    <Box mb={3}>
-                      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ textTransform: 'uppercase', fontWeight: 600 }}
-                        >
-                          Price
-                        </Typography>
-                        <Typography
-                          variant="h4"
-                          sx={{
-                            fontWeight: 700,
-                            color: theme.palette.primary.main,
-                          }}
-                        >
-                          ${webinarData?.price || 0}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  )}
-
-                  {/* Enroll Button */}
                   {renderEnrollButton()}
-                </Box>
+                </CardContent>
               </Card>
             </Grid>
           </Grid>
         </Box>
-
-        {/* Description Section */}
-        <Box
+        <Typography
+          variant="h5"
           sx={{
-            p: { xs: 3, md: 4 },
-            background: theme.palette.background.paper,
-            borderRadius: 3,
-            boxShadow: `0 2px 12px ${alpha(theme.palette.primary.main, 0.08)}`,
+            mb: 1,
           }}
         >
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 600,
-              mb: 2,
-            }}
-          >
-            About this Webinar
-          </Typography>
+          Webinar Details
+        </Typography>
+        <Typography
+          component="p"
+          sx={{
+            mb: 3,
+            opacity: 0.6,
+          }}
+        >
+          Information about this webinar
+        </Typography>
+        <Box
+          sx={{
+            p: 4,
+            borderRadius: 1,
+            backgroundColor: 'background.paper',
+            boxShadow: (theme) => theme.customShadows.primary,
+          }}
+        >
           <Typography
             variant="body1"
             sx={{

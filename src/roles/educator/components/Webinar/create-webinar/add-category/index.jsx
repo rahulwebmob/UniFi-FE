@@ -11,7 +11,6 @@ import {
 import { Plus } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 import { useGetCategoryListQuery } from '../../../../../../services/admin'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
@@ -26,7 +25,6 @@ const AddCategory = () => {
   const categoryRef = useRef(null)
   const [categories, setCategories] = useState([])
 
-  const { t } = useTranslation('education')
   const [selectedCategory, setSelectedCategory] = useState('')
 
   const { data, isLoading } = useGetCategoryListQuery(undefined)
@@ -105,7 +103,7 @@ const AddCategory = () => {
                   },
                 }}
               >
-                {t('EDUCATOR.BASIC_DETAILS.ADD_EXPERTISE')}
+                Add Expertise
               </Button>
             </Box>
             {errors?.category && (
@@ -119,7 +117,7 @@ const AddCategory = () => {
       <ModalBox ref={categoryRef} size="xs">
         <Box>
           <Typography variant="h6" marginBottom={2}>
-            {t('EDUCATOR.CATEGORY_MODAL.ADD_NEW_CATEGORY')}
+            Add New Category
           </Typography>
           <Autocomplete
             sx={{
@@ -139,9 +137,7 @@ const AddCategory = () => {
             onChange={(__, newValue) => {
               setSelectedCategory(newValue || '')
             }}
-            renderInput={(params) => (
-              <TextField {...params} label={t('EDUCATOR.CATEGORY_MODAL.CATEGORY_LABEL')} />
-            )}
+            renderInput={(params) => <TextField {...params} label="Category" />}
           />
           <Box display="flex" justifyContent="flex-end" marginTop={2}>
             <Button
@@ -149,7 +145,7 @@ const AddCategory = () => {
               color="secondary"
               sx={{ marginRight: 1 }}
             >
-              {t('EDUCATOR.COMMON_KEYS.CANCEL')}
+              Cancel
             </Button>
             <Button
               onClick={handleAdd}
@@ -157,7 +153,7 @@ const AddCategory = () => {
               variant="contained"
               disabled={!selectedCategory?.trim()}
             >
-              {t('EDUCATOR.COMMON_KEYS.ADD')}
+              Add
             </Button>
           </Box>
         </Box>

@@ -2,7 +2,6 @@ import { ja, de, fr, pt, it, enUS, arSA } from 'date-fns/locale'
 import Cookies from 'js-cookie'
 import millify from 'millify'
 
-import i18n from '../../../localization/i18n'
 import { ENV } from '../validation/env'
 
 export const iff = (condition, then, otherwise) => (condition ? then : otherwise)
@@ -32,20 +31,15 @@ const handleDateAndTime = (timestamp) => {
     return null
   }
   const localDate = new Date(timestamp)
-  const language = i18n.language || 'en'
   const options = {
     year: 'numeric',
     month: 'numeric',
     day: '2-digit',
     hour: 'numeric',
     minute: 'numeric',
-    hour12: language !== 'fr' && language !== 'de',
-    ...(language === 'ar' && {
-      numberingSystem: 'arab',
-      calendar: 'gregory',
-    }),
+    hour12: true,
   }
-  const formattedDate = localDate.toLocaleString(language === 'jp' ? 'ja-JP' : language, options)
+  const formattedDate = localDate.toLocaleString('en', options)
   return formattedDate
 }
 

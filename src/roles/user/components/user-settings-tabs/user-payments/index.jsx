@@ -1,7 +1,6 @@
 import { Box, Typography, Chip, Button } from '@mui/material'
 import { FileText } from 'lucide-react'
 import { useMemo, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
 import { successAlert } from '../../../../../redux/reducers/app-slice'
@@ -14,7 +13,6 @@ import MuiReactTable from '../../../../../shared/components/ui-elements/mui-reac
 import { handleGeneratePdf } from '../../../../admin/helper/common'
 
 const Payments = () => {
-  const { t } = useTranslation('application')
   const dispatch = useDispatch()
 
   const [getEducationInvoice] = useLazyGetEducationInvoiceQuery()
@@ -24,10 +22,10 @@ const Payments = () => {
     () =>
       dispatch(
         successAlert({
-          message: t('application:PROFILE.SUBSCRIPTION.MESSAGE_SUCCESS_INVOICE'),
+          message: 'Invoice downloaded successfully',
         }),
       ),
-    [dispatch, t],
+    [dispatch],
   )
 
   const handleGetEducationInvoice = useCallback(
@@ -181,19 +179,19 @@ const Payments = () => {
               startIcon={<FileText size={16} />}
               onClick={() => handleGetEducationInvoice(item._id)}
             >
-              {t('application:PROFILE.SUBSCRIPTION.INVOICE')}
+              Invoice
             </Button>
           )
         },
       },
     ],
-    [t, handleGetEducationInvoice],
+    [handleGetEducationInvoice],
   )
 
   return (
     <>
       <Typography variant="h6" mb={2.5}>
-        {t('application:PROFILE.EDUCATION_PAYMENTS')}
+        Education Payments
       </Typography>
 
       <Box>

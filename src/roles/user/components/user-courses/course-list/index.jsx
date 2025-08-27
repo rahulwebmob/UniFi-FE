@@ -1,7 +1,6 @@
 import { Box, Grid } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
 
 import { useGetAllCoursesQuery } from '../../../../../services/education'
 import NoDataFound from '../../../../../shared/components/no-data-found'
@@ -10,8 +9,6 @@ import ContentSkeleton from '../../user-content/content-skeleton'
 import CourseCard from '../course-card'
 
 const CourseList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoadMore }) => {
-  const { t } = useTranslation('education')
-
   const [list, setList] = useState([])
   const [count, setCount] = useState(0)
   const [hasInitialized, setHasInitialized] = useState(false)
@@ -92,10 +89,7 @@ const CourseList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoad
               },
             }}
           >
-            <NoDataFound
-              description={t('EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_COURSE')}
-              title=""
-            />
+            <NoDataFound description="Take the first step by enrolling in a course" title="" />
           </Box>
         ) : null}
       </MuiCarousel>

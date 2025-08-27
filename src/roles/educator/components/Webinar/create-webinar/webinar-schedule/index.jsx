@@ -13,7 +13,6 @@ import { TimePicker } from '@mui/x-date-pickers'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import PropTypes from 'prop-types'
 import { Controller, useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 import { handleMinTime, handleIsTodaySelected } from '../../../common/common'
 
@@ -34,8 +33,6 @@ const WebinarSchedule = ({
     setScheduleType?.(type)
   }
 
-  const { t } = useTranslation('education')
-
   return (
     <>
       <Grid size={{ xs: 12 }}>
@@ -48,7 +45,7 @@ const WebinarSchedule = ({
             mt={1}
           >
             <Typography variant="body1" mb={0.5} fontWeight={600}>
-              {t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.SCHEDULE_WEBINAR')}
+              Schedule Webinar
             </Typography>
             {isEdit ? (
               <Typography
@@ -90,7 +87,7 @@ const WebinarSchedule = ({
                         void handleScheduleTypeChange('daily', onChange)
                       }}
                     >
-                      {t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.DAILY')}
+                      Daily
                     </Button>
                     <Button
                       variant="outlined"
@@ -108,7 +105,7 @@ const WebinarSchedule = ({
                         void handleScheduleTypeChange('weekly', onChange)
                       }}
                     >
-                      {t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.WEEKLY')}
+                      Weekly
                     </Button>
                     <Button
                       variant="outlined"
@@ -126,7 +123,7 @@ const WebinarSchedule = ({
                         void handleScheduleTypeChange('one time', onChange)
                       }}
                     >
-                      {t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.ONE_TIME')}
+                      One Time
                     </Button>
                   </ButtonGroup>
                 )}
@@ -140,7 +137,7 @@ const WebinarSchedule = ({
           <Grid size={{ xs: 12, sm: 6, md: 6 }}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5} fontWeight={600}>
-                {t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.DATE')}{' '}
+                Date{' '}
                 <Typography variant="body1" color="error.main" component="span">
                   *
                 </Typography>
@@ -158,7 +155,7 @@ const WebinarSchedule = ({
                     }}
                     slotProps={{
                       textField: {
-                        placeholder: t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.DATE_PLACEHOLDER'),
+                        placeholder: 'Select date',
                         size: 'small',
                         fullWidth: true,
                       },
@@ -178,7 +175,7 @@ const WebinarSchedule = ({
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5} fontWeight={600}>
-                {t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.START_TIME')}{' '}
+                Start Time{' '}
                 <Typography variant="body1" color="error.main" component="span">
                   *
                 </Typography>
@@ -207,9 +204,7 @@ const WebinarSchedule = ({
                       }}
                       slotProps={{
                         textField: {
-                          placeholder: t(
-                            'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.TIME_PLACEHOLDER',
-                          ),
+                          placeholder: 'Select time',
                         },
                       }}
                     />
@@ -226,7 +221,7 @@ const WebinarSchedule = ({
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5} fontWeight={600}>
-                {t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.END_TIME')}{' '}
+                End Time{' '}
                 <Typography variant="body1" color="error.main" component="span">
                   *
                 </Typography>
@@ -255,9 +250,7 @@ const WebinarSchedule = ({
                       }}
                       slotProps={{
                         textField: {
-                          placeholder: t(
-                            'EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.TIME_PLACEHOLDER',
-                          ),
+                          placeholder: 'Select time',
                         },
                       }}
                     />
@@ -283,11 +276,7 @@ const WebinarSchedule = ({
                   render={({ field }) => (
                     <FormControlLabel
                       control={<Checkbox {...field} checked={field.value} />}
-                      label={
-                        <span style={{ textTransform: 'capitalize' }}>
-                          {t(`EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.${day.day.toUpperCase()}`)}
-                        </span>
-                      }
+                      label={<span style={{ textTransform: 'capitalize' }}>{day.day}</span>}
                     />
                   )}
                 />
@@ -314,7 +303,7 @@ const WebinarSchedule = ({
                               flexDirection: 'unset',
                             }}
                             ampm={false}
-                            label={t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.START_TIME')}
+                            label="Start Time"
                             value={value ?? undefined}
                             onChange={handleChange}
                             enableAccessibleFieldDOMStructure={false}
@@ -350,7 +339,7 @@ const WebinarSchedule = ({
                         }
                         return (
                           <TimePicker
-                            label={t('EDUCATOR.CREATE_WEBINAR.SCHEDULE_WEBINAR.END_TIME')}
+                            label="End Time"
                             ampm={false}
                             value={value ?? undefined}
                             onChange={handleChange}

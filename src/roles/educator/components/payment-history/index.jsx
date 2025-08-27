@@ -1,7 +1,6 @@
 import { Box, Chip, Button, useTheme, Typography } from '@mui/material'
-import { FileDown, DollarSign } from 'lucide-react'
+import { FileDown, DollarSign, Download } from 'lucide-react'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
 import { successAlert } from '../../../../redux/reducers/app-slice'
@@ -11,9 +10,7 @@ import PaginationComponent from '../../../../shared/components/ui-elements/pagin
 import { exportToCSV } from '../../../../utils/globalUtils'
 
 const PaymentHistory = () => {
-  const theme = useTheme()
   const dispatch = useDispatch()
-  const { t } = useTranslation(['education', 'application'])
 
   const [page, setPage] = useState(1)
   const [rowSelection, setRowSelection] = useState({})
@@ -29,7 +26,7 @@ const PaymentHistory = () => {
   const handleSuccessAlert = () => {
     dispatch(
       successAlert({
-        message: t('application:PROFILE.SUBSCRIPTION.MESSAGE_SUCCESS_INVOICE'),
+        message: 'Invoice downloaded successfully.',
       }),
     )
   }
@@ -37,30 +34,26 @@ const PaymentHistory = () => {
   const columns = [
     {
       accessorKey: 'transactionId',
-      header: t('education:EDUCATOR.PAYMENT_HISTORY.ID'),
+      header: 'Transaction ID',
       size: 150,
       Cell: (tableProps) => {
         const { cell } = tableProps
-        const theme = useTheme()
         return (
           <Chip
             label={cell.getValue() ? `#${cell.getValue()}` : '-'}
             size="small"
-            sx={{
-              backgroundColor: theme.palette.grey[100],
-              fontWeight: 600,
-            }}
+            color="primary"
           />
         )
       },
     },
     {
       accessorKey: 'createdAt',
-      header: t('education:EDUCATOR.PAYMENT_HISTORY.PAYMENT_ON'),
+      header: 'Payment Date',
       Cell: (tableProps) => {
         const { cell } = tableProps
         return (
-          <Typography style={{ whiteSpace: 'pre-line' }}>
+          <Typography>
             {cell.getValue() ? new Date(String(cell.getValue())).toLocaleString() : '-'}
           </Typography>
         )
@@ -68,13 +61,13 @@ const PaymentHistory = () => {
     },
     {
       accessorKey: 'amount',
-      header: t('education:EDUCATOR.PAYMENT_HISTORY.AMOUNT'),
+      header: 'Amount',
       size: 120,
       Cell: (tableProps) => {
         const { cell } = tableProps
         const theme = useTheme()
         return (
-          <Box display="flex" alignItems="center" gap={1}>
+          <Box display="flex" alignItems="center">
             <DollarSign size={16} color={theme.palette.success.main} />
             <Typography
               sx={{
@@ -90,7 +83,7 @@ const PaymentHistory = () => {
     },
     {
       accessorKey: 'view',
-      header: t('education:EDUCATOR.PAYMENT_HISTORY.DOWNLOAD'),
+      header: 'Invoice',
       size: 140,
       Cell: (tableProps) => {
         const { row, table } = tableProps
@@ -151,8 +144,8 @@ const PaymentHistory = () => {
     enableStickyHeader: true,
     muiTableContainerProps: {
       sx: {
-        height: 'calc(100vh - 450px)',
-        maxHeight: 'calc(100vh - 450px)',
+        height: '100%',
+        maxHeight: '100%',
       },
     },
     meta: {
@@ -163,17 +156,16 @@ const PaymentHistory = () => {
 
   return (
     <Box>
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 4 }}>
         <Typography
           variant="h4"
           sx={{
-            fontWeight: 600,
-            mb: 0.5,
+            mb: 1,
           }}
         >
           Payment History
         </Typography>
-        <Typography component="p" color="text.secondary">
+        <Typography variant="body1" color="text.secondary" sx={{ mb: { xs: 2, md: 0 } }}>
           Track your earnings and payment transactions
         </Typography>
       </Box>
@@ -182,10 +174,11 @@ const PaymentHistory = () => {
           backgroundColor: 'background.light',
           p: 2,
           borderRadius: '12px',
-          border: `1px solid ${theme.palette.grey[200]}`,
+          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+          boxShadow: (theme) => theme.customShadows.primary,
           display: 'flex',
           flexDirection: 'column',
-          height: 'calc(100vh - 280px)',
+          height: 'calc(100vh - 320px)',
           overflow: 'hidden',
         }}
       >
@@ -196,14 +189,15 @@ const PaymentHistory = () => {
           mb={2}
           sx={{ flexShrink: 0 }}
         >
-          {!!data?.length && (
+          {!!data?.data?.data?.length && (
             <Box display="flex" gap="10px">
               <Button
                 size="small"
-                variant="outlined"
-                onClick={() => exportToCSV(data || [], 'InvoiceLog.csv')}
+                variant="contained"
+                startIcon={<Download size={16} />}
+                onClick={() => exportToCSV(data?.data?.data || [], 'InvoiceLog.csv')}
               >
-                {t('education:EDUCATOR.PAYMENT_HISTORY.EXPORT_LOG')}
+                Export Log
               </Button>
             </Box>
           )}
@@ -218,10 +212,17 @@ const PaymentHistory = () => {
             minHeight: 0,
           }}
         >
-          <MuiReactTable columns={columns} rows={data || []} materialReactProps={tableOptions} />
+          <MuiReactTable
+            columns={columns}
+            rows={data?.data?.data || []}
+            materialReactProps={tableOptions}
+            returnTableInstance={false}
+          />
         </Box>
-        <Box mt={2} textAlign="center" sx={{ flexShrink: 0 }}>
-          {!!data?.length && <PaginationComponent page={page} data={{ data }} setPage={setPage} />}
+        <Box mt={2} display="flex" justifyContent="center">
+          {!!data?.data?.data?.length && (
+            <PaginationComponent page={page} data={data?.data} setPage={setPage} />
+          )}
         </Box>
       </Box>
     </Box>

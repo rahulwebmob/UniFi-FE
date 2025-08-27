@@ -2,7 +2,6 @@ import { Box, Grid, Button, Typography, FormControl } from '@mui/material'
 import { Plus, CloudUpload } from 'lucide-react'
 import { useRef } from 'react'
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 const getErrorMessage = (error) => {
   if (!error) {
@@ -19,7 +18,6 @@ const getErrorMessage = (error) => {
 
 const WebinarMetaData = () => {
   const fileInputRefs = useRef([])
-  const { t } = useTranslation('education')
 
   const {
     control,
@@ -56,9 +54,9 @@ const WebinarMetaData = () => {
               alignItems="center"
               gap="2px"
             >
-              {t('EDUCATOR.WEBINAR_META_DATA.UPLOAD_RESOURCE')}
+              Upload Resource
               <Typography display="inline-block" color="text.secondary">
-                {t('EDUCATOR.WEBINAR_META_DATA.RESOURCE_TYPE')}
+                (doc, docx, pdf)
               </Typography>
             </Typography>
             <Button
@@ -69,7 +67,7 @@ const WebinarMetaData = () => {
               color="primary"
               sx={{ width: 'fit-content', marginLeft: 'auto' }}
             >
-              {t('EDUCATOR.WEBINAR_META_DATA.ADD_MORE_RESOURCES')}
+              Add More Resources
             </Button>
           </Box>
 
@@ -123,7 +121,7 @@ const WebinarMetaData = () => {
                               }
                             }}
                           />
-                          {t('EDUCATOR.WEBINAR_META_DATA.BROWSE')}
+                          Browse
                         </Button>
                         <Typography variant="body2" sx={{ color: 'text.primary' }}>
                           {value?.name || value || 'No file selected'}
@@ -139,7 +137,7 @@ const WebinarMetaData = () => {
                           }}
                           sx={{ float: 'right' }}
                         >
-                          {t('EDUCATOR.COMMON_KEYS.REMOVE')}
+                          Remove
                         </Button>
                       )}
 
@@ -163,7 +161,7 @@ const WebinarMetaData = () => {
       <Grid size={{ xs: 12 }}>
         <FormControl fullWidth>
           <Typography variant="body1" mb={0.5} fontWeight={600}>
-            {t('EDUCATOR.WEBINAR_META_DATA.UPLOAD_THUMBNAIL')}{' '}
+            Upload Thumbnail{' '}
             <Typography variant="body1" color="error.main" component="span">
               *
             </Typography>
@@ -216,11 +214,9 @@ const WebinarMetaData = () => {
                   />
                   <CloudUpload size={40} style={{ color: 'var(--mui-palette-primary-main)' }} />
                   <Typography variant="body1" color="primary">
-                    {t('EDUCATOR.WEBINAR_META_DATA.DRAG_DROP')}
+                    Drag and drop files here
                   </Typography>
-                  <Typography variant="body1">
-                    {t('EDUCATOR.WEBINAR_META_DATA.PNG_JPG_JPEG')}
-                  </Typography>
+                  <Typography variant="body1">PNG, JPG, JPEG</Typography>
                   <Typography variant="body2" sx={{ color: 'text.primary' }}>
                     {value?.name || value || 'No file selected'}
                   </Typography>

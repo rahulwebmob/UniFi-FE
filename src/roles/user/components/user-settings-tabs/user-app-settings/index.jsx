@@ -8,7 +8,6 @@ import {
   FormControl,
   FormControlLabel,
 } from '@mui/material'
-import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 import LANGUAGES from '../../../../../constants/languages'
@@ -16,7 +15,6 @@ import { updateLanguage } from '../../../../../redux/reducers/app-slice'
 
 const AppSettings = () => {
   const theme = useTheme()
-  const { t } = useTranslation('application')
   const dispatch = useDispatch()
   const { language } = useSelector((state) => state.app)
 
@@ -29,12 +27,12 @@ const AppSettings = () => {
   return (
     <>
       <Typography variant="h6" mb={2.5}>
-        {t('application:PROFILE.LANGUAGE_PREFERENCES')}
+        Language Preferences
       </Typography>
 
       <Box>
         <Typography variant="body2" mb={1.5} color="text.secondary" fontWeight={500}>
-          {t('application:PROFILE.SELECT_PREFERRED_LANGUAGE')}
+          Select your preferred language
         </Typography>
 
         <FormControl component="fieldset">
@@ -81,7 +79,7 @@ const AppSettings = () => {
                     </Typography>
                     {language?.code === item.code && (
                       <Typography variant="caption" color="primary" fontWeight={600}>
-                        ({t('application:COMMON.CURRENT')})
+                        (Current)
                       </Typography>
                     )}
                   </Box>
@@ -108,7 +106,7 @@ const AppSettings = () => {
           color="text.secondary"
           fontStyle="italic"
         >
-          {t('application:PROFILE.LANGUAGE_CHANGE_APPLIED_IMMEDIATELY')}
+          Language changes will be applied immediately
         </Typography>
       </Box>
     </>

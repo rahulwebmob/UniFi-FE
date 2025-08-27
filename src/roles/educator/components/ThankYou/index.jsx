@@ -1,12 +1,10 @@
 import { Box, Paper, Button, Typography } from '@mui/material'
 import { CheckCircle } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 const ThankYou = ({ text }) => {
   const navigate = useNavigate()
-  const { t } = useTranslation('education')
 
   return (
     <Box
@@ -104,7 +102,7 @@ const ThankYou = ({ text }) => {
               py: 1.5,
             }}
           >
-            {t('THANKYOU_PAGE.VISIT_WEBSITE')}
+            Visit Website
           </Button>
         </Box>
       </Paper>

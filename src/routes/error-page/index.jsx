@@ -1,7 +1,6 @@
 import { Box, Button, styled, useTheme, Typography } from '@mui/material'
 import { AlertTriangle } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useTranslation } from 'react-i18next'
 import { useNavigate, useRouteError } from 'react-router-dom'
 
 const ResetPasswordBox = styled(Box)({
@@ -13,7 +12,6 @@ const ResetPasswordBox = styled(Box)({
 })
 
 const ErrorPage = ({ module }) => {
-  const { t } = useTranslation(['application'])
   const theme = useTheme()
   const error = useRouteError()
   const navigate = useNavigate()
@@ -27,10 +25,11 @@ const ErrorPage = ({ module }) => {
           style={{ width: '70px', height: '70px' }}
         />
         <Typography variant="h3" mt={2} mb={2}>
-          {t('application:UI.ERROR_PAGE.HEADING')}
+          Oops, Something went wrong
         </Typography>
         <Typography variant="body1" mb={2}>
-          {t('application:UI.ERROR_PAGE.BODY')}
+          Brace yourself till we get the error fixed. You may also refresh the page or try again
+          later.
         </Typography>
         {module !== 'publicRoutes' && (
           <Button
@@ -42,7 +41,7 @@ const ErrorPage = ({ module }) => {
               void navigate(module === 'admin' ? '/admin' : '/dashboard')
             }}
           >
-            {t('application:UI.ERROR_PAGE.GO_TO_DASHBOARD')}
+            Go To Dashboard
           </Button>
         )}
       </Box>

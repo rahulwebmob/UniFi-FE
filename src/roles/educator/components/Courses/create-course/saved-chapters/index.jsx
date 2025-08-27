@@ -12,7 +12,6 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useState, useRef } from 'react'
 import Draggable from 'react-draggable'
 import { useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 import {
   useListChapersQuery,
@@ -27,7 +26,6 @@ import AddLesson from '../chapter/add-lessons-modal/add-lesson'
 import ChapterToolbar from '../chapter/chapter-toolbar'
 
 const SavedChapters = ({ courseId }) => {
-  const { t } = useTranslation('education')
   const theme = useTheme()
   const { setHasLessons } = useFormContext()
 
@@ -111,7 +109,7 @@ const SavedChapters = ({ courseId }) => {
       {!!chapters.length && (
         <>
           <Typography variant="h6" mb={2}>
-            {t('EDUCATOR.SAVED_CHAPTERS.SAVED_CHAPTERS_TITLE')}
+            Saved Chapters
           </Typography>
           <Box p={3}>
             {chapters.map((chap, index) => (

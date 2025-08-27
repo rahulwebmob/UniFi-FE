@@ -1,12 +1,10 @@
 import { Box, Select, Tooltip, MenuItem, FormControl } from '@mui/material'
 import PropTypes from 'prop-types'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { SizeType } from './constants'
 
 const StrokePicker = ({ setFunc, options, type }) => {
-  const { t } = useTranslation('application')
   const { fontSize, strokeWidth, eraserWidth } = useSelector((state) => state.education)
 
   const handleChange = (event) => {
@@ -17,13 +15,13 @@ const StrokePicker = ({ setFunc, options, type }) => {
   const getTooltipTitle = () => {
     switch (type) {
       case SizeType.STROKE_WIDTH:
-        return t('CONFERENCE.WHITE_BOARD.SELECT_STROKE_WIDTH')
+        return 'Select Stroke Width'
       case SizeType.FONT_SIZE:
-        return t('CONFERENCE.WHITE_BOARD.FONT_TOOL')
+        return 'Font Tool'
       case SizeType.ERAZER_WIDTH:
-        return t('CONFERENCE.WHITE_BOARD.SELECT_ERASER_SIZE')
+        return 'Select Eraser Size'
       default:
-        return t('CONFERENCE.WHITE_BOARD.SELECT_SIZE')
+        return 'Select Size'
     }
   }
 

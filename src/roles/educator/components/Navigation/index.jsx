@@ -1,24 +1,22 @@
 import { Box, Tab, Tabs, Menu, useTheme, MenuItem, IconButton, useMediaQuery } from '@mui/material'
 import { Menu as MenuIcon } from 'lucide-react'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const Navigation = () => {
   const theme = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
-  const { t } = useTranslation('education')
   const isMobile = useMediaQuery('(max-width:1024px)')
   const [anchorEl, setAnchorEl] = useState(null)
 
   const navItems = [
-    { path: '/educator', label: t('EDUCATOR.HEADER.DASHBOARD') },
-    { path: '/educator/courses', label: t('EDUCATOR.HEADER.COURSES') },
-    { path: '/educator/webinars', label: t('EDUCATOR.HEADER.WEBINARS') },
+    { path: '/educator', label: 'Dashboard' },
+    { path: '/educator/courses', label: 'Courses' },
+    { path: '/educator/webinars', label: 'Webinars' },
     {
       path: '/educator/payment-history',
-      label: t('EDUCATOR.HEADER.PURCHASE_HISTORY'),
+      label: 'Purchase History',
     },
   ]
 

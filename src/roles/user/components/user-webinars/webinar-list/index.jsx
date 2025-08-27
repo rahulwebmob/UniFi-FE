@@ -1,7 +1,6 @@
 import { Box, Grid } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
 
 import { useGetAllWebinarsQuery } from '../../../../../services/education'
 import NoDataFound from '../../../../../shared/components/no-data-found'
@@ -10,7 +9,6 @@ import ContentSkeleton from '../../user-content/content-skeleton'
 import WebinarCard from '../webinar-card'
 
 const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoadMore }) => {
-  const { t } = useTranslation('education')
   const [list, setList] = useState([])
   const [count, setCount] = useState(0)
   const [hasInitialized, setHasInitialized] = useState(false)
@@ -36,9 +34,9 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
   }, [searchTerm, selectedCategory, isPurchased])
 
   useEffect(() => {
-    if (isSuccess && data?.data) {
-      const webinars = data.data?.webinars ?? []
-      const totalCount = data.data?.count ?? 0
+    if (isSuccess) {
+      const webinars = data?.data?.webinars ?? []
+      const totalCount = data?.data?.count ?? 0
 
       if (page === 1) {
         setList(webinars)
@@ -52,8 +50,6 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
         })
         setCount(totalCount)
       }
-    } else if (isSuccess && !data?.data) {
-      setHasInitialized(true)
     }
   }, [data, isSuccess, page])
 
@@ -64,25 +60,26 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
     }
   }, [count, list?.length, setIsLoadMore])
 
-  const isInitialLoad =
-    (page === 1 && isFetching && !hasInitialized) || (!hasInitialized && page === 1)
-  const showContent = hasInitialized
-  const showNoData = hasInitialized && !list.length && !isFetching
+  // Only show skeleton on very first load, not during polling
+  const isInitialLoad = !hasInitialized && isFetching
+  // Always show content once we have initialized
+  const showContent = hasInitialized || list.length > 0
+  // Only show no data when we're sure there's no data and not fetching
 
   if (isPurchased) {
-    return (
-      <MuiCarousel>
-        {isInitialLoad ? (
+    // Don't render anything until we have initialized
+    if (!hasInitialized && isFetching) {
+      return (
+        <MuiCarousel>
           <ContentSkeleton isPurchased />
-        ) : showContent && list.length > 0 ? (
-          <>
-            {list.map((item) => (
-              <Box key={item._id} sx={{ minWidth: 420, maxWidth: 420, px: 1 }}>
-                <WebinarCard webinar={item} isPurchased />
-              </Box>
-            ))}
-          </>
-        ) : showNoData ? (
+        </MuiCarousel>
+      )
+    }
+
+    // Once initialized, always show the same structure
+    if (list.length === 0) {
+      return (
+        <MuiCarousel>
           <Box
             sx={{
               '&.MuiTabs-flexContainer': {
@@ -103,9 +100,19 @@ const WebinarList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoa
               },
             }}
           >
-            <NoDataFound description={t('EDUCATION_DASHBOARD.MAIN_PAGE.TAKE_FIRST_STEP_WEBINAR')} />
+            <NoDataFound description="Take the First Step Toward Success – Purchase a Webinar Today." />
           </Box>
-        ) : null}
+        </MuiCarousel>
+      )
+    }
+
+    return (
+      <MuiCarousel>
+        {list.map((item) => (
+          <Box key={item._id} sx={{ minWidth: 420, maxWidth: 420, px: 1 }}>
+            <WebinarCard webinar={item} isPurchased />
+          </Box>
+        ))}
       </MuiCarousel>
     )
   }

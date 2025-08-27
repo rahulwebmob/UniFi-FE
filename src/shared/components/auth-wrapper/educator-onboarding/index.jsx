@@ -4,7 +4,6 @@ import { User, Check, Link2, FileText, GraduationCap } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
@@ -31,7 +30,8 @@ const urlRegexPatterns = {
     /^https:\/\/(www\.)?facebook\.com\/(?:people\/[A-Za-z0-9-.]+\/\d+|profile\.php\?id=\d+|[A-Za-z0-9.]{5,})\/?$/,
 }
 
-const TEXT = (t) => t('education:REGISTER_EDUCATOR.THANK_YOU_TEXT')
+const TEXT =
+  'Thank you for registering as an educator. We will review your application and get back to you soon.'
 
 const stepIcons = [User, GraduationCap, Link2, FileText]
 
@@ -89,30 +89,23 @@ const createStepIconWrapper = (activeStep, index) => {
   return StepIconWrapper
 }
 
-const validationSchema = (t) => [
+const validationSchema = [
   yup.object().shape({
-    firstName: yup.string().trim().required(t('REGISTER_EDUCATOR.VALIDATION.NAME_REQUIRED')),
-    lastName: yup.string().trim().required(t('REGISTER_EDUCATOR.VALIDATION.LAST_NAME_REQUIRED')),
-    email: yup
-      .string()
-      .trim()
-      .email(t('REGISTER_EDUCATOR.VALIDATION.INVALID_EMAIL'))
-      .required(t('REGISTER_EDUCATOR.VALIDATION.EMAIL_REQUIRED')),
-    country: yup.string().trim().required(t('REGISTER_EDUCATOR.VALIDATION.COUNTRY_REQUIRED')),
-    state: yup.string().trim().required(t('REGISTER_EDUCATOR.VALIDATION.STATE_REQUIRED')),
+    firstName: yup.string().trim().required('First name is required'),
+    lastName: yup.string().trim().required('Last name is required'),
+    email: yup.string().trim().email('Invalid email address').required('Email is required'),
+    country: yup.string().trim().required('Country is required'),
+    state: yup.string().trim().required('State is required'),
   }),
   yup.object().shape({
-    summary: yup
-      .string()
-      .trim()
-      .required(t('REGISTER_EDUCATOR.VALIDATION.EXECUTIVE_SUMMARY_REQUIRED')),
+    summary: yup.string().trim().required('Executive summary is required'),
     company: yup.string().trim(),
     experience: yup
       .number()
       .notRequired()
       .transform(transformNaNToNull)
-      .min(0, t('REGISTER_EDUCATOR.VALIDATION.EXPERIENCE_MORE_THAN_ONE_YEAR'))
-      .max(99.99, t('REGISTER_EDUCATOR.VALIDATION.NOT_EXCEED_99_YEARS')),
+      .min(0, 'Experience must be at least 0 years')
+      .max(99.99, 'Experience cannot exceed 99 years'),
     expertise: yup.array().of(yup.object().shape({ category: yup.string().trim() })),
     education: yup.array().of(
       yup.object().shape({
@@ -121,7 +114,7 @@ const validationSchema = (t) => [
           .trim()
           .test(
             'degree-required-if-field',
-            t('REGISTER_EDUCATOR.VALIDATION.DEGREE_REQUIRED'),
+            'Degree is required when field is provided',
             function (value) {
               const { field } = this.parent
               if (typeof field === 'string' && field.trim().length > 0) {
@@ -135,7 +128,7 @@ const validationSchema = (t) => [
           .trim()
           .test(
             'field-required-if-degree',
-            t('REGISTER_EDUCATOR.VALIDATION.FIELD_OF_STUDY_REQUIRED'),
+            'Field of study is required when degree is provided',
             function (value) {
               const { degree } = this.parent
               if (typeof degree === 'string' && degree.trim().length > 0) {
@@ -151,73 +144,53 @@ const validationSchema = (t) => [
         name: yup
           .string()
           .trim()
-          .test(
-            'name-required-if-org',
-            t('REGISTER_EDUCATOR.VALIDATION.ISSUING_ORGANIZATION_REQUIRED'),
-            function (value) {
-              const { organization } = this.parent
-              if (typeof organization === 'string' && organization.trim().length > 0) {
-                return typeof value === 'string' && value.trim().length > 0
-              }
-              return true
-            },
-          ),
+          .test('name-required-if-org', 'Issuing organization is required', function (value) {
+            const { organization } = this.parent
+            if (typeof organization === 'string' && organization.trim().length > 0) {
+              return typeof value === 'string' && value.trim().length > 0
+            }
+            return true
+          }),
         organization: yup
           .string()
           .trim()
-          .test(
-            'org-required-if-name',
-            t('REGISTER_EDUCATOR.VALIDATION.ISSUING_ORGANIZATION_REQUIRED'),
-            function (value) {
-              const { name } = this.parent
-              if (typeof name === 'string' && name.trim().length > 0) {
-                return typeof value === 'string' && value.trim().length > 0
-              }
-              return true
-            },
-          ),
+          .test('org-required-if-name', 'Issuing organization is required', function (value) {
+            const { name } = this.parent
+            if (typeof name === 'string' && name.trim().length > 0) {
+              return typeof value === 'string' && value.trim().length > 0
+            }
+            return true
+          }),
       }),
     ),
   }),
   yup.object().shape({
-    linkedinUrl: yup
-      .string()
-      .trim()
-      .matches(urlRegexPatterns.linkedIn, {
-        message: t('REGISTER_EDUCATOR.VALIDATION.VALIDATE_LINKEDIN_URL'),
-        excludeEmptyString: true,
-      }),
+    linkedinUrl: yup.string().trim().matches(urlRegexPatterns.linkedIn, {
+      message: 'Please enter a valid LinkedIn URL',
+      excludeEmptyString: true,
+    }),
     twitterUrl: yup
       .string()
       .trim()
       .matches(urlRegexPatterns.twitter, {
-        message: t('REGISTER_EDUCATOR.VALIDATION.VALIDATE_TWITTER_URL'),
+        message: 'Please enter a valid X (Twitter) URL',
         excludeEmptyString: true,
       })
-      .required(t('REGISTER_EDUCATOR.VALIDATION.TWITTER_URL_REQUIRED')),
-    youtubeUrl: yup
-      .string()
-      .trim()
-      .matches(urlRegexPatterns.youtube, {
-        message: t('REGISTER_EDUCATOR.VALIDATION.VALIDATE_YOUTUBE_URL'),
-        excludeEmptyString: true,
-      }),
-    websiteUrl: yup
-      .string()
-      .trim()
-      .matches(urlRegexPatterns.website, {
-        message: t('REGISTER_EDUCATOR.VALIDATION.VALIDATE_WEBSITE_URL'),
-        excludeEmptyString: true,
-      }),
+      .required('Twitter URL is required.'),
+    youtubeUrl: yup.string().trim().matches(urlRegexPatterns.youtube, {
+      message: 'Please enter a valid YouTube URL',
+      excludeEmptyString: true,
+    }),
+    websiteUrl: yup.string().trim().matches(urlRegexPatterns.website, {
+      message: 'Please enter a valid website URL',
+      excludeEmptyString: true,
+    }),
     otherProfileUrls: yup.array().of(
       yup.object().shape({
-        link: yup
-          .string()
-          .trim()
-          .matches(urlRegexPatterns.website, {
-            message: t('REGISTER_EDUCATOR.VALIDATION.VALIDATE_WEBSITE_URL'),
-            excludeEmptyString: true,
-          }),
+        link: yup.string().trim().matches(urlRegexPatterns.website, {
+          message: 'Please enter a valid website URL',
+          excludeEmptyString: true,
+        }),
       }),
     ),
   }),
@@ -226,14 +199,14 @@ const validationSchema = (t) => [
       .mixed()
       .nullable()
       .notRequired()
-      .test('fileSize', t('REGISTER_EDUCATOR.VALIDATION.CV_LESS_THAN_500'), (value) => {
+      .test('fileSize', 'CV must be less than 50MB', (value) => {
         if (!value) {
           return true
         }
         const fileSize = value.size / (1024 * 1024)
         return fileSize <= 50
       })
-      .test('fileType', t('REGISTER_EDUCATOR.VALIDATION.CV_FORMAT'), (value) => {
+      .test('fileType', 'CV must be PDF, DOC or DOCX format', (value) => {
         if (!value) {
           return true
         }
@@ -245,14 +218,14 @@ const validationSchema = (t) => [
       .mixed()
       .nullable()
       .notRequired()
-      .test('fileSize', t('REGISTER_EDUCATOR.VALIDATION.VIDEO_LESS_THAN_200'), (value) => {
+      .test('fileSize', 'Video must be less than 200MB', (value) => {
         if (!value) {
           return true
         }
         const fileSize = value.size / (1024 * 1024)
         return fileSize <= 200
       })
-      .test('fileType', t('REGISTER_EDUCATOR.VALIDATION.VIDEO_FORMAT'), (value) => {
+      .test('fileType', 'Video must be MP4, MOV or WEBM format', (value) => {
         if (!value) {
           return true
         }
@@ -260,7 +233,7 @@ const validationSchema = (t) => [
         const fileExtension = value.name.split('.').pop()?.toLowerCase() ?? ''
         return allowedExtensions.includes(fileExtension)
       }),
-    hau: yup.string().trim().required(t('REGISTER_EDUCATOR.VALIDATION.HUA_REQUIRED')),
+    hau: yup.string().trim().required('How did you hear about us is required'),
   }),
 ]
 
@@ -289,7 +262,6 @@ const defaultValues = {
 const Educator = () => {
   const theme = useTheme()
   const navigate = useNavigate()
-  const { t } = useTranslation('education')
   const { language } = useSelector((state) => state.app)
 
   const [mp4, setMp4File] = useState(null)
@@ -303,25 +275,25 @@ const Educator = () => {
   const [registerTutor, { isLoading }] = useRegisterEducatorMutation()
 
   const { control, handleSubmit, formState, setError } = useForm({
-    resolver: yupResolver(validationSchema(t)[activeStep]),
+    resolver: yupResolver(validationSchema[activeStep]),
     defaultValues,
   })
 
   const steps = {
     0: {
-      name: t('REGISTER_EDUCATOR.ABOUT'),
+      name: 'About',
       component: <About control={control} />,
     },
     1: {
-      name: t('REGISTER_EDUCATOR.QUALIFICATION'),
+      name: 'Qualification',
       component: <Qualification control={control} />,
     },
     2: {
-      name: t('REGISTER_EDUCATOR.LINKS'),
+      name: 'Links',
       component: <Links control={control} />,
     },
     3: {
-      name: t('REGISTER_EDUCATOR.DOCUMENTS'),
+      name: 'Document',
       component: (
         <Document
           control={control}
@@ -340,7 +312,7 @@ const Educator = () => {
       if (emailResponse?.error) {
         setError('email', {
           type: 'manual',
-          message: t('REGISTER_EDUCATOR.EDUCATOR_ALREADY_EXISTS'),
+          message: 'Educator with this email already exist. Please use another email.',
         })
         return
       }
@@ -444,7 +416,7 @@ const Educator = () => {
         },
       })
       if (!response?.error) {
-        setThankYouText(TEXT(t))
+        setThankYouText(TEXT)
         setShowThankYou(true)
       }
     } else {
@@ -474,7 +446,7 @@ const Educator = () => {
           UNICITIZENS
         </Typography>
         <Typography component="p" fontWeight={400} textAlign="center" mb={2} sx={{ opacity: 0.8 }}>
-          {t('REGISTER_EDUCATOR.APPLICATION_FORM_DETAIL')}
+          Please provide the details below to help us better understand you.
         </Typography>
       </Box>
     </Box>
@@ -595,7 +567,7 @@ const Educator = () => {
 
               {/* Fixed Title */}
               <Typography variant="h5" textAlign="center" mb={3}>
-                {t('REGISTER_EDUCATOR.APPLICATION_FORM')}
+                Application Form
               </Typography>
 
               {/* Fixed Stepper */}
@@ -669,7 +641,7 @@ const Educator = () => {
                       disabled={formState.isSubmitting}
                       onClick={handleBack}
                     >
-                      {t('REGISTER_EDUCATOR.COMMON_KEYS.BACK')}
+                      Back
                     </Button>
                   )}
                   <Button
@@ -679,12 +651,10 @@ const Educator = () => {
                     type="submit"
                   >
                     {formState.isSubmitting
-                      ? `${t('REGISTER_EDUCATOR.COMMON_KEYS.SUBMITTING')}${
-                          isLoading ? ` ${progress}%` : ''
-                        }`
+                      ? `Submitting...${isLoading ? ` ${progress}%` : ''}`
                       : activeStep === 3
-                        ? t('REGISTER_EDUCATOR.COMMON_KEYS.SUBMIT')
-                        : t('REGISTER_EDUCATOR.COMMON_KEYS.CONTINUE')}
+                        ? 'Submit'
+                        : 'Continue'}
                   </Button>
                 </Box>
 
@@ -694,7 +664,7 @@ const Educator = () => {
                     variant="body2"
                     sx={{ color: theme.palette.text.secondary, fontSize: 14 }}
                   >
-                    {t('REGISTER_EDUCATOR.ALREADY_AN_EDUCATOR')}{' '}
+                    Already an Educator?{' '}
                     <Typography
                       component="span"
                       variant="body2"
@@ -711,7 +681,7 @@ const Educator = () => {
                         },
                       }}
                     >
-                      {t('REGISTER_EDUCATOR.LOGIN')}
+                      Login
                     </Typography>
                   </Typography>
                 </Box>

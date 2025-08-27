@@ -19,7 +19,6 @@ import {
 import { Video, Users, Clock, BookOpen, ChevronDown, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useEffect, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import ModalBox from '../../../../../shared/components/ui-elements/modal-box'
@@ -31,7 +30,6 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
   const previewRef = useRef()
   const descriptionModalRef = useRef()
   const navigate = useNavigate()
-  const { t } = useTranslation('education')
 
   const handleSticky = (reset = false) => {
     const elements = document.querySelectorAll('.GridLogoHide')
@@ -50,16 +48,6 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
   })
 
   const renderEnrollButton = () => {
-    const buttonStyle = {
-      borderRadius: '8px',
-      textTransform: 'none',
-      fontWeight: 600,
-      boxShadow: 'none',
-      '&:hover': {
-        boxShadow: (theme) => theme.shadows[3],
-      },
-    }
-
     if (!courseData?.isCourseBought && courseData?.isPaid) {
       return (
         <Button
@@ -72,9 +60,8 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
               handlePurchase()
             }
           }}
-          sx={buttonStyle}
         >
-          {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.ENROLL_NOW')}
+          Enroll Now
         </Button>
       )
     }
@@ -89,9 +76,8 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
             navigate(`/dashboard/course/${courseData?._id}/lessons`)
           }
         }}
-        sx={buttonStyle}
       >
-        {t('education:EDUCATION_DASHBOARD.COURSE_DETAILS.CONTENT_VIEW.START_COURSE')}
+        Start Course
       </Button>
     )
   }
@@ -279,8 +265,7 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
                 </Box>
 
                 <CardContent sx={{ p: 3 }}>
-                  {/* Price Display */}
-                  {courseData?.isPaid ? (
+                  {courseData?.isPaid && !courseData?.isCourseBought ? (
                     <Box
                       sx={{
                         mb: 2,
@@ -311,11 +296,10 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
                         Full access
                       </Typography>
                       <Typography variant="h5" color="success.main">
-                        FREE
+                        {!courseData?.isCourseBought ? 'FREE' : 'PAID'}
                       </Typography>
                     </Box>
                   )}
-                  {/* Enroll Button */}
                   {renderEnrollButton()}
                 </CardContent>
               </Card>
@@ -323,7 +307,6 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
           </Grid>
         </Box>
 
-        {/* Course Content Section */}
         <Typography
           variant="h5"
           sx={{

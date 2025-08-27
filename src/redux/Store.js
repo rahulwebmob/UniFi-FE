@@ -4,7 +4,6 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import { adminApi } from '../services/admin'
 import { educationApi } from '../services/education'
 import { onboardingApi } from '../services/onboarding'
-import { disconnectAllSockets } from '../services/sockets'
 import { uploadApi } from '../services/uploadProgress'
 
 import AlertReducer from './reducers/app-slice'
@@ -23,7 +22,7 @@ const combinedReducers = combineReducers({
 
 const rootReducer = (state, action) => {
   if (action.type === signOut.type) {
-    disconnectAllSockets(true)
+    // Socket disconnection removed - no longer needed
     return combinedReducers(undefined, action)
   }
   return combinedReducers(state, action)

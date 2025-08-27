@@ -10,7 +10,6 @@ import {
 import { CloudUpload } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { Controller } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 import RequiredFieldIndicator from '../../../ui-elements/required-field-indicator'
 
@@ -24,13 +23,12 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
     }
     onChange(selectedFile)
   }
-  const { t } = useTranslation('education')
 
   return (
     <Box>
       <FormControl fullWidth sx={{ mb: 2 }}>
         <Typography variant="body1" sx={{ mb: 1 }}>
-          {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.UPLOAD_CV')}
+          Upload CV
         </Typography>
         <Controller
           name="cv"
@@ -40,7 +38,7 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
           render={({ field: { onChange, value } }) => (
             <TextField
               value={value?.name || ''}
-              placeholder={t('REGISTER_EDUCATOR.DOCUMENT_PAGE.ACCEPTED_FILE_TYPE')}
+              placeholder="PDF , DOC and DOCX (max. 50 MB)"
               size="small"
               fullWidth
               InputProps={{
@@ -73,7 +71,7 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
       </FormControl>
       <FormControl fullWidth sx={{ mb: 2 }}>
         <Typography variant="body1" sx={{ mb: 1 }}>
-          {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.UPLOAD_VIDEO')}
+          Upload a sample work/video
         </Typography>
         <Controller
           name="video"
@@ -83,7 +81,7 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
           render={({ field: { onChange, value } }) => (
             <TextField
               value={value?.name || ''}
-              placeholder={t('REGISTER_EDUCATOR.DOCUMENT_PAGE.VIDEO_FILE_FORMAT')}
+              placeholder="MP4, MOV, WEBM (max. 200 MB)"
               size="small"
               fullWidth
               InputProps={{
@@ -116,7 +114,7 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
       </FormControl>
       <FormControl fullWidth sx={{ mb: 1 }}>
         <Typography variant="body1">
-          {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.HEARING_PLATFORM')}
+          Where did you hear about us?
           <RequiredFieldIndicator />
         </Typography>
         <Controller
@@ -127,29 +125,19 @@ const Document = ({ control, errors, setCvFile, setMp4File }) => {
               {...field}
               select
               variant="outlined"
-              placeholder={t('REGISTER_EDUCATOR.DOCUMENT_PAGE.HEARING_PLATFORM_PLACEHOLDER')}
+              placeholder="Select an option"
               fullWidth
               size="small"
               error={!!errors.hau}
               helperText={errors.hau?.message ? String(errors.hau.message) : undefined}
             >
-              <MenuItem value="Social Media">
-                {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.SOCIAL_MEDIA')}
-              </MenuItem>
-              <MenuItem value="Referral">{t('REGISTER_EDUCATOR.DOCUMENT_PAGE.REFERRAL')}</MenuItem>
-              <MenuItem value="Job Portal">
-                {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.JOB_PORTAL')}
-              </MenuItem>
-              <MenuItem value="Company Website">
-                {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.COMPANY_WEBSITE')}
-              </MenuItem>
-              <MenuItem value="Email Campaign">
-                {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.EMAIL')}
-              </MenuItem>
-              <MenuItem value="Educational Conference">
-                {t('REGISTER_EDUCATOR.DOCUMENT_PAGE.EDUCATIONAL_CONFERENCE')}
-              </MenuItem>
-              <MenuItem value="Other">{t('REGISTER_EDUCATOR.DOCUMENT_PAGE.OTHER')}</MenuItem>
+              <MenuItem value="Social Media">Social Media</MenuItem>
+              <MenuItem value="Referral">Referral</MenuItem>
+              <MenuItem value="Job Portal">Job Portal</MenuItem>
+              <MenuItem value="Company Website">Company Website</MenuItem>
+              <MenuItem value="Email Campaign">Email Campaign</MenuItem>
+              <MenuItem value="Educational Conference">Educational Conference</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
             </TextField>
           )}
         />

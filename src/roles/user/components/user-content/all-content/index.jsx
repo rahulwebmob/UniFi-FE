@@ -11,14 +11,12 @@ import {
 import _ from 'lodash'
 import { BookOpen, Presentation, Search, Filter, ChevronDown } from 'lucide-react'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 import { useGetCategoryListQuery } from '../../../../../services/education'
 import CourseList from '../../user-courses/course-list'
 import WebinarList from '../../user-webinars/webinar-list'
 
 const AllContent = () => {
-  const { t } = useTranslation('education')
   const [page, setPage] = useState(1)
   const [isLoadMore, setIsLoadMore] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
@@ -109,7 +107,7 @@ const AllContent = () => {
           onClick={handleLoadMore}
           endIcon={<ChevronDown size={18} />}
         >
-          {t('EDUCATION_DASHBOARD.MAIN_PAGE.LOAD_MORE')}
+          Load More
         </Button>
         <Divider sx={{ flex: 1 }} />
       </Box>

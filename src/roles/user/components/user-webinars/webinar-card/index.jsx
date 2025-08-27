@@ -2,13 +2,11 @@ import { Box, Card, Button, Avatar, Typography, CardContent } from '@mui/materia
 import { format } from 'date-fns'
 import { Clock, Calendar, ArrowRight, Video, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import CategoryList from '../../user-content/category-list'
 
 const WebinarCard = ({ webinar, isPurchased }) => {
-  const { t } = useTranslation('education')
   const navigate = useNavigate()
 
   const handleCardClick = () => {
@@ -453,7 +451,7 @@ const WebinarCard = ({ webinar, isPurchased }) => {
                   handleJoinWebinar()
                 }}
               >
-                {t('EDUCATION_DASHBOARD.COMMON_KEYS.JOIN_NOW')}
+                Join Now
               </Button>
             ) : (
               <Button
@@ -476,10 +474,10 @@ const WebinarCard = ({ webinar, isPurchased }) => {
                 }}
               >
                 {webinar.isPaid && !webinar.isWebinarBought
-                  ? t('EDUCATION_DASHBOARD.COMMON_KEYS.BUY_NOW')
+                  ? 'Buy Now'
                   : webinar.isPaid
-                    ? t('EDUCATION_DASHBOARD.MAIN_PAGE.VIEW_DETAILS')
-                    : t('EDUCATION_DASHBOARD.COMMON_KEYS.REGISTER_FREE')}
+                    ? 'View Details'
+                    : 'View Details'}
               </Button>
             )}
           </Box>

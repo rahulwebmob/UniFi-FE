@@ -1,7 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-import i18n from '../../localization/i18n'
-
 const initialState = {
   alerts: [],
   isLoading: false,
@@ -55,21 +53,10 @@ export const AppSlice = createSlice({
     exitFullscreen: (state) => {
       state.isFullscreen = false
     },
-    updateLanguage: (state, action) => {
-      const { payload } = action
-      state.language = { ...payload }
-      void i18n.changeLanguage(payload?.code)
-    },
   },
 })
 
-export const {
-  successAlert,
-  errorAlert,
-  removeAlert,
-  enterFullscreen,
-  exitFullscreen,
-  updateLanguage,
-} = AppSlice.actions
+export const { successAlert, errorAlert, removeAlert, enterFullscreen, exitFullscreen } =
+  AppSlice.actions
 
 export default AppSlice.reducer

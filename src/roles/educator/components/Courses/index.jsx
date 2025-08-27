@@ -16,7 +16,6 @@ import {
 import { debounce } from 'lodash'
 import { Edit, Plus, Search, Trash2, BookOpen, ArrowRight, MoreVertical } from 'lucide-react'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import {
@@ -28,7 +27,6 @@ import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-t
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 
 const Courses = () => {
-  const { t } = useTranslation('education')
   const navigate = useNavigate()
   const theme = useTheme()
 
@@ -94,7 +92,7 @@ const Courses = () => {
   const columns = [
     {
       accessorKey: 'title',
-      header: t('EDUCATOR.COURSES.COURSE_NAME'),
+      header: 'Course Name',
       size: 300,
       Cell: (tableProps) => {
         const { row, cell } = tableProps
@@ -146,7 +144,7 @@ const Courses = () => {
 
     {
       accessorKey: 'category',
-      header: t('EDUCATOR.COURSES.EXPERTISE'),
+      header: 'Expertise',
       Cell: (tableProps) => {
         const { cell } = tableProps
         const categories = cell.getValue()
@@ -172,7 +170,7 @@ const Courses = () => {
     },
     {
       accessorKey: 'createdAt',
-      header: t('EDUCATOR.COURSES.CREATED_ON'),
+      header: 'Created On',
       Cell: (tableProps) => {
         const { cell } = tableProps
         return (
@@ -184,7 +182,7 @@ const Courses = () => {
     },
     {
       accessorKey: 'totalPurchased',
-      header: t('EDUCATOR.COURSES.TOTAL_PURCHASED'),
+      header: 'Total Purchased',
       Cell: (tableProps) => {
         const { cell } = tableProps
         return <Typography>{String(cell.getValue() || '-')}</Typography>
@@ -192,7 +190,7 @@ const Courses = () => {
     },
     {
       accessorKey: 'status',
-      header: t('EDUCATOR.COURSES.STATUS'),
+      header: 'Status',
       size: 120,
       Cell: (tableProps) => {
         const { cell } = tableProps
@@ -222,7 +220,7 @@ const Courses = () => {
     },
     {
       accessorKey: 'view',
-      header: t('EDUCATOR.COURSES.VIEW_COURSE'),
+      header: 'View Course',
       size: 140,
       Cell: (tableProps) => {
         const { row } = tableProps
@@ -251,7 +249,7 @@ const Courses = () => {
     },
     {
       accessorKey: 'action',
-      header: t('EDUCATOR.COURSES.ACTION'),
+      header: 'Action',
       size: 80,
       Cell: (tableProps) => {
         const { row, table } = tableProps
@@ -292,7 +290,7 @@ const Courses = () => {
   return (
     <Box>
       <Box sx={{ mb: 4 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap">
+        <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
           <Box>
             <Typography
               variant="h4"
@@ -302,18 +300,18 @@ const Courses = () => {
             >
               All Courses
             </Typography>
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant="body1" color="text.secondary" sx={{ mb: { xs: 2, md: 0 } }}>
               Manage and track all your courses in one place
             </Typography>
           </Box>
           <Button
             startIcon={<Plus size={18} />}
             onClick={() => {
-              void navigate('/educator/create-course')
+              navigate('/educator/create-course')
             }}
             variant="contained"
           >
-            {t('EDUCATOR.COURSES.CREATE_COURSES')}
+            Create Course
           </Button>
         </Box>
       </Box>
@@ -323,9 +321,10 @@ const Courses = () => {
           p: 2,
           borderRadius: '12px',
           border: `1px solid ${theme.palette.grey[200]}`,
+          boxShadow: (theme) => theme.customShadows.primary,
           display: 'flex',
           flexDirection: 'column',
-          height: 'calc(100vh - 280px)',
+          height: 'calc(100vh - 320px)',
           overflow: 'hidden',
         }}
       >
@@ -336,7 +335,6 @@ const Courses = () => {
           flexWrap="wrap"
           gap="10px"
           mb={2}
-          sx={{ flexShrink: 0 }}
         >
           <ButtonGroup variant="outlined">
             <Button
@@ -351,7 +349,7 @@ const Courses = () => {
               }}
               onClick={() => handleChangeStatus('')}
             >
-              {t('EDUCATOR.COURSES.ALL')} ({courseCount?.data?.courseCount || 0})
+              All ({courseCount?.data?.courseCount || 0})
             </Button>
             <Button
               sx={{
@@ -366,7 +364,7 @@ const Courses = () => {
               }}
               onClick={() => handleChangeStatus('published')}
             >
-              {t('EDUCATOR.COURSES.PUBLISHED')} ({courseCount?.data?.publishedCourseCount || 0})
+              Published ({courseCount?.data?.publishedCourseCount || 0})
             </Button>
             <Button
               sx={{
@@ -381,7 +379,7 @@ const Courses = () => {
               }}
               onClick={() => setStatus('draft')}
             >
-              {t('EDUCATOR.COURSES.DRAFT')} ({courseCount?.data?.draftCourseCount || 0})
+              Draft ({courseCount?.data?.draftCourseCount || 0})
             </Button>
           </ButtonGroup>
           <TextField
@@ -389,18 +387,10 @@ const Courses = () => {
             onChange={(e) => {
               debouncedSearch(e.target.value)
             }}
-            placeholder={t('EDUCATOR.COURSES.SEARCH')}
+            placeholder="Search courses..."
             sx={{
               minWidth: 250,
               backgroundColor: theme.palette.background.paper,
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: theme.palette.grey[300],
-                },
-                '&:hover fieldset': {
-                  borderColor: theme.palette.grey[400],
-                },
-              },
             }}
             InputProps={{
               startAdornment: (
@@ -420,47 +410,19 @@ const Courses = () => {
         >
           <MuiReactTable
             columns={columns}
-            rows={
-              coursesData?.data?.courses?.map((course) => ({
-                ...course,
-                thumbNail:
-                  typeof course.thumbNail === 'object'
-                    ? course.thumbNail?.fileName
-                    : course.thumbNail,
-                category: Array.isArray(course.category)
-                  ? course.category
-                  : [course.category || ''],
-              })) || []
-            }
+            rows={coursesData?.data?.courses || []}
             materialReactProps={tableOptions}
-            localization={{}}
             returnTableInstance={false}
           />
         </Box>
-        <Box
-          mt={2}
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
+        <Box mt={2} display="flex" justifyContent="center">
           {!!coursesData?.data?.courses.length && (
             <PaginationComponent page={page} data={coursesData?.data} setPage={setPage} />
           )}
         </Box>
       </Box>
 
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleCloseMenu}
-        PaperProps={{
-          sx: {
-            minWidth: 180,
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-          },
-        }}
-      >
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
         <MenuItem
           onClick={() => {
             void navigate('/educator/update-course', {
@@ -470,22 +432,31 @@ const Courses = () => {
           }}
         >
           <ListItemIcon>
-            <Edit size={16} />
+            <Edit size={16} style={{ color: theme.palette.primary.main }} />
           </ListItemIcon>
-          <ListItemText>Edit Course</ListItemText>
+          <ListItemText
+            primary="Edit Course"
+            primaryTypographyProps={{
+              style: { color: theme.palette.primary.main },
+            }}
+          />
         </MenuItem>
         <MenuItem
           onClick={() => {
             if (selectedRow?._id) {
-              void handleDeleteCourse(selectedRow._id)
+              handleDeleteCourse(selectedRow._id)
             }
           }}
-          sx={{ color: 'error.main' }}
         >
           <ListItemIcon>
-            <Trash2 size={16} color="currentColor" />
+            <Trash2 size={16} style={{ color: theme.palette.error.main }} />
           </ListItemIcon>
-          <ListItemText>Delete Course</ListItemText>
+          <ListItemText
+            primary="Delete Course"
+            primaryTypographyProps={{
+              style: { color: theme.palette.error.main },
+            }}
+          />
         </MenuItem>
       </Menu>
     </Box>

@@ -2,7 +2,6 @@ import { Box, Button, IconButton, Menu, MenuItem, TextField, Typography } from '
 import { MoreVertical, Edit2, Trash2, Plus, FileText, Video } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useRef, useState, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 
 import { useDownloadResourceMutation } from '../../../../../../../services/admin'
 import CourseContent from '../../../../../../../shared/components/layout/Course/content-preview'
@@ -16,7 +15,6 @@ const ChapterToolbar = ({
   currentTitle,
   lessonDetail,
 }) => {
-  const { t } = useTranslation(['education', 'application'])
   const modalRef = useRef(null)
 
   const [anchorEl, setAnchorEl] = useState(null)
@@ -100,21 +98,21 @@ const ChapterToolbar = ({
         return (
           <Box>
             <Typography variant="h6" mb={2}>
-              {t('EDUCATOR.CHAPTER_TOOLBAR.EDIT_CHAPTER_TITLE')}
+              Edit Chapter Title
             </Typography>
             <TextField
               fullWidth
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
-              placeholder={t('EDUCATOR.CHAPTER_TOOLBAR.ENTER_CHAPTER_TITLE')}
+              placeholder="Enter chapter title"
               sx={{ mb: 2 }}
             />
             <Box display="flex" justifyContent="flex-end" gap={1}>
               <Button onClick={() => modalRef.current.closeModal()} color="inherit">
-                {t('application:MISCELLANEOUS.CANCEL')}
+                Cancel
               </Button>
               <Button onClick={handleEditSave} variant="contained">
-                {t('EDUCATOR.SAVED_CHAPTERS.UPDATE')}
+                Update
               </Button>
             </Box>
           </Box>
@@ -124,8 +122,8 @@ const ChapterToolbar = ({
           <Box>
             <Typography variant="p1" mb={3} maxWidth={350}>
               {isLesson
-                ? t('EDUCATOR.CHAPTER_TOOLBAR.CONFIRM_DELETE_LESSON')
-                : t('EDUCATOR.CHAPTER_TOOLBAR.CONFIRM_DELETE_CHAPTER')}
+                ? 'Are you sure you want to delete this lesson?'
+                : 'Are you sure you want to delete this chapter?'}
             </Typography>
             <Box
               sx={{
@@ -136,10 +134,10 @@ const ChapterToolbar = ({
               }}
             >
               <Button onClick={handleDeleteConfirm} size="small" variant="contained" color="error">
-                {t('application:MISCELLANEOUS.DELETE')}
+                Delete
               </Button>
               <Button size="small" variant="outlined" onClick={() => modalRef.current.closeModal()}>
-                {t('application:MISCELLANEOUS.CANCEL')}
+                Cancel
               </Button>
             </Box>
           </Box>
@@ -200,9 +198,7 @@ const ChapterToolbar = ({
           }}
         >
           <Edit2 size={16} style={{ marginRight: 8 }} />
-          {isLesson
-            ? t('EDUCATOR.CHAPTER_TOOLBAR.EDIT_LESSON')
-            : t('EDUCATOR.CHAPTER_TOOLBAR.EDIT_CHAPTER')}
+          {isLesson ? 'Edit Lesson' : 'Edit Chapter'}
         </MenuItem>
         <MenuItem
           onClick={handleDeleteClick}
@@ -214,9 +210,7 @@ const ChapterToolbar = ({
           }}
         >
           <Trash2 size={16} style={{ marginRight: 8 }} />
-          {isLesson
-            ? t('EDUCATOR.CHAPTER_TOOLBAR.DELETE_LESSON')
-            : t('EDUCATOR.CHAPTER_TOOLBAR.DELETE_CHAPTER')}
+          {isLesson ? 'Delete Lesson' : 'Delete Chapter'}
         </MenuItem>
         {!isLesson && (
           <MenuItem
@@ -229,7 +223,7 @@ const ChapterToolbar = ({
             }}
           >
             <Plus size={16} style={{ marginRight: 8 }} />
-            {t('EDUCATOR.CHAPTER_TOOLBAR.ADD_LESSON')}
+            Add Lesson
           </MenuItem>
         )}
         {isLesson && (

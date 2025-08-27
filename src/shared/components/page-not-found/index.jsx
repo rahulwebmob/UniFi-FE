@@ -1,5 +1,4 @@
 import { Box, Button, useTheme, Typography } from '@mui/material'
-import { t } from 'i18next'
 import { useNavigate } from 'react-router-dom'
 
 import PageNotFoundLogo from '../../../assets/svgicons/page-not-found.svg?react'
@@ -45,10 +44,10 @@ const PageNotFound = () => {
       </Box>
       <Box my={1}>
         <Typography variant="h3" mb={1}>
-          {t('application:UI.PAGE_NOT_FOUND.OOPS_PAGE_NOT_FOUND')}
+          Oops! Page not found.
         </Typography>
         <Typography component="p" color="text.secondary">
-          {t('application:UI.PAGE_NOT_FOUND.GOING_BACK_TO_HOMEPAGE')}
+          Looks like you&apos;re lost. We recommend going back to the homepage.
         </Typography>
       </Box>
       <Button

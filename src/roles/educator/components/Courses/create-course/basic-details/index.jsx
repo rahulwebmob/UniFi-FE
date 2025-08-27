@@ -9,14 +9,12 @@ import {
   useTheme,
 } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { NumericFormat } from 'react-number-format'
 
 import CharacterCount from '../../../character-count'
 import AddCategory from '../../../Webinar/create-webinar/add-category'
 
 const BasicDetails = () => {
-  const { t } = useTranslation('education')
   const theme = useTheme()
 
   const {
@@ -32,7 +30,7 @@ const BasicDetails = () => {
           <Grid size={12}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={1} fontWeight={500}>
-                {t('EDUCATOR.BASIC_DETAILS.COURSE_TITLE')}{' '}
+                Course Title{' '}
                 <Typography variant="body1" color="error.main" component="span">
                   *
                 </Typography>{' '}
@@ -48,7 +46,7 @@ const BasicDetails = () => {
                   <TextField
                     {...field}
                     control={control}
-                    placeholder={t('EDUCATOR.BASIC_DETAILS.TITLE_PLACEHOLDER')}
+                    placeholder="Enter course title"
                     size="small"
                     error={!!errors.title}
                     helperText={errors.title?.message}
@@ -58,14 +56,14 @@ const BasicDetails = () => {
               />
 
               <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-                {t('EDUCATOR.BASIC_DETAILS.IMAGE_DESCRIPTION')}
+                Make your course stand out with a compelling title that captures its essence
               </Typography>
             </FormControl>
           </Grid>
           <Grid size={12}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={1} fontWeight={500}>
-                {t('EDUCATOR.BASIC_DETAILS.COURSE_SUBTITLE')}{' '}
+                Course Subtitle{' '}
                 <Typography variant="body1" color="error.main" component="span">
                   *
                 </Typography>{' '}
@@ -81,7 +79,7 @@ const BasicDetails = () => {
                   <TextField
                     {...field}
                     control={control}
-                    placeholder={t('EDUCATOR.BASIC_DETAILS.SUBTITLE_DESCRIPTION')}
+                    placeholder="Enter a brief subtitle for your course"
                     size="small"
                     error={!!errors.subtitle}
                     helperText={errors.subtitle?.message}
@@ -94,7 +92,7 @@ const BasicDetails = () => {
           <Grid size={12}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={1} fontWeight={500}>
-                {t('EDUCATOR.BASIC_DETAILS.COURSE_DESCRIPTION')}{' '}
+                Course Description{' '}
                 <Typography variant="body1" color="error.main" component="span">
                   *
                 </Typography>{' '}
@@ -110,7 +108,7 @@ const BasicDetails = () => {
                   <TextField
                     {...field}
                     control={control}
-                    placeholder={t('EDUCATOR.BASIC_DETAILS.CATEGORY_DESCRIPTION')}
+                    placeholder="Provide a detailed description of your course"
                     multiline
                     rows={5}
                     variant="outlined"
@@ -136,14 +134,14 @@ const BasicDetails = () => {
             <FormControl fullWidth>
               <Box display="flex" alignItems="center" gap="10px" mt={1}>
                 <Typography variant="body1" fontWeight={500}>
-                  {t('EDUCATOR.BASIC_DETAILS.PRICING')}
+                  Pricing
                 </Typography>
                 <Controller
                   name="isPaid"
                   control={control}
                   defaultValue="free"
                   rules={{
-                    required: t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICING_TYPE_REQUIRED'),
+                    required: 'Please select a pricing type',
                   }}
                   render={({ field: { onChange, value } }) => (
                     <ButtonGroup variant="outlined" sx={{ ml: 2 }}>
@@ -163,7 +161,7 @@ const BasicDetails = () => {
                         }}
                         onClick={() => onChange(false)}
                       >
-                        {t('EDUCATOR.COMMON_KEYS.FREE')}
+                        Free
                       </Button>
                       <Button
                         sx={{
@@ -181,7 +179,7 @@ const BasicDetails = () => {
                         }}
                         onClick={() => onChange(true)}
                       >
-                        {t('EDUCATOR.COMMON_KEYS.PAID')}
+                        Paid
                       </Button>
                     </ButtonGroup>
                   )}
@@ -193,13 +191,13 @@ const BasicDetails = () => {
             <Grid size={6}>
               <FormControl fullWidth>
                 <Typography variant="body1" mb={1} fontWeight={500}>
-                  {t('EDUCATOR.BASIC_DETAILS.ADD_PRICE')}
+                  Add Price
                 </Typography>
                 <Controller
                   name="price"
                   control={control}
                   rules={{
-                    required: t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_REQUIRED'),
+                    required: 'Price is required',
                   }}
                   render={({ field, fieldState }) => (
                     <NumericFormat

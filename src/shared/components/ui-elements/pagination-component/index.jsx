@@ -22,11 +22,36 @@ const PaginationComponent = ({
       page={page}
       count={pageCount}
       onChange={handlePageChange}
-      variant="outlined"
+      variant="text"
       color="primary"
       boundaryCount={4}
       size="medium"
-      sx={customStyle}
+      sx={{
+        '& .MuiPaginationItem-root': {
+          borderRadius: 1,
+          fontWeight: 500,
+          '&:hover': {
+            backgroundColor: (theme) => theme.palette.action.hover,
+          },
+          '&.Mui-selected': {
+            backgroundColor: (theme) => theme.palette.primary.main,
+            color: (theme) => theme.palette.primary.contrastText,
+            '&:hover': {
+              backgroundColor: (theme) => theme.palette.primary.dark,
+            },
+          },
+        },
+        '& .MuiPaginationItem-ellipsis': {
+          opacity: 0.6,
+        },
+        '& .MuiPaginationItem-previousNext': {
+          backgroundColor: (theme) => theme.palette.action.hover,
+          '&:hover': {
+            backgroundColor: (theme) => theme.palette.action.selected,
+          },
+        },
+        ...customStyle,
+      }}
     />
   )
 }

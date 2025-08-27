@@ -1,10 +1,8 @@
 import { Typography, Box, Grid, FormControl, useTheme } from '@mui/material'
 import { Image, Video } from 'lucide-react'
 import { Controller, useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 const MetaData = () => {
-  const { t } = useTranslation('education')
   const theme = useTheme()
   const {
     control,
@@ -16,7 +14,7 @@ const MetaData = () => {
       <Grid size={12}>
         <FormControl fullWidth>
           <Typography variant="body1" mb={1} fontWeight={500}>
-            {t('EDUCATOR.SETUP_COURSE.COURSE_IMAGE')}
+            Course Image
             <Typography variant="body1" color="error.main" component="span">
               *
             </Typography>
@@ -47,7 +45,7 @@ const MetaData = () => {
               control={control}
               defaultValue=""
               rules={{
-                required: t('EDUCATOR.SETUP_COURSE.COURSE_IMAGE_REQUIRED'),
+                required: 'Course image is required',
               }}
               render={({ field: { onChange, value } }) => (
                 <>
@@ -76,10 +74,10 @@ const MetaData = () => {
                     {value?.name || value}
                   </Typography>
                   <Typography variant="body1" color="primary" sx={{ mt: 2, mb: 1 }}>
-                    {t('EDUCATOR.SETUP_COURSE.CLICK_TO_UPLOAD_OR_DRAG_DROP')}
+                    Click to upload or drag & drop
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    {t('EDUCATOR.SETUP_COURSE.IMAGE_FORMAT_GUIDELINES')}
+                    PNG, JPG or JPEG (max. 5MB)
                   </Typography>
                   {errors.image && (
                     <Typography variant="caption" color="error" sx={{ mt: 1 }}>
@@ -91,14 +89,14 @@ const MetaData = () => {
             />
           </Box>
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-            {t('EDUCATOR.SETUP_COURSE.COURSE_IMAGE_UPLOAD_GUIDELINES')}
+            Upload a high-quality image that represents your course content
           </Typography>
         </FormControl>
       </Grid>
       <Grid size={12}>
         <FormControl fullWidth>
           <Typography variant="body1" mb={1} fontWeight={500}>
-            {t('EDUCATOR.SETUP_COURSE.PREVIEW_VIDEO')}
+            Preview Video
             <Typography variant="body1" color="error.main" component="span">
               *
             </Typography>
@@ -129,7 +127,7 @@ const MetaData = () => {
               control={control}
               defaultValue=""
               rules={{
-                required: t('EDUCATOR.SETUP_COURSE.PREVIEW_VIDEO_REQUIRED'),
+                required: 'Preview video is required',
               }}
               render={({ field: { onChange, value } }) => (
                 <>
@@ -150,10 +148,10 @@ const MetaData = () => {
                     {value?.name || value}
                   </Typography>
                   <Typography variant="body1" color="primary" sx={{ mt: 2, mb: 1 }}>
-                    {t('EDUCATOR.SETUP_COURSE.CLICK_TO_UPLOAD_OR_DRAG_DROP')}
+                    Click to upload or drag & drop
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    {t('EDUCATOR.SETUP_COURSE.VIDEO_FORMAT_GUIDELINES')}
+                    MP4, MOV, WEBM or MKV (max. 500MB)
                   </Typography>
                   {errors.video && (
                     <Typography variant="caption" color="error" sx={{ mt: 1 }}>
@@ -165,7 +163,7 @@ const MetaData = () => {
             />
           </Box>
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-            {t('EDUCATOR.SETUP_COURSE.VIDEO_UPLOAD_GUIDELINES')}
+            Upload a preview video to showcase your course content
           </Typography>
         </FormControl>
       </Grid>

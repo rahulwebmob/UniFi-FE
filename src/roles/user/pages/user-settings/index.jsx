@@ -12,7 +12,6 @@ import {
 } from '@mui/material'
 import { User, LogOut, CreditCard, Gift } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 
 import Logout from '../../../../shared/components/auth-wrapper/logout'
@@ -22,7 +21,6 @@ import Referrals from '../../components/user-settings-tabs/user-referrals'
 
 const MyProfile = () => {
   const theme = useTheme()
-  const { t } = useTranslation('application')
   const location = useLocation()
   const isSm = useMediaQuery(theme.breakpoints.down('sm'))
   const [value, setValue] = useState(0)
@@ -34,14 +32,14 @@ const MyProfile = () => {
   const tabComponents = [
     {
       key: 'PERSONALINFO',
-      name: t('application:PROFILE.PERSONAL_INFO'),
+      name: 'Personal Information',
       icon: <User size={20} />,
       component: <PersonalInfo />,
       show: true,
     },
     {
       key: 'EDUCATION',
-      name: t('application:PROFILE.EDUCATION_PAYMENTS'),
+      name: 'Payments',
       icon: <CreditCard size={20} />,
       component: <EducationPayments />,
       show: true,
@@ -73,7 +71,7 @@ const MyProfile = () => {
           My Profile
         </Typography>
         <Typography component="p" color="text.secondary">
-          {t('application:PROFILE.MANAGE_INFO_DESCRIPTION')}
+          Manage your personal information and settings
         </Typography>
       </Box>
 
@@ -192,7 +190,7 @@ const MyProfile = () => {
                     color: theme.palette.error.main,
                   }}
                 >
-                  {t('application:PROFILE.LOGOUT')}
+                  Logout
                 </Button>
               }
             />

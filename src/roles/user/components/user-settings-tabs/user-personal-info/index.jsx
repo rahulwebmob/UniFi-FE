@@ -14,7 +14,6 @@ import { styled } from '@mui/material/styles'
 import { Upload, Save } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import * as yup from 'yup'
 
@@ -25,7 +24,6 @@ import { generateImageUrl } from '../../../../../utils/globalUtils'
 
 const PersonalInfo = () => {
   const theme = useTheme()
-  const { t } = useTranslation('application')
   const dispatch = useDispatch()
   const userState = useSelector((state) => state.user)
   const userData = userState.user
@@ -52,13 +50,13 @@ const PersonalInfo = () => {
       firstName: yup
         .string()
         .trim()
-        .required(t('application:PROFILE.VALIDATION_FIRSTNAME_REQ'))
-        .max(100, t('application:PROFILE.VALIDATION_FIRSTNAME_MAX')),
+        .required('First name is required')
+        .max(100, 'First name cannot exceed 100 characters'),
       lastName: yup
         .string()
         .trim()
-        .required(t('application:PROFILE.VALIDATION_LASTNAME_REQ'))
-        .max(100, t('application:PROFILE.VALIDATION_LASTNAME_MAX')),
+        .required('Last name is required')
+        .max(100, 'Last name cannot exceed 100 characters'),
     }),
   )
 
@@ -132,11 +130,11 @@ const PersonalInfo = () => {
     if (file) {
       const maxSize = 5 * 1024 * 1024
       if (file.size > maxSize) {
-        return t('application:PROFILE.ERROR_FILE_SIZE')
+        return 'File size must be less than 5MB'
       }
       const allowedFormats = ['image/jpeg', 'image/png', 'image/jpg']
       if (!allowedFormats.includes(file.type)) {
-        return t('application:PROFILE.ERROR_FILE_TYPE')
+        return 'Only JPG, JPEG and PNG formats are allowed'
       }
       setAvatar({ file, image: URL.createObjectURL(file) })
       return ''
@@ -154,7 +152,7 @@ const PersonalInfo = () => {
       >
         <Box pb={3}>
           <Typography variant="h6" mb={2.5}>
-            {t('application:PROFILE.PERSONAL_INFO')}
+            Personal Information
           </Typography>
 
           <Box mb={3} display="flex" alignItems="center" gap={2}>
@@ -164,7 +162,7 @@ const PersonalInfo = () => {
               }}
             >
               <Avatar
-                alt={t('application:PROFILE.PROFILE_PICTURE')}
+                alt="Profile Picture"
                 src={avatar.image ?? undefined}
                 sx={{
                   width: 80,
@@ -226,7 +224,7 @@ const PersonalInfo = () => {
 
             <Box>
               <Typography variant="body2" fontWeight={500} color="text.secondary" mb={0.5}>
-                {t('application:PROFILE.PROFILE_PICTURE')}
+                Profile Picture
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 JPG, JPEG or PNG. Max size 5MB
@@ -237,7 +235,7 @@ const PersonalInfo = () => {
           <Box display="grid" gridTemplateColumns={!matches ? '1fr 1fr' : '1fr'} gap={2.5} mb={1}>
             <FormControl fullWidth>
               <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
-                {t('application:PROFILE.FIRST_NAME')}
+                First Name
               </Typography>
               <Controller
                 name="firstName"
@@ -248,7 +246,7 @@ const PersonalInfo = () => {
                     size="small"
                     variant="outlined"
                     fullWidth
-                    placeholder={t('application:PROFILE.PLACEHOLDER_FIRST_NAME')}
+                    placeholder="Enter your first name"
                     {...field}
                     error={!!errors.firstName}
                     helperText={errors.firstName?.message}
@@ -259,7 +257,7 @@ const PersonalInfo = () => {
 
             <FormControl fullWidth>
               <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">
-                {t('application:PROFILE.LAST_NAME')}
+                Last Name
               </Typography>
               <Controller
                 name="lastName"
@@ -270,7 +268,7 @@ const PersonalInfo = () => {
                     size="small"
                     variant="outlined"
                     fullWidth
-                    placeholder={t('application:PROFILE.PLACEHOLDER_LAST_NAME')}
+                    placeholder="Enter your last name"
                     {...field}
                     error={!!errors.lastName}
                     helperText={errors.lastName?.message}
@@ -287,7 +285,7 @@ const PersonalInfo = () => {
             mt={1}
             startIcon={<Save size={18} />}
           >
-            {t('application:MISCELLANEOUS.SAVE')}
+            Save
           </Button>
         </Box>
       </form>
@@ -296,7 +294,7 @@ const PersonalInfo = () => {
         <Divider mb={3} />
         <Box pb={3}>
           <Typography variant="h6" mb={2.5}>
-            {t('application:PROFILE.CHANGE_PASSWORD')}
+            Change Password
           </Typography>
           <ChangePassword
             closeModal={() => {}}

@@ -2,7 +2,6 @@ import { Box, Grid, Button, Divider, TextField, Typography, FormControl } from '
 import { Plus, Minus } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { Controller, useFieldArray } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { NumericFormat } from 'react-number-format'
 
 const Qualification = ({ control }) => {
@@ -32,7 +31,6 @@ const Qualification = ({ control }) => {
     control,
     name: 'certifications',
   })
-  const { t } = useTranslation('education')
 
   return (
     <Box mb={2}>
@@ -40,7 +38,7 @@ const Qualification = ({ control }) => {
         <Grid size={{ xs: 12 }}>
           <FormControl fullWidth>
             <Typography variant="body1">
-              {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.EXECUTIVE_SUMMARY')}
+              Executive Summary
               {/* <RequiredFieldIndicator /> */}
             </Typography>
             <Controller
@@ -50,9 +48,7 @@ const Qualification = ({ control }) => {
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
-                  placeholder={t(
-                    'REGISTER_EDUCATOR.QUALIFICATION_PAGE.EXECUTIVE_SUMMARY_PLACEHOLDER',
-                  )}
+                  placeholder="Tell us a little bit about yourself..."
                   multiline
                   rows={3}
                   variant="outlined"
@@ -67,9 +63,7 @@ const Qualification = ({ control }) => {
 
         <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
           <FormControl fullWidth>
-            <Typography variant="body1">
-              {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.COMPANY')}
-            </Typography>
+            <Typography variant="body1">Company</Typography>
             <Controller
               name="company"
               control={control}
@@ -77,7 +71,7 @@ const Qualification = ({ control }) => {
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
-                  placeholder={t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.COMPANY_PLACEHOLDER')}
+                  placeholder="Company name"
                   size="small"
                   error={!!fieldState.error}
                   helperText={fieldState.error?.message}
@@ -89,7 +83,7 @@ const Qualification = ({ control }) => {
 
         <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
           <FormControl fullWidth>
-            <Typography variant="body1">{t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.YOE')}</Typography>
+            <Typography variant="body1">Years of experience</Typography>
             <Controller
               name="experience"
               control={control}
@@ -98,7 +92,7 @@ const Qualification = ({ control }) => {
                   {...field}
                   customInput={TextField}
                   type="text"
-                  placeholder={t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.YOE_PLACEHOLDER')}
+                  placeholder="10"
                   size="small"
                   allowNegative={false}
                   decimalScale={2}
@@ -123,7 +117,7 @@ const Qualification = ({ control }) => {
       <Grid size={{ xs: 12 }}>
         <Box display="flex" justifyContent="space-between" width="100%">
           <Typography component="p" color="black.main700">
-            {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.EXPERTISE')}
+            Expertise
           </Typography>
           <Button
             startIcon={<Plus size={16} />}
@@ -136,7 +130,7 @@ const Qualification = ({ control }) => {
               fontSize: '0.875rem',
             }}
           >
-            {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.ADD_LABEL')}
+            Add More
           </Button>
         </Box>
 
@@ -155,15 +149,13 @@ const Qualification = ({ control }) => {
                     fontSize: '0.875rem',
                   }}
                 >
-                  {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.REMOVE_LABEL')}
+                  Remove
                 </Button>
               </Grid>
             )}
             <Grid size={{ xs: 12, sm: 12, lg: 12 }}>
               <FormControl fullWidth>
-                <Typography variant="body1">
-                  {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.CATEGORY')}
-                </Typography>
+                <Typography variant="body1">Category</Typography>
                 <Controller
                   name={`expertise.${index}.category`}
                   control={control}
@@ -171,7 +163,7 @@ const Qualification = ({ control }) => {
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      placeholder={t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.CATEGORY_PLACEHOLDER')}
+                      placeholder="Ex: Finance"
                       size="small"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
@@ -194,7 +186,7 @@ const Qualification = ({ control }) => {
       <Grid size={{ xs: 12 }}>
         <Box display="flex" justifyContent="space-between" width="100%">
           <Typography component="p" color="black.main700">
-            {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.EDUCATION')}
+            Education
           </Typography>
           <Button
             startIcon={<Plus size={16} />}
@@ -207,7 +199,7 @@ const Qualification = ({ control }) => {
               fontSize: '0.875rem',
             }}
           >
-            {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.ADD_LABEL')}
+            Add More
           </Button>
         </Box>
 
@@ -226,15 +218,13 @@ const Qualification = ({ control }) => {
                     fontSize: '0.875rem',
                   }}
                 >
-                  {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.REMOVE_LABEL')}
+                  Remove
                 </Button>
               </Grid>
             )}
             <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
-                <Typography variant="body1">
-                  {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.DEGREE')}
-                </Typography>
+                <Typography variant="body1">Degree</Typography>
                 <Controller
                   name={`education.${index}.degree`}
                   control={control}
@@ -242,7 +232,7 @@ const Qualification = ({ control }) => {
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      placeholder={t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.DEGREE_PLACEHOLDER')}
+                      placeholder="Ex: Bachelor's"
                       size="small"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
@@ -254,9 +244,7 @@ const Qualification = ({ control }) => {
 
             <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
               <FormControl fullWidth>
-                <Typography variant="body1">
-                  {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.FIELD_OF_STUDY')}
-                </Typography>
+                <Typography variant="body1">Field of study</Typography>
                 <Controller
                   name={`education.${index}.field`}
                   control={control}
@@ -264,7 +252,7 @@ const Qualification = ({ control }) => {
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      placeholder={t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.FIELD_OF_STUDY')}
+                      placeholder="Field of study"
                       size="small"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
@@ -287,7 +275,7 @@ const Qualification = ({ control }) => {
       <Grid size={{ xs: 12 }}>
         <Box display="flex" justifyContent="space-between" width="100%">
           <Typography component="p" color="black.main700">
-            {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.CERTIFICATES')}
+            Certificates
           </Typography>
           <Button
             startIcon={<Plus size={16} />}
@@ -300,7 +288,7 @@ const Qualification = ({ control }) => {
               fontSize: '0.875rem',
             }}
           >
-            {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.ADD_LABEL')}
+            Add More
           </Button>
         </Box>
         {certificateFields.map((f, index) => (
@@ -318,15 +306,13 @@ const Qualification = ({ control }) => {
                     fontSize: '0.875rem',
                   }}
                 >
-                  {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.REMOVE_LABEL')}
+                  Remove
                 </Button>
               </Grid>
             )}
             <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
               <FormControl fullWidth>
-                <Typography variant="body1">
-                  {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.NAME')}
-                </Typography>
+                <Typography variant="body1">Name</Typography>
                 <Controller
                   name={`certifications.${index}.name`}
                   control={control}
@@ -334,9 +320,7 @@ const Qualification = ({ control }) => {
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      placeholder={t(
-                        'REGISTER_EDUCATOR.QUALIFICATION_PAGE.CERTIFICATES_NAME_PLACEHOLDER',
-                      )}
+                      placeholder="Ex: Microsoft certified network associate"
                       size="small"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
@@ -348,9 +332,7 @@ const Qualification = ({ control }) => {
 
             <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
-                <Typography variant="body1">
-                  {t('REGISTER_EDUCATOR.QUALIFICATION_PAGE.ISSUING_ORGANIZATION')}
-                </Typography>
+                <Typography variant="body1">Issuing organization</Typography>
                 <Controller
                   name={`certifications.${index}.organization`}
                   control={control}
@@ -358,9 +340,7 @@ const Qualification = ({ control }) => {
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      placeholder={t(
-                        'REGISTER_EDUCATOR.QUALIFICATION_PAGE.ISSUING_ORGANIZATION_PLACEHOLDER',
-                      )}
+                      placeholder="Ex: Microsoft"
                       size="small"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}

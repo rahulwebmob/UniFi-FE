@@ -27,7 +27,6 @@ import {
 } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import {
@@ -52,14 +51,22 @@ const WebinarTable = ({ columns, data, page, setPage }) => {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+    <>
+      <Box
+        sx={{
+          flex: 1,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+        }}
+      >
         <MuiReactTable columns={columns} rows={data.data || []} materialReactProps={tableOptions} />
       </Box>
-      <Box mt={2} textAlign="center" sx={{ flexShrink: 0 }}>
+      <Box mt={2} display="flex" justifyContent="center">
         {!!data.data?.length && <PaginationComponent page={page} data={data} setPage={setPage} />}
       </Box>
-    </Box>
+    </>
   )
 }
 
@@ -73,9 +80,7 @@ WebinarTable.propTypes = {
 }
 
 const AllWebinars = ({ page, setPage }) => {
-  const theme = useTheme()
   const navigate = useNavigate()
-  const { t } = useTranslation('education')
   const [status, setStatus] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [anchorEl, setAnchorEl] = useState(null)
@@ -117,7 +122,7 @@ const AllWebinars = ({ page, setPage }) => {
   const columns = [
     {
       accessorKey: 'title',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.WEBINAR_NAME'),
+      header: 'Webinar Name',
       size: 300,
       Cell: (tableProps) => {
         const { row, cell } = tableProps
@@ -168,7 +173,7 @@ const AllWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'category',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CATEGORY'),
+      header: 'Category',
       Cell: (tableProps) => {
         const { cell } = tableProps
         const categories = cell.getValue()
@@ -195,10 +200,9 @@ const AllWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'scheduled',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.SCHEDULE'),
+      header: 'Schedule',
       Cell: (tableProps) => {
         const { row } = tableProps
-        const { t } = useTranslation('education')
         const navigate = useNavigate()
         const { webinarScheduledObj } = row.original
         const joinDate = webinarScheduledObj?.join_date
@@ -207,7 +211,7 @@ const AllWebinars = ({ page, setPage }) => {
 
         return webinarScheduledObj?.can_join ? (
           <Chip
-            label={t('EDUCATOR.WEBINAR.JOIN_NOW')}
+            label="Join Now"
             color="success"
             size="small"
             onClick={() => {
@@ -225,7 +229,7 @@ const AllWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'totalEnrolled',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.TOTAL_ENROLLMENT'),
+      header: 'Total Enrollment',
       Cell: (tableProps) => {
         const { row } = tableProps
         return <Typography>{row.original.totalEnrolled || '-'}</Typography>
@@ -233,7 +237,7 @@ const AllWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'createdAt',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CREATED_AT'),
+      header: 'Created At',
       Cell: (tableProps) => {
         const { cell } = tableProps
         const dateValue = cell.getValue()
@@ -246,7 +250,7 @@ const AllWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'status',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.STATUS'),
+      header: 'Status',
       size: 120,
       Cell: (tableProps) => {
         const { row } = tableProps
@@ -279,7 +283,7 @@ const AllWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'view',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.VIEW_WEBINAR'),
+      header: 'View Webinar',
       size: 140,
       Cell: (tableProps) => {
         const { row } = tableProps
@@ -310,7 +314,7 @@ const AllWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'action',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.ACTION'),
+      header: 'Action',
       size: 80,
       Cell: (tableProps) => {
         const { row } = tableProps
@@ -334,67 +338,54 @@ const AllWebinars = ({ page, setPage }) => {
   return (
     <>
       <Box
-        sx={{
-          backgroundColor: 'background.light',
-          p: 2,
-          borderRadius: '12px',
-          border: `1px solid ${theme.palette.grey[200]}`,
-          display: 'flex',
-          flexDirection: 'column',
-          height: 'calc(100vh - 280px)',
-          overflow: 'hidden',
-        }}
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        flexWrap="wrap"
+        gap="10px"
+        mb={2}
+        sx={{ flexShrink: 0 }}
       >
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          flexWrap="wrap"
-          gap="10px"
-          mb={2}
-          sx={{ flexShrink: 0 }}
+        <ButtonGroup
+          sx={{
+            '& .MuiButton-root:not(:last-child)': { borderRight: 'none' },
+          }}
         >
-          <ButtonGroup
-            sx={{
-              '& .MuiButton-root:not(:last-child)': { borderRight: 'none' },
-            }}
-          >
-            {['', 'published'].map((statusKey, index) => (
-              <Button
-                key={statusKey || 'all'}
-                sx={{
-                  backgroundColor: status === statusKey ? 'primary.main' : 'transparent',
-                  color: status === statusKey ? 'white' : 'text.secondary',
-                  '&:hover': {
-                    backgroundColor: status === statusKey ? 'primary.dark' : 'action.hover',
-                  },
-                }}
-                onClick={() => handleChangeStatus(statusKey)}
-              >
-                {[t('EDUCATOR.WEBINAR.ALL'), t('EDUCATOR.WEBINAR.PUBLISHED')][index]} (
-                {webinarCount?.data?.[['allWebinarsCount', 'publishedWebinarsCount'][index]]})
-              </Button>
-            ))}
-          </ButtonGroup>
-          <TextField
-            size="small"
-            onChange={(e) => debouncedSearch(e.target.value)}
-            placeholder={t('EDUCATOR.WEBINAR.SEARCH')}
-            InputProps={{
-              startAdornment: (
-                <Search size={16} style={{ color: 'var(--mui-palette-action-disabled)' }} />
-              ),
-            }}
-          />
-        </Box>
-        <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
-          <WebinarTable
-            columns={columns}
-            data={webinarData || { data: [] }}
-            page={page}
-            setPage={setPage}
-          />
-        </Box>
+          {['', 'published'].map((statusKey, index) => (
+            <Button
+              key={statusKey || 'all'}
+              sx={{
+                backgroundColor: status === statusKey ? 'primary.main' : 'transparent',
+                color: status === statusKey ? 'white' : 'text.secondary',
+                '&:hover': {
+                  backgroundColor: status === statusKey ? 'primary.dark' : 'action.hover',
+                },
+              }}
+              onClick={() => handleChangeStatus(statusKey)}
+            >
+              {['All', 'Published'][index]} (
+              {webinarCount?.data?.[['allWebinarsCount', 'publishedWebinarsCount'][index]]})
+            </Button>
+          ))}
+        </ButtonGroup>
+        <TextField
+          size="small"
+          onChange={(e) => debouncedSearch(e.target.value)}
+          placeholder="Search webinars..."
+          InputProps={{
+            startAdornment: (
+              <Search size={16} style={{ color: 'var(--mui-palette-action-disabled)' }} />
+            ),
+          }}
+        />
+      </Box>
+      <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+        <WebinarTable
+          columns={columns}
+          data={webinarData || { data: [] }}
+          page={page}
+          setPage={setPage}
+        />
       </Box>
 
       <Menu
@@ -450,14 +441,12 @@ AllWebinars.propTypes = {
 }
 
 const PastWebinars = ({ page, setPage }) => {
-  const theme = useTheme()
-  const { t } = useTranslation('education')
   const { data } = useGetPastWebinarsQuery({ page, pageSize: 10 }, { pollingInterval: 5000 })
 
   const columns = [
     {
       accessorKey: 'title',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.WEBINAR_NAME'),
+      header: 'Webinar Name',
       size: 300,
       Cell: (tableProps) => {
         const { row, cell } = tableProps
@@ -508,7 +497,7 @@ const PastWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'category',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CATEGORY'),
+      header: 'Category',
       Cell: (tableProps) => {
         const { cell } = tableProps
         const categories = cell.getValue()
@@ -535,7 +524,7 @@ const PastWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'scheduledDate',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.SCHEDULE'),
+      header: 'Schedule',
       Cell: (tableProps) => {
         const { cell } = tableProps
         const dateValue = cell.getValue()
@@ -548,7 +537,7 @@ const PastWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'createdAt',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.CREATED_AT'),
+      header: 'Created At',
       Cell: (tableProps) => {
         const { cell } = tableProps
         const dateValue = cell.getValue()
@@ -561,7 +550,7 @@ const PastWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'status',
-      header: t('EDUCATOR.WEBINAR.TABLE_HEADER.STATUS'),
+      header: 'Status',
       size: 120,
       Cell: (tableProps) => {
         const { row } = tableProps
@@ -593,23 +582,12 @@ const PastWebinars = ({ page, setPage }) => {
   ]
 
   return (
-    <Box
-      sx={{
-        backgroundColor: 'background.light',
-        p: 2,
-        borderRadius: '12px',
-        border: `1px solid ${theme.palette.grey[200]}`,
-        height: 'calc(100vh - 280px)',
-        overflow: 'hidden',
-      }}
-    >
-      <WebinarTable
-        columns={columns}
-        data={data?.data || { data: [] }}
-        page={page}
-        setPage={setPage}
-      />
-    </Box>
+    <WebinarTable
+      columns={columns}
+      data={data?.data || { data: [] }}
+      page={page}
+      setPage={setPage}
+    />
   )
 }
 
@@ -620,31 +598,23 @@ PastWebinars.propTypes = {
 
 const Webinar = () => {
   const navigate = useNavigate()
-  const { t } = useTranslation('education')
   const [page, setPage] = useState(1)
   const [isLogs, setIsLogs] = useState(false)
 
   return (
     <Box>
-      <Box sx={{ mb: 3 }}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          flexWrap="wrap"
-          mb={2}
-        >
+      <Box sx={{ mb: 4 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
           <Box>
             <Typography
               variant="h4"
               sx={{
-                fontWeight: 600,
-                mb: 0.5,
+                mb: 1,
               }}
             >
               {isLogs ? 'Past' : 'All'} Webinars
             </Typography>
-            <Typography component="p" color="text.secondary">
+            <Typography variant="body1" color="text.secondary" sx={{ mb: { xs: 2, md: 0 } }}>
               {isLogs ? 'View your completed webinar history' : 'Manage and schedule your webinars'}
             </Typography>
           </Box>
@@ -661,25 +631,39 @@ const Webinar = () => {
               onClick={() => setIsLogs(!isLogs)}
               variant="outlined"
             >
-              {isLogs ? t('EDUCATOR.COMMON_KEYS.BACK') : t('EDUCATOR.WEBINAR.VIEW_LOGS')}
+              {isLogs ? 'Back' : 'View Logs'}
             </Button>
             <Button
               onClick={() => {
-                void navigate('/educator/create-webinar')
+                navigate('/educator/create-webinar')
               }}
               startIcon={<Plus size={16} />}
               variant="contained"
             >
-              {t('EDUCATOR.WEBINAR.CREATE_WEBINAR')}
+              Create Webinar
             </Button>
           </Box>
         </Box>
       </Box>
-      {isLogs ? (
-        <PastWebinars page={page} setPage={setPage} />
-      ) : (
-        <AllWebinars page={page} setPage={setPage} />
-      )}
+      <Box
+        sx={{
+          backgroundColor: 'background.light',
+          p: 2,
+          borderRadius: '12px',
+          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+          boxShadow: (theme) => theme.customShadows.primary,
+          display: 'flex',
+          flexDirection: 'column',
+          height: 'calc(100vh - 320px)',
+          overflow: 'hidden',
+        }}
+      >
+        {isLogs ? (
+          <PastWebinars page={page} setPage={setPage} />
+        ) : (
+          <AllWebinars page={page} setPage={setPage} />
+        )}
+      </Box>
     </Box>
   )
 }

@@ -15,8 +15,6 @@ import { CheckCircle, ArrowLeft, Save, Eye } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-// import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
@@ -60,11 +58,7 @@ const StepIcon = ({ active, completed }) => {
           },
         }}
       >
-        <CheckCircle
-          size={22}
-          color={(theme) => theme.palette.primary.contrastText}
-          strokeWidth={2.5}
-        />
+        <CheckCircle size={22} color={theme.palette.common.white} strokeWidth={2.5} />
       </Box>
     )
   }
@@ -146,34 +140,32 @@ const StepIcon = ({ active, completed }) => {
   )
 }
 
-const stepsConfig = (t) => [
+const stepsConfig = () => [
   {
-    label: t('EDUCATOR.CREATE_COURSE.BASIC_DETAILS'),
-    description: t('EDUCATOR.CREATE_COURSE.BASIC_DETAILS_DESCRIPTION'),
-    buttonLabel: t('EDUCATOR.CREATE_COURSE.CONTINUE'),
+    label: 'Basic Details',
+    description: 'Enter the fundamental information about your course',
+    buttonLabel: 'Continue',
   },
   {
-    label: t('EDUCATOR.CREATE_COURSE.SETUP_COURSE'),
-    description: t('EDUCATOR.CREATE_COURSE.SETUP_COURSE_DESCRIPTION'),
-    buttonLabel: t('EDUCATOR.CREATE_COURSE.CONTINUE'),
+    label: 'Setup Course',
+    description: 'Upload course images and preview video',
+    buttonLabel: 'Continue',
   },
   {
-    label: t('EDUCATOR.CREATE_COURSE.ADD_CHAPTERS'),
-    description: t('EDUCATOR.CREATE_COURSE.ADD_CHAPTERS_DESCRIPTION'),
-    buttonLabel: t('EDUCATOR.CREATE_COURSE.PREVIEW'),
+    label: 'Add Chapters',
+    description: 'Organize your course content into chapters',
+    buttonLabel: 'Preview',
   },
   {
-    label: t('EDUCATOR.CREATE_COURSE.PREVIEW_COURSE'),
-    description: t('EDUCATOR.CREATE_COURSE.PREVIEW_COURSE_DESCRIPTION'),
-    buttonLabel: t('EDUCATOR.CREATE_COURSE.PUBLISH'),
+    label: 'Preview Course',
+    description: 'Review your course before publishing',
+    buttonLabel: 'Publish',
   },
 ]
 
 const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, defaultValues }) => {
   const theme = useTheme()
   const navigate = useNavigate()
-  // const dispatch = useDispatch()
-  const { t } = useTranslation('education')
   const [isDraft, setIsDraft] = useState(false)
   const [hasLesons, setHasLessons] = useState({})
   const [previousVideo, setPreviousVideo] = useState(null)
@@ -191,11 +183,11 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
 
   const shouldNotPreview = useMemo(
     () =>
-      (isPublished && activeStep === stepsConfig(t).length - 1) ||
-      (activeStep === stepsConfig(t).length - 2 &&
+      (isPublished && activeStep === stepsConfig().length - 1) ||
+      (activeStep === stepsConfig().length - 2 &&
         !Object.values(hasLesons).length &&
         Object.values(hasLesons).every((count) => count)),
-    [hasLesons, activeStep, isPublished, t],
+    [hasLesons, activeStep, isPublished],
   )
 
   const isLoading = useMemo(
@@ -206,35 +198,31 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
   const validationSchemas = [
     // Schema for Basic Details
     yup.object({
-      title: yup
-        .string()
-        .trim()
-        .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.TITLE_IS_REQUIRED'))
-        .max(100, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_100_CHARACTERS')),
+      title: yup.string().trim().required('Title is required').max(100, 'Maximum 100 characters'),
       subtitle: yup
         .string()
         .trim()
-        .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.SUBTITLE_IS_REQUIRED'))
-        .max(150, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_150_CHARACTERS')),
+        .required('Subtitle is required')
+        .max(150, 'Maximum 150 characters'),
       description: yup
         .string()
         .trim()
-        .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.DESCRIPTION_IS_REQUIRED'))
-        .max(1000, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_1000_CHARACTERS')),
+        .required('Description is required')
+        .max(1000, 'Maximum 1000 characters'),
       category: yup
         .array()
         .of(yup.string().trim())
-        .min(1, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.AT_LEAST_ONE_CATEGORY'))
-        .max(5, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.MAXIMUM_5_CATEGORIES')),
+        .min(1, 'At least one category is required')
+        .max(5, 'Maximum 5 categories'),
       isPaid: yup.bool(),
       price: yup.lazy((_, schemaValues) =>
         schemaValues?.originalValue?.isPaid
           ? yup
               .number()
               .transform(transformNaNToNull)
-              .required(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_IS_REQUIRED'))
-              .positive(t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_IS_REQUIRED'))
-              .max(1000, t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.PRICE_CANNOT_EXCEED_1000'))
+              .required('Price is required')
+              .positive('Price must be positive')
+              .max(1000, 'Price cannot exceed 1000')
           : yup.number().nullable().transform(transformNaNToNull),
       ),
     }),
@@ -242,39 +230,31 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
     yup.object({
       image: yup
         .mixed()
-        .test(
-          'file-type',
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.IMAGE_MUST_BE_A_JPG_JPEG_PNG'),
-          (value) => {
-            if (!value || !(value instanceof File)) {
-              return true
-            }
+        .test('file-type', 'Image must be a JPG, JPEG, or PNG file', (value) => {
+          if (!value || !(value instanceof File)) {
+            return true
+          }
+          const allowedExtensions = ['jpg', 'jpeg', 'png']
+          const fileExtension = value.name.split('.').pop().toLowerCase()
+          return allowedExtensions.includes(fileExtension)
+        })
+        .test('file-validation', 'Image is required and must be less than 50MB', (value) => {
+          const isFile = value instanceof File
+          if (isEdit && !isFile && value.trim()) {
+            return true
+          }
+          if (isFile) {
+            const fileSizeValid = value.size <= 50 * 1024 * 1024
             const allowedExtensions = ['jpg', 'jpeg', 'png']
             const fileExtension = value.name.split('.').pop().toLowerCase()
-            return allowedExtensions.includes(fileExtension)
-          },
-        )
-        .test(
-          'file-validation',
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.IMAGE_REQUIRED_AND_LESS_THAN_50MB'),
-          (value) => {
-            const isFile = value instanceof File
-            if (isEdit && !isFile && value.trim()) {
-              return true
-            }
-            if (isFile) {
-              const fileSizeValid = value.size <= 50 * 1024 * 1024
-              const allowedExtensions = ['jpg', 'jpeg', 'png']
-              const fileExtension = value.name.split('.').pop().toLowerCase()
-              const fileTypeValid = allowedExtensions.includes(fileExtension)
-              return fileSizeValid && fileTypeValid
-            }
-            return false
-          },
-        ),
+            const fileTypeValid = allowedExtensions.includes(fileExtension)
+            return fileSizeValid && fileTypeValid
+          }
+          return false
+        }),
       video: yup
         .mixed()
-        .test('file-type', t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.VIDEO_FORMAT_MSG'), (value) => {
+        .test('file-type', 'Video must be MP4, MOV, WEBM or MKV format', (value) => {
           if (!value || !(value instanceof File)) {
             return true
           }
@@ -282,24 +262,20 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
           const fileExtension = value.name.split('.').pop().toLowerCase()
           return allowedExtensions.includes(fileExtension)
         })
-        .test(
-          'file-validation',
-          t('EDUCATOR.BASIC_DETAILS.VALIDATIONS.VIDEO_REQUIRED_AND_LESS_THAN_200MB'),
-          (value) => {
-            const isFile = value instanceof File
-            if (isEdit && !isFile && value.trim()) {
-              return true
-            }
-            if (isFile) {
-              const fileSizeValid = value.size <= 200 * 1024 * 1024
-              const allowedExtensions = ['mp4', 'mov', 'webm', 'mkv']
-              const fileExtension = value.name.split('.').pop().toLowerCase()
-              const fileTypeValid = allowedExtensions.includes(fileExtension)
-              return fileSizeValid && fileTypeValid
-            }
-            return false
-          },
-        ),
+        .test('file-validation', 'Video is required and must be less than 200MB', (value) => {
+          const isFile = value instanceof File
+          if (isEdit && !isFile && value.trim()) {
+            return true
+          }
+          if (isFile) {
+            const fileSizeValid = value.size <= 200 * 1024 * 1024
+            const allowedExtensions = ['mp4', 'mov', 'webm', 'mkv']
+            const fileExtension = value.name.split('.').pop().toLowerCase()
+            const fileTypeValid = allowedExtensions.includes(fileExtension)
+            return fileSizeValid && fileTypeValid
+          }
+          return false
+        }),
     }),
 
     // Schema for non-required steps
@@ -472,12 +448,12 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
 
   const handleGetTitle = () => {
     if (isPreview) {
-      return t('EDUCATOR.CREATE_COURSE.PREVIEW')
+      return 'Preview'
     }
     if (isEdit) {
-      return t('EDUCATOR.CREATE_COURSE.EDIT')
+      return 'Edit'
     }
-    return t('EDUCATOR.CREATE_COURSE.CREATE')
+    return 'Create'
   }
 
   return (
@@ -501,10 +477,10 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
                 color: theme.palette.text.primary,
               }}
             >
-              {handleGetTitle()} {t('EDUCATOR.CREATE_COURSE.COURSE')}
+              {handleGetTitle()} Course
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              {t('EDUCATOR.CREATE_COURSE.DESCRIPTION')}
+              Create comprehensive courses with chapters and lessons
             </Typography>
           </Box>
         )}
@@ -515,11 +491,13 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
             <Grid
               size={{ xs: 12, md: 3 }}
               sx={{
-                backgroundColor: 'background.light',
-                borderRadius: '12px',
                 p: 3,
+                mb: 4,
+                borderRadius: 1,
+                backgroundColor: (theme) => theme.palette.background.light,
+                border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+                boxShadow: (theme) => theme.customShadows.primary,
                 minHeight: '380px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 '& .MuiStepLabel-root': {
                   '.Mui-active ': {
                     color: theme.palette.primary.main,
@@ -546,7 +524,7 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
                   },
                 }}
               >
-                {stepsConfig(t).map((step) => (
+                {stepsConfig().map((step) => (
                   <Step key={step.label}>
                     <StepLabel
                       StepIconComponent={StepIcon}
@@ -576,14 +554,17 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
               </Stepper>
             </Grid>
           )}
-          {/* Form Section */}
           <Grid size={{ xs: 12, md: activeStep !== 3 ? 9 : 12 }}>
             <Box
               sx={{
-                backgroundColor: 'background.light',
-                borderRadius: '12px',
-                p: 3,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                ...(activeStep !== 3 && {
+                  p: 3,
+                  mb: 4,
+                  borderRadius: 1,
+                  backgroundColor: (theme) => theme.palette.background.light,
+                  border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+                  boxShadow: (theme) => theme.customShadows.primary,
+                }),
               }}
             >
               <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -604,9 +585,7 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
                       disabled={isLoading}
                       onClick={handleBack}
                     >
-                      {activeStep === 0
-                        ? t('EDUCATOR.CREATE_COURSE.BACK_TO_DASHBOARD')
-                        : t('EDUCATOR.CREATE_COURSE.BACK')}
+                      {activeStep === 0 ? 'Back to Dashboard' : 'Back'}
                     </Button>
                   )}
                   <Box display="flex" gap="10px">
@@ -620,7 +599,7 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
                         }}
                         disabled={isLoading}
                       >
-                        {t('EDUCATOR.CREATE_COURSE.SAVE_AS_DRAFT')}
+                        Save as Draft
                       </Button>
                     )}
                     {!shouldNotPreview && (
@@ -637,9 +616,8 @@ const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, d
                         }
                       >
                         {isLoading
-                          ? t('EDUCATOR.CREATE_COURSE.SUBMITTING')
-                          : stepsConfig(t)?.[activeStep]?.buttonLabel ||
-                            t('EDUCATOR.CREATE_COURSE.CONTINUE')}
+                          ? 'Submitting...'
+                          : stepsConfig()?.[activeStep]?.buttonLabel || 'Continue'}
                       </Button>
                     )}
                   </Box>

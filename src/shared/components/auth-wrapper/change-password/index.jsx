@@ -13,7 +13,6 @@ import { Eye, EyeOff } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import * as yup from 'yup'
 
@@ -36,7 +35,6 @@ const ChangePassword = ({
   })
 
   const dispatch = useDispatch()
-  const { t } = useTranslation('application')
   const matches = useMediaQuery((theme) => theme.breakpoints.down('sm'))
   const isPasswordMissing = useSelector((state) => state.user?.user?.isPasswordMissing ?? false)
 
@@ -49,49 +47,43 @@ const ChangePassword = ({
           password: yup
             .string()
             .trim()
-            .required(t('application:PROFILE.VALIDATION_NEW_PASSWORD'))
+            .required('New password is required')
             .matches(
               /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_+\-~()`{}[\]:;"'<>/?.,|\\]).{8,}$/,
-              t('application:PROFILE.VALIDATION_PASSWORD_MATCH'),
+              'Password must be at least 8 characters with uppercase, lowercase, number and special character',
             ),
           confirmPassword: yup
             .string()
             .trim()
-            .required(t('application:PROFILE.VALIDATION_CONFIRM_PASSWORD'))
-            .oneOf(
-              [yup.ref('password')],
-              t('application:PROFILE.VALIDATION_CONFIRM_PASSWORD_MATCH'),
-            ),
+            .required('Please confirm your password')
+            .oneOf([yup.ref('password')], 'Passwords must match'),
         })
       : yup.object().shape({
           currentPassword: yup
             .string()
             .trim()
-            .required(t('application:PROFILE.VALIDATION_PASSWORD'))
+            .required('Current password is required')
             .matches(
               /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_+\-~()`{}[\]:;"'<>/?.,|\\]).{8,}$/,
-              t('application:PROFILE.VALIDATION_PASSWORD_MATCH'),
+              'Password must be at least 8 characters with uppercase, lowercase, number and special character',
             ),
           password: yup
             .string()
             .trim()
-            .required(t('application:PROFILE.VALIDATION_NEW_PASSWORD'))
+            .required('New password is required')
             .notOneOf(
               [yup.ref('currentPassword'), null],
-              t('application:PROFILE.VALIDATION_DIFFERENT_PASSWORD'),
+              'New password must be different from current password',
             )
             .matches(
               /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_+\-~()`{}[\]:;"'<>/?.,|\\]).{8,}$/,
-              t('application:PROFILE.VALIDATION_PASSWORD_MATCH'),
+              'Password must be at least 8 characters with uppercase, lowercase, number and special character',
             ),
           confirmPassword: yup
             .string()
             .trim()
-            .required(t('application:PROFILE.VALIDATION_CONFIRM_PASSWORD'))
-            .oneOf(
-              [yup.ref('password')],
-              t('application:PROFILE.VALIDATION_CONFIRM_PASSWORD_MATCH'),
-            ),
+            .required('Please confirm your password')
+            .oneOf([yup.ref('password')], 'Passwords must match'),
         })
 
   const defaultValues = isPasswordMissing
@@ -151,7 +143,7 @@ const ChangePassword = ({
       <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
         {!!headerName && (
           <Typography variant="h6" className="profileTitle">
-            {t('application:PROFILE.CHANGE_PASSWORD')}
+            Change Password
           </Typography>
         )}
 
@@ -192,7 +184,7 @@ const ChangePassword = ({
                     color: (theme) => theme.palette.text.secondary,
                   }}
                 >
-                  {t('application:PROFILE.CURRENT_PASSWORD')}
+                  Current Password
                   <Typography variant="body1" color="error.main" component="span">
                     *
                   </Typography>
@@ -202,7 +194,7 @@ const ChangePassword = ({
                   control={control}
                   render={({ field }) => (
                     <TextField
-                      placeholder={t('application:PROFILE.ENTERYOUR_CURRENTPASSWORD')}
+                      placeholder="Enter your current password"
                       variant="outlined"
                       type={showPassword.currentPassword ? 'text' : 'password'}
                       fullWidth
@@ -247,7 +239,7 @@ const ChangePassword = ({
                   color: (theme) => theme.palette.text.secondary,
                 }}
               >
-                {t('application:PROFILE.NEWPASSWORD')}
+                New Password
                 <Typography variant="body1" color="error.main" component="span">
                   *
                 </Typography>
@@ -257,7 +249,7 @@ const ChangePassword = ({
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    placeholder={t('application:PROFILE.ENTERYOUR_NEWPASSWORD')}
+                    placeholder="Enter your new password"
                     variant="outlined"
                     type={showPassword.newPassword ? 'text' : 'password'}
                     fullWidth
@@ -296,7 +288,7 @@ const ChangePassword = ({
                 color: (theme) => theme.palette.text.secondary,
               }}
             >
-              {t('application:PROFILE.CURRENT_CONFIRMNEWPASSWORD')}
+              Confirm New Password
               <Typography variant="body1" color="error.main" component="span">
                 *
               </Typography>
@@ -306,7 +298,7 @@ const ChangePassword = ({
               control={control}
               render={({ field }) => (
                 <TextField
-                  placeholder={t('application:PROFILE.ENTERYOUR_CONFIRMPASSWORD')}
+                  placeholder="Re-enter your new password"
                   variant="outlined"
                   size="small"
                   type={showPassword.confirmPassword ? 'text' : 'password'}
@@ -347,7 +339,7 @@ const ChangePassword = ({
             textTransform: 'none',
           }}
         >
-          {t('application:MISCELLANEOUS.SAVE')}
+          Save
         </Button>
       </form>
     </Box>

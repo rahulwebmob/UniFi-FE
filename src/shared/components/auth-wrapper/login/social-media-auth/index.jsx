@@ -10,7 +10,6 @@ import useFbLogin from '../../../../../hooks/useFbLogin'
 import useGoogleLogin from '../../../../../hooks/useGoogleLogin'
 import useLinkedinLogin from '../../../../../hooks/useLinkedinLogin'
 import { useOAuthLoginMutation } from '../../../../../services/admin'
-import { initializeSocket } from '../../../../../services/sockets'
 
 import { SOCIAL_AUTH } from './constant'
 // Social media SVG icons
@@ -37,7 +36,6 @@ const SocialMediaAuth = ({ isOAuthLoading, setIsOAuthLoading }) => {
 
       if (response?.token) {
         localStorage.setItem('token', response.token)
-        void initializeSocket(response.token)
         setTimeout(() => {
           void navigate('/dashboard')
         }, 100)

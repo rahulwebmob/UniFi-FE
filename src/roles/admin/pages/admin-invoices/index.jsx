@@ -1,7 +1,6 @@
 import { Box, Chip, Button, Typography } from '@mui/material'
 import { FileDown, Calendar } from 'lucide-react'
 import { useMemo, useState, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
 import { successAlert } from '../../../../redux/reducers/app-slice'
@@ -17,7 +16,6 @@ import { generateInvoicePdf } from '../../../../utils/globalUtils'
 const AdminInvoices = () => {
   const dispatch = useDispatch()
   const [page, setPage] = useState(1)
-  const { t } = useTranslation('application')
 
   const [downloadAdminInvoice] = useLazyDownloadAdminInvoiceQuery()
   const { data, isLoading, error } = useGetEducationAdminInvoiceQuery({ page, pageSize: 10 })
@@ -41,10 +39,10 @@ const AdminInvoices = () => {
   const handleSuccessAlert = useCallback(() => {
     dispatch(
       successAlert({
-        message: t('application:PROFILE.SUBSCRIPTION.MESSAGE_SUCCESS_INVOICE'),
+        message: 'Invoice downloaded successfully.',
       }),
     )
-  }, [dispatch, t])
+  }, [dispatch])
 
   const columns = useMemo(
     () => [

@@ -16,41 +16,32 @@ import {
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
 
 import countries from '../../../../../constants/countries'
 import RequiredFieldIndicator from '../../../ui-elements/required-field-indicator'
 
 const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurrentStep }) => {
-  const { t } = useTranslation('application')
   const theme = useTheme()
   const zipRegex = /^[0-9a-zA-Z]+(?:-[0-9a-zA-Z]+)?(?: [0-9a-zA-Z]+)?$/
 
   const schema = yup.object().shape({
-    firstName: yup
-      .string()
-      .trim()
-      .required(t('application:PREMIUM_MODAL.VALIDATION_FIRSTNAME_REQ')),
-    lastName: yup.string().trim().required(t('application:PREMIUM_MODAL.VALIDATION_LASTNAME_REQ')),
+    firstName: yup.string().trim().required('First name is required.'),
+    lastName: yup.string().trim().required('Last name is required.'),
     address: yup
       .string()
       .trim()
-      .required(t('application:PREMIUM_MODAL.VALIDATION_ADDRESS_REQ'))
-      .test(
-        'Size',
-        t('application:PREMIUM_MODAL.VALIDATION_ADDRESS_LENGTH'),
-        (value) => value.length <= 60,
-      ),
-    city: yup.string().trim().required(t('application:PREMIUM_MODAL.VALIDATION_CITY_REQ')),
-    state: yup.string().trim().required(t('application:PREMIUM_MODAL.VALIDATION_STATE_REQ')),
+      .required('Address is required.')
+      .test('Size', 'Maximum allowed length is 60.', (value) => value.length <= 60),
+    city: yup.string().trim().required('City is required.'),
+    state: yup.string().trim().required('State is required.'),
     zip: yup
       .string()
       .trim()
-      .required(t('application:PREMIUM_MODAL.VALIDATION_ZIP_REQ'))
-      .matches(zipRegex, t('application:PREMIUM_MODAL.VALIDATION_INVALID_ZIP')),
-    country: yup.string().trim().required(t('application:PREMIUM_MODAL.VALIDATION_COUNTRY_REQ')),
-    isAgree: yup.boolean().oneOf([true], t('application:PREMIUM_MODAL.VALIDATION_ISAGREE')),
+      .required('ZIP code is required.')
+      .matches(zipRegex, 'Invalid Zip code.'),
+    country: yup.string().trim().required('Country is required.'),
+    isAgree: yup.boolean().oneOf([true], 'Please agree to the terms and conditions.'),
   })
 
   const { control, handleSubmit, formState, setValue } = useForm({
@@ -86,7 +77,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
         <Grid container spacing={1}>
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="p">
-              {t('application:PREMIUM_MODAL.FIRST_NAME')}
+              First Name
               <RequiredFieldIndicator />
             </Typography>
             <Controller
@@ -98,7 +89,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
                   {...field}
                   fullWidth
                   size="small"
-                  placeholder={t('application:PREMIUM_MODAL.FIRST_NAME')}
+                  placeholder="First Name"
                   variant="outlined"
                   error={!!errors.firstName}
                   helperText={errors.firstName?.message}
@@ -111,7 +102,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="p">
-              {t('application:PREMIUM_MODAL.LAST_NAME')}
+              Last Name
               <RequiredFieldIndicator />
             </Typography>
             <Controller
@@ -123,7 +114,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
                   {...field}
                   fullWidth
                   size="small"
-                  placeholder={t('application:PREMIUM_MODAL.LAST_NAME')}
+                  placeholder="Last Name"
                   variant="outlined"
                   error={!!errors.lastName}
                   helperText={errors.lastName?.message}
@@ -137,7 +128,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
 
           <Grid size={{ xs: 12 }}>
             <Typography component="p">
-              {t('application:PREMIUM_MODAL.COUNTRY')}
+              Country
               <RequiredFieldIndicator />
             </Typography>
             <Controller
@@ -150,7 +141,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
                   select
                   fullWidth
                   size="small"
-                  placeholder={t('application:PREMIUM_MODAL.SELECT_COUNTRY')}
+                  placeholder="Select your country"
                   variant="outlined"
                   error={!!errors.country}
                   helperText={errors.country?.message}
@@ -165,7 +156,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
                   }}
                 >
                   <MenuItem value="">
-                    <em>{t('application:PREMIUM_MODAL.SELECT_COUNTRY')}</em>
+                    <em>Select your country</em>
                   </MenuItem>
                   {countries.map((item) => (
                     <MenuItem key={item.value} value={item.value}>
@@ -178,7 +169,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
           </Grid>
           <Grid size={{ xs: 12, sm: 4 }}>
             <Typography component="p">
-              {t('application:PREMIUM_MODAL.STATE')}
+              State
               <RequiredFieldIndicator />
             </Typography>
             <Controller
@@ -190,7 +181,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
                   {...field}
                   fullWidth
                   size="small"
-                  placeholder={t('application:PREMIUM_MODAL.STATE')}
+                  placeholder="State"
                   variant="outlined"
                   error={!!errors.state}
                   helperText={errors.state?.message}
@@ -200,7 +191,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
           </Grid>
           <Grid size={{ xs: 12, sm: 4 }}>
             <Typography component="p">
-              {t('application:PREMIUM_MODAL.CITY')}
+              City
               <RequiredFieldIndicator />
             </Typography>
             <Controller
@@ -212,7 +203,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
                   {...field}
                   fullWidth
                   size="small"
-                  placeholder={t('application:PREMIUM_MODAL.CITY')}
+                  placeholder="City"
                   variant="outlined"
                   error={!!errors.city}
                   helperText={errors.city?.message}
@@ -222,7 +213,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
           </Grid>
           <Grid size={{ xs: 12, sm: 4 }}>
             <Typography component="p">
-              {t('application:PREMIUM_MODAL.ZIP_CODE')}
+              ZIP code
               <RequiredFieldIndicator />
             </Typography>
             <Controller
@@ -247,7 +238,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Typography component="p">
-              {t('application:PREMIUM_MODAL.ADDRESS')}
+              Address
               <RequiredFieldIndicator />
             </Typography>
             <Controller
@@ -259,7 +250,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
                   {...field}
                   fullWidth
                   size="small"
-                  placeholder={t('application:PREMIUM_MODAL.PLACEHOLDER_ADDRESS')}
+                  placeholder="144 WallStreet, NewYork"
                   variant="outlined"
                   error={!!errors.address}
                   helperText={errors.address?.message}
@@ -285,7 +276,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
                   }}
                   label={
                     <Typography>
-                      {t('application:PREMIUM_MODAL.TERMS_AGREEMENT-1')}&nbsp;
+                      I agree to the&nbsp;
                       <Link
                         underline="hover"
                         href=""
@@ -295,9 +286,9 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
                           color: theme.palette.primary.main,
                         }}
                       >
-                        {t('application:PREMIUM_MODAL.TERMS_AGREEMENT-2')}
+                        terms and conditions
                       </Link>
-                      &nbsp; {t('application:PREMIUM_MODAL.TERMS_AGREEMENT-3')}
+                      &nbsp; of use.
                     </Typography>
                   }
                 />
@@ -322,7 +313,7 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
             color="primary"
             sx={{ borderRadius: '8px', fontWeight: 600 }}
           >
-            {t('application:PREMIUM_MODAL.CONTINUE')}
+            Continue
           </Button>
         </Box>
       </Box>

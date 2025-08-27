@@ -1,14 +1,12 @@
 import { Box, Tooltip, Typography } from '@mui/material'
 import { X, File, Download } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
 import { useGetWebinarAttachmentsQuery } from '../../../../services/admin'
 import { useGetAttachmentsListQuery } from '../../../../services/education'
 
 const WebinarAttachments = ({ handleOnClose, isHost }) => {
-  const { t } = useTranslation('application')
   const { roomId: webinarId } = useParams()
 
   // Use separate queries based on isHost
@@ -47,7 +45,7 @@ const WebinarAttachments = ({ handleOnClose, isHost }) => {
         }}
       >
         <Typography component="p" color="text.secondary">
-          {t('application:CONFERENCE.ATTACHMENTS.FILE_ATTACHMENTS')}
+          File Attachments
         </Typography>
         <Box
           onClick={handleOnClose}
@@ -61,7 +59,7 @@ const WebinarAttachments = ({ handleOnClose, isHost }) => {
       {!(isHost ? hostData.data?.data?.length : guestData.data?.length) ? (
         <Box p={2}>
           <Typography component="p" color="text.secondary">
-            {t('application:CONFERENCE.ATTACHMENTS.NO_ATTACHMENTS_AVAILABLE')}
+            No attachments available
           </Typography>
         </Box>
       ) : (

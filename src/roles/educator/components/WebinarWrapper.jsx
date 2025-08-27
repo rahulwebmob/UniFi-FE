@@ -6,7 +6,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { successAlert } from '../../../redux/reducers/app-slice'
 import { setLoading } from '../../../redux/reducers/education-slice'
-import { getChatSocket, chatConnection } from '../../../services/sockets'
 
 import {
   mergeData,
@@ -84,13 +83,7 @@ const WebinarWrapper = ({ isHost = false }) => {
       return
     }
     if (response?.status === 'Joined Room Successfully') {
-      if (getChatSocket()) {
-        getChatSocket().disconnect()
-      }
-      const token = localStorage.getItem('token')
-      if (token) {
-        void chatConnection(token)
-      }
+      // Socket connection removed - no longer needed
     }
   }, [roomId, selfUser, dispatch, navigate, sendRequest])
 
