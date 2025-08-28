@@ -17,6 +17,7 @@ import { Users, Calendar, Clock, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 
+import LiveBadge from '../../../../../shared/components/live-badge'
 import { getEducatorDetails } from '../../common/common'
 
 const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
@@ -197,6 +198,9 @@ const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
                       objectFit: 'cover',
                     }}
                   />
+                  {webinarData?.webinarScheduledObj?.can_join && (
+                    <LiveBadge sx={{ top: 16, right: 16 }} />
+                  )}
                 </Box>
 
                 <CardContent sx={{ p: 3 }}>

@@ -199,7 +199,7 @@ const AllWebinars = ({ page, setPage }) => {
         return webinarScheduledObj?.can_join ? (
           <Button
             variant="contained"
-            color="success"
+            color="error"
             size="small"
             startIcon={<Radio size={16} />}
             onClick={() => {
@@ -207,6 +207,7 @@ const AllWebinars = ({ page, setPage }) => {
             }}
             sx={{
               '& .MuiButton-startIcon svg': {
+                color: (theme) => theme.palette.common.white,
                 animation: 'pulse 1.5s ease-in-out infinite',
               },
               '@keyframes pulse': {

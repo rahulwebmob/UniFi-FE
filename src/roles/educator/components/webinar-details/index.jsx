@@ -1,4 +1,3 @@
-import { Typography, Box } from '@mui/material'
 import { useMemo, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 
@@ -55,13 +54,6 @@ const WebinarDetails = () => {
 
   return (
     <ApiResponseWrapper error={error} isLoading={isLoading} isData={!!data?.data}>
-      <Box sx={{ flexGrow: 1 }}>
-        <Box display="flex" mb={1}>
-          <Typography className="bookmap" variant="h1">
-            Webinar Details
-          </Typography>
-        </Box>
-      </Box>
       <WebinarContent
         isEdit={false}
         webinarData={handleWebinarDetail}

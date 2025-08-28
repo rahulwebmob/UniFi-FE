@@ -88,13 +88,7 @@ const SignUp = ({ setIsLoginPage }) => {
 
   return (
     <Box width="100%">
-      <Typography
-        component="p"
-        fontWeight={400}
-        textAlign="center"
-        mb={2}
-        sx={{ opacity: 0.8 }}
-      >
+      <Typography component="p" fontWeight={400} textAlign="center" mb={2} sx={{ opacity: 0.8 }}>
         Create a free account to access the platform.
       </Typography>
 

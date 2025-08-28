@@ -23,7 +23,6 @@ import useScreenRecorder from '../../../../hooks/useScreenRecorder'
 import ModalBox from '../../../../shared/components/ui-elements/modal-box'
 import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
 import { isAndroidOrIphone } from '../common/common'
-import RecordingPopup from '../recording-popup'
 import { ControlsContainer } from '../styles'
 import WebinarAttachments from '../webinar-attachments'
 import WhiteBoard from '../white-board'
@@ -54,7 +53,6 @@ const Toolbar = ({
     isMicAudioRequired: mediaStatus.isAudio,
   })
 
-  const [isRecPopup, setIsRecPopup] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [activeDrawerContent, setActiveDrawerContent] = useState(null)
   const [isHandRaisedDisabled, setIsHandRaisedDisabled] = useState(false)
@@ -200,7 +198,6 @@ const Toolbar = ({
               icon={<Circle size={18} />}
               onClick={() => {
                 void handleToggleRecording()
-                setIsRecPopup(true)
               }}
               isRecording={isRecording}
               label={isRecording ? 'Stop Recording' : 'Record'}
@@ -242,12 +239,6 @@ const Toolbar = ({
       <ModalBox size="xl" ref={whiteBoardRef}>
         <WhiteBoard />
       </ModalBox>
-      {!isRecording && !isAndroidOrIphone() && !isRecPopup && (
-        <RecordingPopup
-          handleOnClose={() => setIsRecPopup((prev) => !prev)}
-          handleToggleRecording={handleToggleRecording}
-        />
-      )}
     </ControlsContainer>
   )
 }

@@ -4,6 +4,7 @@ import { Clock, Calendar, ArrowRight, Video, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 
+import LiveBadge from '../../../../../shared/components/live-badge'
 import CategoryList from '../../user-content/category-list'
 
 const WebinarCard = ({ webinar, isPurchased }) => {
@@ -71,39 +72,7 @@ const WebinarCard = ({ webinar, isPurchased }) => {
               }}
             />
             {webinar.webinarScheduledObj?.can_join ? (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 4,
-                  right: 4,
-                  backgroundColor: (theme) => theme.palette.error.main,
-                  color: (theme) => theme.palette.error.contrastText,
-                  px: 0.5,
-                  py: 0.2,
-                  borderRadius: '3px',
-                  fontSize: (theme) => theme.typography.caption.fontSize,
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 0.3,
-                }}
-              >
-                <Box
-                  sx={{
-                    width: 4,
-                    height: 4,
-                    borderRadius: '50%',
-                    backgroundColor: (theme) => theme.palette.common.white,
-                    animation: 'pulse 1.5s infinite',
-                    '@keyframes pulse': {
-                      '0%': { opacity: 1 },
-                      '50%': { opacity: 0.3 },
-                      '100%': { opacity: 1 },
-                    },
-                  }}
-                />
-                LIVE
-              </Box>
+              <LiveBadge sx={{ top: 4, right: 4, px: 0.5, py: 0.2, borderRadius: '3px' }} />
             ) : (
               <Box
                 sx={{
@@ -244,41 +213,9 @@ const WebinarCard = ({ webinar, isPurchased }) => {
         />
 
         {webinar.webinarScheduledObj?.can_join ? (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              backgroundColor: (theme) => theme.palette.error.main,
-              color: (theme) => theme.palette.error.contrastText,
-              px: 1,
-              py: 0.3,
-              borderRadius: '4px',
-              fontSize: (theme) => theme.typography.caption.fontSize,
-              fontWeight: 700,
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 0.5,
-            }}
-          >
-            <Box
-              sx={{
-                width: 6,
-                height: 6,
-                borderRadius: '50%',
-                backgroundColor: (theme) => theme.palette.common.white,
-                animation: 'pulse 1.5s infinite',
-                '@keyframes pulse': {
-                  '0%': { opacity: 1 },
-                  '50%': { opacity: 0.3 },
-                  '100%': { opacity: 1 },
-                },
-              }}
-            />
-            LIVE
-          </Box>
+          <LiveBadge
+            sx={{ top: 10, right: 10, letterSpacing: '0.5px', textTransform: 'uppercase' }}
+          />
         ) : !webinar.isPaid ? (
           <Box
             sx={{

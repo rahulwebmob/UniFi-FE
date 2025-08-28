@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
+import LiveBadge from '../../../shared/components/live-badge'
+
 import Peers from './Peers'
 import { CarouselItem, VideoPlaceholder, styles } from './styles'
 import WebinarMedia from './webinar-media'
@@ -124,6 +126,7 @@ const Learning = ({
         isFullscreen={isFullscreen}
         sx={{ height: streamHeight, position: 'relative' }}
       >
+        <LiveBadge />
         <Box sx={styles.container}>
           <Box sx={styles.videoContainer}>
             {hasAudio && (

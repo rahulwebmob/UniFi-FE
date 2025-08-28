@@ -1,10 +1,8 @@
-import { Box, Button, Typography } from '@mui/material'
-import Lottie from 'lottie-react'
+import { Box, Button, Typography, CircularProgress } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import Spinner from '../../../../assets/spinner.json'
 import { useGetParticularWebinarDetailQuery } from '../../../../services/education'
 
 const WaitingRoom = ({ handleInit }) => {
@@ -29,34 +27,64 @@ const WaitingRoom = ({ handleInit }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 'calc(100vh - 50px)',
+        flexDirection: 'column',
+        minHeight: '100vh',
       }}
     >
       <Box
         sx={{
+          p: 4,
+          mb: 4,
+          borderRadius: 1,
+          backgroundColor: (theme) => theme.palette.background.light,
+          boxShadow: (theme) => theme.customShadows.primary,
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: (theme) => theme.palette.primary.light,
-          borderRadius: '8px',
-          padding: { xs: '16px', sm: '32px', md: '48px' },
-          boxShadow: 3,
-          textAlign: 'center',
-          maxWidth: '600px',
-          width: '90%',
-          '& .lottie svg': {
-            height: '150px !important',
-          },
+          flexDirection: 'column',
         }}
       >
-        <Lottie className="lottie" animationData={Spinner} loop />
-        <Typography component="p" color="secondary">
-          Please wait while we prepare your webinar room...
+        <Box
+          sx={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mb: 3,
+          }}
+        >
+          <CircularProgress
+            size={40}
+            thickness={4}
+            sx={{
+              color: 'primary.main',
+            }}
+          />
+        </Box>
+
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 600,
+            color: 'text.primary',
+            mb: 1.5,
+          }}
+        >
+          Getting Ready
         </Typography>
 
-        <Button variant="contained" sx={{ mt: 2 }} onClick={() => handleInit()}>
-          Join Now
+        <Typography
+          variant="body1"
+          sx={{
+            color: 'text.secondary',
+            mb: 4,
+          }}
+        >
+          We&apos;re preparing your webinar room. This will just take a moment.
+        </Typography>
+
+        <Button variant="contained" size="large" onClick={() => handleInit()}>
+          Join Webinar
         </Button>
       </Box>
     </Box>
