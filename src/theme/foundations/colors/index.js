@@ -158,12 +158,12 @@ export const colors = {
     subtle: '#F8FAFC',
   },
 
-  // Text Colors - Better hierarchy
+  // Text Colors - Optimized for readability with brand colors
   text: {
-    primary: '#1F2937', // Dark Gray for better contrast
-    secondary: '#6B7280', // Medium Gray
-    disabled: '#9CA3AF', // Light Gray
-    hint: '#D1D5DB', // Very Light Gray
+    primary: '#0F1419', // Almost black for maximum contrast
+    secondary: '#4B5563', // Medium gray for secondary text
+    disabled: '#87A3B6', // Brand light blue for disabled (unique approach)
+    hint: '#9CA3AF', // Light gray for hints
     inverse: '#FFFFFF',
   },
 

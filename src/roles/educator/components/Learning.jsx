@@ -1,11 +1,11 @@
+import { Person } from '@mui/icons-material'
 import { Box, Avatar, Typography } from '@mui/material'
-import { User as UserIcon } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import Peers from './Peers'
-import { styles, CarouselItem, VideoPlaceholder } from './styles'
+import { CarouselItem, VideoPlaceholder, styles } from './styles'
 import WebinarMedia from './webinar-media'
 
 const Learning = ({
@@ -18,7 +18,7 @@ const Learning = ({
 }) => {
   const { isFullscreen } = useSelector((state) => state.app)
   const { isVideo: isLocalVideoOn, isScreen: isLocalScreenOn } = mediaStatus
-  const producer = remoteStream?.producer ?? {}
+  const producer = remoteStream?.producer || {}
   const areUsersInRoom = !!usersInRoom?.length
   const hasScreen = !!producer?.screen
   const hasVideo = !!producer?.video
@@ -32,10 +32,10 @@ const Learning = ({
       <Avatar
         alt="Host"
         sx={{
-          background: (theme) => theme.palette.primary[100],
+          background: (theme) => theme.palette.primary.light100,
         }}
       >
-        <UserIcon size={20} />
+        <Person />
       </Avatar>
     </Box>
   )
@@ -65,19 +65,19 @@ const Learning = ({
 
   const renderMainScreen = () => {
     if (isHost && isLocalScreenOn) {
-      return <WebinarMedia stream={localScreenStream} mediaType="screen" isMirror={false} />
+      return <WebinarMedia stream={localScreenStream} />
     }
 
     if (isHost && isLocalVideoOn) {
-      return <WebinarMedia stream={localVideoStream} mediaType="video" isMirror />
+      return <WebinarMedia stream={localVideoStream} isMirror />
     }
 
-    if (!isHost && hasScreen && producer?.screen?.stream) {
-      return <WebinarMedia stream={producer.screen.stream} mediaType="screen" isMirror={false} />
+    if (!isHost && hasScreen) {
+      return <WebinarMedia stream={producer?.screen?.stream} />
     }
 
-    if (!isHost && hasVideo && producer?.video?.stream) {
-      return <WebinarMedia stream={producer.video.stream} mediaType="video" isMirror={false} />
+    if (!isHost && hasVideo) {
+      return <WebinarMedia stream={producer?.video?.stream} />
     }
 
     return renderAvatar()
@@ -89,14 +89,14 @@ const Learning = ({
     }
 
     const isLocal = isHost && isLocalVideoOn
-    const stream = isLocal ? localVideoStream : producer?.video?.stream || null
-    const label = isLocal ? "You're video" : `${remoteStream?.firstName || 'Host'} (Host)`
+    const stream = isLocal ? localVideoStream : producer?.video?.stream
+    const label = isLocal ? 'You’re video' : `${remoteStream?.firstName} (Host)`
 
     return (
       <CarouselItem>
         <Box sx={styles.container}>
           <Box sx={styles.videoContainer}>
-            <WebinarMedia stream={stream} mediaType="video" isMirror={isHost && isLocalScreenOn} />
+            <WebinarMedia stream={stream} isMirror={isHost && isLocalScreenOn} />
           </Box>
         </Box>
         <Typography variant="body1" sx={styles.label}>
@@ -120,15 +120,18 @@ const Learning = ({
         {areUsersInRoom && <Peers isHost={isHost} usersInRoom={usersInRoom} />}
       </Box>
 
-      <VideoPlaceholder sx={{ height: streamHeight, position: 'relative' }}>
+      <VideoPlaceholder
+        isFullscreen={isFullscreen}
+        sx={{ height: streamHeight, position: 'relative' }}
+      >
         <Box sx={styles.container}>
           <Box sx={styles.videoContainer}>
-            {hasAudio && producer?.audio?.stream ? (
-              <WebinarMedia stream={producer.audio.stream} mediaType="audio" isMirror={false} />
-            ) : null}
+            {hasAudio && (
+              <WebinarMedia stream={remoteStream.producer.audio.stream} mediaType="audio" />
+            )}
 
             {renderMainScreen()}
-            <Typography component="p" sx={styles.label}>
+            <Typography variant="p" sx={styles.label}>
               {displayName}
             </Typography>
           </Box>
@@ -140,17 +143,15 @@ const Learning = ({
 
 Learning.propTypes = {
   isHost: PropTypes.bool,
-  mediaStatus: PropTypes.shape({
-    isVideo: PropTypes.bool,
-    isScreen: PropTypes.bool,
-  }),
-  usersInRoom: PropTypes.array,
-  remoteStream: PropTypes.shape({
-    producer: PropTypes.object,
-    firstName: PropTypes.string,
-  }),
-  localVideoStream: PropTypes.object,
-  localScreenStream: PropTypes.object,
+  usersInRoom: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  mediaStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  remoteStream: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  localVideoStream: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  localScreenStream: PropTypes.oneOfType([PropTypes.object]).isRequired,
+}
+
+Learning.defaultProps = {
+  isHost: false,
 }
 
 export default Learning

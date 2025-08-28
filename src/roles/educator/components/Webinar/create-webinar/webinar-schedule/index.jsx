@@ -11,26 +11,25 @@ import {
 } from '@mui/material'
 import { TimePicker } from '@mui/x-date-pickers'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import PropTypes from 'prop-types'
+import { Calendar, CalendarCheck, CalendarDays } from 'lucide-react'
 import { Controller, useFormContext } from 'react-hook-form'
 
 import { handleMinTime, handleIsTodaySelected } from '../../../common/common'
 
-const WebinarSchedule = ({
-  isEdit = false,
-  scheduleType = 'daily',
-  setScheduleType,
-  defaultValues,
-}) => {
+const WebinarSchedule = () => {
   const {
     watch,
+    isEdit,
     control,
+    scheduleType,
+    defaultValues,
+    setScheduleType,
     formState: { errors },
   } = useFormContext()
 
   const handleScheduleTypeChange = async (type, onChange) => {
     onChange(type)
-    setScheduleType?.(type)
+    setScheduleType(type)
   }
 
   return (
@@ -73,6 +72,7 @@ const WebinarSchedule = ({
                   >
                     <Button
                       variant="outlined"
+                      startIcon={<Calendar size={16} />}
                       sx={{
                         backgroundColor:
                           watch('scheduleType') === 'daily' ? 'primary.main' : 'transparent',
@@ -91,6 +91,7 @@ const WebinarSchedule = ({
                     </Button>
                     <Button
                       variant="outlined"
+                      startIcon={<CalendarDays size={16} />}
                       sx={{
                         backgroundColor:
                           watch('scheduleType') === 'weekly' ? 'primary.main' : 'transparent',
@@ -109,6 +110,7 @@ const WebinarSchedule = ({
                     </Button>
                     <Button
                       variant="outlined"
+                      startIcon={<CalendarCheck size={16} />}
                       sx={{
                         backgroundColor:
                           watch('scheduleType') === 'one time' ? 'primary.main' : 'transparent',
@@ -164,11 +166,7 @@ const WebinarSchedule = ({
                 )}
               />
               {errors?.startDate && (
-                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
-                  {typeof errors.startDate === 'string'
-                    ? errors.startDate
-                    : errors.startDate?.message}
-                </Typography>
+                <Typography color="error">{errors?.startDate?.message}</Typography>
               )}
             </FormControl>
           </Grid>
@@ -257,11 +255,7 @@ const WebinarSchedule = ({
                   )
                 }}
               />
-              {errors?.endTime && (
-                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
-                  {typeof errors.endTime === 'string' ? errors.endTime : errors.endTime?.message}
-                </Typography>
-              )}
+              {errors?.endTime && <Typography color="error">{errors?.endTime?.message}</Typography>}
             </FormControl>
           </Grid>
         </>
@@ -379,19 +373,6 @@ const WebinarSchedule = ({
       )}
     </>
   )
-}
-
-WebinarSchedule.propTypes = {
-  isEdit: PropTypes.bool,
-  scheduleType: PropTypes.string,
-  setScheduleType: PropTypes.func,
-  defaultValues: PropTypes.shape({
-    days: PropTypes.arrayOf(
-      PropTypes.shape({
-        day: PropTypes.string,
-      }),
-    ),
-  }),
 }
 
 export default WebinarSchedule

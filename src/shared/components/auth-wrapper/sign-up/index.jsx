@@ -8,7 +8,6 @@ import { useForm, Controller } from 'react-hook-form'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import * as yup from 'yup'
 
-import MainLogo from '../../../../assets/logo.svg'
 import { useSignUpMutation } from '../../../../services/admin'
 import SocialMediaAuth from '../login/social-media-auth'
 
@@ -89,34 +88,15 @@ const SignUp = ({ setIsLoginPage }) => {
 
   return (
     <Box width="100%">
-      <Box display="flex" alignItems="center">
-        <Box display="flex" flexDirection="column" justifyContent="center" width="100%">
-          <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 1 }}>
-            <img src={MainLogo} alt="Logo" style={{ width: 80, height: 80 }} />
-          </Box>
-
-          <Typography
-            variant="h6"
-            fontWeight={700}
-            textAlign="center"
-            sx={{
-              letterSpacing: 3.84,
-              mb: 1,
-            }}
-          >
-            UNICITIZENS
-          </Typography>
-          <Typography
-            component="p"
-            fontWeight={400}
-            textAlign="center"
-            mb={2}
-            sx={{ opacity: 0.8 }}
-          >
-            Create a free account to access the platform.{' '}
-          </Typography>
-        </Box>
-      </Box>
+      <Typography
+        component="p"
+        fontWeight={400}
+        textAlign="center"
+        mb={2}
+        sx={{ opacity: 0.8 }}
+      >
+        Create a free account to access the platform.
+      </Typography>
 
       <form
         onSubmit={(e) => {

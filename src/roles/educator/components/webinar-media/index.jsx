@@ -1,11 +1,11 @@
 import { Box, useTheme } from '@mui/material'
-import { Volume2 } from 'lucide-react'
+import { VolumeIcon } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useRef, useState } from 'react'
 
 import { styles } from '../styles'
 
-const WebinarMedia = ({ stream, mediaType = 'video', isMirror = false }) => {
+const WebinarMedia = ({ stream, mediaType, isMirror }) => {
   const theme = useTheme()
   const audioRef = useRef(null)
   const [audioError, setAudioError] = useState(false)
@@ -17,9 +17,7 @@ const WebinarMedia = ({ stream, mediaType = 'video', isMirror = false }) => {
         node.autoplay = true
         if (mediaType === 'video') {
           node.muted = true
-          if ('playsInline' in node) {
-            node.playsInline = true
-          }
+          node.playsInline = true
         }
         node.onloadedmetadata = async () => {
           try {
@@ -41,7 +39,7 @@ const WebinarMedia = ({ stream, mediaType = 'video', isMirror = false }) => {
   const handleEnableAudio = async () => {
     if (audioRef.current) {
       try {
-        await audioRef.current?.play()
+        await audioRef.current.play()
         setAudioError(false)
       } catch (error) {
         console.error('Error enabling audio:', error)
@@ -62,9 +60,7 @@ const WebinarMedia = ({ stream, mediaType = 'video', isMirror = false }) => {
         </audio>
         {audioError && (
           <Box
-            onClick={() => {
-              void handleEnableAudio()
-            }}
+            onClick={handleEnableAudio}
             style={{
               zIndex: 1,
               top: '10px',
@@ -73,8 +69,8 @@ const WebinarMedia = ({ stream, mediaType = 'video', isMirror = false }) => {
               position: 'absolute',
             }}
           >
-            <Volume2 size={16} style={{ color: theme.palette.primary.main }} /> Host is speaking –
-            Tap to enable audio
+            <VolumeIcon style={{ color: theme.palette.primary.main }} /> Host is speaking – Tap to
+            enable audio
           </Box>
         )}
       </>
@@ -92,9 +88,15 @@ const WebinarMedia = ({ stream, mediaType = 'video', isMirror = false }) => {
 }
 
 WebinarMedia.propTypes = {
-  stream: PropTypes.object,
-  mediaType: PropTypes.oneOf(['video', 'audio']),
   isMirror: PropTypes.bool,
+  mediaType: PropTypes.oneOf(['video', 'audio']),
+  stream: PropTypes.oneOfType([PropTypes.object]),
+}
+
+WebinarMedia.defaultProps = {
+  stream: null,
+  isMirror: false,
+  mediaType: 'video',
 }
 
 export default WebinarMedia

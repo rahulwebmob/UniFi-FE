@@ -97,6 +97,14 @@ export const adminApi = createApi({
       }),
       onQueryStarted: onMutationStartedDefault,
     }),
+    createPassword: builder.mutation({
+      query: (data) => ({
+        url: `/user-api/auth/reset-password`,
+        method: 'POST',
+        body: data,
+      }),
+      onQueryStarted: onMutationStartedDefault,
+    }),
     emailVerification: builder.query({
       query: (body) => ({
         url: `/user-api/auth/email-verification`,
@@ -573,6 +581,7 @@ export const {
   useEducatorForgetPasswordMutation,
   useForgetPasswordMutation,
   useResetPasswordMutation,
+  useCreatePasswordMutation,
   useResendEmailMutation,
   useMyProfileMutation,
   useGenerateReferralLinkMutation,

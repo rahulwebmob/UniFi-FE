@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 
-import MainLogo from '../../../../assets/logo.svg'
 import {
   useForgetPasswordMutation,
   useEducatorForgetPasswordMutation,
@@ -54,33 +53,9 @@ const ForgetPassword = ({ type, setShowForgetPassword }) => {
         margin: '0 auto',
       }}
     >
-      <Box display="flex" alignItems="center" position="relative">
-        <Box display="flex" flexDirection="column" justifyContent="center" width="100%">
-          <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 1 }}>
-            <img src={MainLogo} alt="Logo" style={{ width: 80, height: 80 }} />
-          </Box>
-          <Typography
-            variant="h6"
-            fontWeight={700}
-            textAlign="center"
-            sx={{
-              letterSpacing: 3.84,
-              mb: 1,
-            }}
-          >
-            UNICITIZENS
-          </Typography>
-          <Typography
-            component="p"
-            fontWeight={400}
-            textAlign="center"
-            mb={3}
-            sx={{ opacity: 0.8 }}
-          >
-            Enter your email address and we&apos;ll send you a link to get back into your account.
-          </Typography>
-        </Box>
-      </Box>
+      <Typography component="p" fontWeight={400} textAlign="center" mb={3} sx={{ opacity: 0.8 }}>
+        Enter your email address and we&apos;ll send you a link to get back into your account.
+      </Typography>
 
       <form
         onSubmit={(e) => {

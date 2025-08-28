@@ -1,114 +1,72 @@
-import { Box, Paper, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { CheckCircle } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useNavigate } from 'react-router-dom'
 
-const ThankYou = ({ text }) => {
-  const navigate = useNavigate()
-
-  return (
+const ThankYou = ({ text }) => (
+  <Box
+    sx={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
     <Box
       sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: (theme) =>
-          `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
-        p: 3,
+        maxWidth: 600,
+        width: '100%',
+        borderRadius: 3,
+        p: { xs: 4, sm: 6 },
+        textAlign: 'center',
+        border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+        boxShadow: (theme) => theme.shadows[1],
       }}
     >
-      <Paper
-        elevation={0}
+      <Box
         sx={{
-          maxWidth: 600,
-          width: '100%',
-          borderRadius: 3,
-          p: { xs: 4, sm: 6 },
-          textAlign: 'center',
-          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
-          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.08)',
+          width: 80,
+          height: 80,
+          borderRadius: '50%',
+          backgroundColor: (theme) => theme.palette.success.light,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '0 auto',
+          mb: 3,
         }}
       >
-        <Box
-          sx={{
-            width: 80,
-            height: 80,
-            borderRadius: '50%',
-            backgroundColor: (theme) => theme.palette.success.light,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto',
-            mb: 3,
-          }}
-        >
-          <CheckCircle size={40} style={{ color: 'var(--mui-palette-success-main)' }} />
-        </Box>
+        <CheckCircle size={40} style={{ color: 'var(--mui-palette-success-main)' }} />
+      </Box>
 
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: 700,
-            mb: 2,
-            background: (theme) =>
-              `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Thank You!
-        </Typography>
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 700,
+          mb: 2,
+          background: (theme) =>
+            `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}
+      >
+        Thank You!
+      </Typography>
 
-        <Typography
-          variant="body1"
-          sx={{
-            mb: 4,
-            color: 'text.secondary',
-            lineHeight: 1.8,
-          }}
-        >
-          {text ||
-            'Your application has been successfully submitted. We will review your application and get back to you soon.'}
-        </Typography>
-
-        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-          <Button
-            variant="outlined"
-            onClick={() => void navigate('/educator/login')}
-            sx={{
-              textTransform: 'none',
-              borderRadius: '8px',
-              fontWeight: 600,
-              px: 3,
-              py: 1.5,
-            }}
-          >
-            Back to Login
-          </Button>
-
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              window.location.replace('https://www.unicitizens.com')
-            }}
-            sx={{
-              textTransform: 'none',
-              borderRadius: '8px',
-              fontWeight: 600,
-              px: 3,
-              py: 1.5,
-            }}
-          >
-            Visit Website
-          </Button>
-        </Box>
-      </Paper>
+      <Typography
+        variant="body1"
+        sx={{
+          mb: 4,
+          color: 'text.secondary',
+          lineHeight: 1.8,
+        }}
+      >
+        {text ||
+          'Your application has been successfully submitted. We will review your application and get back to you soon.'}
+      </Typography>
     </Box>
-  )
-}
+  </Box>
+)
 
 ThankYou.propTypes = {
   text: PropTypes.string,

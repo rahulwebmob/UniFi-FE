@@ -95,7 +95,7 @@ const WebinarAttachments = ({ handleOnClose, isHost }) => {
                 >
                   <Download
                     onClick={() => {
-                      void handleDownloadAttachment(item)
+                      handleDownloadAttachment(item)
                     }}
                     size={20}
                   />

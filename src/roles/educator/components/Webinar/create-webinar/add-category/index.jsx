@@ -19,22 +19,21 @@ const AddCategory = () => {
   const theme = useTheme()
   const {
     control,
+    categories,
+    setCategories,
     formState: { errors },
   } = useFormContext()
-
   const categoryRef = useRef(null)
-  const [categories, setCategories] = useState([])
 
   const [selectedCategory, setSelectedCategory] = useState('')
 
-  const { data, isLoading } = useGetCategoryListQuery(undefined)
+  const { data, isLoading } = useGetCategoryListQuery()
 
   useEffect(() => {
-    if (data?.data && Array.isArray(data.data) && data.data.length && !isLoading) {
-      const categoryNames = data.data.map((category) => category.name)
-      setCategories((prev) => [...new Set([...categoryNames.slice(0, 5), ...prev])])
+    if (data?.data?.length && !isLoading) {
+      setCategories((prev) => [...new Set([...data.data.slice(0, 5), ...prev])])
     }
-  }, [data, isLoading])
+  }, [data, isLoading, setCategories])
 
   const handleAddCategory = (newCategory) => {
     setCategories((prev) => [...prev, newCategory])
@@ -91,17 +90,6 @@ const AddCategory = () => {
                 variant="outlined"
                 size="small"
                 onClick={() => categoryRef.current?.openModal()}
-                sx={{
-                  borderColor: theme.palette.primary.main,
-                  color: theme.palette.primary.main,
-                  textTransform: 'none',
-                  borderRadius: '16px',
-                  height: '32px',
-                  '&:hover': {
-                    backgroundColor: `${theme.palette.primary.main}10`,
-                    borderColor: theme.palette.primary.main,
-                  },
-                }}
               >
                 Add Expertise
               </Button>
@@ -125,13 +113,7 @@ const AddCategory = () => {
             }}
             size="small"
             disablePortal
-            options={
-              data?.data && Array.isArray(data.data)
-                ? data.data
-                    .map((category) => category.name)
-                    .filter((name) => !categories.includes(name))
-                : []
-            }
+            options={data?.data?.filter((value) => !categories.includes(value)) || []}
             value={selectedCategory}
             getOptionLabel={(option) => option || ''}
             onChange={(__, newValue) => {
@@ -141,7 +123,7 @@ const AddCategory = () => {
           />
           <Box display="flex" justifyContent="flex-end" marginTop={2}>
             <Button
-              onClick={() => categoryRef.current?.closeModal()}
+              onClick={() => categoryRef.current.closeModal()}
               color="secondary"
               sx={{ marginRight: 1 }}
             >

@@ -17,7 +17,6 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
-import MainLogo from '../../../../assets/logo.svg'
 import { signIn } from '../../../../redux/reducers/user-slice'
 import { useLoginMutation, useEducatorLoginMutation } from '../../../../services/admin'
 import { useAdminLoginMutation } from '../../../../services/onboarding'
@@ -105,31 +104,14 @@ const Login = ({ type = '', setIsLoginPage }) => {
     }
   }
 
-  const renderHeader = () => (
-    <Box display="flex" alignItems="center">
-      <Box display="flex" flexDirection="column" justifyContent="center" width="100%">
-        <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 1 }}>
-          <img src={MainLogo} alt="Logo" style={{ width: 80, height: 80 }} />
-        </Box>
-        <Typography
-          variant="h6"
-          textAlign="center"
-          sx={{
-            letterSpacing: 3.84,
-            mb: 1,
-          }}
-        >
-          UNICITIZENS
-        </Typography>
-        <Typography component="p" textAlign="center" mb={2} sx={{ opacity: 0.8 }}>
-          {type === 'admin'
-            ? 'Enter your credentials to access the admin portal'
-            : type === 'educator'
-              ? 'Welcome back! Sign in to manage your courses and webinars'
-              : 'Enter details to login and access the platform'}
-        </Typography>
-      </Box>
-    </Box>
+  const renderLoginDescription = () => (
+    <Typography component="p" textAlign="center" mb={2} sx={{ opacity: 0.8 }}>
+      {type === 'admin'
+        ? 'Enter your credentials to access the admin portal'
+        : type === 'educator'
+          ? 'Welcome back! Sign in to manage your courses and webinars'
+          : 'Enter details to login and access the platform'}
+    </Typography>
   )
 
   const renderLoginForm = () => (
@@ -283,7 +265,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
 
   const renderLoginView = () => (
     <Box width="100%">
-      {renderHeader()}
+      {renderLoginDescription()}
       {renderLoginForm()}
       {renderForgotPasswordLink()}
       {type === 'educator' && renderEducatorSignup()}

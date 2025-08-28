@@ -18,6 +18,7 @@ import {
   Edit,
   Plus,
   Video,
+  Radio,
   Search,
   Trash2,
   FileText,
@@ -38,35 +39,21 @@ import {
 import MuiReactTable from '../../../../shared/components/ui-elements/mui-react-table'
 import PaginationComponent from '../../../../shared/components/ui-elements/pagination-component'
 
-const WebinarTable = ({ columns, data, page, setPage }) => {
+const WebinarTable = ({ columns, data }) => {
   const tableOptions = {
     getRowId: (row) => row._id,
     enableStickyHeader: true,
     muiTableContainerProps: {
       sx: {
-        height: '100%',
-        maxHeight: '100%',
+        height: 'calc(100vh - 480px)',
+        minHeight: '400px',
+        maxHeight: 'calc(100vh - 480px)',
       },
     },
   }
 
   return (
-    <>
-      <Box
-        sx={{
-          flex: 1,
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: 0,
-        }}
-      >
-        <MuiReactTable columns={columns} rows={data.data || []} materialReactProps={tableOptions} />
-      </Box>
-      <Box mt={2} display="flex" justifyContent="center">
-        {!!data.data?.length && <PaginationComponent page={page} data={data} setPage={setPage} />}
-      </Box>
-    </>
+    <MuiReactTable columns={columns} rows={data.data || []} materialReactProps={tableOptions} />
   )
 }
 
@@ -210,18 +197,27 @@ const AllWebinars = ({ page, setPage }) => {
           : '-'
 
         return webinarScheduledObj?.can_join ? (
-          <Chip
-            label="Join Now"
+          <Button
+            variant="contained"
             color="success"
             size="small"
+            startIcon={<Radio size={16} />}
             onClick={() => {
               void navigate(`/educator/educator-room/${row.original._id}`)
             }}
             sx={{
-              fontWeight: 600,
-              cursor: 'pointer',
+              '& .MuiButton-startIcon svg': {
+                animation: 'pulse 1.5s ease-in-out infinite',
+              },
+              '@keyframes pulse': {
+                '0%': { opacity: 1 },
+                '50%': { opacity: 0.5 },
+                '100%': { opacity: 1 },
+              },
             }}
-          />
+          >
+            Join Live
+          </Button>
         ) : (
           <Typography style={{ whiteSpace: 'pre-line' }}>{joinDate || '-'}</Typography>
         )
@@ -344,27 +340,27 @@ const AllWebinars = ({ page, setPage }) => {
         flexWrap="wrap"
         gap="10px"
         mb={2}
-        sx={{ flexShrink: 0 }}
       >
-        <ButtonGroup
-          sx={{
-            '& .MuiButton-root:not(:last-child)': { borderRight: 'none' },
-          }}
-        >
+        <ButtonGroup variant="outlined">
           {['', 'published'].map((statusKey, index) => (
             <Button
               key={statusKey || 'all'}
               sx={{
-                backgroundColor: status === statusKey ? 'primary.main' : 'transparent',
-                color: status === statusKey ? 'white' : 'text.secondary',
+                backgroundColor: status === statusKey ? 'primary.main' : 'background.paper',
+                color: status === statusKey ? 'primary.contrastText' : 'text.secondary',
+                borderColor:
+                  status === statusKey ? 'primary.main' : (theme) => theme.palette.grey[300],
                 '&:hover': {
-                  backgroundColor: status === statusKey ? 'primary.dark' : 'action.hover',
+                  backgroundColor:
+                    status === statusKey ? 'primary.dark' : (theme) => theme.palette.grey[50],
+                  borderColor:
+                    status === statusKey ? 'primary.dark' : (theme) => theme.palette.grey[400],
                 },
               }}
               onClick={() => handleChangeStatus(statusKey)}
             >
               {['All', 'Published'][index]} (
-              {webinarCount?.data?.[['allWebinarsCount', 'publishedWebinarsCount'][index]]})
+              {webinarCount?.data?.[['allWebinarsCount', 'publishedWebinarsCount'][index]] || 0})
             </Button>
           ))}
         </ButtonGroup>
@@ -372,20 +368,40 @@ const AllWebinars = ({ page, setPage }) => {
           size="small"
           onChange={(e) => debouncedSearch(e.target.value)}
           placeholder="Search webinars..."
+          sx={{
+            minWidth: 250,
+            backgroundColor: (theme) => theme.palette.background.paper,
+          }}
           InputProps={{
             startAdornment: (
-              <Search size={16} style={{ color: 'var(--mui-palette-action-disabled)' }} />
+              <Search
+                size={16}
+                style={{ marginRight: 8, color: 'var(--mui-palette-action-disabled)' }}
+              />
             ),
           }}
         />
       </Box>
-      <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+      <Box
+        sx={{
+          flex: 1,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+        }}
+      >
         <WebinarTable
           columns={columns}
-          data={webinarData || { data: [] }}
+          data={webinarData?.data || { data: [] }}
           page={page}
           setPage={setPage}
         />
+      </Box>
+      <Box mt={2} display="flex" justifyContent="center">
+        {!!webinarData?.data?.data?.length && (
+          <PaginationComponent page={page} data={webinarData?.data} setPage={setPage} />
+        )}
       </Box>
 
       <Menu
@@ -582,12 +598,29 @@ const PastWebinars = ({ page, setPage }) => {
   ]
 
   return (
-    <WebinarTable
-      columns={columns}
-      data={data?.data || { data: [] }}
-      page={page}
-      setPage={setPage}
-    />
+    <>
+      <Box
+        sx={{
+          flex: 1,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+        }}
+      >
+        <WebinarTable
+          columns={columns}
+          data={data?.data || { data: [] }}
+          page={page}
+          setPage={setPage}
+        />
+      </Box>
+      <Box mt={2} display="flex" justifyContent="center">
+        {!!data?.data?.data?.length && (
+          <PaginationComponent page={page} data={data?.data} setPage={setPage} />
+        )}
+      </Box>
+    </>
   )
 }
 

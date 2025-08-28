@@ -273,8 +273,9 @@ const Courses = () => {
     enableStickyHeader: true,
     muiTableContainerProps: {
       sx: {
-        height: '100%',
-        maxHeight: '100%',
+        height: 'calc(100vh - 480px)',
+        minHeight: '400px',
+        maxHeight: 'calc(100vh - 480px)',
       },
     },
     meta: {

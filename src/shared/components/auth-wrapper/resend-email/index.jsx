@@ -2,7 +2,6 @@ import { Box, Button, useTheme, Typography } from '@mui/material'
 import { Mail, ArrowLeft } from 'lucide-react'
 import PropTypes from 'prop-types'
 
-import MainLogo from '../../../../assets/logo.svg'
 import { useResendEmailMutation } from '../../../../services/admin'
 
 const ResendEmail = ({ setResendEmail, email }) => {
@@ -23,58 +22,33 @@ const ResendEmail = ({ setResendEmail, email }) => {
         margin: '0 auto',
       }}
     >
-      <Box display="flex" alignItems="center" position="relative">
-        <Box display="flex" flexDirection="column" justifyContent="center" width="100%">
-          <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 1 }}>
-            <img src={MainLogo} alt="Logo" style={{ width: 80, height: 80 }} />
-          </Box>
-          <Typography
-            variant="h6"
-            fontWeight={700}
-            textAlign="center"
-            sx={{
-              letterSpacing: 3.84,
-              mb: 1,
-            }}
-          >
-            UNICITIZENS
-          </Typography>
-
-          {/* Email Icon */}
-          <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 2 }}>
-            <Box
-              sx={{
-                width: 64,
-                height: 64,
-                borderRadius: '50%',
-                backgroundColor: `${theme.palette.primary.light}20`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Mail size={32} color={theme.palette.primary.main} />
-            </Box>
-          </Box>
-
-          <Typography variant="h5" textAlign="center" mb={1}>
-            Please verify your email
-          </Typography>
-          <Typography
-            component="p"
-            fontWeight={400}
-            textAlign="center"
-            mb={3}
-            sx={{ opacity: 0.8 }}
-          >
-            We&apos;ve sent you an email at{' '}
-            <Typography component="span" fontWeight={600} color="primary">
-              {email}
-            </Typography>
-            . Just click the link in the email to finish signing up.
-          </Typography>
+      {/* Email Icon */}
+      <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 2 }}>
+        <Box
+          sx={{
+            width: 64,
+            height: 64,
+            borderRadius: '50%',
+            backgroundColor: `${theme.palette.primary.light}20`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Mail size={32} color={theme.palette.primary.main} />
         </Box>
       </Box>
+
+      <Typography variant="h5" textAlign="center" mb={1}>
+        Please verify your email
+      </Typography>
+      <Typography component="p" fontWeight={400} textAlign="center" mb={3} sx={{ opacity: 0.8 }}>
+        We&apos;ve sent you an email at{' '}
+        <Typography component="span" fontWeight={600} color="primary">
+          {email}
+        </Typography>
+        . Just click the link in the email to finish signing up.
+      </Typography>
 
       <Box
         sx={{

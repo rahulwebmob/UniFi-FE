@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { useGetDisplayScheduleTimeMutation } from '../../../../../services/admin'
@@ -10,46 +10,35 @@ const PreviewWebinar = ({ webinarData, isTdSkip }) => {
   const { user } = useSelector((state) => state.user)
   const [updatedWebinarData, setUpdatedWebinarData] = useState({
     ...webinarData,
-    _id: webinarData._id || '',
     educatorId: { firstName: user?.firstName, lastName: user?.lastName },
   })
 
   const [getDisplayScheduleTime] = useGetDisplayScheduleTimeMutation()
 
-  const buildSchedulePayload = useCallback(() => {
+  const buildSchedulePayload = () => {
     const { scheduleType, startDate, startTime, endTime, days } = webinarData
 
-    if (['daily', 'one time'].includes(scheduleType || '')) {
+    if (['daily', 'one time'].includes(scheduleType)) {
       return {
-        webinarId: webinarData._id || '',
         scheduleType,
-        endTime: isTdSkip ? endTime : endTime ? convHMtoUtc(endTime) : undefined,
-        startTime: isTdSkip ? startTime : startTime ? convHMtoUtc(startTime) : undefined,
-        startDate: isTdSkip
-          ? startDate
-          : startDate && startTime
-            ? convDateToUtc(startDate, startTime)
-            : undefined,
+        endTime: isTdSkip ? endTime : convHMtoUtc(endTime),
+        startTime: isTdSkip ? startTime : convHMtoUtc(startTime),
+        startDate: isTdSkip ? startDate : convDateToUtc(startDate, startTime),
       }
     }
 
     return {
-      webinarId: webinarData._id || '',
-      days: days?.map((day) => ({
+      days: days.map((day) => ({
         ...day,
-        startTime: iff(
-          Boolean(isTdSkip),
-          day.startTime,
-          day.startTime ? convHMtoUtc(day.startTime) : null,
-        ),
-        endTime: iff(Boolean(isTdSkip), day.endTime, day.endTime ? convHMtoUtc(day.endTime) : null),
+        startTime: iff(isTdSkip, day.startTime, day.startTime ? convHMtoUtc(day.startTime) : null),
+        endTime: iff(isTdSkip, day.endTime, day.endTime ? convHMtoUtc(day.endTime) : null),
       })),
       scheduleType,
       timezone: getLocalTimezone(),
     }
-  }, [webinarData, isTdSkip])
+  }
 
-  const fetchScheduleTime = useCallback(async () => {
+  const fetchScheduleTime = async () => {
     const payload = buildSchedulePayload()
     const response = await getDisplayScheduleTime(payload)
     if (!response.error) {
@@ -61,9 +50,9 @@ const PreviewWebinar = ({ webinarData, isTdSkip }) => {
         },
       }))
     }
-  }, [buildSchedulePayload, getDisplayScheduleTime])
+  }
 
-  const convertImageFileToUrl = useCallback(() => {
+  const convertImageFileToUrl = () => {
     if (webinarData?.image && webinarData.image instanceof File) {
       const imageUrl = URL.createObjectURL(webinarData.image)
       setUpdatedWebinarData((prev) => ({
@@ -71,66 +60,20 @@ const PreviewWebinar = ({ webinarData, isTdSkip }) => {
         thumbNail: imageUrl,
       }))
     }
-  }, [webinarData?.image])
-
-  useEffect(() => {
-    void fetchScheduleTime()
-    convertImageFileToUrl()
-  }, [webinarData, fetchScheduleTime, convertImageFileToUrl])
-
-  const transformedWebinarData = {
-    _id: updatedWebinarData._id || '',
-    title: updatedWebinarData.title || '',
-    description: updatedWebinarData.description || '',
-    thumbnail: updatedWebinarData.image ? String(updatedWebinarData.image) : '',
-    duration: 0, // Default value
-    status: 'draft',
-    startTime: updatedWebinarData.startTime ? String(updatedWebinarData.startTime) : '',
-    endTime: updatedWebinarData.endTime ? String(updatedWebinarData.endTime) : '',
-    price: updatedWebinarData.price || 0,
-    instructor: updatedWebinarData.educatorId,
-    scheduleType: updatedWebinarData.scheduleType,
-    category: updatedWebinarData.category,
-    isPaid: updatedWebinarData.isPaid,
-    resources: updatedWebinarData.resources?.map((resource) => ({
-      id: resource.id || '',
-      name: typeof resource.file === 'string' ? resource.file : resource.file.name,
-      type: 'file',
-      url: typeof resource.file === 'string' ? resource.file : URL.createObjectURL(resource.file),
-      size: 0,
-    })),
-    days: updatedWebinarData.days,
   }
 
-  return (
-    <WebinarContent
-      isEdit
-      webinarData={transformedWebinarData}
-      handlePurchase={() => {
-        // No-op for preview mode
-      }}
-    />
-  )
+  useEffect(() => {
+    fetchScheduleTime()
+    convertImageFileToUrl()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [webinarData])
+
+  return <WebinarContent isEdit webinarData={updatedWebinarData} />
 }
 
 PreviewWebinar.propTypes = {
-  webinarData: PropTypes.shape({
-    _id: PropTypes.string,
-    title: PropTypes.string,
-    description: PropTypes.string,
-    scheduleType: PropTypes.string,
-    startDate: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
-    startTime: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
-    endTime: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
-    days: PropTypes.array,
-    image: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    price: PropTypes.number,
-    educatorId: PropTypes.object,
-    category: PropTypes.array,
-    isPaid: PropTypes.bool,
-    resources: PropTypes.array,
-  }).isRequired,
-  isTdSkip: PropTypes.bool,
+  isTdSkip: PropTypes.bool.isRequired,
+  webinarData: PropTypes.oneOfType([PropTypes.object]).isRequired,
 }
 
 export default PreviewWebinar

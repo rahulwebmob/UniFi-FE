@@ -9,7 +9,7 @@ import {
   useMediaQuery,
   InputAdornment,
 } from '@mui/material'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Save } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
@@ -114,8 +114,16 @@ const ChangePassword = ({
         dispatch(updateUser({ isPasswordMissing: false }))
       }
     }
-    if (!response?.error) {
-      closeModal()
+
+    // Call resetPassword first if it exists (for reset-password flow)
+    if (resetPassword) {
+      resetPassword(values)
+    }
+
+    if (!response?.error && !isResetPassword) {
+      if (closeModal) {
+        closeModal()
+      }
       reset()
       if (
         !isUserAdmin &&
@@ -135,13 +143,12 @@ const ChangePassword = ({
         }, 1500) // Give user 1.5 seconds to see success before redirect
       }
     }
-    resetPassword?.(values)
   }
 
   return (
     <Box>
       <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
-        {!!headerName && (
+        {!!headerName && !isResetPassword && (
           <Typography variant="h6" className="profileTitle">
             Change Password
           </Typography>
@@ -334,9 +341,9 @@ const ChangePassword = ({
           type="submit"
           variant="contained"
           color="primary"
+          startIcon={<Save size={20} />}
           sx={{
-            mt: 1,
-            textTransform: 'none',
+            mt: 2,
           }}
         >
           Save
@@ -347,7 +354,7 @@ const ChangePassword = ({
 }
 
 ChangePassword.propTypes = {
-  closeModal: PropTypes.func.isRequired,
+  closeModal: PropTypes.func,
   userEmail: PropTypes.string,
   headerName: PropTypes.string,
   isUserAdmin: PropTypes.bool,

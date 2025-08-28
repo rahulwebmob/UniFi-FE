@@ -1,9 +1,10 @@
-import { Box, useTheme } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import AdminImage from '../../../assets/admin.webp'
+import MainLogo from '../../../assets/logo.svg'
 import SignUpImage from '../../../assets/sign-up/Sign Up.png'
 
 import Login from './login'
@@ -11,7 +12,7 @@ import SignUp from './sign-up'
 
 const EducatorImage = SignUpImage
 
-const AuthWrapper = ({ type = '' }) => {
+const AuthWrapper = ({ type = '', children = null }) => {
   const theme = useTheme()
   const [searchParams, setSearchParams] = useSearchParams()
   const [isLoginPage, setIsLoginPage] = useState(
@@ -19,7 +20,8 @@ const AuthWrapper = ({ type = '' }) => {
   )
 
   useEffect(() => {
-    if (type === 'admin') {
+    // Skip URL management if custom children are provided
+    if (children || type === 'admin') {
       return
     }
 
@@ -141,7 +143,23 @@ const AuthWrapper = ({ type = '' }) => {
                 },
               }}
             >
-              {isLoginPage ? (
+              <Box display="flex" alignItems="center" justifyContent="center" sx={{ mb: 3 }}>
+                <img src={MainLogo} alt="Logo" style={{ width: 80, height: 80 }} />
+              </Box>
+              <Typography
+                variant="h6"
+                fontWeight={700}
+                textAlign="center"
+                sx={{
+                  letterSpacing: 3.84,
+                  mb: 3,
+                }}
+              >
+                UNICITIZENS
+              </Typography>
+              {children ? (
+                children
+              ) : isLoginPage ? (
                 <Login type={type} setIsLoginPage={setIsLoginPage} />
               ) : (
                 type !== 'admin' && <SignUp setIsLoginPage={setIsLoginPage} />
@@ -156,6 +174,7 @@ const AuthWrapper = ({ type = '' }) => {
 
 AuthWrapper.propTypes = {
   type: PropTypes.string,
+  children: PropTypes.node,
 }
 
 AuthWrapper.defaultProps = {

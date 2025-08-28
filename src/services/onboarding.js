@@ -52,6 +52,14 @@ export const onboardingApi = createApi({
       }),
       onQueryStarted: onMutationStarted,
     }),
+    createAdminPassword: builder.mutation({
+      query: (data) => ({
+        url: '/admin-api/auth/reset-password',
+        method: 'POST',
+        body: data,
+      }),
+      onQueryStarted: onMutationStarted,
+    }),
   }),
 })
 
@@ -60,4 +68,5 @@ export const {
   useAdminLogoutMutation,
   useEditAdminProfileMutation,
   useAdminForgetPasswordMutation,
+  useCreateAdminPasswordMutation,
 } = onboardingApi

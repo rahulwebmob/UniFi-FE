@@ -1,5 +1,5 @@
-import { Box, Grid, Button, Typography, FormControl } from '@mui/material'
-import { Plus, CloudUpload } from 'lucide-react'
+import { Box, Grid, Button, Typography, FormControl, IconButton } from '@mui/material'
+import { Plus, CloudUpload, X } from 'lucide-react'
 import { useRef } from 'react'
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 
@@ -44,6 +44,7 @@ const WebinarMetaData = () => {
               justifyContent: 'space-between',
               alignItems: 'center',
               gap: '8px',
+              my: 1,
             }}
           >
             <Typography
@@ -65,7 +66,7 @@ const WebinarMetaData = () => {
               variant="outlined"
               disabled={resourceFields?.length > 4}
               color="primary"
-              sx={{ width: 'fit-content', marginLeft: 'auto' }}
+              size="small"
             >
               Add More Resources
             </Button>
@@ -79,80 +80,79 @@ const WebinarMetaData = () => {
             }}
           >
             {resourceFields.map((field, index) => (
-              <Box key={field.id} display="grid" gridTemplateColumns="1fr 60px" gap="8px">
-                <Controller
-                  key={field.id}
-                  name={`resources.${index}.file`}
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <>
-                      <Box
-                        sx={{
-                          backgroundColor: 'primary.light100',
-                          p: 0.7,
-                          border: '1px solid',
-                          borderColor: 'primary.main200',
-                          borderRadius: '8px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
-                        }}
-                      >
-                        <Button
-                          variant="contained"
+              <Box key={field.id}>
+                <Box display="flex" gap="8px" alignItems="center">
+                  <Controller
+                    name={`resources.${index}.file`}
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <>
+                        <Box
                           sx={{
-                            gap: '0',
-                            maxWidth: 'fit-content',
+                            p: 1.5,
+                            border: (theme) => `2px dashed ${theme.palette.grey[300]}`,
+                            borderRadius: '12px',
+                            backgroundColor: 'background.paper',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            flex: 1,
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              borderColor: (theme) => theme.palette.primary.main,
+                              backgroundColor: (theme) =>
+                                theme.palette.primary.lighter || theme.palette.action.hover,
+                            },
                           }}
-                          startIcon={<CloudUpload size={16} />}
-                          onClick={() => fileInputRefs.current[index]?.click()}
                         >
-                          <input
-                            ref={(el) => {
-                              fileInputRefs.current[index] = el
+                          <Button
+                            variant="contained"
+                            sx={{
+                              gap: '0',
+                              maxWidth: 'fit-content',
                             }}
-                            type="file"
-                            accept=".doc,.docx,.pdf"
-                            style={{ display: 'none' }}
-                            onChange={(event) => {
-                              const file = event.target.files?.[0]
-                              if (file) {
-                                onChange(file)
-                              }
+                            startIcon={<CloudUpload size={16} />}
+                            onClick={() => fileInputRefs.current[index]?.click()}
+                          >
+                            <input
+                              ref={(el) => {
+                                fileInputRefs.current[index] = el
+                              }}
+                              type="file"
+                              accept=".doc,.docx,.pdf"
+                              style={{ display: 'none' }}
+                              onChange={(event) => {
+                                const file = event.target.files?.[0]
+                                if (file) {
+                                  onChange(file)
+                                }
+                              }}
+                            />
+                            Browse
+                          </Button>
+                          <Typography variant="body2" sx={{ color: 'text.primary', flex: 1 }}>
+                            {value?.name || value || 'No file selected'}
+                          </Typography>
+                        </Box>
+                        {!!resourceFields?.length && (
+                          <IconButton
+                            color="error"
+                            onClick={() => {
+                              removeResource(index)
                             }}
-                          />
-                          Browse
-                        </Button>
-                        <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                          {value?.name || value || 'No file selected'}
-                        </Typography>
-                      </Box>
-                      {!!resourceFields?.length && (
-                        <Button
-                          size="small"
-                          variant="contained"
-                          color="error"
-                          onClick={() => {
-                            removeResource(index)
-                          }}
-                          sx={{ float: 'right' }}
-                        >
-                          Remove
-                        </Button>
-                      )}
-
-                      {errors.resources?.[index]?.file && (
-                        <Typography
-                          variant="caption"
-                          color="error"
-                          sx={{ mt: 0.5, display: 'block' }}
-                        >
-                          {getErrorMessage(errors.resources[index]?.file)}
-                        </Typography>
-                      )}
-                    </>
-                  )}
-                />
+                          >
+                            <X size={20} />
+                          </IconButton>
+                        )}
+                      </>
+                    )}
+                  />
+                </Box>
+                {errors.resources?.[index]?.file && (
+                  <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                    {getErrorMessage(errors.resources[index]?.file)}
+                  </Typography>
+                )}
               </Box>
             ))}
           </Box>
@@ -175,8 +175,7 @@ const WebinarMetaData = () => {
               <>
                 <Box
                   sx={{
-                    border: '2px dashed',
-                    borderColor: 'primary.light',
+                    border: (theme) => `2px dashed ${theme.palette.grey[300]}`,
                     borderRadius: '8px',
                     padding: '16px',
                     width: '100%',

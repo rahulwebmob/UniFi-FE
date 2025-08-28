@@ -53,6 +53,7 @@
     "react-router-dom": "^7.7.1",
     "react-use-websocket": "^4.13.0",
     "recharts": "^3.1.2",
+    "socket.io-client": "^4.8.1",
     "web-vitals": "^5.1.0",
     "webm-duration-fix": "^1.0.4",
     "yup": "^1.6.1"

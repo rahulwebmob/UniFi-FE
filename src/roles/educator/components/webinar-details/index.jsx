@@ -1,4 +1,5 @@
-import { useRef, useMemo } from 'react'
+import { Typography, Box } from '@mui/material'
+import { useMemo, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { useGetParticularWebinarDetailQuery } from '../../../../services/education'
@@ -8,7 +9,7 @@ import WebinarContent from '../Webinar/webinar-content'
 
 const WebinarDetails = () => {
   const { id } = useParams()
-  const subscriptionRef = useRef(null)
+  const subscriptionRef = useRef()
 
   const { data, isLoading, error } = useGetParticularWebinarDetailQuery(
     { webinarId: id },
@@ -16,30 +17,25 @@ const WebinarDetails = () => {
   )
 
   const premiumModelDetails = useMemo(() => {
-    const webinarResponse = data
-    const item = webinarResponse?.data
+    const item = data?.data
     return {
       mediaDetails: {
-        logo: item?.thumbNail || item?.thumbnail || '',
-        coverImage: item?.thumbNail || item?.thumbnail || '',
-        featureImage: item?.thumbNail || item?.thumbnail || '',
-        educatorDetails: {
-          firstName: item?.instructor?.firstName || '',
-          lastName: item?.instructor?.lastName || '',
-          id: item?.educatorId || item?.instructor?.id || 'default-educator',
-        },
+        logo: item?.thumbNail,
+        coverImage: item?.thumbNail,
+        featureImage: item?.thumbNail,
+        educatorDetails: item?.educatorId,
       },
       subscriptionDetails: [
         {
           features: [],
           duration: '',
-          key: item?._id || item?.id || 'default-key',
-          _id: item?._id || item?.id || 'default-id',
-          name: item?.title || '',
-          price: item?.price || 0,
+          key: item?._id,
+          _id: item?._id,
+          name: item?.title,
+          price: item?.price,
           purchaseType: 'WEBINAR',
-          displayName: item?.title || '',
-          description: item?.subtitle || item?.description || '',
+          displayName: item?.title,
+          description: item?.subtitle,
           scheduledDate: item?.webinarScheduledObj?.join_date,
         },
       ],
@@ -47,46 +43,28 @@ const WebinarDetails = () => {
   }, [data])
 
   const handlePurchase = () => {
-    subscriptionRef.current?.openModal()
+    subscriptionRef.current.openModal()
   }
 
-  const handleCourseData = useMemo(() => {
-    const webinarResponse = data
-    const webinarDetail = webinarResponse?.data
-
-    if (!webinarDetail) {
-      // Return a minimal valid WebinarData object
-      return {
-        _id: '',
-        title: '',
-        description: '',
-        thumbnail: '',
-        startTime: '',
-        endTime: '',
-        duration: 0,
-        status: 'draft',
-      }
-    }
-
-    // Transform WebinarDetail to WebinarData
-    return {
-      ...webinarDetail,
-      _id: webinarDetail._id || webinarDetail.id || '',
-      title: webinarDetail.title || '',
-      description: webinarDetail.description || '',
-      thumbnail: webinarDetail.thumbnail || webinarDetail.thumbNail || '',
-      startTime: webinarDetail.startTime || '',
-      endTime: webinarDetail.endTime || '',
-      duration: webinarDetail.duration || 0,
-      status: webinarDetail.status || 'draft',
-    }
-  }, [data])
+  const handleWebinarDetail = useMemo(
+    () => ({
+      ...data?.data,
+    }),
+    [data],
+  )
 
   return (
     <ApiResponseWrapper error={error} isLoading={isLoading} isData={!!data?.data}>
+      <Box sx={{ flexGrow: 1 }}>
+        <Box display="flex" mb={1}>
+          <Typography className="bookmap" variant="h1">
+            Webinar Details
+          </Typography>
+        </Box>
+      </Box>
       <WebinarContent
         isEdit={false}
-        webinarData={handleCourseData}
+        webinarData={handleWebinarDetail}
         handlePurchase={handlePurchase}
       />
       <PremiumModal

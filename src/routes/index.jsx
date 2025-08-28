@@ -13,8 +13,8 @@ import Courses from '../roles/educator/components/courses'
 import CreateCourse from '../roles/educator/components/courses/create-course'
 import EditCourse from '../roles/educator/components/courses/edit-course'
 import EducatorDashboard from '../roles/educator/components/Dashboard'
-import EducatorLogin from '../roles/educator/components/educator-login'
 import EducatorTemplate from '../roles/educator/components/educator-layout'
+import EducatorLogin from '../roles/educator/components/educator-login'
 import PaymentHistory from '../roles/educator/components/payment-history'
 import Webinar from '../roles/educator/components/Webinar'
 import CreateWebinar from '../roles/educator/components/Webinar/create-webinar'
@@ -26,6 +26,7 @@ import UserDashboard from '../roles/user/pages/user-dashboard'
 import UserSettings from '../roles/user/pages/user-settings'
 import AuthWrapper from '../shared/components/auth-wrapper'
 import Educator from '../shared/components/auth-wrapper/educator-onboarding'
+import ResetPassword from '../shared/components/auth-wrapper/reset-password'
 import ErrorPage from '../shared/components/error-page'
 import CourseDetails from '../shared/components/layout/Course/course-details'
 import Lessons from '../shared/components/layout/Course/Lessons'
@@ -55,6 +56,10 @@ const Routes = createBrowserRouter([
       {
         path: 'educator/onboarding',
         element: <Educator />,
+      },
+      {
+        path: 'reset-password',
+        element: <ResetPassword />,
       },
     ],
   },

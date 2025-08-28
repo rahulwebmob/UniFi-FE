@@ -3,63 +3,79 @@
 import { format, isSameDay, intervalToDuration } from 'date-fns'
 import html2pdf from 'html2pdf.js'
 import moment, { utc } from 'moment-timezone'
+import { io } from 'socket.io-client'
 
-export const mergeData = (..._args) => {
-  void _args
-  return {}
+export const mergeData = (usersInRoom, remoteStreamsMap, producers) => {
+  const educator = usersInRoom.find((u) => u.role === 'educator')
+  if (!educator) {
+    return null
+  }
+
+  const mergedStreams = {}
+  Object.values(remoteStreamsMap).forEach((streamData) => {
+    const producerExists = producers.find((p) => p.producerId === streamData.producerId)
+    if (producerExists) {
+      mergedStreams[streamData.variant] = streamData
+    }
+  })
+  return { producer: mergedStreams, firstName: educator.firstName }
 }
 
 export const stopStream = (stream) => {
-  if (stream?.getTracks) {
+  if (stream) {
     stream.getTracks().forEach((track) => track.stop())
   }
 }
 
 export const WebSocketEventType = {
-  CONNECT: 'connect',
-  DISCONNECT: 'disconnect',
-  MESSAGE: 'message',
-  ERROR: 'error',
-  JOIN_ROOM: 'join_room',
-  LEAVE_ROOM: 'leave_room',
-  GET_IN_ROOM_USERS: 'get_in_room_users',
-  GET_ROUTER_RTP_CAPABILITIES: 'get_router_rtp_capabilities',
-  CREATE_WEBRTC_TRANSPORT: 'create_webrtc_transport',
-  CONNECT_TRANSPORT: 'connect_transport',
-  PRODUCE: 'produce',
-  GET_PRODUCERS: 'get_producers',
-  CLOSE_PRODUCER: 'close_producer',
-  CONSUME: 'consume',
-  USER_JOINED: 'user_joined',
-  USER_LEFT: 'user_left',
-  NEW_PRODUCERS: 'new_producers',
-  PRODUCER_CLOSED: 'producer_closed',
-  CALL_ENDED: 'call_ended',
-  HANDS_UP: 'hands_up',
-  RAISE_HAND: 'raise_hand',
-  EXIT_ROOM: 'exit_room',
-}
+  // ROOM EVENTS
+  CREATE_ROOM: 'createRoom',
+  JOIN_ROOM: 'joinRoom',
+  LEAVE_ROOM: 'exitRoom',
+  EXIT_ROOM: 'endCall',
+  USER_LEFT: 'userLeft',
+  USER_JOINED: 'userJoined',
+  GET_IN_ROOM_USERS: 'getInRoomUsers',
+  STATUS: 'status',
 
+  // server side
+  GET_PRODUCERS: 'getProducers',
+  GET_ROUTER_RTP_CAPABILITIES: 'getRouterRtpCapabilities',
+  CREATE_WEBRTC_TRANSPORT: 'createWebRtcTransport',
+  CONNECT_TRANSPORT: 'connectTransport',
+  PRODUCE: 'produce',
+  CONSUME: 'consume',
+  GET_MY_ROOM_INFO: 'getMyRoomInfo',
+  PRODUCER_CLOSED: 'producerClosed',
+  CONSUMER_CLOSED: 'consumerClosed',
+  HANDS_UP: 'handsUp',
+
+  // client side
+  ROOM_CREATED_MESSAGE: 'createdRoom',
+  NEW_PRODUCERS: 'newProducers',
+  PRODUCED: 'produced',
+  ROUTER_RTP_CAPABILITIES: 'routerRtpCapabilities',
+  CREATED_WEBRTC_TRANSPORT: 'createdWebRtcTransport',
+  CONSUMED: 'consumed',
+  ROOM_INFO: 'roomInfo',
+  JOINED_ROOM_MESSAGE: 'joinedRoom',
+  RAISE_HAND: 'handRaise',
+  CLOSE_PRODUCER: 'closeProducer',
+  CALL_ENDED: 'callEnded',
+}
 export const ASPECT_RATIO = 16 / 9
 export const VIDEO_RESOLUTION = 720
 
-export const createWebinarSocket = () => ({
-  on: (_event, _callback) => {
-    void _event
-    void _callback
-  },
-  onAny: (_callback) => {
-    void _callback
-  },
-  disconnect: () => {
-    /* mock disconnect */
-  },
-  emit: (_event, _data, _callback) => {
-    void _event
-    void _data
-    void _callback
-  },
-})
+const defaultSocketSettings = {
+  transports: ['websocket', 'polling'],
+}
+
+export const createWebinarSocket = () =>
+  io(`${import.meta.env.VITE_BASE_URL}/vedio`, {
+    path: '/vedio-sfu-service/socket/',
+    auth: { token: localStorage.getItem('token') },
+    ...defaultSocketSettings,
+  })
 
 export const formatDate = (date) => {
   if (!date) {

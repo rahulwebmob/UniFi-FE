@@ -12,6 +12,7 @@ import {
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { parse, format, isAfter, isBefore } from 'date-fns'
+import { ArrowLeft, ArrowRight, Send, Save, LayoutDashboard, DollarSign } from 'lucide-react'
 import moment from 'moment-timezone'
 import PropTypes from 'prop-types'
 import { useMemo, useState, useEffect } from 'react'
@@ -39,14 +40,42 @@ import AddCategory from './add-category'
 import WebinarMetaData from './webinar-meta-data'
 import WebinarSchedule from './webinar-schedule'
 
-const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultValues }) => {
+const defaultWebinarValues = {
+  title: '',
+  description: '',
+  category: [],
+  startDate: null,
+  startTime: null,
+  endTime: null,
+  scheduleType: 'daily',
+  resources: [{ file: '' }],
+  image: '',
+  isPaid: true,
+  price: '',
+  days: [
+    { day: 'sunday', selected: false, startTime: null, endTime: null },
+    { day: 'monday', selected: false, startTime: null, endTime: null },
+    { day: 'tuesday', selected: false, startTime: null, endTime: null },
+    { day: 'wednesday', selected: false, startTime: null, endTime: null },
+    { day: 'thursday', selected: false, startTime: null, endTime: null },
+    { day: 'friday', selected: false, startTime: null, endTime: null },
+    { day: 'saturday', selected: false, startTime: null, endTime: null },
+  ],
+}
+
+const CreateWebinar = ({
+  isEdit = false,
+  isPreview = false,
+  isPublished = false,
+  savedDetails = {},
+  defaultValues = defaultWebinarValues,
+}) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const [previewMode, setPreviewMode] = useState(isPreview)
-  const [webinarData, setWebinarData] = useState({
-    ...savedDetails,
-  })
+  const [webinarData, setWebinarData] = useState({ ...savedDetails })
+  const [categories, setCategories] = useState(defaultValues?.category)
   const [scheduleType, setScheduleType] = useState(defaultValues?.scheduleType || 'daily')
 
   const [createWebinar, { isLoading: isCreateLoading }] = useCreateWebinarMutation()
@@ -63,7 +92,7 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
       .required(isEndTime ? 'End time is required' : 'Start time is required')
       .test(
         'min-start-time',
-        'Start and end time should differ by at least 5 minutes',
+        'Start time must be greater than or equal to the current time',
         (value, ctx) => {
           if (ctx.parent.scheduleType !== 'one time') {
             return true
@@ -125,19 +154,13 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
                   return true
                 }
                 const allowedExtensions = ['doc', 'docx', 'pdf', 'jpg', 'jpeg', 'png']
-                const fileExtension = value.name?.split('.').pop()?.toLowerCase()
-                return fileExtension ? allowedExtensions.includes(fileExtension) : false
+                const fileExtension = value.name.split('.').pop().toLowerCase()
+                return allowedExtensions.includes(fileExtension)
               },
             )
             .test('file-validation', 'At least one file is required', (value) => {
               const isFile = value instanceof File
-              if (
-                isEdit &&
-                !isFile &&
-                typeof value === 'string' &&
-                value.length > 0 &&
-                value.trim()
-              ) {
+              if (isEdit && !isFile && value?.trim()) {
                 return true
               }
               if (isFile) {
@@ -152,10 +175,8 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
                   'mov',
                   'webm',
                 ]
-                const fileExtension = value.name?.split('.')?.pop()?.toLowerCase()
-                const fileTypeValid = fileExtension
-                  ? allowedExtensions.includes(fileExtension)
-                  : false
+                const fileExtension = value.name.split('.').pop().toLowerCase()
+                const fileTypeValid = allowedExtensions.includes(fileExtension)
                 return fileSizeValid && fileTypeValid
               }
               return false
@@ -262,18 +283,7 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
 
   const form = useForm({
     resolver: yupResolver(validationSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      category: [],
-      scheduleType: 'daily',
-      isPaid: false,
-      price: 0,
-      startTime: null,
-      endTime: null,
-      resources: [],
-      ...defaultValues,
-    },
+    defaultValues,
   })
 
   const { watch, control, handleSubmit } = form
@@ -300,19 +310,15 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
     const formData = new FormData()
 
     if (isEdit) {
-      const remoteSavedFile = savedDetails?.resources
+      const remoteSavedFile = savedDetails.resources
       if (remoteSavedFile?.length) {
-        const currentResources =
-          payload.resources
-            ?.map(({ file }) => (file instanceof File ? null : file))
-            .filter(Boolean) || []
+        const currentResources = payload.resources
+          .map(({ file }) => (file instanceof File ? null : file))
+          .filter(Boolean)
 
         const currentSet = new Set(currentResources)
 
-        const removed = remoteSavedFile.filter((item) => {
-          const fileName = typeof item.file === 'string' ? item.file : item.file.name
-          return !currentSet.has(fileName)
-        })
+        const removed = remoteSavedFile.filter((fileName) => !currentSet.has(fileName))
 
         if (removed.length) {
           payload.removeResources = removed
@@ -330,7 +336,7 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
     if (!payload.isPaid) {
       delete payload.price
     }
-    if (webinarData._id && typeof webinarData._id === 'string') {
+    if (webinarData._id) {
       formData.append('webinarId', webinarData._id)
     }
 
@@ -342,7 +348,7 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
           formData.append('image', value)
         }
       } else if (key === 'resources') {
-        value?.forEach((res) => {
+        value.forEach((res) => {
           if (res.file instanceof File) {
             formData.append('resources', res.file)
           }
@@ -354,17 +360,17 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
       } else if (key === 'startDate') {
         formData.append(key, convDateToUtc(value, payload.startTime))
       } else if (key === 'days') {
-        const updatedDays = value?.map((day) => ({
+        const updatedDays = value.map((day) => ({
           ...day,
           startTime: day.startTime ? convHMtoUtc(day.startTime) : null,
           endTime: day.endTime ? convHMtoUtc(day.endTime) : null,
         }))
         formData.append(key, JSON.stringify(updatedDays))
         formData.append('timezone', getLocalTimezone())
-      } else if (typeof value === 'object' && value !== null) {
+      } else if (typeof value === 'object') {
         formData.append(key, JSON.stringify(value))
-      } else if (value !== null && value !== undefined) {
-        formData.append(key, String(value))
+      } else {
+        formData.append(key, value)
       }
     })
 
@@ -375,7 +381,7 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
         if (isEdit) {
           setPreviewMode(true)
         } else {
-          void navigate('/educator/webinars')
+          navigate('/educator/webinars')
         }
       }
     } catch {
@@ -384,16 +390,7 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
   }
 
   const renderForm = () => (
-    <Box
-      sx={{
-        '& .MuiButton-root': {
-          ':hover': {
-            background: (theme) => theme.palette.common.white,
-            color: (theme) => theme.palette.text.primary,
-          },
-        },
-      }}
-    >
+    <Box>
       <Grid container spacing={1}>
         <Grid size={{ xs: 12 }}>
           <FormControl fullWidth>
@@ -453,23 +450,11 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
             />
           </FormControl>
         </Grid>
-        <Grid
-          size={{ xs: 12 }}
-          sx={{
-            '& .MuiChip-root': {
-              border: '1px solid',
-            },
-          }}
-        >
+        <Grid size={{ xs: 12 }}>
           <AddCategory />
         </Grid>
 
-        <WebinarSchedule
-          isEdit={isEdit}
-          scheduleType={scheduleType}
-          setScheduleType={setScheduleType}
-          defaultValues={defaultValues}
-        />
+        <WebinarSchedule />
         <WebinarMetaData />
         <Grid size={{ xs: 12 }}>
           <FormControl fullWidth>
@@ -483,18 +468,12 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
                 defaultValue={false}
                 rules={{ required: 'Pricing Type" is required' }}
                 render={({ field: { onChange, value } }) => (
-                  <ButtonGroup
-                    sx={{
-                      '& .MuiButton-root:not(:last-child)': {
-                        borderRight: 'none',
-                      },
-                    }}
-                  >
+                  <ButtonGroup>
                     <Button
                       variant="outlined"
                       sx={{
                         backgroundColor: !value ? 'primary.main' : 'transparent',
-                        color: !value ? 'white' : 'text.secondary',
+                        color: !value ? 'common.white' : 'text.secondary',
                         borderColor: (theme) => theme.palette.grey[300],
                         '&:hover': {
                           backgroundColor: !value ? 'primary.dark' : 'action.hover',
@@ -506,9 +485,10 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
                     </Button>
                     <Button
                       variant="outlined"
+                      startIcon={<DollarSign size={16} />}
                       sx={{
                         backgroundColor: value ? 'primary.main' : 'transparent',
-                        color: value ? 'white' : 'text.secondary',
+                        color: value ? 'common.white' : 'text.secondary',
                         borderColor: (theme) => theme.palette.grey[300],
                         '&:hover': {
                           backgroundColor: value ? 'primary.dark' : 'action.hover',
@@ -569,8 +549,16 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
   }, [form.formState.isDirty, dispatch])
 
   return (
-    <FormProvider {...form}>
-      {!isPreview && (
+    <FormProvider
+      {...form}
+      isEdit={isEdit}
+      categories={categories}
+      scheduleType={scheduleType}
+      defaultValues={defaultValues}
+      setCategories={setCategories}
+      setScheduleType={setScheduleType}
+    >
+      {!isPreview && !previewMode && (
         <Box sx={{ mb: 3 }}>
           <Typography
             variant="h4"
@@ -587,36 +575,18 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
         </Box>
       )}
       <Box
+        sx={
+          !previewMode
+            ? {
+                backgroundColor: 'background.light',
+                borderRadius: '12px',
+                border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+                p: 3,
+              }
+            : {}
+        }
         component="form"
-        onSubmit={(e) => {
-          void handleSubmit((data) => {
-            const formData = {
-              ...data,
-              title: data.title || '',
-              description: data.description || '',
-              scheduleType: data.scheduleType || '',
-              category: data.category || [],
-              isPaid: data.isPaid ?? false,
-              image: data.image,
-              resources:
-                data.resources?.map((resource) => ({
-                  file: resource.file,
-                })) || [],
-              days: data.days?.map((day) => ({
-                ...day,
-                startTime: day.startTime ?? undefined,
-                endTime: day.endTime ?? undefined,
-              })),
-            }
-            void onSubmit(formData)
-          }, onError)(e)
-        }}
-        sx={{
-          backgroundColor: 'background.light',
-          borderRadius: '12px',
-          border: (theme) => `1px solid ${theme.palette.grey[200]}`,
-          p: 3,
-        }}
+        onSubmit={handleSubmit(onSubmit, onError)}
       >
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           {renderStepContent()}
@@ -633,8 +603,10 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
               }}
             >
               <Button
-                variant="outlined"
+                variant="contained"
+                color="secondary"
                 disabled={isLoading}
+                startIcon={previewMode ? <ArrowLeft size={16} /> : <LayoutDashboard size={16} />}
                 onClick={() => {
                   if (previewMode) {
                     setPreviewMode(false)
@@ -652,8 +624,17 @@ const CreateWebinar = ({ isEdit, isPreview, isPublished, savedDetails, defaultVa
                     type="submit"
                     variant="contained"
                     disabled={isLoading}
-                    startIcon={isLoading && <CircularProgress size={20} />}
-                    sx={{ textTransform: 'none' }}
+                    startIcon={
+                      isLoading ? (
+                        <CircularProgress size={20} />
+                      ) : !previewMode ? (
+                        <ArrowRight size={16} />
+                      ) : isEdit ? (
+                        <Save size={16} />
+                      ) : (
+                        <Send size={16} />
+                      )
+                    }
                   >
                     {isLoading
                       ? iff(Boolean(isEdit), 'Submitting...', 'Publishing...')
@@ -680,5 +661,4 @@ CreateWebinar.propTypes = {
     scheduleType: PropTypes.string,
   }),
 }
-
 export default CreateWebinar
