@@ -28,7 +28,7 @@ const WaitingRoom = ({ handleInit }) => {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
-        minHeight: '100vh',
+        minHeight: 'calc(100vh - 300px)',
       }}
     >
       <Box

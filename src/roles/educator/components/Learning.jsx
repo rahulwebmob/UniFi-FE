@@ -1,5 +1,5 @@
-import { Person } from '@mui/icons-material'
 import { Box, Avatar, Typography } from '@mui/material'
+import { User } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
@@ -34,10 +34,14 @@ const Learning = ({
       <Avatar
         alt="Host"
         sx={{
-          background: (theme) => theme.palette.primary.light100,
+          width: 80,
+          height: 80,
+          background: 'linear-gradient(135deg, #2a2a32 0%, #3a3a45 100%)',
+          border: '2px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
         }}
       >
-        <Person />
+        <User size={40} style={{ color: '#e0e0e0' }} />
       </Avatar>
     </Box>
   )
@@ -96,12 +100,23 @@ const Learning = ({
 
     return (
       <CarouselItem>
-        <Box sx={styles.container}>
+        <Box
+          sx={{
+            ...styles.container,
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
+          }}
+        >
           <Box sx={styles.videoContainer}>
             <WebinarMedia stream={stream} isMirror={isHost && isLocalScreenOn} />
           </Box>
         </Box>
-        <Typography variant="body1" sx={styles.label}>
+        <Typography
+          variant="body2"
+          sx={{
+            ...styles.label,
+            fontSize: '12px',
+          }}
+        >
           {label}
         </Typography>
       </CarouselItem>
@@ -109,13 +124,14 @@ const Learning = ({
   }
 
   return (
-    <Box p={1}>
+    <Box p={2} sx={{ background: 'transparent' }}>
       <Box
         sx={{
           gap: 2,
           display: 'flex',
           alignItems: 'center',
           justifyContent: isSecondaryScreen ? 'space-between' : 'center',
+          marginBottom: 2,
         }}
       >
         {renderSecondaryScreen()}
@@ -124,7 +140,12 @@ const Learning = ({
 
       <VideoPlaceholder
         isFullscreen={isFullscreen}
-        sx={{ height: streamHeight, position: 'relative' }}
+        sx={{
+          height: streamHeight,
+          position: 'relative',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.6)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
       >
         <LiveBadge />
         <Box sx={styles.container}>
@@ -134,7 +155,16 @@ const Learning = ({
             )}
 
             {renderMainScreen()}
-            <Typography variant="p" sx={styles.label}>
+            <Typography
+              variant="body2"
+              sx={{
+                ...styles.label,
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  background: 'rgba(0, 0, 0, 0.9)',
+                },
+              }}
+            >
               {displayName}
             </Typography>
           </Box>

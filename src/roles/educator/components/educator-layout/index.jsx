@@ -24,7 +24,6 @@ const EducatorLayout = () => {
         backgroundColor: theme.palette.grey[50],
       }}
     >
-      {/* Header */}
       {!isFullscreen && <Header />}
 
       {/* Main Content */}

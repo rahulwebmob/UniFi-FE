@@ -42,6 +42,14 @@ const SignUp = ({ setIsLoginPage }) => {
         .required('Please enter email')
         .email('Invalid email')
         .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email'),
+      phoneNumber: yup
+        .string()
+        .trim()
+        .required('Please enter phone number')
+        .matches(
+          /^[+]?[(]?[0-9]{1,3}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,9}$/,
+          'Please enter a valid phone number',
+        ),
       password: yup
         .string()
         .trim()
@@ -70,6 +78,7 @@ const SignUp = ({ setIsLoginPage }) => {
       firstName: '',
       lastName: '',
       email: '',
+      phoneNumber: '',
       password: '',
       confirmPassword: '',
     },
@@ -141,25 +150,47 @@ const SignUp = ({ setIsLoginPage }) => {
             />
           </Grid>
         </Grid>
-        <Grid mb={1.5}>
-          <Typography variant="body2" sx={{ mb: 0.5 }}>
-            Email
-          </Typography>
-          <Controller
-            name="email"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                placeholder="Enter your email"
-                variant="outlined"
-                fullWidth
-                {...field}
-                error={!!errors.email}
-                helperText={errors.email?.message}
-              />
-            )}
-          />
+        <Grid container spacing={1.5} mb={1.5}>
+          <Grid size={6}>
+            <Typography variant="body2" sx={{ mb: 0.5 }}>
+              Email
+            </Typography>
+            <Controller
+              name="email"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  placeholder="Enter your email"
+                  variant="outlined"
+                  fullWidth
+                  {...field}
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                />
+              )}
+            />
+          </Grid>
+          <Grid size={6}>
+            <Typography variant="body2" sx={{ mb: 0.5 }}>
+              Phone Number
+            </Typography>
+            <Controller
+              name="phoneNumber"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  placeholder="Enter your phone number"
+                  variant="outlined"
+                  fullWidth
+                  {...field}
+                  error={!!errors.phoneNumber}
+                  helperText={errors.phoneNumber?.message}
+                />
+              )}
+            />
+          </Grid>
         </Grid>
         <Grid mb={1.5}>
           <Typography variant="body2" sx={{ mb: 0.5 }}>

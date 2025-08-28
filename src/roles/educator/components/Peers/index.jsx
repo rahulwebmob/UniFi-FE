@@ -8,16 +8,42 @@ import { styles, CarouselItem } from '../styles'
 
 const PeerCarouselItem = ({ label }) => (
   <CarouselItem>
-    <Box sx={{ ...styles.container }}>
-      <Box sx={styles.videoContainer}>
+    <Box
+      sx={{
+        ...styles.container,
+        position: 'relative',
+        padding: '8px',
+      }}
+    >
+      <Box
+        sx={{
+          ...styles.videoContainer,
+          padding: '12px',
+        }}
+      >
         <Box sx={styles.wrapper}>
-          <Avatar alt={label} sx={{ background: (theme) => theme.palette.primary[100] }}>
-            <User size={20} />
+          <Avatar
+            alt={label}
+            sx={{
+              width: 48,
+              height: 48,
+              background: 'linear-gradient(135deg, #2a2a32 0%, #3a3a45 100%)',
+              border: '2px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)',
+            }}
+          >
+            <User size={20} style={{ color: '#e0e0e0' }} />
           </Avatar>
         </Box>
       </Box>
     </Box>
-    <Typography variant="body1" sx={styles.label}>
+    <Typography
+      variant="body1"
+      sx={{
+        ...styles.label,
+        fontSize: '0.6rem',
+      }}
+    >
       {label}
     </Typography>
   </CarouselItem>

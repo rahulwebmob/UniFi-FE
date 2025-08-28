@@ -1,4 +1,4 @@
-import { Box, Button, Drawer } from '@mui/material'
+import { Box, Drawer, Typography, TextField, IconButton, Button } from '@mui/material'
 import {
   Mic,
   Hand,
@@ -11,6 +11,8 @@ import {
   Maximize,
   Paperclip,
   MessageCircle,
+  PhoneOff,
+  Send,
 } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useRef, useState } from 'react'
@@ -42,6 +44,7 @@ const Toolbar = ({
   const navigate = useNavigate()
   const intervalRef = useRef(null)
   const whiteBoardRef = useRef(null)
+  const confirmModalRef = useRef(null)
 
   const { isLoading } = useSelector((state) => state.education)
   const { isFullscreen } = useSelector((state) => state.app)
@@ -70,6 +73,11 @@ const Toolbar = ({
   const handleToggleFullscreen = () => (isFullscreen ? handleExitFullScreen() : handleFullScreen())
 
   const handleLeaveCall = () => {
+    confirmModalRef.current?.openModal()
+  }
+
+  const handleConfirmLeave = () => {
+    confirmModalRef.current?.closeModal()
     if (isHost) {
       handleEndWebinar()
     }
@@ -87,9 +95,6 @@ const Toolbar = ({
 
   const handleOpenWhiteBoard = () => {
     whiteBoardRef.current?.openModal()
-    if (!mediaStatus.isScreen && !isAndroidOrIphone()) {
-      handleTurnedScreenShare()
-    }
   }
 
   const handleOpenDrawer = (content) => {
@@ -108,7 +113,7 @@ const Toolbar = ({
               isActive={mediaStatus.isAudio}
               isRecording={isRecording}
               label={mediaStatus.isAudio ? 'Mute' : 'Unmute'}
-              icon={mediaStatus.isAudio ? <Mic size={18} /> : <MicOff size={18} />}
+              icon={mediaStatus.isAudio ? <Mic size={20} /> : <MicOff size={20} />}
             />
             <ControlIcon
               disabled={isLoading}
@@ -116,7 +121,7 @@ const Toolbar = ({
               isActive={mediaStatus.isVideo}
               isRecording={isRecording}
               label={mediaStatus.isVideo ? 'Stop Video' : 'Start Video'}
-              icon={mediaStatus.isVideo ? <Video size={18} /> : <VideoOff size={18} />}
+              icon={mediaStatus.isVideo ? <Video size={20} /> : <VideoOff size={20} />}
             />
           </>
         )}
@@ -141,7 +146,7 @@ const Toolbar = ({
         <MuiCarousel>
           <ControlIcon
             disabled={isLoading}
-            icon={<MessageCircle size={18} />}
+            icon={<MessageCircle size={20} />}
             onClick={() => handleOpenDrawer('chat')}
             isActive={activeDrawerContent === 'chat' && isDrawerOpen}
             isRecording={isRecording}
@@ -149,7 +154,7 @@ const Toolbar = ({
           />
           <ControlIcon
             disabled={isLoading}
-            icon={<Paperclip size={18} />}
+            icon={<Paperclip size={20} />}
             label="Attachments"
             onClick={() => handleOpenDrawer('attachments')}
             isActive={activeDrawerContent === 'attachments' && isDrawerOpen}
@@ -158,7 +163,7 @@ const Toolbar = ({
           {!isHost && (
             <ControlIcon
               label="Raise Hand"
-              icon={<Hand size={18} />}
+              icon={<Hand size={20} />}
               onClick={handleDebounceRaiseHand}
               disabled={isLoading || isHandRaisedDisabled}
               isRecording={isRecording}
@@ -167,7 +172,7 @@ const Toolbar = ({
           {isHost && !isAndroidOrIphone() && (
             <ControlIcon
               disabled={isLoading}
-              icon={<ArrowUp size={18} />}
+              icon={<ArrowUp size={20} />}
               isActive={mediaStatus.isScreen}
               onClick={handleTurnedScreenShare}
               isRecording={isRecording}
@@ -176,7 +181,7 @@ const Toolbar = ({
           )}
           {isHost && (
             <ControlIcon
-              icon={<PenTool size={18} />}
+              icon={<PenTool size={20} />}
               disabled={isLoading}
               onClick={handleOpenWhiteBoard}
               isRecording={isRecording}
@@ -186,7 +191,7 @@ const Toolbar = ({
           <ControlIcon
             disabled={isLoading}
             isActive={isFullscreen}
-            icon={<Maximize size={18} />}
+            icon={<Maximize size={20} />}
             onClick={handleToggleFullscreen}
             isRecording={isRecording}
             label={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
@@ -195,7 +200,58 @@ const Toolbar = ({
             <ControlIcon
               disabled={isLoading}
               isActive={isRecording}
-              icon={<Circle size={18} />}
+              icon={
+                isRecording ? (
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '20px',
+                      height: '20px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Circle
+                      size={20}
+                      style={{
+                        stroke: '#ff4444',
+                        fill: 'none',
+                        strokeWidth: 2,
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        backgroundColor: '#ff4444',
+                        animation: 'pulse 1.5s infinite',
+                        '@keyframes pulse': {
+                          '0%': {
+                            scale: 0.9,
+                            opacity: 1,
+                          },
+                          '50%': {
+                            scale: 1.2,
+                            opacity: 0.7,
+                          },
+                          '100%': {
+                            scale: 0.9,
+                            opacity: 1,
+                          },
+                        },
+                      }}
+                    />
+                  </Box>
+                ) : (
+                  <Circle size={20} />
+                )
+              }
               onClick={() => {
                 void handleToggleRecording()
               }}
@@ -206,18 +262,43 @@ const Toolbar = ({
         </MuiCarousel>
       </Box>
 
-      <Button
-        size="medium"
-        color="error"
-        variant="contained"
-        onClick={handleLeaveCall}
-        sx={{ borderRadius: '8px' }}
-        disabled={isLoading}
+      <Box
+        sx={{
+          '& svg': {
+            stroke: '#ff4444 !important',
+          },
+          '&:hover svg': {
+            stroke: '#ff6b6b !important',
+          },
+          '& .MuiTypography-root': {
+            color: '#ff4444 !important',
+          },
+          '&:hover .MuiTypography-root': {
+            color: '#ff6b6b !important',
+          },
+        }}
       >
-        {isHost ? 'End Call' : 'Leave Call'}
-      </Button>
+        <ControlIcon
+          icon={<PhoneOff size={20} />}
+          label={isHost ? 'End Call' : 'Leave Call'}
+          onClick={handleLeaveCall}
+          disabled={isLoading}
+          isRecording={false}
+        />
+      </Box>
 
-      <Drawer anchor="right" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+      <Drawer
+        anchor="right"
+        open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        sx={{
+          '& .MuiDrawer-paper': {
+            background: '#ffffff',
+            borderLeft: '1px solid rgba(0, 0, 0, 0.12)',
+            boxShadow: '-4px 0 15px rgba(0, 0, 0, 0.1)',
+          },
+        }}
+      >
         <Box
           sx={{
             width: 400,
@@ -227,8 +308,75 @@ const Toolbar = ({
           }}
         >
           {activeDrawerContent === 'chat' && (
-            <Box p={2}>
-              <div>Chat feature temporarily disabled</div>
+            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+              {/* Chat Header */}
+              <Box sx={{ p: 2, borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: 'text.primary',
+                    fontWeight: 600,
+                  }}
+                >
+                  Chat
+                </Typography>
+              </Box>
+
+              {/* Chat Messages Area */}
+              <Box sx={{ flex: 1, p: 2, overflowY: 'auto', backgroundColor: '#f9f9f9' }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    color: 'text.secondary',
+                  }}
+                >
+                  <Typography variant="body2">No messages yet. Start a conversation!</Typography>
+                </Box>
+              </Box>
+
+              {/* Chat Input */}
+              <Box
+                sx={{
+                  p: 2,
+                  borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+                  backgroundColor: '#ffffff',
+                }}
+              >
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-end' }}>
+                  <TextField
+                    fullWidth
+                    multiline
+                    maxRows={3}
+                    placeholder="Type your message here..."
+                    variant="outlined"
+                    size="small"
+                    disabled
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: '#f5f5f5',
+                        '& fieldset': {
+                          borderColor: 'rgba(0, 0, 0, 0.12)',
+                        },
+                      },
+                    }}
+                  />
+                  <IconButton
+                    disabled
+                    sx={{
+                      color: 'primary.main',
+                      backgroundColor: '#f5f5f5',
+                      '&:hover': {
+                        backgroundColor: '#e0e0e0',
+                      },
+                    }}
+                  >
+                    <Send size={20} />
+                  </IconButton>
+                </Box>
+              </Box>
             </Box>
           )}
           {activeDrawerContent === 'attachments' && (
@@ -238,6 +386,33 @@ const Toolbar = ({
       </Drawer>
       <ModalBox size="xl" ref={whiteBoardRef}>
         <WhiteBoard />
+      </ModalBox>
+      <ModalBox size="sm" ref={confirmModalRef}>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+          {isHost ? 'End Webinar?' : 'Leave Webinar?'}
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 3, color: 'text.secondary' }}>
+          {isHost
+            ? 'Are you sure you want to end this webinar? This will disconnect all participants.'
+            : 'Are you sure you want to leave this webinar?'}
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+          <Button
+            variant="outlined"
+            onClick={() => confirmModalRef.current?.closeModal()}
+            sx={{ minWidth: 100 }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleConfirmLeave}
+            sx={{ minWidth: 100 }}
+          >
+            {isHost ? 'End' : 'Leave'}
+          </Button>
+        </Box>
       </ModalBox>
     </ControlsContainer>
   )
