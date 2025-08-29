@@ -8,7 +8,13 @@ import MuiCarousel from '../../../../../shared/components/ui-elements/mui-carous
 import ContentSkeleton from '../../user-content/content-skeleton'
 import CourseCard from '../course-card'
 
-const CourseList = ({ page, searchTerm, isPurchased, selectedCategory, setIsLoadMore }) => {
+const CourseList = ({
+  page,
+  searchTerm = '',
+  isPurchased = false,
+  selectedCategory = '',
+  setIsLoadMore = null,
+}) => {
   const [list, setList] = useState([])
   const [count, setCount] = useState(0)
   const [hasInitialized, setHasInitialized] = useState(false)
@@ -130,13 +136,6 @@ CourseList.propTypes = {
   isPurchased: PropTypes.bool,
   selectedCategory: PropTypes.string,
   setIsLoadMore: PropTypes.func,
-}
-
-CourseList.defaultProps = {
-  searchTerm: '',
-  isPurchased: false,
-  selectedCategory: '',
-  setIsLoadMore: null,
 }
 
 export default CourseList

@@ -20,7 +20,7 @@ import { WebinarContainer } from './styles'
 import Toolbar from './Toolbar'
 import WaitingRoom from './waiting-room'
 
-const WebinarWrapper = ({ isHost }) => {
+const WebinarWrapper = ({ isHost = false }) => {
   const { roomId } = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -531,6 +531,5 @@ const WebinarWrapper = ({ isHost }) => {
 }
 
 WebinarWrapper.propTypes = { isHost: PropTypes.bool }
-WebinarWrapper.defaultProps = { isHost: false }
 
 export default WebinarWrapper

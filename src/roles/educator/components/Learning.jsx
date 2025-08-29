@@ -11,7 +11,7 @@ import { CarouselItem, VideoPlaceholder, styles } from './styles'
 import WebinarMedia from './webinar-media'
 
 const Learning = ({
-  isHost,
+  isHost = false,
   mediaStatus,
   usersInRoom,
   remoteStream,
@@ -181,10 +181,6 @@ Learning.propTypes = {
   remoteStream: PropTypes.oneOfType([PropTypes.object]).isRequired,
   localVideoStream: PropTypes.oneOfType([PropTypes.object]).isRequired,
   localScreenStream: PropTypes.oneOfType([PropTypes.object]).isRequired,
-}
-
-Learning.defaultProps = {
-  isHost: false,
 }
 
 export default Learning

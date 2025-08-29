@@ -177,8 +177,4 @@ AuthWrapper.propTypes = {
   children: PropTypes.node,
 }
 
-AuthWrapper.defaultProps = {
-  type: '',
-}
-
 export default AuthWrapper

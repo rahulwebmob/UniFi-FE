@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 import CategoryList from '../../user-content/category-list'
 
-const CourseCard = ({ course, isPurchased }) => {
+const CourseCard = ({ course, isPurchased = false }) => {
   const theme = useTheme()
   const navigate = useNavigate()
 
@@ -334,10 +334,6 @@ CourseCard.propTypes = {
     }),
   }).isRequired,
   isPurchased: PropTypes.bool,
-}
-
-CourseCard.defaultProps = {
-  isPurchased: false,
 }
 
 export default CourseCard

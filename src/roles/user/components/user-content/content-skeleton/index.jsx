@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import MuiCarousel from '../../../../../shared/components/ui-elements/mui-carousel'
 
-const ContentSkeleton = ({ isPurchased }) => {
+const ContentSkeleton = ({ isPurchased = false }) => {
   if (isPurchased) {
     return (
       <MuiCarousel>
@@ -139,10 +139,6 @@ const ContentSkeleton = ({ isPurchased }) => {
 
 ContentSkeleton.propTypes = {
   isPurchased: PropTypes.bool,
-}
-
-ContentSkeleton.defaultProps = {
-  isPurchased: false,
 }
 
 export default ContentSkeleton

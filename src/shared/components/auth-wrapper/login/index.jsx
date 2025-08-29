@@ -311,8 +311,4 @@ Login.propTypes = {
   setIsLoginPage: PropTypes.func.isRequired,
 }
 
-Login.defaultProps = {
-  type: '',
-}
-
 export default Login

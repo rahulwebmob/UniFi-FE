@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import LiveBadge from '../../../../../shared/components/live-badge'
 import CategoryList from '../../user-content/category-list'
 
-const WebinarCard = ({ webinar, isPurchased }) => {
+const WebinarCard = ({ webinar, isPurchased = false }) => {
   const navigate = useNavigate()
 
   const handleCardClick = () => {
@@ -445,10 +445,6 @@ WebinarCard.propTypes = {
     }),
   }).isRequired,
   isPurchased: PropTypes.bool,
-}
-
-WebinarCard.defaultProps = {
-  isPurchased: false,
 }
 
 export default WebinarCard

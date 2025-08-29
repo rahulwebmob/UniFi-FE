@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom'
 import LiveBadge from '../../../../../shared/components/live-badge'
 import { getEducatorDetails } from '../../common/common'
 
-const WebinarContent = ({ webinarData, isEdit, handlePurchase }) => {
+const WebinarContent = ({ webinarData, isEdit = true, handlePurchase = () => {} }) => {
   const theme = useTheme()
   const navigate = useNavigate()
 
@@ -292,9 +292,4 @@ WebinarContent.propTypes = {
   isEdit: PropTypes.bool,
   handlePurchase: PropTypes.func,
   webinarData: PropTypes.oneOfType([PropTypes.object]).isRequired,
-}
-
-WebinarContent.defaultProps = {
-  isEdit: true,
-  handlePurchase: () => {},
 }

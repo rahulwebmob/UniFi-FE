@@ -11,7 +11,7 @@ import {
 } from '../../../../services/admin'
 import { useAdminForgetPasswordMutation } from '../../../../services/onboarding'
 
-const ForgetPassword = ({ type, setShowForgetPassword }) => {
+const ForgetPassword = ({ type = '', setShowForgetPassword }) => {
   const [updateForgetPassword] = useForgetPasswordMutation()
   const [adminForgetPassword] = useAdminForgetPasswordMutation()
   const [educatorForgetPassword] = useEducatorForgetPasswordMutation()
@@ -108,10 +108,6 @@ const ForgetPassword = ({ type, setShowForgetPassword }) => {
 ForgetPassword.propTypes = {
   type: PropTypes.string,
   setShowForgetPassword: PropTypes.func.isRequired,
-}
-
-ForgetPassword.defaultProps = {
-  type: '',
 }
 
 export default ForgetPassword

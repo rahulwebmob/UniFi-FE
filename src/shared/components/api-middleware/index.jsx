@@ -4,7 +4,14 @@ import Loading from '../loading'
 import LoadingIssue from '../loading-error'
 import NoDataFound from '../no-data-found'
 
-const ApiMiddleware = ({ children, error, isData, isLoading, text, description }) => {
+const ApiMiddleware = ({
+  children,
+  error = null,
+  isData,
+  isLoading,
+  text = undefined,
+  description = undefined,
+}) => {
   if (isLoading) {
     return <Loading />
   }
@@ -30,12 +37,6 @@ ApiMiddleware.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   text: PropTypes.string,
   description: PropTypes.string,
-}
-
-ApiMiddleware.defaultProps = {
-  error: null,
-  text: undefined,
-  description: undefined,
 }
 
 export default ApiMiddleware

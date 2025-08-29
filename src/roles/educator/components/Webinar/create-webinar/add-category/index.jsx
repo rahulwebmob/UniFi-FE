@@ -1,13 +1,4 @@
-import {
-  Box,
-  Chip,
-  Button,
-  useTheme,
-  TextField,
-  Typography,
-  FormControl,
-  Autocomplete,
-} from '@mui/material'
+import { Box, Chip, Button, TextField, Typography, FormControl, Autocomplete } from '@mui/material'
 import { Plus } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
@@ -16,7 +7,6 @@ import { useGetCategoryListQuery } from '../../../../../../services/admin'
 import ModalBox from '../../../../../../shared/components/ui-elements/modal-box'
 
 const AddCategory = () => {
-  const theme = useTheme()
   const {
     control,
     categories,
@@ -33,7 +23,8 @@ const AddCategory = () => {
     if (data?.data?.length && !isLoading) {
       setCategories((prev) => [...new Set([...data.data.slice(0, 5), ...prev])])
     }
-  }, [data, isLoading, setCategories])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
 
   const handleAddCategory = (newCategory) => {
     setCategories((prev) => [...prev, newCategory])
@@ -62,26 +53,11 @@ const AddCategory = () => {
                   size="small"
                   variant={value?.includes(name) ? 'filled' : 'outlined'}
                   onClick={() => {
-                    const currentValue = value || []
-                    if (currentValue.includes(name)) {
-                      onChange(currentValue.filter((v) => v !== name))
+                    if (value?.includes(name)) {
+                      onChange(value.filter((v) => v !== name))
                     } else {
-                      onChange([...currentValue, name])
+                      onChange([...value, name])
                     }
-                  }}
-                  sx={{
-                    backgroundColor: value?.includes(name)
-                      ? theme.palette.primary.main
-                      : 'transparent',
-                    color: value?.includes(name) ? 'white' : theme.palette.text.primary,
-                    borderColor: value?.includes(name)
-                      ? theme.palette.primary.main
-                      : theme.palette.grey[300],
-                    '&:hover': {
-                      backgroundColor: value?.includes(name)
-                        ? theme.palette.primary.dark
-                        : theme.palette.grey[100],
-                    },
                   }}
                 />
               ))}
@@ -96,7 +72,7 @@ const AddCategory = () => {
             </Box>
             {errors?.category && (
               <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
-                {typeof errors.category === 'string' ? errors.category : errors.category.message}
+                {errors.category.message}
               </Typography>
             )}
           </FormControl>

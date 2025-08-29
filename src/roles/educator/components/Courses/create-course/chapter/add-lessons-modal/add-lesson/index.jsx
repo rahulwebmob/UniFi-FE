@@ -35,12 +35,16 @@ import UploadPrompt from '../../../upload-prompt'
 
 const AddLesson = ({
   isEdit,
-  lessonId,
+  lessonId = '',
   courseId,
-  isChapter,
-  chapterId,
-  handleClose,
-  defaultValues,
+  isChapter = false,
+  chapterId = '',
+  handleClose = () => {},
+  defaultValues = {
+    lessonTitle: '',
+    resource: '',
+    isFree: false,
+  },
 }) => {
   const theme = useTheme()
   const dispatch = useDispatch()
@@ -446,18 +450,6 @@ AddLesson.propTypes = {
   defaultValues: PropTypes.oneOfType([PropTypes.object]),
   isChapter: PropTypes.bool,
   handleClose: PropTypes.func,
-}
-
-AddLesson.defaultProps = {
-  defaultValues: {
-    lessonTitle: '',
-    resource: '',
-    isFree: false,
-  },
-  lessonId: '',
-  chapterId: '',
-  isChapter: false,
-  handleClose: () => {},
 }
 
 export default AddLesson

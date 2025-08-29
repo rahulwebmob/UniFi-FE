@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 
 import { styles } from '../styles'
 
-const WebinarMedia = ({ stream, mediaType, isMirror }) => {
+const WebinarMedia = ({ stream = null, mediaType = 'video', isMirror = false }) => {
   const theme = useTheme()
   const audioRef = useRef(null)
   const [audioError, setAudioError] = useState(false)
@@ -93,10 +93,5 @@ WebinarMedia.propTypes = {
   stream: PropTypes.oneOfType([PropTypes.object]),
 }
 
-WebinarMedia.defaultProps = {
-  stream: null,
-  isMirror: false,
-  mediaType: 'video',
-}
 
 export default WebinarMedia

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import NoDataIcon from '../../../assets/svgicons/no-data.svg?react'
 
-const NoDataFound = ({ title, description, isTable = false }) => {
+const NoDataFound = ({ title = undefined, description = undefined, isTable = false }) => {
   const theme = useTheme()
 
   return (
@@ -49,12 +49,6 @@ NoDataFound.propTypes = {
   title: PropTypes.string,
   description: PropTypes.string,
   isTable: PropTypes.bool,
-}
-
-NoDataFound.defaultProps = {
-  title: undefined,
-  description: undefined,
-  isTable: false,
 }
 
 export default NoDataFound

@@ -30,7 +30,7 @@ import BasicDetails from './basic-details'
 import Chapter from './chapter'
 import MetaData from './meta-data'
 
-const StepIcon = ({ active, completed }) => {
+const StepIcon = ({ active = false, completed = false }) => {
   const theme = useTheme()
 
   if (completed) {
@@ -163,7 +163,23 @@ const stepsConfig = () => [
   },
 ]
 
-const CreateCourse = ({ isEdit, courseId, isPreview, isPublished, currentStep, defaultValues }) => {
+const CreateCourse = ({
+  isEdit = false,
+  courseId = '',
+  isPreview = false,
+  isPublished = false,
+  currentStep = 0,
+  defaultValues = {
+    title: '',
+    image: '',
+    video: '',
+    price: null,
+    subtitle: '',
+    isPaid: true,
+    category: [],
+    description: '',
+  },
+}) => {
   const theme = useTheme()
   const navigate = useNavigate()
   const [isDraft, setIsDraft] = useState(false)
@@ -642,30 +658,7 @@ CreateCourse.propTypes = {
   defaultValues: PropTypes.oneOfType([PropTypes.object]),
 }
 
-CreateCourse.defaultProps = {
-  isEdit: false,
-  courseId: '',
-  currentStep: 0,
-  isPreview: false,
-  isPublished: false,
-  defaultValues: {
-    title: '',
-    image: '',
-    video: '',
-    price: null,
-    subtitle: '',
-    isPaid: true,
-    category: [],
-    description: '',
-  },
-}
-
 StepIcon.propTypes = {
   active: PropTypes.bool,
   completed: PropTypes.bool,
-}
-
-StepIcon.defaultProps = {
-  active: false,
-  completed: false,
 }

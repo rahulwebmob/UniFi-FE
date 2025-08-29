@@ -7,7 +7,7 @@ import ApiMiddleware from '../../../../../shared/components/api-middleware'
 import { extractFilename } from '../../common/common'
 import CreateCourse from '../create-course'
 
-const EditCourse = ({ currentStep }) => {
+const EditCourse = ({ currentStep = 0 }) => {
   const location = useLocation()
   const { courseId, isPreview } = location?.state || {}
 
@@ -46,8 +46,5 @@ EditCourse.propTypes = {
   currentStep: PropTypes.number,
 }
 
-EditCourse.defaultProps = {
-  currentStep: 0,
-}
 
 export default EditCourse

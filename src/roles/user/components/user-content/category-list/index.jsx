@@ -2,7 +2,12 @@ import { Box, Tooltip, alpha } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useEffect, useRef, useState } from 'react'
 
-const CategoryList = ({ chips, containerWidth, isPurchased, maxVisible = 2 }) => {
+const CategoryList = ({
+  chips,
+  containerWidth = undefined,
+  isPurchased = false,
+  maxVisible = 2,
+}) => {
   const [visibleCount, setVisibleCount] = useState(maxVisible)
   const containerRef = useRef(null)
   const chipsRef = useRef([])
@@ -149,12 +154,6 @@ CategoryList.propTypes = {
   containerWidth: PropTypes.number,
   isPurchased: PropTypes.bool,
   maxVisible: PropTypes.number,
-}
-
-CategoryList.defaultProps = {
-  containerWidth: undefined,
-  isPurchased: false,
-  maxVisible: 2,
 }
 
 export default CategoryList

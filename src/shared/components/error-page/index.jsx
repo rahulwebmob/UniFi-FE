@@ -11,7 +11,7 @@ const ResetPasswordBox = styled(Box)({
   padding: '20px',
 })
 
-const ErrorPage = ({ module }) => {
+const ErrorPage = ({ module = '' }) => {
   const theme = useTheme()
   const error = useRouteError()
   const navigate = useNavigate()
@@ -51,10 +51,6 @@ const ErrorPage = ({ module }) => {
 
 ErrorPage.propTypes = {
   module: PropTypes.string,
-}
-
-ErrorPage.defaultProps = {
-  module: '',
 }
 
 export default ErrorPage
