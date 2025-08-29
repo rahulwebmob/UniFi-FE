@@ -47,7 +47,7 @@ const SignUp = ({ setIsLoginPage }) => {
         .trim()
         .required('Please enter phone number')
         .matches(
-          /^[+]?[(]?[0-9]{1,3}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,9}$/,
+          /^[+]?[(]?[0-9]{1,3}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,9}$/,
           'Please enter a valid phone number',
         ),
       password: yup
