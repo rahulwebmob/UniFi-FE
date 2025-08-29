@@ -46,5 +46,4 @@ EditCourse.propTypes = {
   currentStep: PropTypes.number,
 }
 
-
 export default EditCourse

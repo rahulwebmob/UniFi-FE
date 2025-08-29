@@ -93,5 +93,4 @@ WebinarMedia.propTypes = {
   stream: PropTypes.oneOfType([PropTypes.object]),
 }
 
-
 export default WebinarMedia
