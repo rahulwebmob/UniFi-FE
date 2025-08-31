@@ -2,17 +2,12 @@ import { Box, Tooltip, alpha } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useEffect, useRef, useState } from 'react'
 
-const CategoryList = ({
-  chips,
-  containerWidth = undefined,
-  isPurchased = false,
-  maxVisible = 2,
-}) => {
+const CategoryList = ({ chips, maxVisible = 2 }) => {
   const [visibleCount, setVisibleCount] = useState(maxVisible)
   const containerRef = useRef(null)
   const chipsRef = useRef([])
 
-  const isOnImage = !isPurchased && containerWidth === undefined
+  const isOnImage = true
 
   useEffect(() => {
     const calculateVisibleChips = () => {
@@ -68,7 +63,7 @@ const CategoryList = ({
     window.addEventListener('resize', handleResize)
 
     return () => window.removeEventListener('resize', handleResize)
-  }, [chips, isOnImage, containerWidth])
+  }, [chips, isOnImage])
 
   const remainingCount = chips.length - visibleCount
 
@@ -109,7 +104,6 @@ const CategoryList = ({
         flexWrap: 'nowrap',
         overflow: 'hidden',
         width: '100%',
-        maxWidth: containerWidth || '100%',
       }}
     >
       {chips.slice(0, visibleCount).map((label, index) => (
@@ -151,8 +145,6 @@ const CategoryList = ({
 
 CategoryList.propTypes = {
   chips: PropTypes.arrayOf(PropTypes.string).isRequired,
-  containerWidth: PropTypes.number,
-  isPurchased: PropTypes.bool,
   maxVisible: PropTypes.number,
 }
 

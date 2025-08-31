@@ -10,28 +10,28 @@ const useFullscreen = () => {
   const handleFullScreen = () => {
     const element = document.documentElement
     if (element.requestFullscreen) {
-      void element
+      element
         .requestFullscreen()
         .then(() => dispatch(enterFullscreen()))
         .catch(() => {
           //
         }) // Handle potential errors silently
     } else if (element.mozRequestFullScreen) {
-      void element
+      element
         .mozRequestFullScreen()
         .then(() => dispatch(enterFullscreen()))
         .catch(() => {
           //
         }) // Handle potential errors silently
     } else if (element.webkitRequestFullscreen) {
-      void element
+      element
         .webkitRequestFullscreen()
         .then(() => dispatch(enterFullscreen()))
         .catch(() => {
           //
         }) // Handle potential errors silently
     } else if (element.msRequestFullscreen) {
-      void element
+      element
         .msRequestFullscreen()
         .then(() => dispatch(enterFullscreen()))
         .catch(() => {
@@ -45,7 +45,7 @@ const useFullscreen = () => {
       return
     }
     if (document.exitFullscreen) {
-      void document
+      document
         .exitFullscreen()
         .then(() => dispatch(exitFullscreen()))
         .catch(() => {
@@ -53,7 +53,7 @@ const useFullscreen = () => {
         })
     } else if (document.mozCancelFullScreen) {
       // Firefox
-      void document
+      document
         .mozCancelFullScreen()
         .then(() => dispatch(exitFullscreen()))
         .catch(() => {
@@ -61,7 +61,7 @@ const useFullscreen = () => {
         })
     } else if (document.webkitExitFullscreen) {
       // Chrome, Safari and Opera
-      void document
+      document
         .webkitExitFullscreen()
         .then(() => dispatch(exitFullscreen()))
         .catch(() => {
@@ -69,7 +69,7 @@ const useFullscreen = () => {
         })
     } else if (document.msExitFullscreen) {
       // IE/Edge
-      void document
+      document
         .msExitFullscreen()
         .then(() => dispatch(exitFullscreen()))
         .catch(() => {

@@ -1,4 +1,4 @@
-import { Box, Card, Button, Avatar, useTheme, Typography, CardContent } from '@mui/material'
+import { Box, Card, Button, Avatar, useTheme, Typography } from '@mui/material'
 import { ArrowRight, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
@@ -10,7 +10,7 @@ const CourseCard = ({ course, isPurchased = false }) => {
   const navigate = useNavigate()
 
   const handleCardClick = () => {
-    void navigate(`/dashboard/course/${course._id}/course-details`)
+    navigate(`/dashboard/course/${course._id}/course-details`)
   }
 
   const categoryArray = course.category
@@ -19,118 +19,14 @@ const CourseCard = ({ course, isPurchased = false }) => {
       : [course.category]
     : []
 
-  if (isPurchased) {
-    return (
-      <Card
-        onClick={handleCardClick}
-        sx={{
-          display: 'flex',
-          borderRadius: 1.5,
-          boxShadow: 1,
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          overflow: 'hidden',
-          height: 150,
-          width: '100%',
-        }}
-      >
-        <Box
-          sx={{
-            width: 180,
-            flexShrink: 0,
-            p: 1.5,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              borderRadius: 1,
-              overflow: 'hidden',
-              backgroundColor: 'grey.100',
-            }}
-          >
-            <Box
-              component="img"
-              src={course.thumbNail ?? '/placeholder-course.jpg'}
-              alt={course.title}
-              sx={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-              }}
-            />
-          </Box>
-        </Box>
-
-        <CardContent
-          sx={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            p: 2,
-            pl: 0,
-            '&:last-child': { pb: 2 },
-          }}
-        >
-          <Typography
-            sx={{
-              fontWeight: 600,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              mb: 1,
-              maxWidth: '200px',
-            }}
-          >
-            {course.title}
-          </Typography>
-
-          {!!categoryArray.length && (
-            <CategoryList chips={categoryArray} isPurchased={isPurchased} maxVisible={3} />
-          )}
-
-          <Box sx={{ flexGrow: 1 }} />
-
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 0.5,
-              color: 'primary.main',
-              '&:hover': {
-                textDecoration: 'underline',
-              },
-            }}
-          >
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: 500,
-                color: 'primary.main',
-              }}
-            >
-              View course
-            </Typography>
-            <ArrowRight size={16} />
-          </Box>
-        </CardContent>
-      </Card>
-    )
-  }
-
   return (
     <Card
       onClick={handleCardClick}
       sx={{
         height: '100%',
         borderRadius: '12px',
-        boxShadow: 'none',
+        boxShadow: (theme) => theme.customShadows.primary,
+
         cursor: 'pointer',
         transition: 'all 0.2s ease-in-out',
         overflow: 'hidden',
@@ -165,7 +61,7 @@ const CourseCard = ({ course, isPurchased = false }) => {
           }}
         />
 
-        {!course.isPaid && (
+        {!course.isPaid && !course.isCourseBought && (
           <Typography
             variant="caption"
             sx={{
@@ -231,7 +127,7 @@ const CourseCard = ({ course, isPurchased = false }) => {
               right: 8,
             }}
           >
-            <CategoryList chips={categoryArray} isPurchased={false} maxVisible={3} />
+            <CategoryList chips={categoryArray} maxVisible={3} />
           </Box>
         )}
       </Box>
@@ -309,7 +205,7 @@ const CourseCard = ({ course, isPurchased = false }) => {
               startIcon={course.isPaid ? <ShoppingCart size={16} /> : null}
               endIcon={course.isPaid ? null : <ArrowRight size={16} />}
             >
-              {course.isPaid ? 'Enroll Now' : 'Start Free Course'}
+              {isPurchased ? 'View Course' : course.isPaid ? 'Enroll Now' : 'Start Free Course'}
             </Button>
           </Box>
         </Box>
@@ -321,6 +217,7 @@ const CourseCard = ({ course, isPurchased = false }) => {
 CourseCard.propTypes = {
   course: PropTypes.shape({
     _id: PropTypes.string.isRequired,
+    isCourseBought: PropTypes.bool,
     title: PropTypes.string.isRequired,
     description: PropTypes.string,
     thumbNail: PropTypes.string,

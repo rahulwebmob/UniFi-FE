@@ -231,7 +231,7 @@ const Courses = () => {
             variant="contained"
             endIcon={<ArrowRight size={16} />}
             onClick={() => {
-              void navigate('/educator/preview-course', {
+              navigate('/educator/preview-course', {
                 state: { courseId: row?.original?._id, isPreview: true },
               })
             }}
@@ -426,7 +426,7 @@ const Courses = () => {
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
         <MenuItem
           onClick={() => {
-            void navigate('/educator/update-course', {
+            navigate('/educator/update-course', {
               state: { courseId: selectedRow?._id, isPreview: false },
             })
             handleCloseMenu()

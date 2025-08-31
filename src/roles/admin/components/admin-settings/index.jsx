@@ -93,7 +93,7 @@ const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
       onCloseModal={onClose}
     >
       <Box>
-        <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
+        <form onSubmit={(e) => handleSubmit(onSubmit)(e)}>
           <Box pb={3}>
             <Typography variant="h6" mb={2.5}>
               Personal Information

@@ -33,6 +33,8 @@ export const adminApi = createApi({
     'Chapters',
     'Lessons',
     'Courses',
+    'Admin',
+    'PlatformUsers',
   ],
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -568,6 +570,105 @@ export const adminApi = createApi({
       invalidatesTags: ['Tutor'],
       onQueryStarted: onMutationStartedDefault,
     }),
+
+    getAdmins: builder.query({
+      query: (params) => ({
+        url: `/admin-api/admin-actions/get-admin-users`,
+        method: 'GET',
+        params: { ...params },
+      }),
+      providesTags: ['Admin'],
+      onQueryStarted: onQueryStartedDefault,
+    }),
+    createAdminUser: builder.mutation({
+      query: (body) => ({
+        url: '/admin-api/auth/create-admin',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Admin'],
+      onQueryStarted: onMutationStartedDefault,
+    }),
+    updateAdminUser: builder.mutation({
+      query: (body) => ({
+        url: '/admin-api/admin-actions/update-admin-details',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Admin'],
+      onQueryStarted: onMutationStartedDefault,
+    }),
+    removeAdminUser: builder.mutation({
+      query: (body) => ({
+        url: '/admin-api/admin-actions/remove-admin',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Admin'],
+      onQueryStarted: onMutationStartedDefault,
+    }),
+    getAdminPrivileges: builder.query({
+      query: (params) => ({
+        url: `/admin-api/admin-actions/get-privileges`,
+        method: 'GET',
+        params,
+      }),
+      onQueryStarted: onQueryStartedDefault,
+    }),
+
+    // Platform User APIs
+    getPlatformUsers: builder.query({
+      query: (params) => ({
+        url: `/user-api/user-actions/get-all-users`,
+        method: 'GET',
+        params,
+      }),
+      onQueryStarted: onQueryStartedDefault,
+      providesTags: ['PlatformUsers'],
+    }),
+    createSuperUser: builder.mutation({
+      query: (body) => ({
+        url: '/admin-api/admin-actions/create-super-user',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['PlatformUsers'],
+      onQueryStarted: onMutationStartedDefault,
+    }),
+    updatePlatformUser: builder.mutation({
+      query: (body) => ({
+        url: '/user-api/user-actions/update-user',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['PlatformUsers'],
+      onQueryStarted: onMutationStartedDefault,
+    }),
+    deletePlatformUser: builder.mutation({
+      query: (body) => ({
+        url: '/user-api/user-actions/delete-user',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['PlatformUsers'],
+      onQueryStarted: onMutationStartedDefault,
+    }),
+    getSubscriptionPlans: builder.query({
+      query: () => ({
+        url: `/admin-api/admin-actions/get-subscription-plans`,
+        method: 'GET',
+      }),
+      onQueryStarted: onQueryStartedDefault,
+    }),
+    accessSubscription: builder.mutation({
+      query: (body) => ({
+        url: `/admin-api/admin-actions/add-user-free-subscriptions`,
+        method: 'PUT',
+        body,
+      }),
+      onQueryStarted: onMutationStartedDefault,
+      invalidatesTags: ['PlatformUsers'],
+    }),
   }),
 })
 
@@ -635,4 +736,17 @@ export const {
   useLazyDownloadAdminInvoiceQuery,
   useDeleteEducatorMutation,
   useEducatorAuthQuery,
+  // Admin APIs
+  useGetAdminsQuery,
+  useCreateAdminUserMutation,
+  useUpdateAdminUserMutation,
+  useRemoveAdminUserMutation,
+  useGetAdminPrivilegesQuery,
+  // Platform User APIs
+  useGetPlatformUsersQuery,
+  useCreateSuperUserMutation,
+  useUpdatePlatformUserMutation,
+  useDeletePlatformUserMutation,
+  useGetSubscriptionPlansQuery,
+  useAccessSubscriptionMutation,
 } = adminApi

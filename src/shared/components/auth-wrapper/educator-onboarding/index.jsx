@@ -591,7 +591,7 @@ const Educator = () => {
               <Box
                 component="form"
                 onSubmit={(e) => {
-                  void handleSubmit(onSubmit)(e)
+                  handleSubmit(onSubmit)(e)
                 }}
                 sx={{
                   flex: 1,
@@ -669,7 +669,7 @@ const Educator = () => {
                       component="span"
                       variant="body2"
                       onClick={() => {
-                        void navigate('/educator/login')
+                        navigate('/educator/login')
                       }}
                       sx={{
                         color: theme.palette.primary.main,

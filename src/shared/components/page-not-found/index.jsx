@@ -54,7 +54,7 @@ const PageNotFound = () => {
         variant="contained"
         size="small"
         onClick={() => {
-          void navigate('/')
+          navigate('/')
         }}
       >
         Home

@@ -71,7 +71,7 @@ const Dashboard = () => {
                   },
                 }}
                 onClick={() => {
-                  void navigate(item.link)
+                  navigate(item.link)
                 }}
               >
                 <Box display="flex" flexDirection="column" alignItems="center" mb={3}>

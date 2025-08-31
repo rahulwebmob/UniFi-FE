@@ -212,12 +212,12 @@ const TutorApplicants = () => {
               }
 
               const handleApprove = () => {
-                void handleAccept(original)
+                handleAccept(original)
                 handleClose()
               }
 
               const handleReject = () => {
-                void openDeclineConfirmation(original)
+                openDeclineConfirmation(original)
                 handleClose()
               }
 
@@ -392,7 +392,7 @@ const TutorApplicants = () => {
             <Button
               variant="contained"
               color="success"
-              onClick={() => void handleCheckboxAccept()}
+              onClick={() => handleCheckboxAccept()}
               startIcon={<CheckCircle size={16} />}
             >
               Approve Selected
@@ -400,7 +400,7 @@ const TutorApplicants = () => {
             <Button
               variant="outlined"
               color="error"
-              onClick={() => void openDeclineConfirmation()}
+              onClick={() => openDeclineConfirmation()}
               startIcon={<XCircle size={16} />}
             >
               Decline Selected
@@ -415,7 +415,7 @@ const TutorApplicants = () => {
               variant="contained"
               color="success"
               disabled={isLoading}
-              onClick={() => void handleBulkReconsider()}
+              onClick={() => handleBulkReconsider()}
             >
               Reconsider
             </Button>
@@ -515,7 +515,7 @@ const TutorApplicants = () => {
       <ModalBox ref={confirmationRef}>
         <DeclineConfirmation
           onDelete={(data) => {
-            void handleDecline(data)
+            handleDecline(data)
           }}
           onClose={() => {
             confirmationRef.current?.closeModal()

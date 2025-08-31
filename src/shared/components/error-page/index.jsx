@@ -38,7 +38,7 @@ const ErrorPage = ({ module = '' }) => {
             size="small"
             variant="contained"
             onClick={() => {
-              void navigate(module === 'admin' ? '/admin' : '/dashboard')
+              navigate(module === 'admin' ? '/admin' : '/dashboard')
             }}
           >
             Go To Dashboard

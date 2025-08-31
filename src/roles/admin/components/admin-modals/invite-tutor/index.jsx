@@ -43,7 +43,7 @@ const InviiteApplicant = ({ onClose }) => {
       flexDirection="column"
       gap={2.5}
       p={1}
-      onSubmit={(e) => void handleSubmit(onSubmit)(e)}
+      onSubmit={(e) => handleSubmit(onSubmit)(e)}
     >
       <Box>
         <Typography variant="body2" mb={0.5} fontWeight={500} color="text.secondary">

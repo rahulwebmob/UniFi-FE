@@ -37,7 +37,7 @@ const SocialMediaAuth = ({ isOAuthLoading, setIsOAuthLoading }) => {
       if (response?.token) {
         localStorage.setItem('token', response.token)
         setTimeout(() => {
-          void navigate('/dashboard')
+          navigate('/dashboard')
         }, 100)
       }
     } catch (error) {
@@ -48,7 +48,7 @@ const SocialMediaAuth = ({ isOAuthLoading, setIsOAuthLoading }) => {
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: (response) => {
-      void handleLogin({
+      handleLogin({
         authType: SOCIAL_AUTH.GOOGLE,
         accessToken: response.access_token,
       })
@@ -59,7 +59,7 @@ const SocialMediaAuth = ({ isOAuthLoading, setIsOAuthLoading }) => {
 
   const handleLinkedInLogin = useLinkedinLogin({
     onSuccess: (accessToken) => {
-      void handleLogin({
+      handleLogin({
         authType: SOCIAL_AUTH.LINKEDIN,
         accessToken,
       })
@@ -70,7 +70,7 @@ const SocialMediaAuth = ({ isOAuthLoading, setIsOAuthLoading }) => {
   const handleFbLogin = useFbLogin({
     onSuccess: ({ authResponse }) => {
       if (authResponse?.accessToken) {
-        void handleLogin({
+        handleLogin({
           authType: SOCIAL_AUTH.FACEBOOK,
           accessToken: authResponse.accessToken,
         })

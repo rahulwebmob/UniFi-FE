@@ -121,7 +121,7 @@ const PersonalInfo = () => {
   }
 
   const handleFormSubmit = (values) => {
-    void onSubmit(values)
+    onSubmit(values)
     return
   }
 
@@ -147,7 +147,7 @@ const PersonalInfo = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          void handleSubmit(handleFormSubmit)(e)
+          handleSubmit(handleFormSubmit)(e)
         }}
       >
         <Box pb={3}>

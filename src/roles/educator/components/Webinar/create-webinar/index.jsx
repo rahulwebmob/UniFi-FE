@@ -611,7 +611,7 @@ const CreateWebinar = ({
                   if (previewMode) {
                     setPreviewMode(false)
                   } else {
-                    void navigate('/educator')
+                    navigate('/educator')
                   }
                 }}
                 sx={{ textTransform: 'none' }}

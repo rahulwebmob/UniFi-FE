@@ -158,7 +158,7 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
             <Button
               disabled={isLoading}
               onClick={() => {
-                void handlePayment()
+                handlePayment()
               }}
               variant="contained"
               sx={{ borderRadius: '8px', fontWeight: 600 }}

@@ -203,7 +203,7 @@ const AllWebinars = ({ page, setPage }) => {
             size="small"
             startIcon={<Radio size={16} />}
             onClick={() => {
-              void navigate(`/educator/educator-room/${row.original._id}`)
+              navigate(`/educator/educator-room/${row.original._id}`)
             }}
             sx={{
               '& .MuiButton-startIcon svg': {
@@ -291,7 +291,7 @@ const AllWebinars = ({ page, setPage }) => {
             variant="contained"
             endIcon={<ArrowRight size={16} />}
             onClick={() => {
-              void navigate('/educator/preview-webinar', {
+              navigate('/educator/preview-webinar', {
                 state: {
                   isPreview: true,
                   webinarId: row.original._id,
@@ -418,7 +418,7 @@ const AllWebinars = ({ page, setPage }) => {
       >
         <MenuItem
           onClick={() => {
-            void navigate('/educator/edit-webinar', {
+            navigate('/educator/edit-webinar', {
               state: {
                 isPreview: false,
                 webinarId: selectedRow?._id,
@@ -436,7 +436,7 @@ const AllWebinars = ({ page, setPage }) => {
         <MenuItem
           onClick={() => {
             if (selectedRow?._id) {
-              void handleDeleteWebinar(selectedRow._id)
+              handleDeleteWebinar(selectedRow._id)
             }
           }}
           sx={{ color: 'error.main' }}

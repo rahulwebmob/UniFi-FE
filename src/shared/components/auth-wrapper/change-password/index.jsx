@@ -147,7 +147,7 @@ const ChangePassword = ({
 
   return (
     <Box>
-      <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
+      <form onSubmit={(e) => handleSubmit(onSubmit)(e)}>
         {!!headerName && !isResetPassword && (
           <Typography variant="h6" className="profileTitle">
             Change Password

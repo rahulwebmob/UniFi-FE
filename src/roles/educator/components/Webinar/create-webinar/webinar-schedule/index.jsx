@@ -84,7 +84,7 @@ const WebinarSchedule = () => {
                         },
                       }}
                       onClick={() => {
-                        void handleScheduleTypeChange('daily', onChange)
+                        handleScheduleTypeChange('daily', onChange)
                       }}
                     >
                       Daily
@@ -103,7 +103,7 @@ const WebinarSchedule = () => {
                         },
                       }}
                       onClick={() => {
-                        void handleScheduleTypeChange('weekly', onChange)
+                        handleScheduleTypeChange('weekly', onChange)
                       }}
                     >
                       Weekly
@@ -122,7 +122,7 @@ const WebinarSchedule = () => {
                         },
                       }}
                       onClick={() => {
-                        void handleScheduleTypeChange('one time', onChange)
+                        handleScheduleTypeChange('one time', onChange)
                       }}
                     >
                       One Time

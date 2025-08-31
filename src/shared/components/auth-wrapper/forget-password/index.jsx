@@ -60,7 +60,7 @@ const ForgetPassword = ({ type = '', setShowForgetPassword }) => {
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          void handleSubmit(onSubmit)()
+          handleSubmit(onSubmit)()
         }}
         style={{ display: 'flex', flexDirection: 'column' }}
       >

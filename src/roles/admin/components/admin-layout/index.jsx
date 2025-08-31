@@ -1,6 +1,6 @@
 import { Box, Toolbar, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { Receipt, CheckCircle, GraduationCap } from 'lucide-react'
+import { Receipt, Users, UserCog } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
@@ -24,22 +24,34 @@ const AdminLayout = () => {
 
   useEffect(() => {
     if (location.pathname === '/admin' || location.pathname === '/admin/') {
-      void navigate('/admin/tutor-applicants', { replace: true })
+      navigate('/admin/platform-users', { replace: true })
     }
   }, [location.pathname, navigate])
 
   const navigationItems = [
+    // {
+    //   id: 'applicants',
+    //   label: 'Tutor Applicants',
+    //   icon: <GraduationCap size={22} />,
+    //   path: '/admin/tutor-applicants',
+    // },
+    // {
+    //   id: 'approved',
+    //   label: 'Approved Tutors',
+    //   icon: <CheckCircle size={22} />,
+    //   path: '/admin/approved-tutors',
+    // },
     {
-      id: 'applicants',
-      label: 'Tutor Applicants',
-      icon: <GraduationCap size={22} />,
-      path: '/admin/tutor-applicants',
+      id: 'users',
+      label: 'Platform Users',
+      icon: <Users size={22} />,
+      path: '/admin/platform-users',
     },
     {
-      id: 'approved',
-      label: 'Approved Tutors',
-      icon: <CheckCircle size={22} />,
-      path: '/admin/approved-tutors',
+      id: 'admins',
+      label: 'Admin Users',
+      icon: <UserCog size={22} />,
+      path: '/admin/admin-users',
     },
     {
       id: 'invoices',
@@ -58,7 +70,7 @@ const AdminLayout = () => {
   }
 
   const handleNavigation = (path) => {
-    void navigate(path)
+    navigate(path)
     if (isMobile) {
       setMobileOpen(false)
     }

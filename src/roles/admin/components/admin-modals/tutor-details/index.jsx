@@ -151,7 +151,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
                 color="primary"
                 size="small"
                 startIcon={<Download size={16} />}
-                onClick={() => void downloadPdf(downloadCv.url)}
+                onClick={() => downloadPdf(downloadCv.url)}
               >
                 Download CV
               </Button>
@@ -397,7 +397,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
             borderRadius: 0.75,
           }}
           onClick={() =>
-            filter === 'DECLINED' ? void handleDelete(tutor._id) : void openDeclineModal(tutor._id)
+            filter === 'DECLINED' ? handleDelete(tutor._id) : openDeclineModal(tutor._id)
           }
         >
           {filter === 'DECLINED' ? 'Delete' : 'Decline'}
@@ -418,9 +418,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
             },
           }}
           onClick={() =>
-            filter === 'DECLINED'
-              ? void handleBulkReconsider(tutor._id)
-              : void handleAccept(tutor._id)
+            filter === 'DECLINED' ? handleBulkReconsider(tutor._id) : handleAccept(tutor._id)
           }
         >
           {filter === 'DECLINED' ? 'Reconsider' : 'Approve'}
@@ -434,11 +432,11 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
       <ModalBox ref={confirmationRef}>
         <DeclineConfirmation
           onDelete={(data) => {
-            void handleDecline(data)
+            handleDecline(data)
           }}
           onClose={() => {
             confirmationRef.current?.closeModal()
-            void navigate('education/tutor-applicants')
+            navigate('education/tutor-applicants')
           }}
         />
       </ModalBox>

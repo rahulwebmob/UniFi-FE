@@ -1,4 +1,4 @@
-import { Box, Card, Button, Avatar, Typography, CardContent } from '@mui/material'
+import { Box, Card, Button, Avatar, Typography } from '@mui/material'
 import { format } from 'date-fns'
 import { Clock, Calendar, ArrowRight, Video, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
@@ -10,14 +10,8 @@ import CategoryList from '../../user-content/category-list'
 const WebinarCard = ({ webinar, isPurchased = false }) => {
   const navigate = useNavigate()
 
-  const handleCardClick = () => {
-    void navigate(`/dashboard/webinar/${webinar._id}/webinar-details`)
-  }
-
-  const handleJoinWebinar = () => {
-    if (webinar.webinarScheduledObj?.can_join) {
-      void navigate(`/dashboard/webinar/${webinar._id}`)
-    }
+  const handleShowWebinar = () => {
+    navigate(`/dashboard/webinar/${webinar._id}/webinar-details`)
   }
 
   const categoryArray = webinar.category
@@ -26,158 +20,54 @@ const WebinarCard = ({ webinar, isPurchased = false }) => {
       : [webinar.category]
     : []
 
-  if (isPurchased) {
+  const getButtonText = () => {
+    const canJoin = webinar.webinarScheduledObj?.can_join
+    const { isPaid } = webinar
+
+    if (canJoin) {
+      return 'Join Now'
+    }
+    if (isPurchased) {
+      return 'View Webinar'
+    }
+    if (isPaid) {
+      return 'Enroll Now'
+    }
+    return 'View Webinar'
+  }
+
+  const renderActionButton = () => {
+    const { isPaid } = webinar
+    const canJoin = webinar.webinarScheduledObj?.can_join
+
+    const buttonText = getButtonText()
+    const showVideoIcon = canJoin
+    const showCartIcon = isPaid && !isPurchased
+    const showArrowIcon = (isPurchased || !isPaid) && !canJoin
+    const isFullWidth = !isPaid || isPurchased
+
     return (
-      <Card
-        onClick={handleCardClick}
-        sx={{
-          display: 'flex',
-          borderRadius: 1.5,
-          boxShadow: 1,
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          overflow: 'hidden',
-          height: 150,
-          width: '100%',
-        }}
+      <Button
+        variant="contained"
+        size="small"
+        fullWidth={isFullWidth}
+        startIcon={
+          showVideoIcon ? <Video size={16} /> : showCartIcon ? <ShoppingCart size={16} /> : null
+        }
+        endIcon={showArrowIcon ? <ArrowRight size={16} /> : null}
       >
-        <Box
-          sx={{
-            width: 180,
-            flexShrink: 0,
-            p: 1.5,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              borderRadius: 1,
-              overflow: 'hidden',
-              backgroundColor: 'grey.100',
-              position: 'relative',
-            }}
-          >
-            <Box
-              component="img"
-              src={webinar.thumbNail ?? '/placeholder-webinar.jpg'}
-              alt={webinar.title}
-              sx={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-              }}
-            />
-            {webinar.webinarScheduledObj?.can_join ? (
-              <LiveBadge sx={{ top: 4, right: 4, px: 0.5, py: 0.2, borderRadius: '3px' }} />
-            ) : (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 4,
-                  left: 4,
-                  backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                  color: (theme) => theme.palette.error.contrastText,
-                  px: 0.7,
-                  py: 0.3,
-                  borderRadius: '3px',
-                  fontSize: '0.6rem',
-                  fontWeight: 500,
-                  fontStyle: 'italic',
-                }}
-              >
-                Starting soon
-              </Box>
-            )}
-          </Box>
-        </Box>
-
-        <CardContent
-          sx={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            p: 2,
-            pl: 0,
-            '&:last-child': { pb: 2 },
-          }}
-        >
-          <Typography
-            sx={{
-              fontWeight: 600,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitLineClamp: 1,
-              WebkitBoxOrient: 'vertical',
-              mb: 1,
-              maxWidth: '200px',
-            }}
-          >
-            {webinar.title}
-          </Typography>
-
-          {webinar.webinarScheduledObj?.join_date && (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.5,
-                mb: 0.75,
-              }}
-            >
-              <Calendar size={12} sx={{ color: 'text.secondary' }} />
-              <Typography sx={{ fontSize: '0.7rem', color: 'text.secondary' }}>
-                {format(new Date(webinar.webinarScheduledObj.join_date), 'MMM dd, yyyy')}
-                {' at '}
-                {format(new Date(webinar.webinarScheduledObj.join_date), 'h:mm a')}
-              </Typography>
-            </Box>
-          )}
-
-          {!!categoryArray.length && (
-            <CategoryList chips={categoryArray} isPurchased maxVisible={2} />
-          )}
-
-          <Box sx={{ flexGrow: 1 }} />
-
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 0.5,
-              color: 'primary.main',
-              '&:hover': {
-                textDecoration: 'underline',
-              },
-            }}
-          >
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: 500,
-                color: 'primary.main',
-              }}
-            >
-              View webinar
-            </Typography>
-            <ArrowRight size={16} />
-          </Box>
-        </CardContent>
-      </Card>
+        {buttonText}
+      </Button>
     )
   }
 
   return (
     <Card
-      onClick={handleCardClick}
+      onClick={handleShowWebinar}
       sx={{
         height: '100%',
         borderRadius: '12px',
-        boxShadow: 'none',
+        boxShadow: (theme) => theme.customShadows.primary,
         cursor: 'pointer',
         transition: 'all 0.2s ease-in-out',
         overflow: 'hidden',
@@ -212,16 +102,18 @@ const WebinarCard = ({ webinar, isPurchased = false }) => {
           }}
         />
 
-        {webinar.webinarScheduledObj?.can_join ? (
+        {webinar.webinarScheduledObj?.can_join && (
           <LiveBadge
             sx={{ top: 10, right: 10, letterSpacing: '0.5px', textTransform: 'uppercase' }}
           />
-        ) : !webinar.isPaid ? (
+        )}
+
+        {!webinar.isPaid && !webinar.isWebinarBought && (
           <Box
             sx={{
               position: 'absolute',
               top: 10,
-              right: 10,
+              right: webinar.webinarScheduledObj?.can_join ? 70 : 10,
               backgroundColor: (theme) => theme.palette.success.main,
               color: (theme) => theme.palette.error.contrastText,
               px: 1,
@@ -235,7 +127,7 @@ const WebinarCard = ({ webinar, isPurchased = false }) => {
           >
             Free
           </Box>
-        ) : null}
+        )}
 
         {!!webinar.educatorId && (
           <Box
@@ -283,7 +175,7 @@ const WebinarCard = ({ webinar, isPurchased = false }) => {
               right: 8,
             }}
           >
-            <CategoryList chips={categoryArray} isPurchased={false} maxVisible={3} />
+            <CategoryList chips={categoryArray} maxVisible={3} />
           </Box>
         )}
       </Box>
@@ -365,7 +257,7 @@ const WebinarCard = ({ webinar, isPurchased = false }) => {
               gap: 1,
             }}
           >
-            {webinar.isPaid && webinar.price ? (
+            {webinar.isPaid && webinar.price && !isPurchased ? (
               <Typography
                 variant="h6"
                 sx={{
@@ -377,46 +269,7 @@ const WebinarCard = ({ webinar, isPurchased = false }) => {
               </Typography>
             ) : null}
 
-            {webinar.webinarScheduledObj?.can_join ? (
-              <Button
-                variant="contained"
-                size="small"
-                fullWidth={!webinar.isPaid}
-                startIcon={<Video size={16} />}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleJoinWebinar()
-                }}
-              >
-                Join Now
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                size="small"
-                fullWidth={!webinar.isPaid}
-                startIcon={
-                  webinar.isPaid && !webinar.isWebinarBought ? <ShoppingCart size={16} /> : null
-                }
-                endIcon={
-                  webinar.isPaid && webinar.isWebinarBought ? (
-                    <ArrowRight size={16} />
-                  ) : !webinar.isPaid ? (
-                    <ArrowRight size={16} />
-                  ) : null
-                }
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleCardClick()
-                }}
-              >
-                {webinar.isPaid && !webinar.isWebinarBought
-                  ? 'Buy Now'
-                  : webinar.isPaid
-                    ? 'View Details'
-                    : 'View Details'}
-              </Button>
-            )}
+            {renderActionButton()}
           </Box>
         </Box>
       </Box>

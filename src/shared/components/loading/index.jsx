@@ -13,9 +13,11 @@ const Loading = () => {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
+        minHeight: '400px',
         height: '100%',
         textAlign: 'center',
         width: '100%',
+        position: 'relative',
       }}
     >
       <Box
@@ -30,8 +32,12 @@ const Loading = () => {
             maxWidth: '400px',
             g: {
               '.FileLoading': {
+                fill: theme.palette.primary.main,
+                stroke: theme.palette.primary.main,
+              },
+              path: {
                 fill: theme.palette.primary.light,
-                // stroke: theme.palette.primary.main,
+                stroke: theme.palette.primary.main,
               },
             },
           },

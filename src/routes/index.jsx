@@ -5,8 +5,10 @@ import { createBrowserRouter } from 'react-router-dom'
 import AdminTemplate from '../roles/admin/components/admin-layout'
 import Invoices from '../roles/admin/pages/admin-invoices'
 import AdminLogin from '../roles/admin/pages/admin-login'
+import AdminUsers from '../roles/admin/pages/admin-users'
 // import EducatorLogin from '../educator-login/EducatorLogin'
 import ApprovedTutors from '../roles/admin/pages/approved-tutors'
+import PlatformUsers from '../roles/admin/pages/platform-users'
 import TutorApplicants from '../roles/admin/pages/tutor-applicants'
 import TutorProfile from '../roles/admin/pages/tutor-profile'
 import Courses from '../roles/educator/components/courses'
@@ -117,6 +119,14 @@ const Routes = createBrowserRouter([
       {
         path: 'invoices',
         element: <Invoices />,
+      },
+      {
+        path: 'platform-users',
+        element: <PlatformUsers />,
+      },
+      {
+        path: 'admin-users',
+        element: <AdminUsers />,
       },
     ],
   },

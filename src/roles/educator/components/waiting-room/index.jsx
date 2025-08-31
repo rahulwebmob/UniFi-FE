@@ -17,7 +17,7 @@ const WaitingRoom = ({ handleInit }) => {
   useEffect(() => {
     const webinarData = data
     if (!isLoading && !webinarData?.data?.webinarScheduledObj?.can_join) {
-      void navigate('/dashboard')
+      navigate('/dashboard')
     }
   }, [data, isLoading, navigate])
 

@@ -5,8 +5,8 @@ import { useParams } from 'react-router-dom'
 
 // Stub implementation for chat query hook
 const useFetchChatsQuery = (...args) => {
-  // Mark parameters as used with void operator
-  void args
+  // Mark parameters as used with  operator
+  args
   return {
     isFetching: false,
     data: [],

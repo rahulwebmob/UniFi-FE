@@ -67,7 +67,7 @@ const ResendEmail = ({ setResendEmail, email }) => {
           color="primary"
           fullWidth
           onClick={() => {
-            void onSubmit()
+            onSubmit()
           }}
           sx={{ mb: 1 }}
         >

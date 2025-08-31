@@ -20,7 +20,7 @@ const AppSettings = () => {
 
   const handleLanguageChange = (lang) => {
     if (lang) {
-      void dispatch(updateLanguage(lang))
+      dispatch(updateLanguage(lang))
     }
   }
 

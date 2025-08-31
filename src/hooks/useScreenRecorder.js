@@ -23,7 +23,7 @@ const useScreenRecorder = ({ isHost, isMicAudioRequired, externalAudioStream = n
     }
 
     if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
-      void audioCtxRef.current.close()
+      audioCtxRef.current.close()
     }
   }, [])
 

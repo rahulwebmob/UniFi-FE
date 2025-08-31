@@ -30,7 +30,7 @@ const Payments = () => {
 
   const handleGetEducationInvoice = useCallback(
     (transactionId) => {
-      void handleGeneratePdf(
+      handleGeneratePdf(
         transactionId,
         (params) =>
           getEducationInvoice({

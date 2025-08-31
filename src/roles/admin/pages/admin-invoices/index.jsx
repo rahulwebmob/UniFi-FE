@@ -144,7 +144,7 @@ const AdminInvoices = () => {
               size="small"
               startIcon={<FileDown size={14} />}
               onClick={() => {
-                void (async () => {
+                ;(async () => {
                   try {
                     const result = downloadAdminInvoice({
                       transactionId: row.original._id,

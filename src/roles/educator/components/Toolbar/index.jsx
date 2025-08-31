@@ -82,7 +82,7 @@ const Toolbar = ({
       handleEndWebinar()
     }
     if (isHost) {
-      void navigate('/educator/webinars')
+      navigate('/educator/webinars')
     } else {
       window.history.back()
     }
@@ -253,7 +253,7 @@ const Toolbar = ({
                 )
               }
               onClick={() => {
-                void handleToggleRecording()
+                handleToggleRecording()
               }}
               isRecording={isRecording}
               label={isRecording ? 'Stop Recording' : 'Record'}

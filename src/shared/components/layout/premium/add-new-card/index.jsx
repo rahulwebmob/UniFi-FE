@@ -70,7 +70,7 @@ const AddNewCard = ({ subscriptionFormData, setSubscriptionFormData, setCurrentS
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          void handleSubmit(onSubmit)()
+          handleSubmit(onSubmit)()
         }}
       >
         <Box p={3}>

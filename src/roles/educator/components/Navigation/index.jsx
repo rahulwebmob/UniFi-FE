@@ -36,11 +36,11 @@ const Navigation = () => {
       // eslint-disable-next-line no-alert
       const userConfirmed = window.confirm('Are you sure you want to leave the webinar ?')
       if (userConfirmed) {
-        void navigate(path)
+        navigate(path)
         handleMenuClose()
       }
     } else {
-      void navigate(path)
+      navigate(path)
       handleMenuClose()
     }
   }

@@ -95,7 +95,7 @@ const PaymentHistory = () => {
             variant="contained"
             startIcon={<FileDown size={16} />}
             onClick={() => {
-              void (async () => {
+              ;(async () => {
                 try {
                   const result = generateInvoice({
                     transactionId: row.original._id || '',

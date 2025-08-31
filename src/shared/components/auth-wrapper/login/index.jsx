@@ -83,14 +83,14 @@ const Login = ({ type = '', setIsLoginPage }) => {
 
       switch (type) {
         case 'admin':
-          void navigate('/admin')
+          navigate('/admin')
           break
         case 'educator':
-          void navigate('/educator')
+          navigate('/educator')
           break
         default:
           setTimeout(() => {
-            void navigate('/dashboard')
+            navigate('/dashboard')
           }, 100)
       }
     } else if (
@@ -118,7 +118,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
     <form
       onSubmit={(e) => {
         e.preventDefault()
-        void handleSubmit(onSubmit)()
+        handleSubmit(onSubmit)()
       }}
       style={{ display: 'flex', flexDirection: 'column' }}
     >
@@ -181,9 +181,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
         variant="contained"
         color="primary"
         type="submit"
-        startIcon={
-          isLoading ? <CircularProgress sx={{ color: 'primary.contrastText' }} size={20} /> : null
-        }
+        startIcon={isLoading ? <CircularProgress size={20} /> : null}
         fullWidth
       >
         {isLoading ? 'Logging in...' : 'Login'}
@@ -220,7 +218,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
           variant="body2"
           component="span"
           onClick={() => {
-            void navigate('/educator/onboarding')
+            navigate('/educator/onboarding')
           }}
           sx={{
             marginLeft: 0.75,

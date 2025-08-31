@@ -1,24 +1,35 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Box, Grid, Button, TextField, IconButton, Typography, InputAdornment } from '@mui/material'
+import {
+  Box,
+  Grid,
+  Button,
+  TextField,
+  IconButton,
+  Typography,
+  InputAdornment,
+  CircularProgress,
+} from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { Eye, EyeOff } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import * as yup from 'yup'
 
 import { useSignUpMutation } from '../../../../services/admin'
+import PhoneField from '../../phone-field'
+import SignUpSuccess from '../sign-up-success'
 import SocialMediaAuth from '../login/social-media-auth'
 
 const SignUp = ({ setIsLoginPage }) => {
   const theme = useTheme()
-  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
   const [showPassword, setShowPassword] = useState(false)
   const [isOAuthLoading, setIsOAuthLoading] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [signUpSuccess, setSignUpSuccess] = useState(false)
 
   const [signUp, { isLoading }] = useSignUpMutation()
 
@@ -45,10 +56,10 @@ const SignUp = ({ setIsLoginPage }) => {
       phoneNumber: yup
         .string()
         .trim()
-        .required('Please enter phone number')
+        .required('Please enter phone')
         .matches(
           /^[+]?[(]?[0-9]{1,3}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,9}$/,
-          'Please enter a valid phone number',
+          'Please enter a valid phone',
         ),
       password: yup
         .string()
@@ -66,12 +77,11 @@ const SignUp = ({ setIsLoginPage }) => {
     }),
   )
 
-  const TEXT = `Thank you for signing up with Unicitizens! We're thrilled to have you onboard. Please check your email to confirm your account and unlock full access to the platform.`
-
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: schemaResolver,
     defaultValues: {
@@ -90,9 +100,13 @@ const SignUp = ({ setIsLoginPage }) => {
     const response = await signUp(formData)
 
     if (response && 'data' in response) {
-      setIsLoginPage(true)
-      void navigate('/thank-you', { state: { text: TEXT } })
+      setSignUpSuccess(true)
+      reset()
     }
+  }
+
+  if (signUpSuccess) {
+    return <SignUpSuccess onBackToLogin={() => setIsLoginPage(true)} />
   }
 
   return (
@@ -104,7 +118,7 @@ const SignUp = ({ setIsLoginPage }) => {
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          void handleSubmit(onSubmit)()
+          handleSubmit(onSubmit)()
         }}
         style={{ display: 'flex', flexDirection: 'column' }}
       >
@@ -180,13 +194,14 @@ const SignUp = ({ setIsLoginPage }) => {
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <TextField
-                  placeholder="Enter your phone number"
+                <PhoneField
+                  {...field}
+                  placeholder="Enter your phone"
                   variant="outlined"
                   fullWidth
-                  {...field}
                   error={!!errors.phoneNumber}
                   helperText={errors.phoneNumber?.message}
+                  defaultCountry="NP"
                 />
               )}
             />
@@ -260,9 +275,10 @@ const SignUp = ({ setIsLoginPage }) => {
           type="submit"
           color="primary"
           variant="contained"
-          disabled={isOAuthLoading}
+          disabled={isLoading || isOAuthLoading}
+          startIcon={isLoading ? <CircularProgress size={20} /> : null}
         >
-          Sign Up
+          {isLoading ? 'Signing Up...' : 'Sign Up'}
         </Button>
       </form>
       <Box display="flex" alignItems="center" justifyContent="center">
