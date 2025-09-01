@@ -13,7 +13,7 @@ import AdminUserModal from '../../components/admin-modals/admin-user'
 const AdminUsers = () => {
   const modalRef = useRef()
   const [pageNo, setPageNo] = useState(1)
-  const [search, setSearch] = useState('')
+  const [, setSearch] = useState('')
   const [selectedAdmin, setSelectedAdmin] = useState(null)
   const [modalType, setModalType] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
@@ -25,7 +25,7 @@ const AdminUsers = () => {
   } = useGetAdminsQuery({
     pageNo,
     limit: 10,
-    search,
+    // search,
   })
 
   const debouncedSearch = debounce((value) => {
@@ -194,7 +194,7 @@ const AdminUsers = () => {
   return (
     <ApiMiddleware
       error={error}
-      isLoading={!isLoading}
+      isLoading={isLoading}
       isData
       text="No Admin Users Found"
       description="There are no admin users at the moment."

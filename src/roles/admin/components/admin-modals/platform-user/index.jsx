@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, FormLabel, Grid, TextField, Box, Typography, Alert } from '@mui/material'
-import { Trash2, AlertTriangle, RefreshCw } from 'lucide-react'
+import { Button, FormLabel, Grid, TextField, Box, Typography } from '@mui/material'
+import { Trash2, RefreshCw } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -39,7 +39,7 @@ const PlatformUserModal = ({ modalType, userId, firstName, lastName, email, clos
   })
 
   const handleFormSubmit = async (values) => {
-    const response = await updatePlatformUser({ ...values, userId })
+    const response = await updatePlatformUser({ ...values, userId, action: 'update' })
     if (!response.error) {
       closeModal()
       reset()
@@ -64,37 +64,14 @@ const PlatformUserModal = ({ modalType, userId, firstName, lastName, email, clos
     return (
       <Box>
         <Box display="flex" alignItems="center" gap={1} mb={2}>
-          <AlertTriangle size={24} color="#ff9800" />
           <Typography variant="h6" fontWeight={600}>
             Delete User
           </Typography>
         </Box>
 
-        <Alert severity="warning" sx={{ mb: 2 }}>
-          This action cannot be undone. This will permanently delete the user account.
-        </Alert>
-
         <Typography variant="body1" sx={{ mb: 1 }}>
           Are you sure you want to delete this user?
         </Typography>
-
-        <Box
-          sx={{
-            p: 2,
-            bgcolor: 'grey.50',
-            borderRadius: 1,
-            border: '1px solid',
-            borderColor: 'grey.300',
-            mb: 3,
-          }}
-        >
-          <Typography variant="body2" sx={{ mb: 0.5 }}>
-            <strong>Name:</strong> {firstName} {lastName}
-          </Typography>
-          <Typography variant="body2">
-            <strong>Email:</strong> {email}
-          </Typography>
-        </Box>
 
         <Box display="flex" gap={2} justifyContent="flex-end">
           <Button variant="outlined" onClick={closeModal} disabled={isDeleting}>

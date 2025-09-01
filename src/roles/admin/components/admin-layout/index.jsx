@@ -1,6 +1,6 @@
 import { Box, Toolbar, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { LayoutDashboard, Receipt, Users, UserCog, BookOpen, Video } from 'lucide-react'
+import { LayoutDashboard, Receipt, Users, UserCog, GraduationCap, CheckCircle } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
@@ -36,18 +36,6 @@ const AdminLayout = () => {
       path: '/admin/dashboard',
     },
     {
-      id: 'courses',
-      label: 'Courses',
-      icon: <BookOpen size={22} />,
-      path: '/admin/courses',
-    },
-    {
-      id: 'webinars',
-      label: 'Webinars',
-      icon: <Video size={22} />,
-      path: '/admin/webinars',
-    },
-    {
       id: 'users',
       label: 'Platform Users',
       icon: <Users size={22} />,
@@ -64,6 +52,18 @@ const AdminLayout = () => {
       label: 'Invoices',
       icon: <Receipt size={22} />,
       path: '/admin/invoices',
+    },
+    {
+      id: 'applicants',
+      label: 'Tutor Applicants',
+      icon: <GraduationCap size={22} />,
+      path: '/admin/tutor-applicants',
+    },
+    {
+      id: 'approved',
+      label: 'Approved Tutors',
+      icon: <CheckCircle size={22} />,
+      path: '/admin/approved-tutors',
     },
   ]
 
