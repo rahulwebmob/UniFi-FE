@@ -77,7 +77,6 @@ const Toolbar = ({
   }
 
   const handleConfirmLeave = () => {
-    confirmModalRef.current?.closeModal()
     if (isHost) {
       handleEndWebinar()
     }
@@ -86,6 +85,7 @@ const Toolbar = ({
     } else {
       window.history.back()
     }
+    confirmModalRef.current?.closeModal()
   }
 
   const handleDebounceRaiseHand = () => {
