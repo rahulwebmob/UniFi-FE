@@ -1,4 +1,4 @@
-import { Box, Drawer, Typography, TextField, IconButton, Button } from '@mui/material'
+import { Box, Drawer, Typography, Button } from '@mui/material'
 import {
   Mic,
   Hand,
@@ -12,7 +12,6 @@ import {
   Paperclip,
   MessageCircle,
   PhoneOff,
-  Send,
 } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useRef, useState } from 'react'
@@ -27,6 +26,7 @@ import MuiCarousel from '../../../../shared/components/ui-elements/mui-carousel'
 import { isAndroidOrIphone } from '../common/common'
 import { ControlsContainer } from '../styles'
 import WebinarAttachments from '../webinar-attachments'
+import WebinarRoom from '../webinar-chat'
 import WhiteBoard from '../white-board'
 
 import ControlIcon from './control-icon'
@@ -307,78 +307,7 @@ const Toolbar = ({
             flexDirection: 'column',
           }}
         >
-          {activeDrawerContent === 'chat' && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-              {/* Chat Header */}
-              <Box sx={{ p: 2, borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: 'text.primary',
-                    fontWeight: 600,
-                  }}
-                >
-                  Chat
-                </Typography>
-              </Box>
-
-              {/* Chat Messages Area */}
-              <Box sx={{ flex: 1, p: 2, overflowY: 'auto', backgroundColor: '#f9f9f9' }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '100%',
-                    color: 'text.secondary',
-                  }}
-                >
-                  <Typography variant="body2">No messages yet. Start a conversation!</Typography>
-                </Box>
-              </Box>
-
-              {/* Chat Input */}
-              <Box
-                sx={{
-                  p: 2,
-                  borderTop: '1px solid rgba(0, 0, 0, 0.12)',
-                  backgroundColor: '#ffffff',
-                }}
-              >
-                <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-end' }}>
-                  <TextField
-                    fullWidth
-                    multiline
-                    maxRows={3}
-                    placeholder="Type your message here..."
-                    variant="outlined"
-                    size="small"
-                    disabled
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        backgroundColor: '#f5f5f5',
-                        '& fieldset': {
-                          borderColor: 'rgba(0, 0, 0, 0.12)',
-                        },
-                      },
-                    }}
-                  />
-                  <IconButton
-                    disabled
-                    sx={{
-                      color: 'primary.main',
-                      backgroundColor: '#f5f5f5',
-                      '&:hover': {
-                        backgroundColor: '#e0e0e0',
-                      },
-                    }}
-                  >
-                    <Send size={20} />
-                  </IconButton>
-                </Box>
-              </Box>
-            </Box>
-          )}
+          {activeDrawerContent === 'chat' && <WebinarRoom />}
           {activeDrawerContent === 'attachments' && (
             <WebinarAttachments isHost={isHost} handleOnClose={() => setIsDrawerOpen(false)} />
           )}
