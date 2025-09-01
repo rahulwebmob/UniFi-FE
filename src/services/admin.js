@@ -709,6 +709,7 @@ export const {
   useForgetPasswordMutation,
   useResetPasswordMutation,
   useCreatePasswordMutation,
+  useEmailVerificationQuery,
   useResendEmailMutation,
   useMyProfileMutation,
   useGenerateReferralLinkMutation,

@@ -29,6 +29,7 @@ import UserDashboard from '../roles/user/pages/user-dashboard'
 import UserSettings from '../roles/user/pages/user-settings'
 import AuthWrapper from '../shared/components/auth-wrapper'
 import Educator from '../shared/components/auth-wrapper/educator-onboarding'
+import EmailVerification from '../shared/components/auth-wrapper/email-verification'
 import ResetPassword from '../shared/components/auth-wrapper/reset-password'
 import ErrorPage from '../shared/components/error-page'
 import CourseDetails from '../shared/components/layout/Course/course-details'
@@ -63,6 +64,10 @@ const Routes = createBrowserRouter([
       {
         path: 'reset-password',
         element: <ResetPassword />,
+      },
+      {
+        path: 'email-verification',
+        element: <EmailVerification />,
       },
     ],
   },
