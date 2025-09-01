@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom'
 // import Users from '../../../roles/admin/components/users'
 // import WebinarWrapper from '../../../roles/educator/components/WebinarWrapper'
 import AdminTemplate from '../roles/admin/components/admin-layout'
+import AdminLanding from '../roles/admin/pages/admin-landing'
 import Invoices from '../roles/admin/pages/admin-invoices'
 import AdminLogin from '../roles/admin/pages/admin-login'
 import AdminUsers from '../roles/admin/pages/admin-users'
@@ -102,7 +103,11 @@ const Routes = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <TutorApplicants />,
+        element: <AdminLanding />,
+      },
+      {
+        path: 'dashboard',
+        element: <AdminLanding />,
       },
       {
         path: 'tutor-applicants',

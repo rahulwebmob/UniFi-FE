@@ -108,7 +108,7 @@ export default [
       'react/no-deprecated': 'error',
       'react/no-unstable-nested-components': ['error', { allowAsProps: true }],
       'react/self-closing-comp': 'error',
-      'react/-dom-elements-no-children': 'error',
+      'react/void-dom-elements-no-children': 'error',
       'react/function-component-definition': [
         'error',
         {

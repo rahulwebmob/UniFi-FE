@@ -11,7 +11,7 @@ import {
   useMediaQuery,
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { Upload, Save } from 'lucide-react'
+import { ImageUp, Save } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
@@ -203,7 +203,7 @@ const PersonalInfo = () => {
                     },
                   }}
                 >
-                  <Upload size={16} color={theme.palette.common.white} />
+                  <ImageUp size={16} color={theme.palette.common.white} />
                   <VisuallyHiddenInput
                     type="file"
                     accept=".jpg, .jpeg, .png"

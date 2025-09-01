@@ -191,7 +191,7 @@ const Payments = () => {
   return (
     <>
       <Typography variant="h6" mb={2.5}>
-        Education Payments
+        Payment History
       </Typography>
 
       <Box>

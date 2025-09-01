@@ -19,8 +19,8 @@ import * as yup from 'yup'
 
 import { useSignUpMutation } from '../../../../services/admin'
 import PhoneField from '../../phone-field'
-import SignUpSuccess from '../sign-up-success'
 import SocialMediaAuth from '../login/social-media-auth'
+import SignUpSuccess from '../sign-up-success'
 
 const SignUp = ({ setIsLoginPage }) => {
   const theme = useTheme()

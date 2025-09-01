@@ -196,6 +196,7 @@ export const colors = {
     red: '#D2312A', // UniCitizens Red
     navy: '#27488F', // UniCitizens Navy
     lightBlue: '#87A3B6', // UniCitizens Light Blue
+    golden: '#FFD700', // Golden color for owned/premium content
   },
 
   // Common

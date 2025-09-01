@@ -78,7 +78,6 @@ const Logout = ({ component = null, type = 'user' }) => {
           <Button
             variant="contained"
             color="primary"
-            size="small"
             onClick={handleCloseModal}
             disabled={isLoading}
             startIcon={<X size={16} />}
@@ -87,7 +86,6 @@ const Logout = ({ component = null, type = 'user' }) => {
           </Button>
           <Button
             variant="contained"
-            size="small"
             color="error"
             onClick={() => {
               handleLogout()

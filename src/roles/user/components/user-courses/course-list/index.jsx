@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material'
+import { Box, Grid, useTheme, useMediaQuery } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 
@@ -15,6 +15,10 @@ const CourseList = ({
   selectedCategory = '',
   setIsLoadMore = null,
 }) => {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'))
+
   const [list, setList] = useState([])
   const [count, setCount] = useState(0)
   const [hasInitialized, setHasInitialized] = useState(false)
@@ -69,7 +73,16 @@ const CourseList = ({
         ) : showContent && list.length ? (
           <>
             {list.map((item) => (
-              <Box key={item._id} sx={{ minWidth: 420, maxWidth: 420, px: 1 }}>
+              <Box
+                key={item._id}
+                sx={{
+                  minWidth: isMobile ? '100%' : isTablet ? 380 : 460,
+                  maxWidth: isMobile ? '100%' : isTablet ? 380 : 460,
+                  px: isMobile ? 0.5 : 1,
+                  py: 1,
+                  width: isMobile ? '100%' : 'auto',
+                }}
+              >
                 <CourseCard course={item} isPurchased />
               </Box>
             ))}
@@ -108,9 +121,9 @@ const CourseList = ({
     </Grid>
   ) : showContent ? (
     list.length ? (
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         {list.map((item) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }} key={item._id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }} key={item._id}>
             <CourseCard course={item} isPurchased={false} />
           </Grid>
         ))}

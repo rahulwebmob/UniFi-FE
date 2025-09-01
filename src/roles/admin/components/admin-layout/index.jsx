@@ -1,6 +1,6 @@
 import { Box, Toolbar, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { Receipt, Users, UserCog } from 'lucide-react'
+import { LayoutDashboard, Receipt, Users, UserCog } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
@@ -24,11 +24,17 @@ const AdminLayout = () => {
 
   useEffect(() => {
     if (location.pathname === '/admin' || location.pathname === '/admin/') {
-      navigate('/admin/platform-users', { replace: true })
+      navigate('/admin/dashboard', { replace: true })
     }
   }, [location.pathname, navigate])
 
   const navigationItems = [
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: <LayoutDashboard size={22} />,
+      path: '/admin/dashboard',
+    },
     // {
     //   id: 'applicants',
     //   label: 'Tutor Applicants',
@@ -85,7 +91,13 @@ const AdminLayout = () => {
     (item.path !== '/admin' && location.pathname.startsWith(item.path))
 
   return (
-    <Box display="flex" minHeight="100vh">
+    <Box
+      display="flex"
+      minHeight="100vh"
+      sx={{
+        backgroundColor: theme.palette.background.default,
+      }}
+    >
       <AdminHeader
         user={user}
         drawerCollapsed={drawerCollapsed}

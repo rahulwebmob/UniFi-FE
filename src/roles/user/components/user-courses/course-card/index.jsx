@@ -1,12 +1,12 @@
-import { Box, Card, Button, Avatar, useTheme, Typography } from '@mui/material'
+import { Box, Card, Button, Avatar, Typography } from '@mui/material'
 import { ArrowRight, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 
+import { FreeBadge, OwnedBadge, PremiumBadge } from '../../user-content/card-badges'
 import CategoryList from '../../user-content/category-list'
 
 const CourseCard = ({ course, isPurchased = false }) => {
-  const theme = useTheme()
   const navigate = useNavigate()
 
   const handleCardClick = () => {
@@ -19,6 +19,44 @@ const CourseCard = ({ course, isPurchased = false }) => {
       : [course.category]
     : []
 
+  const renderActionButton = () => {
+    const getButtonText = () => {
+      if (isPurchased) {
+        return 'Continue Learning'
+      }
+      if (course.isPaid) {
+        return 'Enroll Now'
+      }
+      return 'Start Free Course'
+    }
+
+    const getStartIcon = () => {
+      if (course.isPaid) {
+        return <ShoppingCart size={16} />
+      }
+      return null
+    }
+
+    const getEndIcon = () => {
+      if (!course.isPaid) {
+        return <ArrowRight size={16} />
+      }
+      return null
+    }
+
+    return (
+      <Button
+        size="small"
+        variant="contained"
+        fullWidth={!course.isPaid || isPurchased}
+        startIcon={getStartIcon()}
+        endIcon={getEndIcon()}
+      >
+        {getButtonText()}
+      </Button>
+    )
+  }
+
   return (
     <Card
       onClick={handleCardClick}
@@ -26,7 +64,6 @@ const CourseCard = ({ course, isPurchased = false }) => {
         height: '100%',
         borderRadius: '12px',
         boxShadow: (theme) => theme.customShadows.primary,
-
         cursor: 'pointer',
         transition: 'all 0.2s ease-in-out',
         overflow: 'hidden',
@@ -61,25 +98,9 @@ const CourseCard = ({ course, isPurchased = false }) => {
           }}
         />
 
-        {!course.isPaid && !course.isCourseBought && (
-          <Typography
-            variant="caption"
-            sx={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              backgroundColor: theme.palette.success.main,
-              color: theme.palette.success.contrastText,
-              px: 1,
-              py: 0.3,
-              borderRadius: '4px',
-              fontWeight: theme.typography.fontWeightBold,
-              display: 'inline-block',
-            }}
-          >
-            FREE
-          </Typography>
-        )}
+        {isPurchased && <OwnedBadge />}
+        {!isPurchased && course.isPaid && <PremiumBadge />}
+        {!isPurchased && !course.isPaid && !course.isCourseBought && <FreeBadge />}
 
         {!!course.educatorId && (
           <Box
@@ -150,6 +171,7 @@ const CourseCard = ({ course, isPurchased = false }) => {
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
+            fontSize: '1.1rem',
           }}
         >
           {course.title}
@@ -157,7 +179,7 @@ const CourseCard = ({ course, isPurchased = false }) => {
 
         {course.description && (
           <Typography
-            variant="body2"
+            variant="body1"
             color="text.secondary"
             sx={{
               mb: 1.5,
@@ -198,15 +220,7 @@ const CourseCard = ({ course, isPurchased = false }) => {
               </Box>
             ) : null}
 
-            <Button
-              variant="contained"
-              size="small"
-              fullWidth={!course.isPaid}
-              startIcon={course.isPaid ? <ShoppingCart size={16} /> : null}
-              endIcon={course.isPaid ? null : <ArrowRight size={16} />}
-            >
-              {isPurchased ? 'View Course' : course.isPaid ? 'Enroll Now' : 'Start Free Course'}
-            </Button>
+            {renderActionButton()}
           </Box>
         </Box>
       </Box>

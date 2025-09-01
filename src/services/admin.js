@@ -669,6 +669,32 @@ export const adminApi = createApi({
       onQueryStarted: onMutationStartedDefault,
       invalidatesTags: ['PlatformUsers'],
     }),
+
+    // Analytics Dashboard APIs
+    getUsersCount: builder.query({
+      query: (data) => ({
+        url: `/admin-api/analytics/get-users-count`,
+        method: 'GET',
+        params: { ...data },
+      }),
+      onQueryStarted: onQueryStartedDefault,
+    }),
+    getActiveUsers: builder.query({
+      query: (data) => ({
+        url: `/admin-api/analytics/get-active-users-data`,
+        method: 'GET',
+        params: { ...data },
+      }),
+      onQueryStarted: onQueryStartedDefault,
+    }),
+    getRevenueData: builder.query({
+      query: (data) => ({
+        url: `/admin-api/analytics/get-revenue-data`,
+        method: 'GET',
+        params: { ...data },
+      }),
+      onQueryStarted: onQueryStartedDefault,
+    }),
   }),
 })
 
@@ -749,4 +775,8 @@ export const {
   useDeletePlatformUserMutation,
   useGetSubscriptionPlansQuery,
   useAccessSubscriptionMutation,
+  // Analytics Dashboard APIs
+  useGetUsersCountQuery,
+  useGetActiveUsersQuery,
+  useGetRevenueDataQuery,
 } = adminApi

@@ -4,10 +4,10 @@ import { Clock, Calendar, ArrowRight, Video, ShoppingCart } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 
-import LiveBadge from '../../../../../shared/components/live-badge'
+import { FreeBadge, LiveBadge, OwnedBadge, PremiumBadge } from '../../user-content/card-badges'
 import CategoryList from '../../user-content/category-list'
 
-const WebinarCard = ({ webinar, isPurchased = false }) => {
+const WebinarCard = ({ webinar }) => {
   const navigate = useNavigate()
 
   const handleShowWebinar = () => {
@@ -22,12 +22,12 @@ const WebinarCard = ({ webinar, isPurchased = false }) => {
 
   const getButtonText = () => {
     const canJoin = webinar.webinarScheduledObj?.can_join
-    const { isPaid } = webinar
+    const { isPaid, isWebinarBought } = webinar
 
-    if (canJoin) {
+    if (canJoin && isWebinarBought) {
       return 'Join Now'
     }
-    if (isPurchased) {
+    if (isWebinarBought) {
       return 'View Webinar'
     }
     if (isPaid) {
@@ -37,14 +37,14 @@ const WebinarCard = ({ webinar, isPurchased = false }) => {
   }
 
   const renderActionButton = () => {
-    const { isPaid } = webinar
+    const { isPaid, isWebinarBought } = webinar
     const canJoin = webinar.webinarScheduledObj?.can_join
 
     const buttonText = getButtonText()
-    const showVideoIcon = canJoin
-    const showCartIcon = isPaid && !isPurchased
-    const showArrowIcon = (isPurchased || !isPaid) && !canJoin
-    const isFullWidth = !isPaid || isPurchased
+    const showVideoIcon = canJoin && isWebinarBought
+    const showCartIcon = isPaid && !isWebinarBought
+    const showArrowIcon = (isWebinarBought || !isPaid) && !canJoin && !showCartIcon
+    const isFullWidth = !isPaid || isWebinarBought
 
     return (
       <Button
@@ -102,32 +102,15 @@ const WebinarCard = ({ webinar, isPurchased = false }) => {
           }}
         />
 
+        {webinar?.isWebinarBought && <OwnedBadge />}
+
+        {!webinar?.isWebinarBought && webinar.isPaid && <PremiumBadge />}
+
         {webinar.webinarScheduledObj?.can_join && (
-          <LiveBadge
-            sx={{ top: 10, right: 10, letterSpacing: '0.5px', textTransform: 'uppercase' }}
-          />
+          <LiveBadge sx={{ top: webinar.isPaid ? 45 : !webinar.isWebinarBought ? 45 : 10 }} />
         )}
 
-        {!webinar.isPaid && !webinar.isWebinarBought && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 10,
-              right: webinar.webinarScheduledObj?.can_join ? 70 : 10,
-              backgroundColor: (theme) => theme.palette.success.main,
-              color: (theme) => theme.palette.error.contrastText,
-              px: 1,
-              py: 0.3,
-              borderRadius: '4px',
-              fontSize: (theme) => theme.typography.caption.fontSize,
-              fontWeight: 700,
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
-            }}
-          >
-            Free
-          </Box>
-        )}
+        {!webinar?.isWebinarBought && !webinar.isPaid && !webinar.isWebinarBought && <FreeBadge />}
 
         {!!webinar.educatorId && (
           <Box
@@ -257,7 +240,7 @@ const WebinarCard = ({ webinar, isPurchased = false }) => {
               gap: 1,
             }}
           >
-            {webinar.isPaid && webinar.price && !isPurchased ? (
+            {webinar.isPaid && webinar.price && !webinar?.isWebinarBought ? (
               <Typography
                 variant="h6"
                 sx={{
