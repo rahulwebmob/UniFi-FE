@@ -10,10 +10,7 @@ const StatsCard = ({ title, value, icon: Icon, color, trend, isLoading, subtitle
       sx={{
         p: 3,
         height: '100%',
-        background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${alpha(
-          color,
-          0.02,
-        )} 100%)`,
+        background: 'background.paper',
         border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
         borderRadius: 2,
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',

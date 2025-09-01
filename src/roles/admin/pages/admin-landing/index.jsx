@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Typography, alpha, useTheme } from '@mui/material'
+import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { Activity, DollarSign, TrendingUp, UserCheck, UserX, Users } from 'lucide-react'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -82,156 +82,55 @@ const AdminLanding = () => {
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        background: `linear-gradient(135deg, 
-          ${alpha(theme.palette.primary.main, 0.02)} 0%, 
-          ${alpha(theme.palette.background.default, 1)} 100%)`,
-        py: 4,
-      }}
-    >
-      <Container maxWidth="xl">
-        {/* Header Section */}
-        <Box sx={{ mb: 4 }}>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 700,
-              fontSize: { xs: '1.75rem', md: '2.25rem' },
-              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              mb: 0.5,
-            }}
-          >
-            Dashboard Overview
+    <Box>
+      <Box>
+        <Box mb={3}>
+          <Typography variant="h4" mb={0.5}>
+            Admin Users
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: theme.palette.text.secondary,
-              fontSize: '1rem',
-            }}
-          >
-            Monitor your platform&apos;s performance and key metrics in real-time
+          <Typography color="text.secondary">
+            Manage administrator accounts and privileges
           </Typography>
         </Box>
-
-        {/* Stats Grid */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          {statsData.map((stat) => (
-            <Grid item key={stat.title} size={{ xs: 12, sm: 6, md: hasFullAccess ? 3 : 4 }}>
-              <StatsCard
-                title={stat.title}
-                value={stat.value}
-                icon={stat.icon}
-                color={stat.color}
-                subtitle={stat.subtitle}
-                isLoading={isLoading}
-              />
-            </Grid>
-          ))}
-        </Grid>
-
-        {/* Charts Section */}
-        <Grid container spacing={3}>
-          <Grid item size={12}>
-            <ChartCard
-              title="Analytics & Trends"
-              subtitle="Track user engagement and platform growth over time"
-              selectValue={selectedChart}
-              onSelectChange={(e) => setSelectedChart(e.target.value)}
-              selectOptions={chartOptions}
-            >
-              {renderChart()}
-            </ChartCard>
-          </Grid>
-        </Grid>
-
-        {/* Quick Stats Summary */}
         <Box
           sx={{
-            mt: 4,
-            p: 3,
-            borderRadius: 2,
-            background: alpha(theme.palette.primary.main, 0.03),
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+            p: 2,
+            mb: 4,
+            borderRadius: 1,
+            backgroundColor: (theme) => theme.palette.background.light,
+            boxShadow: (theme) => theme.customShadows.primary,
           }}
         >
-          <Grid container spacing={3} alignItems="center">
-            <Grid item size={{ xs: 12, md: 8 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  color: theme.palette.text.primary,
-                  mb: 1,
-                }}
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            {statsData.map((stat) => (
+              <Grid item key={stat.title} size={{ xs: 12, sm: 6, md: hasFullAccess ? 3 : 4 }}>
+                <StatsCard
+                  title={stat.title}
+                  value={stat.value}
+                  icon={stat.icon}
+                  color={stat.color}
+                  subtitle={stat.subtitle}
+                  isLoading={isLoading}
+                />
+              </Grid>
+            ))}
+          </Grid>
+
+          <Grid container spacing={3}>
+            <Grid item size={12}>
+              <ChartCard
+                title="Analytics & Trends"
+                subtitle="Track user engagement and platform growth over time"
+                selectValue={selectedChart}
+                onSelectChange={(e) => setSelectedChart(e.target.value)}
+                selectOptions={chartOptions}
               >
-                Platform Health Status
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: theme.palette.text.secondary,
-                }}
-              >
-                Your platform is performing well with steady user growth and engagement.
-                {hasFullAccess && ' Revenue metrics show positive trends across all segments.'}
-              </Typography>
-            </Grid>
-            <Grid item size={{ xs: 12, md: 4 }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: { xs: 'flex-start', md: 'flex-end' },
-                  gap: 2,
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                    px: 2,
-                    py: 1,
-                    borderRadius: 2,
-                    backgroundColor: alpha(theme.palette.success.main, 0.1),
-                    color: theme.palette.success.main,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: '50%',
-                      backgroundColor: theme.palette.success.main,
-                      animation: 'pulse 2s infinite',
-                      '@keyframes pulse': {
-                        '0%': {
-                          boxShadow: `0 0 0 0 ${alpha(theme.palette.success.main, 0.7)}`,
-                        },
-                        '70%': {
-                          boxShadow: `0 0 0 10px ${alpha(theme.palette.success.main, 0)}`,
-                        },
-                        '100%': {
-                          boxShadow: `0 0 0 0 ${alpha(theme.palette.success.main, 0)}`,
-                        },
-                      },
-                    }}
-                  />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    All Systems Operational
-                  </Typography>
-                </Box>
-              </Box>
+                {renderChart()}
+              </ChartCard>
             </Grid>
           </Grid>
         </Box>
-      </Container>
+      </Box>
     </Box>
   )
 }

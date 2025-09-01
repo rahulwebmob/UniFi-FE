@@ -109,7 +109,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
       {type === 'admin'
         ? 'Enter your credentials to access the admin portal'
         : type === 'educator'
-          ? 'Welcome back! Sign in to manage your courses and webinars'
+          ? 'Welcome back Educator! Sign in to manage your courses and webinars'
           : 'Enter details to login and access the platform'}
     </Typography>
   )
@@ -210,29 +210,29 @@ const Login = ({ type = '', setIsLoginPage }) => {
     </Box>
   )
 
-  const renderEducatorSignup = () => (
-    <Box display="flex" alignItems="center" justifyContent="center" pt={2}>
-      <Typography variant="body2" color="text.secondary">
-        Want to become an educator?
-        <Typography
-          variant="body2"
-          component="span"
-          onClick={() => {
-            navigate('/educator/onboarding')
-          }}
-          sx={{
-            marginLeft: 0.75,
-            fontWeight: 'bold',
-            color: 'primary.main',
-            cursor: 'pointer',
-            '&:hover': { textDecoration: 'underline' },
-          }}
-        >
-          Apply Now
-        </Typography>
-      </Typography>
-    </Box>
-  )
+  // const renderEducatorSignup = () => (
+  //   <Box display="flex" alignItems="center" justifyContent="center" pt={2}>
+  //     <Typography variant="body2" color="text.secondary">
+  //       Want to become an educator?
+  //       <Typography
+  //         variant="body2"
+  //         component="span"
+  //         onClick={() => {
+  //           navigate('/educator/onboarding')
+  //         }}
+  //         sx={{
+  //           marginLeft: 0.75,
+  //           fontWeight: 'bold',
+  //           color: 'primary.main',
+  //           cursor: 'pointer',
+  //           '&:hover': { textDecoration: 'underline' },
+  //         }}
+  //       >
+  //         Apply Now
+  //       </Typography>
+  //     </Typography>
+  //   </Box>
+  // )
 
   const renderUserSignup = () => (
     <>
@@ -266,7 +266,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
       {renderLoginDescription()}
       {renderLoginForm()}
       {renderForgotPasswordLink()}
-      {type === 'educator' && renderEducatorSignup()}
+      {/* {type === 'educator' && renderEducatorSignup()} */}
       {!type && renderUserSignup()}
     </Box>
   )

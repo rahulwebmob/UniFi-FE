@@ -194,7 +194,7 @@ const AdminUsers = () => {
   return (
     <ApiMiddleware
       error={error}
-      isLoading={!isLoading}
+      isLoading={isLoading}
       isData
       text="No Admin Users Found"
       description="There are no admin users at the moment."
