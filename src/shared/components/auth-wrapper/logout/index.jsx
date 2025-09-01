@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { signOut } from '../../../../redux/reducers/user-slice'
-import { useLogoutMutation, useEducatorLogoutMutation } from '../../../../services/admin'
+import { useLogoutMutation } from '../../../../services/admin'
 import { useAdminLogoutMutation } from '../../../../services/onboarding'
 import ModalBox from '../../ui-elements/modal-box'
 
@@ -17,15 +17,11 @@ const Logout = ({ component = null, type = 'user' }) => {
 
   const [userLogout, userLogoutResult] = useLogoutMutation()
   const [adminLogout, adminLogoutResult] = useAdminLogoutMutation()
-  const [educatorLogout, educatorLogoutResult] = useEducatorLogoutMutation()
 
-  const isLoading =
-    userLogoutResult.isLoading || educatorLogoutResult.isLoading || adminLogoutResult.isLoading
+  const isLoading = userLogoutResult.isLoading || adminLogoutResult.isLoading
 
   const getLogoutFunction = () => {
     switch (type) {
-      case 'educator':
-        return educatorLogout
       case 'admin':
         return adminLogout
       case 'user':
@@ -104,7 +100,7 @@ const LogoutWrapper = Logout
 
 Logout.propTypes = {
   component: PropTypes.element,
-  type: PropTypes.oneOf(['user', 'admin', 'educator']),
+  type: PropTypes.oneOf(['user', 'admin']),
 }
 
 export default LogoutWrapper

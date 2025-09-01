@@ -5,10 +5,7 @@ import { useDispatch } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { updateUser } from '../../../../redux/reducers/user-slice'
-import {
-  useCreatePasswordMutation,
-  useEducatorResetPasswordMutation,
-} from '../../../../services/admin'
+import { useCreatePasswordMutation } from '../../../../services/admin'
 import { useCreateAdminPasswordMutation } from '../../../../services/onboarding'
 import ChangePassword from '../change-password'
 import AuthWrapper from '../index'
@@ -21,7 +18,6 @@ const ResetPassword = () => {
 
   const [resetUserPassword] = useCreatePasswordMutation()
   const [resetAdminPassword] = useCreateAdminPasswordMutation()
-  const [educatorResetPassword] = useEducatorResetPasswordMutation()
 
   let user = null
   try {
@@ -43,8 +39,6 @@ const ResetPassword = () => {
     try {
       if (user?.role === 'admin') {
         response = await resetAdminPassword(formData).unwrap()
-      } else if (user?.role === 'educator') {
-        response = await educatorResetPassword(formData).unwrap()
       } else {
         response = await resetUserPassword(formData).unwrap()
       }
@@ -58,8 +52,6 @@ const ResetPassword = () => {
         setTimeout(() => {
           if (user?.role === 'admin') {
             navigate('/admin')
-          } else if (user?.role === 'educator') {
-            navigate('/educator')
           } else {
             navigate('/dashboard')
           }

@@ -10,9 +10,6 @@ const PrivateRoute = ({ children, module }) => {
   const location = useLocation()
 
   const redirectToLogin = () => {
-    if (module === 'educator') {
-      return <Navigate to="/educator/login" />
-    }
     if (module === 'admin') {
       return <Navigate to="/admin/login" />
     }
@@ -34,18 +31,11 @@ const PrivateRoute = ({ children, module }) => {
     return redirectToLogin()
   }
 
-  // Role-based access control and redirection
+  // Role-based access control and redirection (two roles only: admin and user)
   if (user?.role === 'admin') {
     // Admin users can only access admin routes
     if (!location.pathname.includes('/admin')) {
       return <Navigate to="/admin" />
-    }
-  }
-
-  if (user?.role === 'educator') {
-    // Educator users can only access educator routes
-    if (!location.pathname.includes('/educator')) {
-      return <Navigate to="/educator" />
     }
   }
 

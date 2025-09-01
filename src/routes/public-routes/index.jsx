@@ -19,7 +19,6 @@ const PublicRoutes = () => {
 
   const iff = (condition, then, otherwise) => (condition ? then : otherwise)
 
-  const isEducatorPath = /\/educator\/(login|onboarding)/.test(location.pathname)
   const isAdminPath = location.pathname.includes('admin/login')
 
   useEffect(() => {
@@ -31,9 +30,7 @@ const PublicRoutes = () => {
 
     if (user) {
       const shouldStayLoggedIn =
-        (isEducatorPath && user.role === 'educator') ||
-        (isAdminPath && user.role === 'admin') ||
-        (!isEducatorPath && !isAdminPath && user.role === 'user')
+        (isAdminPath && user.role === 'admin') || (!isAdminPath && user.role === 'user')
 
       if (!shouldStayLoggedIn) {
         // logoutMutation()
@@ -42,18 +39,10 @@ const PublicRoutes = () => {
     }
 
     setCheckedAuth(true)
-  }, [location.pathname, user, dispatch, isAdminPath, isEducatorPath, tokenInQueryParams])
+  }, [location.pathname, user, dispatch, isAdminPath, tokenInQueryParams])
 
   if (checkedAuth && user) {
-    return (
-      <Navigate
-        to={`/${iff(
-          user?.role === 'admin',
-          'admin',
-          user?.role === 'educator' ? 'educator' : 'dashboard',
-        )}`}
-      />
-    )
+    return <Navigate to={`/${iff(user?.role === 'admin', 'admin', 'dashboard')}`} />
   }
 
   return (
