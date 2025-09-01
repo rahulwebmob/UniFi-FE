@@ -50,13 +50,7 @@ const EmailVerification = () => {
       localStorage.removeItem('token')
       localStorage.setItem('token', loginToken)
       dispatch(signIn({ token: loginToken }))
-      setTimeout(() => {
-        if (data?.data?.subscription?.isBasicSubscribed) {
-          navigate('/dashboard/layout')
-        } else {
-          navigate('/dashboard')
-        }
-      })
+      setTimeout(() => navigate('/dashboard'))
     }
   }, [isSuccess, error?.status, countdownActive, data, dispatch, navigate])
 
