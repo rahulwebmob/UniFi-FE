@@ -15,31 +15,7 @@ import { useState, useEffect, useRef } from 'react'
 import { PatternFormat } from 'react-number-format'
 
 import countries from '../../../constants/countries'
-
-// Flag display component
-const FlagDisplay = ({ countryCode, size = 24 }) => {
-  // Always use images for reliable display
-  const flagUrl = `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`
-
-  return (
-    <Box
-      component="img"
-      src={flagUrl}
-      alt={`${countryCode} flag`}
-      sx={{
-        width: size,
-        height: size * 0.75, // Maintain aspect ratio
-        objectFit: 'contain',
-        borderRadius: '2px',
-        display: 'inline-block',
-      }}
-      onError={(e) => {
-        // Fallback to a generic flag icon if image fails
-        e.target.style.display = 'none'
-      }}
-    />
-  )
-}
+import FlagDisplay from '../flag-display'
 
 const PhoneField = ({
   value = '',
@@ -221,11 +197,6 @@ const PhoneField = ({
       />
     </Box>
   )
-}
-
-FlagDisplay.propTypes = {
-  countryCode: PropTypes.string.isRequired,
-  size: PropTypes.number,
 }
 
 PhoneField.propTypes = {

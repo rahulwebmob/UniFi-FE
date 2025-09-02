@@ -4,7 +4,6 @@ import {
   Grid,
   Link,
   Button,
-  MenuItem,
   useTheme,
   Checkbox,
   TextField,
@@ -13,12 +12,14 @@ import {
   FormControl,
   FormHelperText,
   FormControlLabel,
+  Autocomplete,
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 
 import countries from '../../../../../constants/countries'
+import FlagDisplay from '../../../flag-display'
 import RequiredFieldIndicator from '../../../ui-elements/required-field-indicator'
 
 const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurrentStep }) => {
@@ -135,35 +136,44 @@ const BillingAddress = ({ subscriptionFormData, setSubscriptionFormData, setCurr
               name="country"
               control={control}
               defaultValue=""
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  select
-                  fullWidth
-                  size="small"
-                  placeholder="Select your country"
-                  variant="outlined"
-                  error={!!errors.country}
-                  helperText={errors.country?.message}
-                  SelectProps={{
-                    MenuProps: {
-                      PaperProps: {
-                        style: {
-                          maxHeight: 200,
-                        },
-                      },
-                    },
+              render={({ field: { onChange, value } }) => (
+                <Autocomplete
+                  value={countries.find((country) => country.value === value) || null}
+                  onChange={(event, newValue) => {
+                    onChange(newValue ? newValue.value : '')
                   }}
-                >
-                  <MenuItem value="">
-                    <em>Select your country</em>
-                  </MenuItem>
-                  {countries.map((item) => (
-                    <MenuItem key={item.value} value={item.value}>
-                      {item.value}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  options={countries}
+                  getOptionLabel={(option) => option.value || ''}
+                  renderOption={(props, option) => (
+                    <Box
+                      component="li"
+                      sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                      {...props}
+                    >
+                      <FlagDisplay countryCode={option.code} size={20} />
+                      {option.value}
+                    </Box>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="Select your country"
+                      error={!!errors.country}
+                      helperText={errors.country?.message}
+                      InputProps={{
+                        ...params.InputProps,
+                        startAdornment: value && (
+                          <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+                            <FlagDisplay countryCode={countries.find((c) => c.value === value)?.code} size={20} />
+                          </Box>
+                        ),
+                      }}
+                    />
+                  )}
+                  fullWidth
+                  autoHighlight
+                  clearOnEscape
+                />
               )}
             />
           </Grid>

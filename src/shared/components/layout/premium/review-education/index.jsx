@@ -1,19 +1,30 @@
-import { Box, Button, Divider, useTheme, Typography } from '@mui/material'
+import { Box, Button, Divider, useTheme, Typography, Alert, CircularProgress } from '@mui/material'
 import PropTypes from 'prop-types'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { useBuyPremiumSubscriptionMutation } from '../../../../../services/admin'
 import { educationApi } from '../../../../../services/education'
 
 const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchaseDetails }) => {
-  console.warn({ purchaseDetails })
-
   const theme = useTheme()
   const dispatch = useDispatch()
-  const [buyPremiumSubscription, { isLoading }] = useBuyPremiumSubscriptionMutation()
 
-  const { firstName, lastName, country, state, city, address } = transactionInfo
+  const [buyPremiumSubscription, { isLoading }] = useBuyPremiumSubscriptionMutation()
+  const [paymentError, setPaymentError] = useState(null)
+
+  const {
+    firstName,
+    lastName,
+    country,
+    state,
+    city,
+    address,
+    email,
+    stripeToken,
+    cardLast4,
+    cardBrand,
+  } = transactionInfo
 
   const billingAddress = useMemo(
     () => `${firstName} ${lastName}, ${country}, ${state}, ${city}, ${address}`,
@@ -21,34 +32,65 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
   )
 
   const handlePayment = async () => {
-    const purchaseType = purchaseDetails?.purchaseType
-    const basePayload = {
-      planId: purchaseDetails?._id || '',
-      ...transactionInfo,
-      subscriptionType: purchaseType,
+    if (!stripeToken) {
+      setPaymentError('Payment token not found. Please go back and try again.')
+      return
     }
 
-    if (purchaseType === 'COURSE') {
-      basePayload.courseId = purchaseDetails?._id
-    } else if (purchaseType === 'WEBINAR') {
-      basePayload.webinarId = purchaseDetails?._id
-      if (purchaseDetails?.scheduledDate) {
-        basePayload.scheduledDate = purchaseDetails.scheduledDate
+    setPaymentError(null)
+
+    try {
+      const purchaseType = purchaseDetails?.purchaseType
+
+      // Simplified payload with just the token and essential data
+      const basePayload = {
+        stripeToken,
+        planId: purchaseDetails?._id || '',
+        subscriptionType: purchaseType,
+        amount: purchaseDetails?.price,
+        email,
+        // Include billing info as backend may need it
+        ...transactionInfo,
       }
-    }
 
-    const response = await buyPremiumSubscription(basePayload)
-
-    if (!response.error) {
+      // Add specific fields based on purchase type
       if (purchaseType === 'COURSE') {
-        dispatch(educationApi.util.invalidateTags(['Course']))
-        dispatch(educationApi.util.invalidateTags(['All-Course']))
-      } else {
-        dispatch(educationApi.util.invalidateTags(['Webinar']))
-        dispatch(educationApi.util.invalidateTags(['All-Webinar']))
+        basePayload.courseId = purchaseDetails?._id
+      } else if (purchaseType === 'WEBINAR') {
+        basePayload.webinarId = purchaseDetails?._id
+        if (purchaseDetails?.scheduledDate) {
+          basePayload.scheduledDate = purchaseDetails.scheduledDate
+        }
       }
-      closeModal()
+
+      // Send to backend
+      const response = await buyPremiumSubscription(basePayload)
+
+      if (!response.error) {
+        // Payment successful - invalidate caches
+        if (purchaseType === 'COURSE') {
+          dispatch(educationApi.util.invalidateTags(['Course']))
+          dispatch(educationApi.util.invalidateTags(['All-Course']))
+        } else {
+          dispatch(educationApi.util.invalidateTags(['Webinar']))
+          dispatch(educationApi.util.invalidateTags(['All-Webinar']))
+        }
+
+        closeModal()
+      } else {
+        setPaymentError(response.error?.data?.message || 'Payment failed. Please try again.')
+      }
+    } catch (error) {
+      console.error('Payment error:', error)
+      setPaymentError('An error occurred during payment. Please try again.')
     }
+  }
+
+  const formatCardBrand = (brand) => {
+    if (!brand) {
+      return 'Card'
+    }
+    return brand.charAt(0).toUpperCase() + brand.slice(1)
   }
 
   return (
@@ -90,6 +132,21 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
       }}
     >
       <Box p={3}>
+        {paymentError && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {paymentError}
+          </Alert>
+        )}
+
+        <Typography component="p" display="block" mt={2}>
+          Payment Method:
+        </Typography>
+        <Typography color="text.secondary" component="p" mt={1}>
+          {formatCardBrand(cardBrand)} ending in {cardLast4}
+        </Typography>
+
+        <Divider sx={{ marginTop: '8px', marginBottom: '8px' }} />
+
         <Typography component="p" display="block" mt={2}>
           Billing Details:
         </Typography>
@@ -98,11 +155,13 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
         </Typography>
 
         <Divider sx={{ marginTop: '8px', marginBottom: '8px' }} />
+
         <Box className="BillingDetail">
           <Typography component="p" display="block" mb={1}>
             Content Details
           </Typography>
         </Box>
+
         <Box>
           <Box className="BillingDetail" color="text.secondary">
             <Box display="flex" alignItems="center" gap={1}>
@@ -125,6 +184,7 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
           Payable Now:
           <Typography> ${purchaseDetails?.price}</Typography>
         </Box>
+
         <Box
           display="flex"
           justifyContent="space-between"
@@ -152,18 +212,21 @@ const ReviewEducation = ({ transactionInfo, setCurrentStep, closeModal, purchase
               variant="outlined"
               onClick={() => setCurrentStep(1)}
               sx={{ borderRadius: '8px' }}
+              disabled={isLoading}
             >
               Back
             </Button>
             <Button
-              disabled={isLoading}
-              onClick={() => {
-                handlePayment()
-              }}
+              disabled={isLoading || !stripeToken}
+              onClick={handlePayment}
               variant="contained"
-              sx={{ borderRadius: '8px', fontWeight: 600 }}
+              sx={{
+                borderRadius: '8px',
+                fontWeight: 600,
+                minWidth: '100px',
+              }}
             >
-              Pay Now
+              {isLoading ? <CircularProgress size={20} color="inherit" /> : 'Pay Now'}
             </Button>
           </Box>
         </Box>
@@ -180,6 +243,10 @@ ReviewEducation.propTypes = {
     state: PropTypes.string,
     city: PropTypes.string,
     address: PropTypes.string,
+    email: PropTypes.string,
+    stripeToken: PropTypes.string,
+    cardLast4: PropTypes.string,
+    cardBrand: PropTypes.string,
   }),
   setCurrentStep: PropTypes.func,
   closeModal: PropTypes.func,

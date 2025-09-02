@@ -4,6 +4,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import { adminApi } from '../services/admin'
 import { educationApi } from '../services/education'
 import { onboardingApi } from '../services/onboarding'
+import { stripeApi } from '../services/stripe'
 import { uploadApi } from '../services/uploadProgress'
 
 import AlertReducer from './reducers/app-slice'
@@ -17,6 +18,7 @@ const combinedReducers = combineReducers({
   [adminApi.reducerPath]: adminApi.reducer,
   [onboardingApi.reducerPath]: onboardingApi.reducer,
   [educationApi.reducerPath]: educationApi.reducer,
+  [stripeApi.reducerPath]: stripeApi.reducer,
   [uploadApi.reducerPath]: uploadApi.reducer,
 })
 
@@ -37,6 +39,7 @@ const store = configureStore({
       .concat(adminApi.middleware)
       .concat(onboardingApi.middleware)
       .concat(educationApi.middleware)
+      .concat(stripeApi.middleware)
       .concat(uploadApi.middleware),
 })
 

@@ -15,6 +15,12 @@ export const ENV = {
   BASE_URL: getEnvVar('VITE_BASE_URL', 'REACT_APP_Base_Url'),
   AES_SECRET_KEY: getEnvVar('VITE_AES_SECRET_KEY', 'REACT_APP_AES_SECRET_KEY'),
 
+  // Stripe configuration
+  STRIPE_PUBLISHABLE_KEY: getEnvVar(
+    'VITE_STRIPE_PUBLISHABLE_KEY',
+    'REACT_APP_STRIPE_PUBLISHABLE_KEY',
+  ),
+
   // Optional variables
   CDN: getEnvVar('VITE_CDN', 'REACT_APP_CDN'),
 }

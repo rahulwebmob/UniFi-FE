@@ -5,9 +5,9 @@ import { useState, forwardRef } from 'react'
 
 import ModalBox from '../../ui-elements/modal-box'
 
-import AddNewCard from './add-new-card'
 import BillingAddress from './billing-adress'
 import ReviewEducation from './review-education'
+import StripePaymentWrapper from './stripe-payment-wrapper'
 
 const CustomStepIcon = (props) => {
   const { active, completed, iconComponent: Icon } = props
@@ -71,7 +71,7 @@ const PremiumModal = forwardRef(({ purchaseDetails }, ref) => {
     switch (currentStep) {
       case 0:
         return (
-          <AddNewCard
+          <StripePaymentWrapper
             setCurrentStep={setCurrentStep}
             setSubscriptionFormData={setSubscriptionFormData}
             subscriptionFormData={subscriptionFormData}
