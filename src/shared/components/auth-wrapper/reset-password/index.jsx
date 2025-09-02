@@ -2,9 +2,9 @@ import { Box, Typography } from '@mui/material'
 import { jwtDecode } from 'jwt-decode'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
-import { updateUser } from '../../../../redux/reducers/user-slice'
+import { signIn } from '../../../../redux/reducers/user-slice'
 import {
   useCreatePasswordMutation,
   useEducatorResetPasswordMutation,
@@ -16,13 +16,12 @@ import AuthWrapper from '../index'
 const ResetPassword = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const [searchParams] = useSearchParams()
-  const token = searchParams.get('token')
+  const queryParams = new URLSearchParams(window.location.search)
+  const token = queryParams.get('token')
 
   const [resetUserPassword] = useCreatePasswordMutation()
   const [resetAdminPassword] = useCreateAdminPasswordMutation()
   const [educatorResetPassword] = useEducatorResetPasswordMutation()
-
   let user = null
   try {
     if (token) {
@@ -40,44 +39,44 @@ const ResetPassword = () => {
       token,
     }
 
-    try {
-      if (user?.role === 'admin') {
-        response = await resetAdminPassword(formData).unwrap()
-      } else if (user?.role === 'educator') {
-        response = await educatorResetPassword(formData).unwrap()
-      } else {
-        response = await resetUserPassword(formData).unwrap()
-      }
+    localStorage.setItem('token', token)
+    if (user?.role === 'admin') {
+      response = await resetAdminPassword(formData)
+    } else if (user?.role === 'educator') {
+      response = await educatorResetPassword(formData)
+    } else {
+      response = await resetUserPassword(formData)
+    }
 
-      const newToken = response?.token || response?.data?.token
-
-      if (newToken) {
-        localStorage.setItem('token', newToken)
-        dispatch(updateUser({ token: newToken }))
-
-        setTimeout(() => {
-          if (user?.role === 'admin') {
-            navigate('/admin')
-          } else if (user?.role === 'educator') {
-            navigate('/educator')
-          } else {
-            navigate('/dashboard')
-          }
-        }, 100)
+    if (!response?.error) {
+      if (response?.data?.token) {
+        localStorage.setItem('token', response?.data?.token)
+        dispatch(signIn({ token: response?.data?.token }))
       } else {
         localStorage.removeItem('token')
-        navigate('/')
       }
-    } catch {
-      //
+
+      setTimeout(() => {
+        if (user?.role === 'admin') {
+          navigate('/admin')
+        } else if (user?.role === 'educator') {
+          navigate('/educator')
+        } else {
+          navigate('/dashboard')
+        }
+      })
     }
   }
-
   useEffect(() => {
-    if (!token || !user) {
+    if (!token) {
       navigate('/')
     }
-  }, [token, user, navigate])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token])
+
+  useEffect(() => {
+    localStorage.removeItem('token')
+  }, [])
 
   return (
     <AuthWrapper type={user?.role}>
