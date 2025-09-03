@@ -8,6 +8,7 @@ import {
   FormControl,
   useMediaQuery,
   InputAdornment,
+  CircularProgress,
 } from '@mui/material'
 import { Eye, EyeOff, Save } from 'lucide-react'
 import PropTypes from 'prop-types'
@@ -38,8 +39,8 @@ const ChangePassword = ({
   const matches = useMediaQuery((theme) => theme.breakpoints.down('sm'))
   const isPasswordMissing = useSelector((state) => state.user?.user?.isPasswordMissing ?? false)
 
-  const [resetUserPassword] = useResetPasswordMutation()
-  const [updateAdminPassword] = useEditAdminProfileMutation()
+  const [resetUserPassword, { isLoading: isResetLoading }] = useResetPasswordMutation()
+  const [updateAdminPassword, { isLoading: isUpdateLoading }] = useEditAdminProfileMutation()
 
   const schemaResolver =
     isResetPassword || isPasswordMissing
@@ -94,7 +95,7 @@ const ChangePassword = ({
     control,
     reset,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(schemaResolver),
     defaultValues,
@@ -341,12 +342,19 @@ const ChangePassword = ({
           type="submit"
           variant="contained"
           color="primary"
-          startIcon={<Save size={20} />}
+          startIcon={
+            isSubmitting || isResetLoading || isUpdateLoading ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              <Save size={20} />
+            )
+          }
           sx={{
             mt: 2,
           }}
+          disabled={isSubmitting || isResetLoading || isUpdateLoading}
         >
-          Save
+          {isSubmitting || isResetLoading || isUpdateLoading ? 'Saving...' : 'Save'}
         </Button>
       </form>
     </Box>

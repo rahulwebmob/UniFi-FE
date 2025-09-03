@@ -7,6 +7,7 @@ import {
   Typography,
   FormControl,
   useMediaQuery,
+  CircularProgress,
 } from '@mui/material'
 import { Save } from 'lucide-react'
 import PropTypes from 'prop-types'
@@ -23,7 +24,7 @@ import ModalBox from '../../../../shared/components/ui-elements/modal-box'
 const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
   const dispatch = useDispatch()
   const matches = useMediaQuery((theme) => theme.breakpoints.down('sm'))
-  const [updateName] = useEditAdminProfileMutation()
+  const [updateName, { isLoading }] = useEditAdminProfileMutation()
 
   const schemaResolver = yupResolver(
     yup.object().shape({
@@ -44,7 +45,7 @@ const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
     control,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: schemaResolver,
     defaultValues: {
@@ -149,10 +150,17 @@ const AdminSettings = forwardRef(({ userData, onClose }, ref) => {
               size="medium"
               type="submit"
               variant="contained"
-              startIcon={<Save size={18} />}
+              startIcon={
+                isLoading || isSubmitting ? (
+                  <CircularProgress size={18} color="inherit" />
+                ) : (
+                  <Save size={18} />
+                )
+              }
               sx={{ mt: 2.5 }}
+              disabled={isLoading || isSubmitting}
             >
-              Save
+              {isLoading || isSubmitting ? 'Saving...' : 'Save'}
             </Button>
           </Box>
         </form>

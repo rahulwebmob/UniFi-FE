@@ -160,10 +160,10 @@ export const colors = {
 
   // Text Colors - Optimized for readability with brand colors
   text: {
-    primary: '#0F1419', // Almost black for maximum contrast
-    secondary: '#4B5563', // Medium gray for secondary text
-    disabled: '#87A3B6', // Brand light blue for disabled (unique approach)
-    hint: '#9CA3AF', // Light gray for hints
+    primary: '#0F1419', // Almost black for maximum contrast (WCAG AAA)
+    secondary: '#374151', // Darker gray for better contrast (WCAG AA)
+    disabled: '#6B7280', // Medium gray for disabled (WCAG AA)
+    hint: '#6B7280', // Medium gray for hints (WCAG AA)
     inverse: '#FFFFFF',
   },
 

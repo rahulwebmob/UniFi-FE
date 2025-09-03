@@ -1,7 +1,16 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Box, Grid, Button, TextField, Typography } from '@mui/material'
-import { ArrowLeft } from 'lucide-react'
+import {
+  Box,
+  Grid,
+  Button,
+  TextField,
+  Typography,
+  CircularProgress,
+  InputAdornment,
+} from '@mui/material'
+import { ArrowLeft, Mail, Send } from 'lucide-react'
 import PropTypes from 'prop-types'
+import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 
@@ -12,6 +21,7 @@ import {
 import { useAdminForgetPasswordMutation } from '../../../../services/onboarding'
 
 const ForgetPassword = ({ type = '', setShowForgetPassword }) => {
+  const [isLoading, setIsLoading] = useState(false)
   const [updateForgetPassword] = useForgetPasswordMutation()
   const [adminForgetPassword] = useAdminForgetPasswordMutation()
   const [educatorForgetPassword] = useEducatorForgetPasswordMutation()
@@ -30,16 +40,21 @@ const ForgetPassword = ({ type = '', setShowForgetPassword }) => {
   })
 
   const onSubmit = async (value) => {
+    setIsLoading(true)
     let response
-    if (type === 'admin') {
-      response = await adminForgetPassword(value)
-    } else if (type === 'educator') {
-      response = await educatorForgetPassword(value)
-    } else {
-      response = await updateForgetPassword(value)
-    }
-    if (!response.error) {
-      reset()
+    try {
+      if (type === 'admin') {
+        response = await adminForgetPassword(value)
+      } else if (type === 'educator') {
+        response = await educatorForgetPassword(value)
+      } else {
+        response = await updateForgetPassword(value)
+      }
+      if (!response.error) {
+        reset()
+      }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -81,26 +96,59 @@ const ForgetPassword = ({ type = '', setShowForgetPassword }) => {
                 error={!!errors.email}
                 helperText={errors.email?.message}
                 autoComplete="email"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Mail size={20} />
+                    </InputAdornment>
+                  ),
+                }}
               />
             )}
           />
         </Grid>
-
-        <Button variant="contained" type="submit" fullWidth sx={{ mb: 2 }}>
-          Send Reset Link
-        </Button>
-      </form>
-
-      <Box display="flex" alignItems="center" justifyContent="center">
-        <Button
-          startIcon={<ArrowLeft size={20} />}
-          onClick={() => {
-            setShowForgetPassword(false)
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          gap={2}
+          sx={{
+            flexDirection: { xs: 'column', sm: 'row' },
           }}
         >
-          Back to Login
-        </Button>
-      </Box>
+          <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<ArrowLeft size={20} />}
+            onClick={() => {
+              setShowForgetPassword(false)
+            }}
+            sx={{
+              order: { xs: 2, sm: 1 },
+            }}
+          >
+            Back to Login
+          </Button>
+          <Button
+            variant="contained"
+            type="submit"
+            fullWidth
+            disabled={isLoading}
+            startIcon={
+              isLoading ? (
+                <CircularProgress size={20} sx={{ color: 'primary.main' }} />
+              ) : (
+                <Send size={20} />
+              )
+            }
+            sx={{
+              order: { xs: 1, sm: 2 },
+            }}
+          >
+            {isLoading ? 'Sending...' : 'Send Reset Link'}
+          </Button>
+        </Box>
+      </form>
     </Box>
   )
 }

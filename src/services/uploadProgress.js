@@ -3,7 +3,7 @@ import axios from 'axios'
 
 import { ENV } from '../utils/env'
 
-import { onMutationStartedDefault } from './serviceUtility'
+import { onMutationStarted } from './serviceUtility'
 
 const axiosBaseQuery =
   ({ baseUrl } = { baseUrl: '' }) =>
@@ -42,7 +42,7 @@ export const uploadApi = createApi({
         params: {},
         onUploadProgress,
       }),
-      onQueryStarted: onMutationStartedDefault,
+      onQueryStarted: onMutationStarted,
     }),
   }),
 })

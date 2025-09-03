@@ -1,4 +1,4 @@
-import { Box, Button, useTheme, Typography } from '@mui/material'
+import { Box, Button, useTheme, Typography, CircularProgress } from '@mui/material'
 import { Mail, ArrowLeft } from 'lucide-react'
 import PropTypes from 'prop-types'
 
@@ -6,7 +6,7 @@ import { useResendEmailMutation } from '../../../../services/admin'
 
 const ResendEmail = ({ setResendEmail, email }) => {
   const theme = useTheme()
-  const [resendEmail] = useResendEmailMutation()
+  const [resendEmail, { isLoading }] = useResendEmailMutation()
 
   const onSubmit = async () => {
     await resendEmail({ email })
@@ -70,8 +70,10 @@ const ResendEmail = ({ setResendEmail, email }) => {
             onSubmit()
           }}
           sx={{ mb: 1 }}
+          disabled={isLoading}
+          startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : null}
         >
-          Resend Verification Email
+          {isLoading ? 'Sending...' : 'Resend Verification Email'}
         </Button>
         <Typography variant="caption" display="block" textAlign="center" sx={{ opacity: 0.7 }}>
           Check your spam folder if you don&apos;t see it in your inbox

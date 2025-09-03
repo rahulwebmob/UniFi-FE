@@ -56,7 +56,7 @@ const WebinarMetaData = () => {
               gap="2px"
             >
               Upload Resource
-              <Typography display="inline-block" color="text.secondary">
+              <Typography display="inline-block" component="span" color="text.secondary">
                 (doc, docx, pdf)
               </Typography>
             </Typography>

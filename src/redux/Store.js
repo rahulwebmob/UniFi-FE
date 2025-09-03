@@ -22,7 +22,6 @@ const combinedReducers = combineReducers({
 
 const rootReducer = (state, action) => {
   if (action.type === signOut.type) {
-    // Socket disconnection removed - no longer needed
     return combinedReducers(undefined, action)
   }
   return combinedReducers(state, action)

@@ -81,7 +81,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
         approval: false,
         declinedReason: reason,
       })
-      if (response?.data) {
+      if (!response?.error) {
         confirmationRef.current?.closeModal()
         onClose()
       }
@@ -93,7 +93,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
       educatorIds: [id],
       approval: true,
     })
-    if (response?.data) {
+    if (!response?.error) {
       onClose()
     }
   }
@@ -102,7 +102,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
     const response = await tutorDelete({
       educatorId: id,
     })
-    if (response?.data) {
+    if (!response?.error) {
       onClose()
     }
   }
@@ -111,7 +111,7 @@ const ApplicantInfo = ({ tutor, onClose, filter }) => {
     const response = await reconsiderStatus({
       educatorId: id,
     })
-    if (response?.data) {
+    if (!response?.error) {
       onClose()
     }
   }

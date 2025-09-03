@@ -76,7 +76,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
         response = await userLogin(values)
     }
 
-    if (response?.data) {
+    if (!response?.error) {
       const { token } = response.data
       localStorage.setItem('token', token)
       dispatch(signIn({ token }))

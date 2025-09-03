@@ -166,7 +166,7 @@ export const styles = {
     display: 'block',
     borderRadius: '12px',
     backgroundColor: '#0d0d0f',
-    objectFit: 'cover',
+    objectFit: 'contain',
   },
   wrapper: {
     top: 0,

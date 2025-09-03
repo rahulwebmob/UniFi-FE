@@ -1,5 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, FormLabel, Grid, TextField, Box, Typography, Alert } from '@mui/material'
+import {
+  Button,
+  FormLabel,
+  Grid,
+  TextField,
+  Box,
+  Typography,
+  Alert,
+  CircularProgress,
+} from '@mui/material'
 import { Trash2, AlertTriangle, RefreshCw } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
@@ -12,8 +21,8 @@ import {
 } from '../../../../../services/admin'
 
 const PlatformUserModal = ({ modalType, userId, firstName, lastName, email, closeModal }) => {
-  const [updatePlatformUser] = useUpdatePlatformUserMutation()
-  const [deletePlatformUser] = useDeletePlatformUserMutation()
+  const [updatePlatformUser, { isLoading: isUpdating }] = useUpdatePlatformUserMutation()
+  const [deletePlatformUser, { isLoading: isDeleteLoading }] = useDeletePlatformUserMutation()
   const [isDeleting, setIsDeleting] = useState(false)
 
   const schemaResolver = yupResolver(
@@ -28,7 +37,7 @@ const PlatformUserModal = ({ modalType, userId, firstName, lastName, email, clos
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: schemaResolver,
     defaultValues: {
@@ -103,11 +112,17 @@ const PlatformUserModal = ({ modalType, userId, firstName, lastName, email, clos
           <Button
             variant="contained"
             color="error"
-            startIcon={<Trash2 size={18} />}
+            startIcon={
+              isDeleting || isDeleteLoading ? (
+                <CircularProgress size={18} color="inherit" />
+              ) : (
+                <Trash2 size={18} />
+              )
+            }
             onClick={handleDelete}
-            disabled={isDeleting}
+            disabled={isDeleting || isDeleteLoading}
           >
-            {isDeleting ? 'Deleting...' : 'Delete User'}
+            {isDeleting || isDeleteLoading ? 'Deleting...' : 'Delete User'}
           </Button>
         </Box>
       </Box>
@@ -184,13 +199,20 @@ const PlatformUserModal = ({ modalType, userId, firstName, lastName, email, clos
         </Grid>
       </Grid>
       <Button
-        startIcon={<RefreshCw size={18} />}
+        startIcon={
+          isUpdating || isSubmitting ? (
+            <CircularProgress size={18} color="inherit" />
+          ) : (
+            <RefreshCw size={18} />
+          )
+        }
         variant="contained"
         type="submit"
         size="large"
         sx={{ mt: 2 }}
+        disabled={isUpdating || isSubmitting}
       >
-        Update
+        {isUpdating || isSubmitting ? 'Updating...' : 'Update'}
       </Button>
     </form>
   )

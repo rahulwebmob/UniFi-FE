@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material'
 import { X, Send } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
@@ -23,7 +23,7 @@ const InviiteApplicant = ({ onClose }) => {
     resolver: yupResolver(validationSchema),
   })
 
-  const [inviteTutor] = useInviteEducatorMutation()
+  const [inviteTutor, { isLoading }] = useInviteEducatorMutation()
 
   const onSubmit = async (data) => {
     const payload = {
@@ -166,15 +166,18 @@ const InviiteApplicant = ({ onClose }) => {
         <Button
           type="submit"
           variant="contained"
-          startIcon={<Send size={18} />}
+          startIcon={
+            isLoading ? <CircularProgress size={18} color="inherit" /> : <Send size={18} />
+          }
           sx={{
             textTransform: 'none',
             borderRadius: 1,
             fontWeight: 600,
             px: 3,
           }}
+          disabled={isLoading}
         >
-          Invite Tutor
+          {isLoading ? 'Sending...' : 'Invite Tutor'}
         </Button>
       </Box>
     </Box>

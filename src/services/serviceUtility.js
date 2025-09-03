@@ -1,97 +1,50 @@
 import { errorAlert, successAlert } from '../redux/reducers/app-slice'
 import { signOut } from '../redux/reducers/user-slice'
 
-export const onQueryStartedDefault = async (_id, { dispatch, queryFulfilled }) => {
+export const onQueryStarted = async (id, { dispatch, queryFulfilled }) => {
   try {
     await queryFulfilled
   } catch (err) {
-    const error = err
-    if (error?.error?.status === 401) {
+    if (err?.error?.status === 401) {
       dispatch(signOut())
       dispatch(
         errorAlert({
-          message: error?.error?.data?.message
-            ? error?.error?.data?.message
-            : 'Session expired, please sign in again !',
+          message: err?.error?.data?.message
+            ? err?.error?.data?.message
+            : 'Your session has expired. Please log in again.',
         }),
       )
     } else {
       dispatch(
         errorAlert({
-          message: error?.error?.data?.message || 'Error loading data',
+          message: err?.error?.data?.message || 'Error loading data',
         }),
       )
     }
   }
 }
 
-export const onQueryStarted = async (_id, { dispatch, queryFulfilled }) => {
-  try {
-    await queryFulfilled
-  } catch (err) {
-    const error = err
-    if (error?.error?.status === 401) {
-      dispatch(signOut())
-      dispatch(
-        errorAlert({
-          message: error?.error?.data?.message
-            ? error?.error?.data?.message
-            : 'Session expired, please sign in again !',
-        }),
-      )
-    } else if (error?.error?.status !== 304) {
-      dispatch(
-        errorAlert({
-          message: error?.error?.data?.message || 'Error loading data',
-        }),
-      )
-    }
-  }
-}
-export const onMutationStartedDefault = async (_data, { dispatch, queryFulfilled }) => {
+export const onMutationStarted = async (data, { dispatch, queryFulfilled }) => {
   try {
     const res = await queryFulfilled
-    if (
-      res?.data &&
-      typeof res.data === 'object' &&
-      'message' in res.data &&
-      typeof res.data.message === 'string'
-    ) {
+    if (res?.data?.message) {
       dispatch(successAlert({ message: res.data.message }))
     }
   } catch (err) {
-    const error = err
-    if (error?.error?.status === 401) {
+    if (err?.error?.status === 401) {
+      // if unauthorization error,logout user.
       dispatch(signOut())
       dispatch(
         errorAlert({
-          message: error?.error?.data?.message
-            ? error?.error?.data?.message
-            : 'Session expired, please sign in again !',
+          message: err?.error?.data?.message
+            ? err?.error?.data?.message
+            : 'Your session has expired. Please log in again.',
         }),
       )
     } else {
       dispatch(
         errorAlert({
-          message: error?.error?.data?.message || 'Error completing request',
-        }),
-      )
-    }
-  }
-}
-
-export const onMutationStarted = async (_id, { dispatch, queryFulfilled }) => {
-  try {
-    await queryFulfilled
-  } catch (err) {
-    const error = err
-    if (error?.error?.status === 401) {
-      dispatch(signOut())
-      dispatch(
-        errorAlert({
-          message: error?.error?.data?.message
-            ? error?.error?.data?.message
-            : 'Session expired, please sign in again !',
+          message: err?.error?.data?.message || 'Error completing request',
         }),
       )
     }

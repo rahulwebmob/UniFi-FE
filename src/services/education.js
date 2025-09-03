@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { ENV } from '../utils/env'
 
-import { onQueryStartedDefault } from './serviceUtility'
+import { onQueryStarted } from './serviceUtility'
 
 export const educationApi = createApi({
   reducerPath: 'educationApi',
@@ -24,7 +24,7 @@ export const educationApi = createApi({
         method: 'GET',
         params,
       }),
-      onQueryStarted: onQueryStartedDefault,
+      onQueryStarted,
       providesTags: ['All-Course'],
     }),
     getParticularCourse: builder.query({
@@ -33,7 +33,7 @@ export const educationApi = createApi({
         method: 'GET',
         params,
       }),
-      onQueryStarted: onQueryStartedDefault,
+      onQueryStarted,
       providesTags: ['Course'],
     }),
     getChapterDetails: builder.query({
@@ -42,7 +42,7 @@ export const educationApi = createApi({
         method: 'GET',
         params,
       }),
-      onQueryStarted: onQueryStartedDefault,
+      onQueryStarted,
     }),
     getAllWebinars: builder.query({
       query: (params) => ({
@@ -50,7 +50,7 @@ export const educationApi = createApi({
         method: 'GET',
         params,
       }),
-      onQueryStarted: onQueryStartedDefault,
+      onQueryStarted,
       providesTags: ['All-Webinar'],
     }),
     getParticularWebinarDetail: builder.query({
@@ -59,7 +59,7 @@ export const educationApi = createApi({
         method: 'GET',
         params,
       }),
-      onQueryStarted: onQueryStartedDefault,
+      onQueryStarted,
       providesTags: ['Webinar'],
     }),
     getAttachmentsList: builder.query({
@@ -68,7 +68,7 @@ export const educationApi = createApi({
         method: 'GET',
         params,
       }),
-      onQueryStarted: onQueryStartedDefault,
+      onQueryStarted,
     }),
     getEducationPayments: builder.query({
       query: (params) => ({
@@ -76,7 +76,7 @@ export const educationApi = createApi({
         method: 'GET',
         params,
       }),
-      onQueryStarted: onQueryStartedDefault,
+      onQueryStarted,
       transformResponse: (response) => response.data?.data || [],
       keepUnusedDataFor: 0,
     }),
@@ -86,14 +86,14 @@ export const educationApi = createApi({
         method: 'GET',
         params,
       }),
-      onQueryStarted: onQueryStartedDefault,
+      onQueryStarted,
     }),
     getCategoryList: builder.query({
       query: () => ({
         url: `/get-categories-list`,
         method: 'GET',
       }),
-      onQueryStarted: onQueryStartedDefault,
+      onQueryStarted,
     }),
   }),
 })

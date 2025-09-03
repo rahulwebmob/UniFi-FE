@@ -12,6 +12,7 @@ import {
   Typography,
   Box,
   Alert,
+  CircularProgress,
 } from '@mui/material'
 import { Send, Trash2, AlertTriangle, RefreshCw, UserPlus } from 'lucide-react'
 import PropTypes from 'prop-types'
@@ -156,7 +157,9 @@ const AdminUserModal = ({
           <Button
             variant="contained"
             color="error"
-            startIcon={<Trash2 size={18} />}
+            startIcon={
+              isDeleting ? <CircularProgress size={18} color="inherit" /> : <Trash2 size={18} />
+            }
             onClick={handleDelete}
             disabled={isDeleting}
           >
@@ -182,7 +185,9 @@ const AdminUserModal = ({
           </Grid>
         </Grid>
         <Button
-          startIcon={<Send size={18} />}
+          startIcon={
+            isSubmitting ? <CircularProgress size={18} color="inherit" /> : <Send size={18} />
+          }
           variant="contained"
           type="submit"
           size="large"
@@ -294,7 +299,15 @@ const AdminUserModal = ({
         </Grid>
       </Grid>
       <Button
-        startIcon={isAddMode ? <UserPlus size={18} /> : <RefreshCw size={18} />}
+        startIcon={
+          isSubmitting ? (
+            <CircularProgress size={18} color="inherit" />
+          ) : isAddMode ? (
+            <UserPlus size={18} />
+          ) : (
+            <RefreshCw size={18} />
+          )
+        }
         variant="contained"
         type="submit"
         size="large"

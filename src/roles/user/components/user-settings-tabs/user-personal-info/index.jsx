@@ -9,6 +9,7 @@ import {
   Typography,
   FormControl,
   useMediaQuery,
+  CircularProgress,
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { ImageUp, Save } from 'lucide-react'
@@ -31,7 +32,7 @@ const PersonalInfo = () => {
 
   const [avatar, setAvatar] = useState({ file: null, image: null })
   const matches = useMediaQuery(theme.breakpoints.down('sm'))
-  const [editDetails] = useMyProfileMutation()
+  const [editDetails, { isLoading }] = useMyProfileMutation()
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -64,7 +65,7 @@ const PersonalInfo = () => {
     control,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: schemaResolver,
     defaultValues: {
@@ -283,9 +284,16 @@ const PersonalInfo = () => {
             type="submit"
             variant="contained"
             mt={1}
-            startIcon={<Save size={18} />}
+            startIcon={
+              isLoading || isSubmitting ? (
+                <CircularProgress size={18} color="inherit" />
+              ) : (
+                <Save size={18} />
+              )
+            }
+            disabled={isLoading || isSubmitting}
           >
-            Save
+            {isLoading || isSubmitting ? 'Saving...' : 'Save'}
           </Button>
         </Box>
       </form>
