@@ -166,7 +166,9 @@ const WebinarSchedule = () => {
                 )}
               />
               {errors?.startDate && (
-                <Typography color="error">{errors?.startDate?.message}</Typography>
+                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                  {errors?.startDate?.message}
+                </Typography>
               )}
             </FormControl>
           </Grid>
@@ -255,7 +257,11 @@ const WebinarSchedule = () => {
                   )
                 }}
               />
-              {errors?.endTime && <Typography color="error">{errors?.endTime?.message}</Typography>}
+              {errors?.endTime && (
+                <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                  {errors?.endTime?.message}
+                </Typography>
+              )}
             </FormControl>
           </Grid>
         </>

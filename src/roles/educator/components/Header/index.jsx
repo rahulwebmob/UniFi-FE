@@ -221,39 +221,37 @@ const Header = () => {
           },
         }}
       >
-        {isMobile && (
-          <>
-            <Box px={2} py={1}>
-              {renderUserProfile()}
-            </Box>
-            <Divider />
-            {navigationItems.map((item) => {
-              const Icon = item.icon
-              const isActive = item.isActive()
+        {isMobile && [
+          <Box key="profile" px={2} py={1}>
+            {renderUserProfile()}
+          </Box>,
+          <Divider key="divider1" />,
+          ...navigationItems.map((item) => {
+            const Icon = item.icon
+            const isActive = item.isActive()
 
-              return (
-                <MenuItem
-                  key={item.id}
-                  onClick={() => handleNavigation(item.path)}
-                  sx={{
-                    py: 1.5,
-                    px: 2,
-                    gap: 1.5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    color: isActive ? 'primary.main' : 'text.primary',
-                    fontWeight: isActive ? 600 : 400,
-                    backgroundColor: isActive ? 'action.selected' : 'transparent',
-                  }}
-                >
-                  <Icon size={18} />
-                  <Typography variant="body2">{item.label}</Typography>
-                </MenuItem>
-              )
-            })}
-            <Divider sx={{ my: 0.5 }} />
-          </>
-        )}
+            return (
+              <MenuItem
+                key={item.id}
+                onClick={() => handleNavigation(item.path)}
+                sx={{
+                  py: 1.5,
+                  px: 2,
+                  gap: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: isActive ? 'primary.main' : 'text.primary',
+                  fontWeight: isActive ? 600 : 400,
+                  backgroundColor: isActive ? 'action.selected' : 'transparent',
+                }}
+              >
+                <Icon size={18} />
+                <Typography variant="body2">{item.label}</Typography>
+              </MenuItem>
+            )
+          }),
+          <Divider key="divider2" sx={{ my: 0.5 }} />,
+        ]}
 
         <LogoutWrapper
           type="educator"

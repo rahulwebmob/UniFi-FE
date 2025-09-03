@@ -51,6 +51,7 @@ const AddCategory = () => {
                   key={name}
                   label={name}
                   size="small"
+                  color="primary"
                   variant={value?.includes(name) ? 'filled' : 'outlined'}
                   onClick={() => {
                     if (value?.includes(name)) {

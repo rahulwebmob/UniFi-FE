@@ -19,7 +19,6 @@ import { useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-// import ConferenceChat from '../../Conference/ConferenceChat/ConferenceChat'
 import useFullscreen from '../../../../hooks/useFullscreen'
 import useScreenRecorder from '../../../../hooks/useScreenRecorder'
 import ModalBox from '../../../../shared/components/ui-elements/modal-box'

@@ -441,6 +441,7 @@ const CreateWebinar = ({
                   placeholder="Describe your webinar"
                   multiline
                   rows={5}
+                  size="small"
                   variant="outlined"
                   fullWidth
                   error={!!fieldState.error}

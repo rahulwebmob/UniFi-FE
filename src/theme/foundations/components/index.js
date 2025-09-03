@@ -1640,6 +1640,9 @@ export const MuiTextField = {
       '& .MuiFormHelperText-root': {
         marginTop: theme.spacing(0.5),
         fontSize: '0.8125rem',
+        '&.MuiFormHelperText-sizeSmall': {
+          fontSize: '0.75rem',
+        },
       },
     }),
   },
