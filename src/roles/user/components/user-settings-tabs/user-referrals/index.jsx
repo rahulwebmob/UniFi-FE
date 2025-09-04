@@ -55,8 +55,7 @@ const Referrals = () => {
           Referral Program
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Share your referral link with friends and earn rewards when they sign up and make their
-          first purchase.
+          Share your referral link with friends.
         </Typography>
       </Box>
 

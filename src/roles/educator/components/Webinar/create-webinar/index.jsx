@@ -509,7 +509,7 @@ const CreateWebinar = ({
           <Grid size={{ xs: 6 }}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5} fontWeight={600}>
-                Add Price{' '}
+                Add Price ($)
                 <Typography variant="body1" color="error.main" component="span">
                   *
                 </Typography>

@@ -568,6 +568,7 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
                   src={courseData?.previewVideo}
                   autoPlay
                   muted
+                  controls
                   loop
                   playsInline
                 >
@@ -583,7 +584,6 @@ const CourseContentDetails = ({ courseData, isEdit = true, handlePurchase = () =
         {renderPreview()}
       </ModalBox>
 
-      {/* Description Modal */}
       <ModalBox ref={descriptionModalRef} size="md">
         <Typography variant="h5" mb={2}>
           Course Description

@@ -191,7 +191,7 @@ const BasicDetails = () => {
             <Grid size={6}>
               <FormControl fullWidth>
                 <Typography variant="body1" mb={1} fontWeight={500}>
-                  Add Price
+                  Add Price ($)
                 </Typography>
                 <Controller
                   name="price"
