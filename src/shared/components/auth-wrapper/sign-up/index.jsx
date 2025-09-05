@@ -281,17 +281,15 @@ const SignUp = ({ setIsLoginPage }) => {
           {isLoading ? 'Signing Up...' : 'Sign Up'}
         </Button>
       </form>
-      <Box display="flex" alignItems="center" justifyContent="center">
+      <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
         <Typography variant="body2" color={theme.palette.text.secondary}>
           By creating an account, you agree to our
           <Typography
             variant="body2"
             component="span"
             sx={{
-              margin: 0.5,
-              fontSize: 13,
-              fontWeight: 500,
-              color: theme.palette.primary.main,
+              mx: 0.5,
+              color: 'primary.main',
               cursor: 'pointer',
               '&:hover': { textDecoration: 'underline' },
             }}
@@ -303,10 +301,8 @@ const SignUp = ({ setIsLoginPage }) => {
             component="span"
             variant="body2"
             sx={{
-              marginLeft: 0.5,
-              fontSize: 13,
-              fontWeight: 500,
-              color: theme.palette.primary.main,
+              ml: 0.5,
+              color: 'primary.main',
               cursor: 'pointer',
               '&:hover': { textDecoration: 'underline' },
             }}
@@ -330,10 +326,8 @@ const SignUp = ({ setIsLoginPage }) => {
             className="link"
             onClick={() => setIsLoginPage(true)}
             sx={{
-              marginLeft: 0.75,
-              fontSize: 14,
-              fontWeight: 600,
-              color: theme.palette.primary.main,
+              ml: 0.5,
+              color: 'primary.main',
               cursor: 'pointer',
               '&:hover': { textDecoration: 'underline' },
             }}
