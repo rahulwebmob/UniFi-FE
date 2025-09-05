@@ -9,7 +9,6 @@ import { useGetAttachmentsListQuery } from '../../../../services/education'
 const WebinarAttachments = ({ handleOnClose, isHost }) => {
   const { roomId: webinarId } = useParams()
 
-  // Use separate queries based on isHost
   const hostData = useGetWebinarAttachmentsQuery(
     { webinarId: webinarId || '' },
     { skip: !webinarId || !isHost },

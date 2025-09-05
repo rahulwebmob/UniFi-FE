@@ -9,18 +9,18 @@ const Dashboard = () => {
   const cardData = [
     {
       icon: PenTool,
-      title: 'Create a Course',
-      description: 'Design and share your knowledge through structured courses',
-      button: 'Create Course',
+      title: 'Create a Recorded Session',
+      description: 'Design and share your knowledge through structured recorded sessions',
+      button: 'Create Recorded Session',
       link: 'create-course',
       color: theme.palette.primary.main,
       gradient: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
     },
     {
       icon: Presentation,
-      title: 'Create a Webinar',
+      title: 'Create a Live Session',
       description: 'Host live sessions and interact with your students',
-      button: 'Create Webinar',
+      button: 'Create Live Session',
       link: 'create-webinar',
       color: theme.palette.primary.main,
       gradient: `linear-gradient(135deg, ${theme.palette.secondary.main}, ${theme.palette.secondary.dark})`,

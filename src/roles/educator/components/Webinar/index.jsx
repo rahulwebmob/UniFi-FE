@@ -109,7 +109,7 @@ const AllWebinars = ({ page, setPage }) => {
   const columns = [
     {
       accessorKey: 'title',
-      header: 'Webinar Name',
+      header: 'Live Session Name',
       size: 300,
       Cell: (tableProps) => {
         const { row, cell } = tableProps
@@ -280,7 +280,7 @@ const AllWebinars = ({ page, setPage }) => {
     },
     {
       accessorKey: 'view',
-      header: 'View Webinar',
+      header: 'View Live Session',
       size: 140,
       Cell: (tableProps) => {
         const { row } = tableProps
@@ -303,7 +303,7 @@ const AllWebinars = ({ page, setPage }) => {
               textTransform: 'none',
             }}
           >
-            View Webinar
+            View Live Session
           </Button>
         )
       },
@@ -368,7 +368,7 @@ const AllWebinars = ({ page, setPage }) => {
         <TextField
           size="small"
           onChange={(e) => debouncedSearch(e.target.value)}
-          placeholder="Search webinars..."
+          placeholder="Search live sessions..."
           sx={{
             minWidth: 250,
             backgroundColor: (theme) => theme.palette.background.paper,
@@ -431,7 +431,7 @@ const AllWebinars = ({ page, setPage }) => {
           <ListItemIcon>
             <Edit size={16} />
           </ListItemIcon>
-          <ListItemText>Edit Webinar</ListItemText>
+          <ListItemText>Edit Live Session</ListItemText>
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -445,7 +445,7 @@ const AllWebinars = ({ page, setPage }) => {
           <ListItemIcon>
             <Trash2 size={16} color="currentColor" />
           </ListItemIcon>
-          <ListItemText>Delete Webinar</ListItemText>
+          <ListItemText>Delete Live Session</ListItemText>
         </MenuItem>
       </Menu>
     </>
@@ -463,7 +463,7 @@ const PastWebinars = ({ page, setPage }) => {
   const columns = [
     {
       accessorKey: 'title',
-      header: 'Webinar Name',
+      header: 'Live Session Name',
       size: 300,
       Cell: (tableProps) => {
         const { row, cell } = tableProps
@@ -646,10 +646,12 @@ const Webinar = () => {
                 mb: 1,
               }}
             >
-              {isLogs ? 'Past' : 'All'} Webinars
+              {isLogs ? 'Past' : 'All'} Live Sessions
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: { xs: 2, md: 0 } }}>
-              {isLogs ? 'View your completed webinar history' : 'Manage and schedule your webinars'}
+              {isLogs
+                ? 'View your completed live session history'
+                : 'Manage and schedule your live sessions'}
             </Typography>
           </Box>
           <Box
@@ -674,7 +676,7 @@ const Webinar = () => {
               startIcon={<Plus size={16} />}
               variant="contained"
             >
-              Create Webinar
+              Create Live Session
             </Button>
           </Box>
         </Box>

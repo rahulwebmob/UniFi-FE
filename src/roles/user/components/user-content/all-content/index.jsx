@@ -20,21 +20,21 @@ const AllContent = () => {
   const [page, setPage] = useState(1)
   const [isLoadMore, setIsLoadMore] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [contentType, setContentType] = useState('course')
+  const [contentType, setContentType] = useState('webinar')
   const [selectedCategory, setSelectedCategory] = useState('')
 
   const { data } = useGetCategoryListQuery()
 
   const contentTypes = [
     {
-      id: 'course',
-      label: 'Courses',
-      icon: BookOpen,
+      id: 'webinar',
+      label: 'Live Sessions',
+      icon: Presentation,
     },
     {
-      id: 'webinar',
-      label: 'Webinars',
-      icon: Presentation,
+      id: 'course',
+      label: 'Recorded Sessions',
+      icon: BookOpen,
     },
   ]
 

@@ -12,8 +12,8 @@ const Navigation = () => {
 
   const navItems = [
     { path: '/educator', label: 'Dashboard' },
-    { path: '/educator/courses', label: 'Courses' },
-    { path: '/educator/webinars', label: 'Webinars' },
+    { path: '/educator/courses', label: 'Recorded Sessions' },
+    { path: '/educator/webinars', label: 'Live Sessions' },
     {
       path: '/educator/payment-history',
       label: 'Purchase History',
@@ -34,7 +34,7 @@ const Navigation = () => {
     if (location.pathname.includes('educator-room')) {
       // TODO: Replace with proper modal dialog
       // eslint-disable-next-line no-alert
-      const userConfirmed = window.confirm('Are you sure you want to leave the webinar ?')
+      const userConfirmed = window.confirm('Are you sure you want to leave the live session ?')
       if (userConfirmed) {
         navigate(path)
         handleMenuClose()

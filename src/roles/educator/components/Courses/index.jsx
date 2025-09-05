@@ -92,7 +92,7 @@ const Courses = () => {
   const columns = [
     {
       accessorKey: 'title',
-      header: 'Course Name',
+      header: 'Recorded Session Name',
       size: 300,
       Cell: (tableProps) => {
         const { row, cell } = tableProps
@@ -220,7 +220,7 @@ const Courses = () => {
     },
     {
       accessorKey: 'view',
-      header: 'View Course',
+      header: 'View Recorded Session',
       size: 140,
       Cell: (tableProps) => {
         const { row } = tableProps
@@ -241,7 +241,7 @@ const Courses = () => {
               width: 150,
             }}
           >
-            View Course
+            View Recorded Session
           </Button>
         )
       },
@@ -299,7 +299,7 @@ const Courses = () => {
                 mb: 1,
               }}
             >
-              All Courses
+              All Recorded Sessions
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: { xs: 2, md: 0 } }}>
               Manage and track all your courses in one place
@@ -312,7 +312,7 @@ const Courses = () => {
             }}
             variant="contained"
           >
-            Create Course
+            Create Recorded Session
           </Button>
         </Box>
       </Box>
@@ -388,7 +388,7 @@ const Courses = () => {
             onChange={(e) => {
               debouncedSearch(e.target.value)
             }}
-            placeholder="Search courses..."
+            placeholder="Search recorded sessions..."
             sx={{
               minWidth: 250,
               backgroundColor: theme.palette.background.paper,
@@ -436,7 +436,7 @@ const Courses = () => {
             <Edit size={16} style={{ color: theme.palette.primary.main }} />
           </ListItemIcon>
           <ListItemText
-            primary="Edit Course"
+            primary="Edit Recorded Session"
             primaryTypographyProps={{
               style: { color: theme.palette.primary.main },
             }}

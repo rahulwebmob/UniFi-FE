@@ -108,7 +108,10 @@ const CourseList = ({
               },
             }}
           >
-            <NoDataFound description="Take the first step by enrolling in a course" title="" />
+            <NoDataFound
+              description="Take the first step by enrolling in a recorded session"
+              title=""
+            />
           </Box>
         ) : null}
       </MuiCarousel>

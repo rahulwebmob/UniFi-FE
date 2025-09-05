@@ -38,7 +38,7 @@ const Webinars = () => {
             <Box
               component="img"
               src={thumbnail}
-              alt="Webinar thumbnail"
+              alt="Live session thumbnail"
               sx={{
                 width: 80,
                 height: 60,
@@ -229,7 +229,7 @@ const Webinars = () => {
             border: `1px solid ${theme.palette.divider}`,
           }}
         >
-          <Typography color="text.secondary">No webinars available</Typography>
+          <Typography color="text.secondary">No live sessions available</Typography>
         </Box>
       )}
     </Box>

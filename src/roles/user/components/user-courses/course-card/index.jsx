@@ -27,7 +27,7 @@ const CourseCard = ({ course, isPurchased = false }) => {
       if (course.isPaid) {
         return 'Enroll Now'
       }
-      return 'Start Free Course'
+      return 'Start Free Recorded Session'
     }
 
     const getStartIcon = () => {
@@ -85,7 +85,7 @@ const CourseCard = ({ course, isPurchased = false }) => {
       >
         <Box
           component="img"
-          src={course.thumbNail ?? '/placeholder-course.jpg'}
+          src={course.thumbNail ?? '/placeholder-recorded-session.jpg'}
           alt={course.title}
           sx={{
             position: 'absolute',

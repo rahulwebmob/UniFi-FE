@@ -28,12 +28,12 @@ const WebinarCard = ({ webinar }) => {
       return 'Join Now'
     }
     if (isWebinarBought) {
-      return 'View Webinar'
+      return 'View Live Session'
     }
     if (isPaid) {
       return 'Enroll Now'
     }
-    return 'View Webinar'
+    return 'View Live Session'
   }
 
   const renderActionButton = () => {
@@ -89,7 +89,7 @@ const WebinarCard = ({ webinar }) => {
       >
         <Box
           component="img"
-          src={webinar.thumbNail ?? '/placeholder-webinar.jpg'}
+          src={webinar.thumbNail ?? '/placeholder-live-session.jpg'}
           alt={webinar.title}
           sx={{
             position: 'absolute',

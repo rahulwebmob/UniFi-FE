@@ -30,7 +30,7 @@ const BasicDetails = () => {
           <Grid size={12}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={1} fontWeight={500}>
-                Course Title{' '}
+                Recorded Session Title{' '}
                 <Typography variant="body1" color="error.main" component="span">
                   *
                 </Typography>{' '}
@@ -46,7 +46,7 @@ const BasicDetails = () => {
                   <TextField
                     {...field}
                     control={control}
-                    placeholder="Enter course title"
+                    placeholder="Enter recorded session title"
                     size="small"
                     error={!!errors.title}
                     helperText={errors.title?.message}
@@ -56,14 +56,15 @@ const BasicDetails = () => {
               />
 
               <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-                Make your course stand out with a compelling title that captures its essence
+                Make your recorded session stand out with a compelling title that captures its
+                essence
               </Typography>
             </FormControl>
           </Grid>
           <Grid size={12}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={1} fontWeight={500}>
-                Course Subtitle{' '}
+                Recorded Session Subtitle{' '}
                 <Typography variant="body1" color="error.main" component="span">
                   *
                 </Typography>{' '}
@@ -79,7 +80,7 @@ const BasicDetails = () => {
                   <TextField
                     {...field}
                     control={control}
-                    placeholder="Enter a brief subtitle for your course"
+                    placeholder="Enter a brief subtitle for your recorded session"
                     size="small"
                     error={!!errors.subtitle}
                     helperText={errors.subtitle?.message}
@@ -92,7 +93,7 @@ const BasicDetails = () => {
           <Grid size={12}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={1} fontWeight={500}>
-                Course Description{' '}
+                Recorded Session Description{' '}
                 <Typography variant="body1" color="error.main" component="span">
                   *
                 </Typography>{' '}
@@ -108,7 +109,7 @@ const BasicDetails = () => {
                   <TextField
                     {...field}
                     control={control}
-                    placeholder="Provide a detailed description of your course"
+                    placeholder="Provide a detailed description of your recorded session"
                     multiline
                     rows={5}
                     variant="outlined"

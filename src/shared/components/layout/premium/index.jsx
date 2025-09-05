@@ -119,9 +119,9 @@ const PremiumModal = forwardRef(({ purchaseDetails }, ref) => {
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {purchaseDetails?.purchaseType === 'COURSE'
-              ? `Purchase access to ${purchaseDetails?.title || 'this course'}`
+              ? `Purchase access to ${purchaseDetails?.title || 'this recorded session'}`
               : purchaseDetails?.purchaseType === 'WEBINAR'
-                ? `Register for ${purchaseDetails?.title || 'this webinar'}`
+                ? `Register for ${purchaseDetails?.title || 'this live session'}`
                 : 'Subscribe to premium plan'}
           </Typography>
         </Box>

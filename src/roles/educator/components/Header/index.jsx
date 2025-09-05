@@ -41,14 +41,14 @@ const Header = () => {
     },
     {
       id: 'courses',
-      label: 'Courses',
+      label: 'Recorded Sessions',
       icon: BookOpen,
       path: '/educator/courses',
       isActive: () => location.pathname.includes('/courses'),
     },
     {
       id: 'webinars',
-      label: 'Webinars',
+      label: 'Live Sessions',
       icon: Presentation,
       path: '/educator/webinars',
       isActive: () => location.pathname.includes('/webinars'),
@@ -73,7 +73,7 @@ const Header = () => {
   const handleNavigation = (path) => {
     if (location.pathname.includes('educator-room')) {
       // eslint-disable-next-line no-alert
-      const userConfirmed = window.confirm('Are you sure you want to leave the webinar ?')
+      const userConfirmed = window.confirm('Are you sure you want to leave the live session ?')
       if (userConfirmed) {
         navigate(path)
         handleMenuClose()

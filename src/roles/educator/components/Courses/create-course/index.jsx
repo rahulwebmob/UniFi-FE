@@ -157,8 +157,8 @@ const stepsConfig = () => [
     buttonLabel: 'Preview',
   },
   {
-    label: 'Preview Course',
-    description: 'Review your course before publishing',
+    label: 'Preview Recorded Session',
+    description: 'Review your recorded session before publishing',
     buttonLabel: 'Publish',
   },
 ]

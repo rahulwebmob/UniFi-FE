@@ -110,7 +110,7 @@ const WebinarList = ({
               },
             }}
           >
-            <NoDataFound description="Take the First Step Toward Success – Purchase a Webinar Today." />
+            <NoDataFound description="Take the First Step Toward Success – Purchase a Live Session Today." />
           </Box>
         </MuiCarousel>
       )

@@ -9,8 +9,8 @@ import Webinars from '../../components/tutor-profile-tabs/webinars'
 import { downloadPdf } from '../../helper/common'
 
 const LIST_TYPE_OPTIONS = [
-  { name: 'Courses', value: 'BS', component: () => <Courses /> },
-  { name: 'Webinars', value: 'CF', component: () => <Webinars /> },
+  { name: 'Recorded Sessions', value: 'BS', component: () => <Courses /> },
+  { name: 'Live Sessions', value: 'CF', component: () => <Webinars /> },
 ]
 
 const TutorProfile = () => {

@@ -58,7 +58,7 @@ const Learning = ({
 
   const streamHeight = useMemo(() => {
     if (isFullscreen && areUsersInRoom) {
-      return 'calc(100vh - 3200px)'
+      return 'calc(100vh - 310px)'
     }
     if (isFullscreen) {
       return 'calc(100vh - 200px)'

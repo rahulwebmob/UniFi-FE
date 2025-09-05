@@ -6,7 +6,7 @@ import CourseList from '../../user-courses/course-list'
 import WebinarList from '../../user-webinars/webinar-list'
 
 const PurchasedContent = () => {
-  const [contentType, setContentType] = useState('course')
+  const [contentType, setContentType] = useState('webinar')
 
   return (
     <Box
@@ -18,23 +18,35 @@ const PurchasedContent = () => {
         boxShadow: (theme) => theme.customShadows.primary,
       }}
     >
-      <Box display="flex" alignItems="center" gap={2} mb={2}>
+      <Box
+        display="flex"
+        alignItems="center"
+        gap={2}
+        mb={2}
+        sx={{
+          flexWrap: 'wrap',
+          '@media (max-width: 600px)': {
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+          },
+        }}
+      >
         <Typography variant="h6">Purchased content</Typography>
 
         <ButtonGroup size="small" variant="contained">
-          <Button
-            onClick={() => setContentType('course')}
-            variant={contentType === 'course' ? 'contained' : 'outlined'}
-            startIcon={<BookOpen size={16} />}
-          >
-            Courses
-          </Button>
           <Button
             onClick={() => setContentType('webinar')}
             variant={contentType === 'webinar' ? 'contained' : 'outlined'}
             startIcon={<Presentation size={16} />}
           >
-            Webinars
+            Live Sessions
+          </Button>
+          <Button
+            onClick={() => setContentType('course')}
+            variant={contentType === 'course' ? 'contained' : 'outlined'}
+            startIcon={<BookOpen size={16} />}
+          >
+            Recorded Sessions
           </Button>
         </ButtonGroup>
       </Box>

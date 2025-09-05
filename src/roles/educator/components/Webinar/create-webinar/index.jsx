@@ -76,7 +76,7 @@ const CreateWebinar = ({
   const [previewMode, setPreviewMode] = useState(isPreview)
   const [webinarData, setWebinarData] = useState({ ...savedDetails })
   const [categories, setCategories] = useState(defaultValues?.category)
-  const [scheduleType, setScheduleType] = useState(defaultValues?.scheduleType || 'daily')
+  const [scheduleType, setScheduleType] = useState(defaultValues?.scheduleType || 'weekly')
 
   const [createWebinar, { isLoading: isCreateLoading }] = useCreateWebinarMutation()
   const [updateWebinar, { isLoading: isUpdateLoading }] = useUpdateWebinarMutation()
@@ -410,7 +410,7 @@ const CreateWebinar = ({
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
-                  placeholder="Enter webinar title"
+                  placeholder="Enter live session title"
                   size="small"
                   fullWidth
                   error={!!fieldState.error}
@@ -423,7 +423,7 @@ const CreateWebinar = ({
         <Grid size={{ xs: 12 }}>
           <FormControl fullWidth>
             <Typography variant="body1" mb={0.5} fontWeight={600}>
-              About Webinar{' '}
+              About Live Session{' '}
               <Typography variant="body1" color="error.main" component="span">
                 *
               </Typography>{' '}
@@ -438,7 +438,7 @@ const CreateWebinar = ({
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
-                  placeholder="Describe your webinar"
+                  placeholder="Describe your live session"
                   multiline
                   rows={5}
                   size="small"
@@ -568,10 +568,10 @@ const CreateWebinar = ({
               mb: 0.5,
             }}
           >
-            {isEdit ? 'Edit' : 'Create'} Webinar
+            {isEdit ? 'Edit' : 'Create'} Live Session
           </Typography>
           <Typography component="p" color="text.secondary">
-            Fill in the details to create an engaging webinar
+            Fill in the details to create an engaging live session
           </Typography>
         </Box>
       )}

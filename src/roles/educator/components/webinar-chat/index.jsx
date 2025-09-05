@@ -37,7 +37,7 @@ const WebinarRoom = () => {
         }}
       >
         {/* TODO: Messages component needs to be implemented */}
-        <div>Webinar chat will be implemented here</div>
+        <div>Live session chat will be implemented here</div>
       </Box>
     )
   )

@@ -37,7 +37,7 @@ const Courses = () => {
             <Box
               component="img"
               src={thumbnail || ''}
-              alt="Course thumbnail"
+              alt="Recorded session thumbnail"
               sx={{
                 width: 80,
                 height: 60,

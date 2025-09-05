@@ -251,7 +251,7 @@ const WebinarContent = ({ webinarData, isEdit = true, handlePurchase = () => {} 
             mb: 1,
           }}
         >
-          Webinar Details
+          Live Session Details
         </Typography>
         <Typography
           component="p"
@@ -260,7 +260,7 @@ const WebinarContent = ({ webinarData, isEdit = true, handlePurchase = () => {} 
             opacity: 0.6,
           }}
         >
-          Information about this webinar
+          Information about this live session
         </Typography>
         <Box
           sx={{
