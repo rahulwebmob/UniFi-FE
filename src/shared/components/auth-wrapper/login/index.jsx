@@ -23,7 +23,7 @@ import { useAdminLoginMutation } from '../../../../services/onboarding'
 import ForgetPassword from '../forget-password'
 import ResendEmail from '../resend-email'
 
-import SocialMediaAuth from './social-media-auth'
+// import SocialMediaAuth from './social-media-auth'
 
 const ViewState = {
   LOGIN: 'LOGIN',
@@ -37,7 +37,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
 
   const [visible, setVisible] = useState(false)
   const [viewState, setViewState] = useState(ViewState.LOGIN)
-  const [isOAuthLoading, setIsOAuthLoading] = useState(false)
+  // const [isOAuthLoading, setIsOAuthLoading] = useState(false)
   const [verificationEmail, setVerificationEmail] = useState('')
 
   const [userLogin, { isLoading: isUserLoading }] = useLoginMutation()
@@ -177,7 +177,7 @@ const Login = ({ type = '', setIsLoginPage }) => {
       </Grid>
       <Button
         sx={{ mb: 2 }}
-        disabled={isLoading || isOAuthLoading}
+        disabled={isLoading}
         variant="contained"
         color="primary"
         type="submit"
@@ -236,10 +236,10 @@ const Login = ({ type = '', setIsLoginPage }) => {
 
   const renderUserSignup = () => (
     <>
-      <SocialMediaAuth
+      {/* <SocialMediaAuth
         setIsOAuthLoading={setIsOAuthLoading}
         isOAuthLoading={isLoading || isOAuthLoading}
-      />
+      /> */}
       <Box display="flex" alignItems="center" justifyContent="center" mt={2} pb={2}>
         <Typography variant="body2" color="text.secondary">
           Don&apos;t have an account?

@@ -19,7 +19,7 @@ import * as yup from 'yup'
 
 import { useSignUpMutation } from '../../../../services/admin'
 import PhoneField from '../../phone-field'
-import SocialMediaAuth from '../login/social-media-auth'
+// import SocialMediaAuth from '../login/social-media-auth'
 import SignUpSuccess from '../sign-up-success'
 
 const SignUp = ({ setIsLoginPage }) => {
@@ -27,7 +27,7 @@ const SignUp = ({ setIsLoginPage }) => {
   const [searchParams] = useSearchParams()
 
   const [showPassword, setShowPassword] = useState(false)
-  const [isOAuthLoading, setIsOAuthLoading] = useState(false)
+  // const [isOAuthLoading, setIsOAuthLoading] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [signUpSuccess, setSignUpSuccess] = useState(false)
 
@@ -275,7 +275,7 @@ const SignUp = ({ setIsLoginPage }) => {
           type="submit"
           color="primary"
           variant="contained"
-          disabled={isLoading || isOAuthLoading}
+          disabled={isLoading}
           startIcon={isLoading ? <CircularProgress size={20} /> : null}
         >
           {isLoading ? 'Signing Up...' : 'Sign Up'}
@@ -315,12 +315,12 @@ const SignUp = ({ setIsLoginPage }) => {
           </Typography>
         </Typography>
       </Box>
-      <Grid mb={2}>
+      {/* <Grid mb={2}>
         <SocialMediaAuth
           setIsOAuthLoading={setIsOAuthLoading}
           isOAuthLoading={isLoading || isOAuthLoading}
         />
-      </Grid>
+      </Grid> */}
       <Box display="flex" alignItems="center" justifyContent="center">
         <Typography variant="body2" color={theme.palette.text.secondary} sx={{ fontSize: 14 }}>
           Already have an account?
